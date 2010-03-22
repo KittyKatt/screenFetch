@@ -4,6 +4,9 @@
 **** **** **** ****
 
 
+v1.2
+ - Fixed uptime errors when uptime > 1 day
+
 v1.1
  - Fixed color closing in the generic tux ASCII logo (thanks Suhana)
  - Changed architecture detection to "uname -m" across the board
