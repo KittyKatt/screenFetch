@@ -1,0 +1,13 @@
+**** **** **** ****
+   screenFetch
+    changelog
+**** **** **** ****
+
+
+v1.1
+ - Fixed color closing in the generic tux ASCII logo (thanks Suhana)
+ - Changed architecture detection to "uname -m" across the board
+   (thanks ikey for that one)
+
+v1.0
+ - First version. Let's start! :D
