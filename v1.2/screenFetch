@@ -400,7 +400,7 @@ then
   echo -e "$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)"
   echo -e "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF"
   echo -e "$c1 'EHTI                    !H"
-  echo -e "$c1  \`0F'                    '!"
+  echo -e "$c1  \`0F'                    '!"$c0
 fi
 
 
