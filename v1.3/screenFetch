@@ -1,0 +1,787 @@
+#!/bin/bash
+
+#
+# screenFetch (v1.2)
+#
+# Script to fetch system and theme settings for screenshots in most mainstream
+# Linux distributions.
+# This script is copyright (C) 2010 to Brett Bohnenkamper (kittykatt@archlinux.us)
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+#
+# TO ADD
+#  - Shell type detection
+#  - WORKING background image detection
+#  = Enlightenment/Compiz/fvwm/wmaker support
+#  - LXDE support
+#
+# Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
+# appreciated by emailing me or by stopping by http://github.com/KittyKatt/screeFetch . You
+# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6669/randomz
+# to put forth suggestions/ideas. Thank you.
+#
+
+######################
+# Settings for fetcher
+######################
+
+# This setting controls what ASCII logo is displayed. Available: Linux Mint, Arch Linux, Ubuntu, Debian, BSD, Crunchbang, Gentoo, Fedora, None
+distro="Arch Linux"
+
+# This sets the information to be displayed. Available: OS, Kernel, DE, WM, Win_theme, Theme, Icons, Font
+display="OS Kernel Uptime DE WM Win_theme Theme Icons Font"
+
+# Colors to use for the information found. These are set below according to distribution. If you would like to set your OWN color scheme for these, uncomment the lines below and edit them to your heart's content.
+# textcolor="\e[0m"
+# labelcolor="\e[1;34m"
+
+# WM Names
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm"
+denames="gnome-session xfce-mcs-manage xfce4-session ksmserver"
+
+# Screenshot Settings
+# This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
+screenie=0
+# You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
+# screenCommand="scrot -cd5"
+
+#############################################
+#### CODE No need to edit past here CODE ####
+#############################################
+
+
+#####################
+# Begin Flags Phase
+#####################
+
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]
+then
+  echo "Usage:"
+  echo "  screenFetch [OPTIONAL FLAGS]"
+  echo " "
+  echo "screenFetch - a CLI Linux application to show system/theme info in screenshots."
+  echo " "
+  echo "Options:"
+  echo "   -s, --screen            Using this flag tells the script that you want it to take a screenshot."
+  # echo "   -c, --command='COMMAND'   Here you can specify a custom screenshot command for the script to execute."
+  # echo "   -d, --distro='DISTRO'   Here you can specify your distribution for the script to use."
+  echo "   -v, --version           Display current script version."
+  exit
+elif [[ "$@" =~ "--version" ]] || [[ "$@" =~ "-v" ]]
+then
+  echo "screenFetch - Version 1.3"
+  echo "Copyright (C) Brett Bohnenkamper (kittykatt@archlinux.us)"
+  echo " "
+  echo "This is free software; see the source for copying conditions.  There is NO
+warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+  exit
+elif [[ "$@" =~ "--screen" ]] || [[ "$@" =~ "-s" ]]
+then
+  screenie=1
+fi
+
+###################
+# End Flags Phase
+###################
+
+
+
+#########################
+# Begin Detection Phase
+#########################
+
+# Find Number of Running Processes
+processnum="$(( $( ps aux | wc -l ) - 1 ))"
+
+c0="\e[0m" # End Sequence
+
+# Kernel Version Detection - Begin
+if [[ "$display" =~ "Kernel" ]]
+then
+  kernel=`uname -r`
+fi
+# Kernel Version Detection - End
+
+
+# Uptime Detection - Begin
+if [[ "$display" =~ "Uptime" ]]
+then
+  uptime=`cat /proc/uptime | awk -F" " {'print $1'}`
+  day=`echo "$uptime / 86400" | bc`
+  hour=`echo "$uptime / 3600" | bc`
+  minute=`echo "$uptime / 60" | bc`
+  if [ "$day" -gt "1" ]
+  then
+    hour=`echo "$hour - $day * 24" | bc`
+    minute=`echo "$minute - $hour * 60" | bc`
+    uptime=`echo $day"d"$hour"h"$minute"m"`
+  else
+    if [ "$hour" -gt "1" ]
+    then
+      minute=`echo "$minute - $hour * 60" | bc`
+      uptime=`echo $hour"h"$minute"m"`
+    else
+      uptime=`echo $minute"m"`
+    fi
+  fi
+fi
+# Uptime Detection - End
+
+
+# DE Detection - Begin
+if [[ "$display" =~ "DE" ]]
+then
+  if [ `{ echo "$denames" | tr ' ' '\n'; ps -A | awk {'print $4'} | sort | uniq; } | sort | uniq -d` ]
+  then
+    DE=`{ echo "$denames" | tr ' ' '\n'; ps -A | awk {'print $4'} | sort | uniq; } | sort | uniq -d | sed -e 's/gnome-session/GNOME/' -e 's/xfce-mcs-manage/XFCE/' -e 's/ksmserver/KDE/' -e 's/xfce4-session/XFCE/'`
+  else
+    DE="Not Found"
+  fi
+fi
+# DE Detection - End
+
+
+# WM Detection - Begin
+if [[ "$display" =~ "WM" ]]
+then
+  if [ `{ echo "$wmnames" | tr ' ' '\n'; ps -A | awk {'print $4'} | sort | uniq; } | sort | uniq -d` ]
+  then
+    # WM=`for item in $wmnames; do pidof $item >/dev/null 2>&1 && echo "$item"; done`
+    WM=`{ echo "$wmnames" | tr ' ' '\n'; ps -A | awk {'print $4'} | sort | uniq; } | sort | uniq -d`
+    WM=`echo "$WM" | sed -e 's/fluxbox/FluxBox/' -e 's/openbox/OpenBox/' -e 's/blackbox/BlackBox/' -e 's/xfwm4/Xfwm4/' -e 's/metacity/Metacity/' -e 's/kwin/KWin/' -e 's/icewm/IceWM/' -e 's/pekwm/PekWM/'`
+  else
+    WM="Not Found"
+  fi
+fi
+# WM Detection - End
+
+
+
+
+# WM Theme Detection - BEGIN
+if [[ "$display" =~ "Win_theme" ]]
+then
+
+  # PekWM Theme Detection
+  if [ "$WM" == "PekWM" ]
+    then
+    if [ -f $HOME/.pekwm/config ]
+    then
+      Win_theme=`cat $HOME/.pekwm/config | grep Theme | awk -F"/" {'print $4'} | sed s/\"//`
+    else
+      Win_theme="Not Found"
+    fi
+  
+  # OpenBox Theme Detection
+  elif [ "$WM" == "OpenBox" ]
+  then
+    if [ -f $HOME/.config/openbox/rc.xml ]
+    then
+      Win_theme=`cat $HOME/.config/openbox/rc.xml | grep -m 1 \<name\>.*\</name\> | sed -e 's/.*<name>//' -e 's/<\/name>//'`
+    else
+      Win_theme="Not Found"
+    fi
+  
+  # FluxBox Theme Detection
+  elif [ "$WM" == "FluxBox" ]
+  then
+    if [ -f $HOME/.fluxbox/init ]
+    then
+      Win_theme=`cat $HOME/.fluxbox/init | grep -m 1 session.styleFile | awk -F"/" {'print $6'}`
+    else
+      Win_theme="Not Found"
+    fi
+    
+  # BlackBox Theme Detection
+  elif [ "$WM" == "BlackBox" ]
+  then
+    if [ -f $HOME/.blackboxrc ]
+    then
+      Win_theme=`cat $HOME/.blackboxrc | grep -m 1 session.styleFile | awk -F"/" {'print $6'}`
+    else
+      Win_theme="Not Found"
+    fi
+
+  # Metacity Theme Detection
+  elif [ "$WM" == "Metacity" ]
+  then
+    if gconftool-2 -g /apps/metacity/general/theme
+    then
+      Win_theme=`gconftool-2 -g /apps/metacity/general/theme`
+    else
+      Win_theme="Not Found"
+    fi
+
+  # Xfwm4 Theme Detection
+  elif [ "$WM" == "Xfwm4" ]
+  then
+    if [ -f $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]
+    then
+      Win_theme=`xfconf-query -c xfwm4 -p /general/theme`
+    else
+      Win_theme="Not Found"
+    fi
+    
+  # IceWM Theme Detection
+  elif [ "$WM" == "IceWM" ]
+  then
+    if [ -f $HOME/.icewm/theme ]
+    then
+      Win_theme=`grep -m 1 Theme= $HOME/.icewm/theme | awk -F"=" {'print $2'} | sed -e 's/"//' -e 's/\/default.theme"//'`
+    else
+      Win_theme="Not Found"
+    fi
+    
+  # Kwin3 Theme Detection
+  elif [ "$WM" == "KWin" ]
+  then
+    if [ -f $HOME/.kde/share/config/kwinrc ]
+    then
+      Win_theme=`grep PluginLib=kwin3_ $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'} | sed -e 's/kwin3_//'`
+    else
+      Win_theme="Not Found"
+    fi
+  fi
+fi
+# WM Theme Detection - END
+
+
+
+# GTK Theme\Icon\Font Detection - BEGIN
+if [[ "$display" =~ "Theme" ]]
+then
+
+
+  # Desktop Environment found as "XFCE"
+  if [ "$DE" == "XFCE" ]
+  then
+    if [ -a $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]
+    then
+      if grep -q 'name="ThemeName"' $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+      then
+	gtkTheme=`xfconf-query -c xsettings -p /Net/ThemeName`
+      else
+        gtkTheme="Not Found"
+      fi
+      if [[ "$display" =~ "Icons" ]]
+      then
+        if grep -q IconThemeName $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+        then
+          gtkIcons=`xfconf-query -c xsettings -p /Net/IconThemeName`
+        else
+          gtkIcons="Not Found"
+        fi
+      fi
+      if [[ "$display" =~ "Font" ]]
+      then
+        if grep -q title_font $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
+        then
+          gtkFont=`xfconf-query -c xsettings -p /Gtk/FontName`
+        else
+          gtkFont="Not Found"
+        fi
+      fi
+    fi
+
+  # Desktop Environment found as "KDE"
+  elif [ "$DE" == "KDE" ]
+  then
+    if [ -a $HOME/.kde/share/config/kdeglobals ]
+    then
+      if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals
+      then
+        gtkTheme=`grep widgetStyle= $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'}`
+      elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals
+      then
+        gtkTheme=`grep colorScheme= $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'}`
+      else
+        gtkTheme="Not Found"
+      fi
+      if [[ "$display" =~ "Icons" ]]
+      then
+        if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals
+        then
+          gtkIcons=`grep Theme= $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'}`
+        else
+          gtkIcons="Not Found"
+        fi
+      fi
+      if [[ "$display" =~ "Font" ]]
+      then
+        if grep -q "Font=" $HOME/.kde/share/config/kdeglobals
+        then
+          gtkFont=`grep Font= $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'}`
+        else
+          gtkFont="Not Found"
+        fi
+      fi
+    fi
+
+  # Desktop Environment found as "GNOME"
+  elif [ "$DE" == "GNOME" ]
+  then
+    if [ `gconftool-2 -g /desktop/gnome/interface/gtk_theme` ]
+    then
+      gtkTheme=`gconftool-2 -g /desktop/gnome/interface/gtk_theme`
+    else
+      gtkTheme="Not Found"
+    fi
+    if [[ "$display" =~ "Icons" ]]
+    then
+      if [ `gconftool-2 -g /desktop/gnome/interface/icon_theme` ]
+      then
+        gtkIcons=`gconftool-2 -g /desktop/gnome/interface/icon_theme`
+      else
+        gtkIcons="Not Found"
+      fi
+    fi
+    if [[ "$display" =~ "Font" ]]
+    then
+      if [ `gconftool-2 -g /desktop/gnome/interface/font_name` ]
+      then
+        gtkFont=`gconftool-2 -g /desktop/gnome/interface/font_name`
+      else
+        gtkFont="Not Found"
+      fi
+    fi
+
+  # No Desktop Environment Found
+  elif [ "$DE" == "Not Found" ]
+  then
+    if [ -a $HOME/.gtkrc-2.0 ]
+    then
+      if grep -q gtk-icon-theme-name $HOME/.gtkrc-2.0
+      then 
+        readTheme=`grep gtk-theme-name $HOME/.gtkrc-2.0`
+        gtkTheme=`echo "$readTheme" | sed -e 's/gtk-theme-name="//' -e 's/\"//'`
+      else
+        gtkTheme="Not Found"
+      fi
+      if [[ "$display" =~ "Icons" ]]
+      then
+        if grep -q gtk-icon-theme-name $HOME/.gtkrc-2.0
+        then
+          readIcons=`grep gtk-icon-theme-name $HOME/.gtkrc-2.0 | awk -F"=" {'print $2'}`
+          gtkIcons=`echo $readIcons | sed -e 's/\"//' -e 's/\"//'`
+        else
+          gtkIcons="Not Found"
+        fi
+      fi
+      if [[ "$display" =~ "Font" ]]
+      then
+        if grep -q gtk-font-name $HOME/.gtkrc-2.0
+        then
+          readFont=`grep gtk-font-name $HOME/.gtkrc-2.0 | awk -F"=" {'print $2'}`
+          gtkFont=`echo $readFont | sed -e 's/\"//' -e 's/\"//'`
+        else
+          gtkFont="Not Found"
+        fi
+      fi
+    fi
+  fi
+fi
+# GTK Theme\Icon\Font Detection - END
+
+#######################
+# End Detection Phase
+#######################
+
+#######################
+# Begin Display Phase
+#######################
+
+# Arch Linux Display
+if [[ "$distro" =~ "Arch Linux" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;34m"; fi
+  # Get Arch Linux Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor Arch Linux $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display Arch ASCII Logo and Info (FINAL)
+  c1="\e[1;39m" # White
+  c2="\e[1;34m" # Light Blue
+  echo -e "$c1              __"
+  echo -e "$c1          _=(SDGJT=_"
+  echo -e "$c1        _GTDJHGGFCVS)                $OS"
+  echo -e "$c1       ,GTDJGGDTDFBGX0               $kernel"
+  echo -e "$c1      JDJDIJHRORVFSBSVL$c2-=+=,_        $uptime"
+  echo -e "$c1     IJFDUFHJNXIXCDXDSV,$c2  \"DEBL      $DE"
+  echo -e "$c1    [LKDSDJTDU=OUSCSBFLD.$c2   '?ZWX,   $WM"
+  echo -e "$c1   ,LMDSDSWH'     \`DCBOSI$c2     DRDS], $WM_theme"
+  echo -e "$c1   SDDFDFH'         !YEWD,$c2   )HDROD  $GTK_theme"
+  echo -e "$c1  !KMDOCG            &GSU|$c2\_GFHRGO\' $GTK_icons"
+  echo -e "$c1  HKLSGP'$c2           __$c1\TKM0$c2\GHRBV)'  $GTK_font"
+  echo -e "$c1 JSNRVW'$c2       __+MNAEC$c1\IOI,$c2\BN'"
+  echo -e "$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)"
+  echo -e "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF"
+  echo -e "$c1 'EHTI                    !H"
+  echo -e "$c1  \`0F'                    '!"$c0
+fi
+
+
+
+# Linux Mint Display
+if [[ "$distro" =~ "Linux Mint" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;32m"; fi
+  # Get Linux Mint Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor Linux Mint $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display Mint ASCII Logo and Info (FINAL)
+  c1="\e[1;32m" # Bold Green
+  c2="\e[1;37m" # Bold White
+  echo -e "$c1 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
+  echo -e "$c1 MMm----::-://////////////oymNMd+\`"
+  echo -e "$c1 MMd      "$c2"/++                "$c1"-sNMd:   $OS"
+  echo -e "$c1 MMNso/\`  "$c2"dMM    \`.::-. .-::.\` "$c1".hMN:  $kernel"
+  echo -e "$c1 ddddMMh  "$c2"dMM   :hNMNMNhNMNMNh: "$c1"\`NMm  $uptime"
+  echo -e "$c1     NMm  "$c2"dMM  .NMN/-+MMM+-/NMN\` "$c1"dMM  $DE"
+  echo -e "$c1     NMm  "$c2"dMM  -MMm  \`MMM   dMM. "$c1"dMM  $WM"
+  echo -e "$c1     NMm  "$c2"dMM  -MMm  \`MMM   dMM. "$c1"dMM  $WM_theme"
+  echo -e "$c1     NMm  "$c2"dMM  .mmd  \`mmm   yMM. "$c1"dMM  $GTK_theme"
+  echo -e "$c1     NMm  "$c2"dMM\`  ..\`   ...   ydm. "$c1"dMM  $GTK_icons"
+  echo -e "$c1     hMM- "$c2"+MMd/-------...-:sdds  "$c1"dMM  $GTK_font"
+  echo -e "$c1     -NMm- "$c2":hNMNNNmdddddddddy/\`  "$c1"dMM"
+  echo -e "$c1      -dMNs-"$c2"\`\`-::::-------.\`\`    "$c1"dMM"
+  echo -e "$c1       \`/dMNmy+/:-------------:/yMMM"
+  echo -e "$c1          ./ydNMMMMMMMMMMMMMMMMMMMMM"$c0
+fi
+
+
+
+# Ubuntu Display
+if [[ "$distro" =~ "Ubuntu" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;31m"; fi
+  # Get Ubuntu Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor Ubuntu $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display Ubuntu ASCII Logo and Info (FINAL)
+  c1="\e[1;31m" # Light Red
+  c2="\e[1;33m" # Bold Yellow
+  c3="\e[1;37m" # Bold White
+  echo -e "$c1                          ./+o+-"
+  echo -e "$c3                  yyyyy- $c1-yyyyyy+"
+  echo -e "$c3               $c3://+//////$c1-yyyyyyo"
+  echo -e "$c2           .:: $c3.:/++++++/-$c1.+sss/\`     $OS"
+  echo -e "$c2         .:----  $c3/++++++++/:--:/-     $kernel"
+  echo -e "$c2        -:---:::.$c3\`..\`\`\`.-/oo+++++/    $uptime"
+  echo -e "$c2       .:--:::/.$c3          \`+sssoo+/   $DE"
+  echo -e "$c3  .:///:$c2-----:\`$c3             /sssooo.  $WM"
+  echo -e "$c3 -//////:$c2\`----$c3               /::--:.  $WM_theme"
+  echo -e "$c3 -///::::$c2\`----$c1               ++////.  $GTK_theme"
+  echo -e "$c3  .:::::$c2-----:\`$c1             /dddhhh.  $GTK_icons"
+  echo -e "$c2       .-.----:.$c1          \`oddhhhh+   $GTK_font"
+  echo -e "$c2        -:.-----\`\`-\`\`$c1\`\`.:ohdhhhhh+"
+  echo -e "$c2         \`:---- $c1\`ohhhhhhhhyo++os:"
+  echo -e "$c2           .-:$c1\`.syhhhhhhh/$c2.--::-\`"
+  echo -e "$c1               /osyyyyyyo$c2-------/"
+  echo -e "$c1                   \`\`\`\`\` $c2-:-....:"
+  echo -e "$c2                          \`----."$c0
+fi
+
+
+
+# Debian Display
+if [[ "$distro" =~ "Debian" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;31m"; fi
+  # Get Debian Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor Debian $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display Debian ASCII Logo and Info (FINAL)
+  c1="\e[1;31m" # Light Red
+  c2="\e[1;37m" # Bold White
+  echo -e "  $c2       _,met\$\$\$\$\$gg."
+  echo -e "  $c2    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P."
+  echo -e "  $c2  ,g\$\$P\"\"       \"\"\"Y\$\$.\"."
+  echo -e "  $c2 ,\$\$P'              \`\$\$\$.      $OS"
+  echo -e "  $c2',\$\$P       ,ggs.     \`\$\$b:    $kernel"
+  echo -e "  $c2\`d\$\$'     ,\$P\"\'   $c1.$c2    \$\$\$    $uptime"
+  echo -e "  $c2 \$\$P      d\$\'     $c1,$c2    \$\$P    $DE"
+  echo -e "  $c2 \$\$:      \$\$.   $c1-$c2    ,d\$\$'     $WM"
+  echo -e "  $c2 \$\$\;      Y\$b._   _,d\$P'      $WM_theme"
+  echo -e "  $c2 Y\$\$.    $c1\`.$c2\`\"Y\$\$\$\$P\"'          $GTK_theme"
+  echo -e "  $c2 \`\$\$b      $c1\"-.__               $GTK_icons"
+  echo -e "  $c2  \`Y\$\$                         $GTK_font"
+  echo -e "  $c2   \`Y\$\$."
+  echo -e "  $c2     \`\$\$b."
+  echo -e "  $c2       \`Y\$\$b."
+  echo -e "  $c2          \`\"Y\$b._"
+  echo -e "  $c2              \`\"\"\"\""$c0
+fi
+
+
+
+# Crunchbang Display
+if [[ "$distro" =~ "Crunchbang" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;30m"; fi
+  # Get Crunchbang Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor Crunchbang $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display Crunchbang ASCII Logo and Info (FINAL)
+  c1="\e[0;37m" # Light Gray
+  echo -e "$c3                ___       ___      _"
+  echo -e "$c3               /  /      /  /     | |"
+  echo -e "$c3              /  /      /  /      | | $OS"
+  echo -e "$c3             /  /      /  /       | | $kernel"
+  echo -e "$c3     _______/  /______/  /______  | | $uptime"
+  echo -e "$c3    /______   _______   _______/  | | $DE"
+  echo -e "$c3          /  /      /  /          | | $WM"
+  echo -e "$c3         /  /      /  /           | | $WM_theme"
+  echo -e "$c3        /  /      /  /            | | $GTK_theme"
+  echo -e "$c3 ______/  /______/  /______       | | $GTK_icons"
+  echo -e "$c3/_____   _______   _______/       | | $GTK_font"
+  echo -e "$c3     /  /      /  /               |_|"
+  echo -e "$c3    /  /      /  /                 _"
+  echo -e "$c3   /  /      /  /                 | |"
+  echo -e "$c3  /__/      /__/                  |_|"$c0
+fi
+
+
+
+# Gentoo Display
+if [[ "$distro" =~ "Gentoo" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;35m"; fi
+  # Get Gentoo Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor Gentoo $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display Gentoo ASCII Logo and Info (FINAL)
+  c8="\e[1;37m" # Bold White
+  c10="\e[1;35m" # Light Purple
+  echo -e "$c10         -/oyddmdhs+:."
+  echo -e "$c10     -o"$c8"dNMMMMMMMMNNmhy+"$c10"-\`"
+  echo -e "$c10   -y"$c8"NMMMMMMMMMMMNNNmmdhy"$c10"+-"
+  echo -e "$c10 \`o"$c8"mMMMMMMMMMMMMNmdmmmmddhhy"$c10"/\`       $OS"
+  echo -e "$c10 om"$c8"MMMMMMMMMMMN"$c10"hhyyyo"$c8"hmdddhhhd"$c10"o\`     $kernel"
+  echo -e "$c10.y"$c8"dMMMMMMMMMMd"$c10"hs++so/s"$c8"mdddhhhhdm"$c10"+\`   $uptime"
+  echo -e "$c10 oy"$c8"hdmNMMMMMMMN"$c10"dyooy"$c8"dmddddhhhhyhN"$c10"d.  $DE"
+  echo -e "$c10  :o"$c8"yhhdNNMMMMMMMNNNmmdddhhhhhyym"$c10"Mh  $WM"
+  echo -e "$c10    .:"$c8"+sydNMMMMMNNNmmmdddhhhhhhmM"$c10"my  $WM_theme"
+  echo -e "$c10       /m"$c8"MMMMMMNNNmmmdddhhhhhmMNh"$c10"s:  $GTK_theme"
+  echo -e "$c10    \`o"$c8"NMMMMMMMNNNmmmddddhhdmMNhs"$c10"+\`   $GTK_icons"
+  echo -e "$c10  \`s"$c8"NMMMMMMMMNNNmmmdddddmNMmhs"$c10"/.     $GTK_font"
+  echo -e "$c10 /N"$c8"MMMMMMMMNNNNmmmdddmNMNdso"$c10":\`"
+  echo -e "$c10+M"$c8"MMMMMMNNNNNmmmmdmNMNdso"$c10"/-"
+  echo -e "$c10yM"$c8"MNNNNNNNmmmmmNNMmhs+/"$c10"-\`"
+  echo -e "$c10/h"$c8"MMNNNNNNNNMNdhs++/"$c10"-\`"
+  echo -e "$c10\`/"$c8"ohdmmddhys+++/:"$c10".\`"
+  echo -e "$c10  \`-//////:--."$c0
+fi
+
+
+
+# Fedora Display
+if [[ "$distro" =~ "Fedora" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;34m"; fi
+  # Get Fedora Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor Fedora $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display Fedora ASCII Logo and Info (FINAL)
+  c11="\e[1;34m" # Light Blue
+  c12="\e[1;39m" # White
+  echo -e "$c11           :/------------://"
+  echo -e "$c11        :------------------://"
+  echo -e "$c11      :-----------"$c12"/shhdhyo/"$c11"-://"
+  echo -e "$c11    /-----------"$c12"omMMMNNNMMMd/"$c11"-:/"
+  echo -e "$c11   :-----------"$c12"sMMMdo:/"$c11"       -:/    $OS"
+  echo -e "$c11  :-----------"$c12":MMMd"$c11"-------    --:/   $kernel"
+  echo -e "$c11  /-----------"$c12":MMMy"$c11"-------    ---/   $uptime"
+  echo -e "$c11 :------    --"$c12"/+MMMh/"$c11"--        ---:  $DE"
+  echo -e "$c11 :---     "$c12"oNMMMMMMMMMNho"$c11"     -----:  $WM"
+  echo -e "$c11 :--      "$c12"+shhhMMMmhhy++"$c11"   ------:   $WM_theme"
+  echo -e "$c11 :-      -----"$c12":MMMy"$c11"--------------/   $GTK_theme"
+  echo -e "$c11 :-     ------"$c12"/MMMy"$c11"-------------:    $GTK_icons"
+  echo -e "$c11 :-      ----"$c12"/hMMM+"$c11"------------:     $GTK_font"
+  echo -e "$c11 :--"$c12":dMMNdhhdNMMNo"$c11"-----------:"
+  echo -e "$c11 :---"$c12":sdNMMMMNds:"$c11"----------:"
+  echo -e "$c11 :------"$c12":://:"$c11"-----------://"
+  echo -e "$c11 :--------------------://"$c0
+fi
+
+
+
+# BSD Display
+if [[ "$distro" =~ "BSD" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;31m"; fi
+  # Get Fedora Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor BSD $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display BSD ASCII Logo and Info (FINAL)
+  c6="\e[1;39m" # White
+  c7="\e[1;31m" # Light Red
+  echo -e "$c7              ,        ,"
+  echo -e "$c7             /(        )\`"
+  echo -e "$c7             \ \___   / |"
+  echo -e "$c7             /- "$c6"_$c7  \`-/  '"
+  echo -e "$c7            ($c6/\/ \ $c7\   /\\"
+  echo -e "$c6            / /   |$c7 \`    \\     $OS"
+  echo -e "$c6            O O   )$c7 /    |     $kernel"
+  echo -e "$c6            \`-^--'\`$c7<     '     $uptime"
+  echo -e "$c7           (_.)  _  )   /      $DE"
+  echo -e "$c7            \`.___/\`    /       $WM"
+  echo -e "$c7              \`-----' /        $WM_theme"
+  echo -e "$c6 <----.     "$c7"__/ __   \\         $GTK_theme"
+  echo -e "$c6 <----|===="$c7"O)))$c6==$c7) \) \/$c6====   $GTK_icons"
+  echo -e "$c6 <----'    $c7\`--' \`.__,' \\       $GTK_font"
+  echo -e "$c7              |        |"
+  echo -e "$c7               \       /       /\\"
+  echo -e "$c7          ______( (_  / \______/"
+  echo -e "$c7        ,'  ,-----'   |"
+  echo -e "$c7        \`--{__________)"$c0
+fi
+
+
+
+# BSD Display
+if [[ "$distro" =~ "None" ]]
+then
+  if [ -n "${textcolor+x}" ]; then continue; else textcolor="\e[0m"; fi
+  if [ -n "${labelcolor+x}" ]; then continue; else labelcolor="\e[1;30m"; fi
+  # Get Linux Architecture
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor Linux $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  # Display linux_logo ASCII Logo and Info (FINAL)
+  c1="\e[1;39m" # White
+  c2="\e[1;30m" # Light Gray
+  c3="\e[1;33m" # Light Yellow
+  echo " "
+  echo " "
+  echo -e "$c2         #####"
+  echo -e "$c2        #######"
+  echo -e "$c2        ##"$c1"O$c2#"$c1"O$c2##             $OS"
+  echo -e "$c2        #$c3#####$c2#             $kernel"
+  echo -e "$c2      ##$c1##$c3###$c1##$c2##           $uptime"
+  echo -e "$c2     #$c1##########$c2##          $DE"
+  echo -e "$c2    #$c1############$c2##         $WM"
+  echo -e "$c2    #$c1############$c2###        $WM_theme"
+  echo -e "$c3   ##$c2#$c1###########$c2##$c3#        $GTK_theme"
+  echo -e "$c3 ######$c2#$c1#######$c2#$c3######      $GTK_icons"
+  echo -e "$c3 #######$c2#$c1#####$c2#$c3#######      $GTK_font"
+  echo -e "$c3   #####$c2#######$c3#####"$c0
+  echo " "
+  echo " "
+  echo " "
+fi
+
+#######################
+# End Display Phase
+#######################
+
+
+#########################
+# Begin Screenshot Phase
+#########################
+
+if [ "$screenie" -eq "1" ]
+then
+  if [ -n "${screenCommand+x}" ]
+  then
+    $screenCommand
+  else
+    scrot -cd3
+  fi
+else
+  exit
+fi
+
+########################
+# End Screenshot Phase
+########################
