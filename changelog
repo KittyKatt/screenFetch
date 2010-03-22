@@ -3,6 +3,10 @@
     changelog
 **** **** **** ****
 
+v1.3
+ - Added some flag support (notably --version, --screen, and --help)
+ - Added commented lines for --distro and --command flags (future use)
+ - Fixed another color escape sequence.
 
 v1.2
  - Fixed uptime errors when uptime > 1 day
