@@ -3,6 +3,11 @@
     changelog
 **** **** **** ****
 
+v1.5 (big)
+ - Complete rewrite of DE and WM detection (Once again thanks to King)
+ - Implemented LXDE support (Yay!)
+ - Discussed ideas for "united" DE detection
+
 v1.4
  - Complete rewrite of the uptime field (Thanks a bunch Kingdomcome)
 
