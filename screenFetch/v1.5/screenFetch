@@ -49,7 +49,7 @@ display="OS Kernel Uptime DE WM Win_theme Theme Icons Font"
 
 # WM Names
 wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm"
-+denames="gnome-session xfce-mcs-manage xfce4-session ksmserver lxsession"
+denames="gnome-session xfce-mcs-manage xfce4-session ksmserver lxsession"
 
 # Screenshot Settings
 # This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
