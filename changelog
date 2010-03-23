@@ -3,6 +3,9 @@
     changelog
 **** **** **** ****
 
+v1.4
+ - Complete rewrite of the uptime field (Thanks a bunch Kingdomcome)
+
 v1.3
  - Added some flag support (notably --version, --screen, and --help)
  - Added commented lines for --distro and --command flags (future use)
