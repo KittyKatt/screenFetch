@@ -3,7 +3,12 @@
     changelog
 **** **** **** ****
 
-v1.5 (big)
+v1.4.4
+ - Changed version system
+ - Fixed if statement for "Not Present" or "LXDE" DE (Thanks to 
+ArcherSeven for pointing it out)
+
+v1.4.3 (big)
  - Complete rewrite of DE and WM detection (Once again thanks to King)
  - Implemented LXDE support (Yay!)
  - Discussed ideas for "united" DE detection

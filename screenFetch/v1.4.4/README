@@ -1,0 +1,22 @@
+screenFetch - A system/theme information fetcher for Linux screenshots.
+
+This handy Bash script can be used to generate one of those nifty 
+terminal theme information + ASCII distribution logos you see in 
+everyone's screenshots nowadays. You choose the distribution logo, and 
+can customize the colors and commands that the script uses to take the 
+actual screenshot.
+
+This script is very easy to add to and can easily be extended. If you 
+have any ideas/additions to make, please do so at 
+http://github.com/KittyKatt/screenFetch or by emailing me at 
+kittykatt@archlinux.us . You can also reach me by connecting to my IRC 
+network, SilverIRC, at irc://kittykatt.silverirc.com:6669/randomz . Any 
+ASCII logo additions would be welcome, as well.
+
+All you need to do is download the file "screenFetch" and edit the 
+settings at the top of the file. There are comments that should make all 
+of the settings fairly easy to edit there.
+
+Have fun and happy screenshotting. ;)
+
+~KittyKatt (Brett Bohnenkamper)
