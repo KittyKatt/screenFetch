@@ -135,4 +135,83 @@ $c1    ,ARCHARCHA'         'HARCHARC.
 $c1   ,RCHARH                  ARCHAR.    
 $c1  ,ARC.                         HAR.  
 $c1 ,H                                C. 
-\e[0m";   
+\e[0m";
+
+
+
+
+
+                                     A
+                                    AAA
+                                   AAAAA
+                                  AAAAAAA
+                                 AAAAAAAAA
+                                  AAAAAAAAA
+                               AA  AAAAAAAAA
+                              AAAAA AAAAAAAAA
+                             AAAAAAAAAAAAAAAAA
+                            AAAAAAAAAAAAAAAAAAA
+                           AAAAAAAAAAAAAAAAAAAAA
+                          AAAAAAAAAAAAAAAAAAAAAAA
+                         AAAAAAAAAA/   \AAAAAAAAAA
+                        AAAAAAAAA/       \AAAAAAAAA
+                       AAAAAAAAA/         \AAAAAP  A
+                      AAAAAAAAA|           |AAAAAb
+                     AAAAAAA/                 \AAAAAAA
+                    AAAA//                       \\AAAA
+                   A//                               \\A
+                              AA        AA AA
+                              AA        AA AA
+   AAAAAA   AA  rAAA    AAAA  AA        AA
+      \AAA  AArA/     AAA     AA        AA AA A ,nnnn,  u      u A    A
+        \AA AAA      AA       AA/AAA\.  AA AA A'      A A      A  A  A
+  /AAAAAAAA AA       A        AA    AA  AA AA A       A A      A   \/
+  AA     AA AA       AA       AA    AA  AA AA A       A A      A   /\
+  AA     AA AA        AAA     AA    AA  AA AA A       A \U    A/  A  A
+  \AAAAAA/A AA          AAAA  AA    AA  AA AA A       A  \AAAA/  A    A
+
+
+
+
+
+
+
+
+  /  _  \_______   ____ |  |__   |    |   |__| ____  __ _____  ___
+ /  /_\  \_  __ \_/ ___\|  |  \  |    |   |  |/    \|  |  \  \/  /
+/    |    \  | \/\  \___|   Y  \ |    |___|  |   |  \  |  />    < 
+\____|__  /__|    \___  >___|  / |_______ \__|___|  /____//__/\_ \
+        \/            \/     \/          \/       \/            \/
+           Tacos and Conky Configs? Yeah, we got those.
+
+
+
+
+
+^[[H^[[2J
+        ^[[1;36m,^[[1;36m                       _     _ _
+       ^[[1;36m/#\^[[1;36m        __ _ _ __ ___| |__ | (_)_ __  _   ___  __
+      ^[[1;36m,###\^[[1;36m      / _` | '__/ __| '_ \| | | '_ \| | | \ \/ /
+     ^[[1;36m/#####\^[[1;36m    | (_| | | | (__| | | | | | | | | |_| |>  <
+    ^[[1;36m/##^[[0;36m,-,##\^[[1;36m    \__,_|_|  \___|_| |_|_|_|_| |_|\__,_/_/\_\
+   ^[[0;36m/##(   )##`
+  ^[[0;36m/#.--   --.#\^[[1;37m   A simple, lightweight linux distribution.
+ ^[[0;36m/`           `\^[[0m
+
+
+
+
+[H[2J
+        [1;36m,[1;36m                       _     _ _                      [1;30m| [36m\s \r
+       [1;36m/#\\[1;36m        __ _ _ __ ___| |__ | (_)_ __  _   ___  __    [30m|
+      [1;36m/###\\[1;36m      / _` | '__/ __| '_ \\| | | '_ \\| | | \\ \\/ /    [30m| [36m\t
+     [1;36m/#####\\[1;36m    | (_| | | | (__| | | | | | | | | |_| |>  <     [30m| [36m\d
+    [1;36m/##[0;36m,-,##\\[1;36m    \\__,_|_|  \\___|_| |_|_|_|_| |_|\\__,_/_/\\_\\    [1;30m|
+   [0;36m/##(   )##\\                                                 [1;30m| [36m\U
+  [0;36m/#.--   --.#\\[1;37m   A simple, elegant gnu/linux distribution.    [1;30m|
+ [0;36m/`           `\\[0m                                               [1;30m| [36m\l [36mon [1;36m\n [0m
+
+
+
+
+
