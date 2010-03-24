@@ -7,7 +7,9 @@ things I want to happen with screenFetch.
    - Compiz
    - Awesome
    - dwm
-   - <insert wildcard here>
+   - fvwm
+   - Enlightenment
+   - wmaker
 
  - I want the user to be able to specify on CLI when executing the 
 script the distro logo they want to be produced. I've already added the 
@@ -20,6 +22,9 @@ greatly appreciated.
 -c|--command=, which will be a way for the user to specify a custom 
 screenshot command on executing the script in CLI. Exact same problem: 
 not sure how to pick up the input.
+
+ - I'd also like to have working, universal shell type detection. Would 
+be awesome.
 
 That's about it for now. If you can help with any of these, please 
 please PLEASE let me know by emailing me at kittykatt@archlinux.us or by 
