@@ -3,6 +3,9 @@
     changelog
 **** **** **** ****
 
+v1.4.5
+ - Cleaned up WM Theme detection code.
+
 v1.4.4
  - Changed version system
  - Fixed if statement for "Not Present" or "LXDE" DE (Thanks to 
