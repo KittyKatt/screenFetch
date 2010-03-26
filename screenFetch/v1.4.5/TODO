@@ -11,6 +11,18 @@ things I want to happen with screenFetch.
    - Enlightenment
    - wmaker
 
+ - I want the user to be able to specify on CLI when executing the 
+script the distro logo they want to be produced. I've already added the 
+flags in --help. They are -d|--distro=. But I can't figure out how to 
+pick up the user input from either "-d <DISTRO>" or 
+"--distro='<distro>'". Any help would on reading that input would be 
+greatly appreciated.
+
+ - I want to do the same as above again, only this time it's with 
+-c|--command=, which will be a way for the user to specify a custom 
+screenshot command on executing the script in CLI. Exact same problem: 
+not sure how to pick up the input.
+
  - I'd also like to have working, universal shell type detection. Would 
 be awesome.
 
