@@ -3,6 +3,20 @@
     changelog
 **** **** **** ****
 
+v1.7.5 (HUGE)
+ - Massive rewrite, cleaning up a huge portion of the code.
+ - Made several repeating parts of the code into functions.
+ - Learned getopts. Rewrote flag support with it. Flags now supported are as follows:
+    ~ -D 'DISTRO NAME'   Specify distribution name
+    ~ -c 'command'    Specify custom screenshot command.
+    ~ -V    Print current version of script.
+    ~ -v    Turn on verbose output.
+    ~ -s    Take screenshot.
+    ~ -n    Display info only and no ASCII logo.
+    ~ -h    Display help menu.
+ - Added version number to DE reporting. Except LXDE. Because they fail.
+ - Thanks to h2 for many, many, many suggestions and a lot of help. This update would most likely not have been possible without him.
+
 v1.4.5
  - Cleaned up WM Theme detection code.
 

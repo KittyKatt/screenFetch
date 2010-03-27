@@ -1,0 +1,665 @@
+#!/bin/bash
+
+#
+# screenFetch (v1.4.5)
+#
+# Script to fetch system and theme settings for screenshots in most mainstream
+# Linux distributions.
+# This script is copyright (C) 2010 to Brett Bohnenkamper (kittykatt@archlinux.us)
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+#
+# TO ADD
+#  - Shell type detection
+#  - WORKING background image detection
+#  = Enlightenment/Compiz/fvwm/wmaker support
+#
+# Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
+# appreciated by emailing me or by stopping by http://github.com/KittyKatt/screeFetch . You
+# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6669/randomz
+# to put forth suggestions/ideas. Thank you.
+#
+
+scriptVersion="1.4.5"
+
+######################
+# Settings for fetcher
+######################
+
+# This setting controls what ASCII logo is displayed. Available: Linux Mint, Arch Linux, Ubuntu, Debian, BSD, Crunchbang, Gentoo, Fedora, None
+distro="Linux Mint"
+
+# This sets the information to be displayed. Available: OS, Kernel, DE, WM, Win_theme, Theme, Icons, Font, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
+display="OS Kernel Uptime DE WM Win_theme Theme Icons Font ASCII"
+
+# Colors to use for the information found. These are set below according to distribution. If you would like to set your OWN color scheme for these, uncomment the lines below and edit them to your heart's content.
+# textcolor="\e[0m"
+# labelcolor="\e[1;34m"
+
+# WM Names
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm"
+denames="gnome-session xfce-mcs-manage xfce4-session ksmserver lxsession"
+
+# Screenshot Settings
+# This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
+screenshot=0
+# You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
+# screenCommand="scrot -cd5"
+
+# Verbose Setting - Set to 1 for verbose output.
+verbosity=0
+
+verboseOut () {
+  echo -e "\e[1;31m:: \e[1;39m$1"
+}
+
+#############################################
+#### CODE No need to edit past here CODE ####
+#############################################
+
+
+#####################
+# Begin Flags Phase
+#####################
+
+while getopts ":hsvVnc:D:" flags; do
+  case $flags in
+    h)
+      echo "Usage:"
+      echo "  screenFetch [OPTIONAL FLAGS]"
+      echo ""
+      echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
+      echo ""
+      echo "Supported Distributions:      Arch Linux, Linux Mint, Ubuntu, Crunchbang, Debian, Fedora, and BSD"
+      echo "Supported Desktop Managers:   KDE, GNOME, XFCE, and LXDE"
+      echo "Supported Window Managers:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4m, Metacity, KWin, and IceWM"
+      echo ""
+      echo "Options:"
+      echo "   -v                 Verbose output."
+      echo "   -n                 Do no display ASCII distribution logo."
+      echo "   -s                 Using this flag tells the script that you want it to take a screenshot."
+      echo "   -c 'COMMAND'       Here you can specify a custom screenshot command for the script to execute. Surrounding quotes are required."
+      echo "   -D 'DISTRO'        Here you can specify your distribution for the script to use. Surrounding quotes are required."
+      echo "   -V                 Display current script version."
+      echo "   -h                 Display this help."
+      exit
+    ;;
+    s) screenshot=1; continue;;
+    v) verbosity=1; continue;;
+    V)
+      echo "screenFetch - Version $scriptVersion"
+      echo "Copyright (C) Brett Bohnenkamper (kittykatt@archlinux.us)"
+      echo " "
+      echo "This is free software; see the source for copying conditions.  There is NO
+warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+      exit
+    ;;
+    D) distro=$OPTARG; continue;;
+    c) screenCommand=$OPTARG; continue;;
+    n) display=${display//ASCII/};;
+    :) echo "Error: You're missing an argument somewhere. Exiting."; exit;;
+    ?) echo "Error: Invalide flag somewhere. Exiting."; exit;;
+    *) echo "Error"; exit;;
+  esac
+ done
+
+###################
+# End Flags Phase
+###################
+
+
+
+#########################
+# Begin Detection Phase
+#########################
+
+# Find Number of Running Processes
+processnum="$(( $( ps aux | wc -l ) - 1 ))"
+
+c0="\e[0m" # End Sequence
+
+# Kernel Version Detection - Begin
+if [[ "$display" =~ "Kernel" ]]
+then
+  kernel=`uname -r`
+  if [ "$verbosity" -eq "1" ]; then verboseOut "Finding kernel version...found as '$kernel'"; fi
+fi
+# Kernel Version Detection - End
+
+
+# Uptime Detection - Begin
+if [[ "$display" =~ "Uptime" ]]
+then
+  uptime=`awk -F. '{print $1}' /proc/uptime`
+  secs=$((${uptime}%60))
+  mins=$((${uptime}/60%60))
+  hours=$((${uptime}/3600%24))
+  days=$((${uptime}/86400))
+  uptime="${mins}m"
+  if [ "${hours}" -ne "0" ]
+  then
+    uptime="${hours}h ${uptime}"
+    if [ "${days}" -ne "0" ]
+    then
+      uptime="${days}d ${uptime}"
+    fi
+  fi
+  if [ "$verbosity" -eq "1" ]; then verboseOut "Finding current uptime...found as '$uptime'"; fi
+fi
+# Uptime Detection - End
+
+
+# DE Detection - Begin
+if [[ "$display" =~ "DE" ]]
+then
+  DE="Not Present"
+  for each in $denames
+  do
+    if pidof $each >/dev/null
+    then
+      [ "$each" == "gnome-session" ] && DE="GNOME" && DEver=`gnome-session --version | awk {'print $NF'}`
+      [ "$each" == "xfce-mcs-manage" -o "$each" == "xfce4-session" ] && DE="XFCE" && DEver=`xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'}`
+      [ "$each" == "ksmserver" ] && DE="KDE" && DEver=`kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}'`
+      [ "$each" == "lxsession" ] && DE="LXDE"
+    fi
+  done
+  if [ "$verbosity" -eq "1" ]; then verboseOut "Finding desktop environment...found as '$DE'"; fi
+fi
+### DE Detection - End
+
+
+# WM Detection - Begin
+if [[ "$display" =~ "WM" ]]
+then
+  for each in $wmnames
+  do
+    if pidof $each >/dev/null
+    then
+      case $each in
+        'fluxbox') WM="FluxBox";;
+        'openbox') WM="OpenBox";;
+        'blackbox') WM="blackbox";;
+        'xfwm4') WM="Xfwm4";;
+        'metacity') WM="Metacity";;
+        'kwin') WM="KWin";;
+        'icewm') WM="IceWM";;
+        'pekwm') WM="PekWM";;
+        *) WM="Not Found";;
+      esac
+    fi
+  done
+  if [ "$verbosity" -eq "1" ]; then verboseOut "Finding window manager...found as '$WM'"; fi
+fi
+# WM Detection - End
+
+
+
+
+# WM Theme Detection - BEGIN
+if [[ "$display" =~ "Win_theme" ]]
+then
+  case $WM in
+    'PekWM') if [[ -f $HOME/.pekwm/config ]]; then Win_theme=`awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config`; fi;;
+    'OpenBox') if [[ -f $HOME/.config/openbox/rc.xml ]]; then Win_theme=`awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml`; fi;;
+    'FluxBox') if [[ -f $HOME/.fluxbox/init ]]; then Win_theme=`awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init`; fi;;
+    'BlackBox') if [[ -f $HOME/.blackboxrc ]]; then Win_theme=`awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackbox/init`; fi;;
+    'Metacity')    if gconftool-2 -g /apps/metacity/general/theme; then Win_theme=`gconftool-2 -g /apps/metacity/general/theme`; fi;;
+    'Xfwm4') if [[ -f $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]]; then Win_theme=`xfconf-query -c xfwm4 -p /general/theme`; fi;;
+    'IceWM') if [[ -f HOME/.icewm/theme ]]; then Win_theme=`awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme`; fi;;
+    'KWin') if [[ -f $HOME/.kde/share/config/kwinrc ]]; then Win_theme=`awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml`; fi;;
+    'Emerald') if [[ -f $HOME/.config/openbox/rc.xml ]]; then Win_theme=`awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml`; fi;;
+    *) Win_theme="Not Found";;
+  esac
+  if [ "$verbosity" -eq "1" ]; then verboseOut "Finding window manager theme...found as '$Win_theme'"; fi
+fi
+# WM Theme Detection - END
+
+# try for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done
+
+# GTK Theme\Icon\Font Detection - BEGIN
+if [[ "$display" =~ "Theme" ]]
+then
+  case $WM in
+    'KDE')  # Desktop Environment found as "KDE"
+      if [ -a $HOME/.kde/share/config/kdeglobals ]
+      then
+        if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals
+        then
+          gtkTheme=`grep widgetStyle= $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'}`
+        elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals
+        then
+          gtkTheme=`grep colorScheme= $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'}`
+        else
+          gtkTheme="Not Found"
+        fi
+        if [ "$verbosity" -eq "1" ]; then verboseOut "Finding GTK theme...found as '$gtkTheme'"; fi
+        if [[ "$display" =~ "Icons" ]]
+        then
+          if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals
+          then
+            gtkIcons=`grep Theme= $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'}`
+          else
+            gtkIcons="Not Found"
+          fi
+          if [ "$verbosity" -eq "1" ]; then verboseOut "Finding icon theme...found as '$gtkIcons'"; fi
+        fi
+        if [[ "$display" =~ "Font" ]]
+        then
+          if grep -q "Font=" $HOME/.kde/share/config/kdeglobals
+          then
+            gtkFont=`grep Font= $HOME/.kde/share/config/kdeglobals | awk -F"=" {'print $2'}`
+          else
+            gtkFont="Not Found"
+          fi
+          if [ "$verbosity" -eq "1" ]; then verboseOut "Finding user font...found as '$gtkFont'"; fi
+        fi
+      fi
+      # kwin --version | awk '/^Qt/ {data="Toolkit: " $1 " v: " $2};/^KDE/ {data=data " WM: " $1 " v: " $2};END{print data}'
+    ;;
+    'GNOME')  # Desktop Environment found as "GNOME"
+      gtkTheme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
+      if [[ -z $gtkTheme ]]; then gtkTheme="Not Found"; fi
+      if [ "$verbosity" -eq "1" ]; then verboseOut "Finding GTK theme...found as '$gtkTheme'"; fi
+      if [[ "$display" =~ "Icons" ]]
+      then
+        gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
+        if [[ -z $gtkIcons ]]; then gtkIcons="Not Found"; fi
+        if [ "$verbosity" -eq "1" ]; then verboseOut "Finding icon theme...found as '$gtkIcons'"; fi
+      fi
+      if [[ "$display" =~ "Font" ]]
+      then
+        gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
+        if [[ -z $gtkFont ]]; then gtkFont="Not Found"; fi
+        if [ "$verbosity" -eq "1" ]; then verboseOut "Finding user font...found as '$gtkFont'"; fi
+      fi
+    ;;
+    'XFCE')  # Desktop Environment found as "XFCE"
+      gtkTheme=$(xfconf-query -c xsettings -p /Net/ThemeName)
+      if [[ -z $gtkTheme ]]; then gtkTheme="Not Found"; fi
+      if [ "$verbosity" -eq "1" ]; then verboseOut "Finding GTK theme...found as '$gtkTheme'"; fi
+      if [[ "$display" =~ "Icons" ]]
+      then
+        gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
+        if [[ -z $gtkIcons ]]; then gtkIcons="Not Found"; fi
+        if [ "$verbosity" -eq "1" ]; then verboseOut "Finding icon theme...found as '$gtkIcons'"; fi
+      fi
+      if [[ "$display" =~ "Font" ]]
+      then
+        gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
+        if [[ -z $gtkFont ]]; then gtkFont="Not Found"; fi
+        if [ "$verbosity" -eq "1" ]; then verboseOut "Finding user font...found as '$gtkFont'"; fi
+      fi
+    ;;
+
+    'LXDE') # LXDE Found
+      if [ -a $HOME/.gtkrc-2.0 ]
+      then
+        if grep -q gtk-icon-theme-name $HOME/.gtkrc-2.0
+        then 
+          readTheme=`grep gtk-theme-name $HOME/.gtkrc-2.0`
+          gtkTheme=`echo "$readTheme" | sed -e 's/gtk-theme-name="//' -e 's/\"//'`
+        else
+          gtkTheme="Not Found"
+        fi
+        if [ "$verbosity" -eq "1" ]; then verboseOut "Finding GTK theme...found as '$gtkTheme'"; fi
+        if [[ "$display" =~ "Icons" ]]
+        then
+          if grep -q gtk-icon-theme-name $HOME/.gtkrc-2.0
+          then
+            readIcons=`grep gtk-icon-theme-name $HOME/.gtkrc-2.0 | awk -F"=" {'print $2'}`
+            gtkIcons=`echo $readIcons | sed -e 's/\"//' -e 's/\"//'`
+          else
+            gtkIcons="Not Found"
+          fi
+          if [ "$verbosity" -eq "1" ]; then verboseOut "Finding icon theme...found as '$gtkIcons'"; fi
+        fi
+        if [[ "$display" =~ "Font" ]]
+        then
+          if grep -q gtk-font-name $HOME/.gtkrc-2.0
+          then
+            readFont=`grep gtk-font-name $HOME/.gtkrc-2.0 | awk -F"=" {'print $2'}`
+            gtkFont=`echo $readFont | sed -e 's/\"//' -e 's/\"//'`
+          else
+            gtkFont="Not Found"
+          fi
+          if [ "$verbosity" -eq "1" ]; then verboseOut "Finding user font...found as '$gtkFont'"; fi
+        fi
+      fi
+    ;;
+
+    *) # No Desktop Environment Found
+      if [ -a $HOME/.gtkrc-2.0 ]
+      then
+        if grep -q gtk-icon-theme-name $HOME/.gtkrc-2.0
+        then 
+          readTheme=`grep gtk-theme-name $HOME/.gtkrc-2.0`
+          gtkTheme=`echo "$readTheme" | sed -e 's/gtk-theme-name="//' -e 's/\"//'`
+        else
+          gtkTheme="Not Found"
+        fi
+        if [ "$verbosity" -eq "1" ]; then verboseOut "Finding GTK theme...found as '$gtkTheme'"; fi
+        if [[ "$display" =~ "Icons" ]]
+        then
+          if grep -q gtk-icon-theme-name $HOME/.gtkrc-2.0
+          then
+            readIcons=`grep gtk-icon-theme-name $HOME/.gtkrc-2.0 | awk -F"=" {'print $2'}`
+            gtkIcons=`echo $readIcons | sed -e 's/\"//' -e 's/\"//'`
+          else
+            gtkIcons="Not Found"
+          fi
+          if [ "$verbosity" -eq "1" ]; then verboseOut "Finding icon theme...found as '$gtkIcons'"; fi
+        fi
+        if [[ "$display" =~ "Font" ]]
+        then
+          if grep -q gtk-font-name $HOME/.gtkrc-2.0
+          then
+            readFont=`grep gtk-font-name $HOME/.gtkrc-2.0 | awk -F"=" {'print $2'}`
+            gtkFont=`echo $readFont | sed -e 's/\"//' -e 's/\"//'`
+          else
+            gtkFont="Not Found"
+          fi
+          if [ "$verbosity" -eq "1" ]; then verboseOut "Finding user font...found as '$gtkFont'"; fi
+        fi
+      fi
+    ;;
+  esac
+  detections=1
+fi
+# GTK Theme\Icon\Font Detection - END
+
+#######################
+# End Detection Phase
+#######################
+
+
+###########################
+# Begin Defining Functions
+###########################
+
+takeShot () {
+  if [[ -z $screenCommand ]]
+  then
+    scrot -cd3 'screenFetch-%Y-%m-%d.png'; exit
+  else
+    $screenCommand; exit
+  fi
+}
+
+
+asciiText () {
+case $distro in
+  "Arch Linux")
+    c1="\e[1;39m" # White
+    c2="\e[1;34m" # Light Blue
+    echo -e "$c1              __"
+    echo -e "$c1          _=(SDGJT=_"
+    echo -e "$c1        _GTDJHGGFCVS)                $OS"
+    echo -e "$c1       ,GTDJGGDTDFBGX0               $kernel"
+    echo -e "$c1      JDJDIJHRORVFSBSVL$c2-=+=,_        $uptime"
+    echo -e "$c1     IJFDUFHJNXIXCDXDSV,$c2  \"DEBL      $DE"
+    echo -e "$c1    [LKDSDJTDU=OUSCSBFLD.$c2   '?ZWX,   $WM"
+    echo -e "$c1   ,LMDSDSWH'     \`DCBOSI$c2     DRDS], $WM_theme"
+    echo -e "$c1   SDDFDFH'         !YEWD,$c2   )HDROD  $GTK_theme"
+    echo -e "$c1  !KMDOCG            &GSU|$c2\_GFHRGO\' $GTK_icons"
+    echo -e "$c1  HKLSGP'$c2           __$c1\TKM0$c2\GHRBV)'  $GTK_font"
+    echo -e "$c1 JSNRVW'$c2       __+MNAEC$c1\IOI,$c2\BN'"
+    echo -e "$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)"
+    echo -e "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF"
+    echo -e "$c1 'EHTI                    !H"
+    echo -e "$c1  \`0F'                    '!"$c0
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+
+  "Linux Mint")
+    c1="\e[1;32m" # Bold Green
+    c2="\e[1;37m" # Bold White
+    echo -e "$c1 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
+    echo -e "$c1 MMm----::-://////////////oymNMd+\`"
+    echo -e "$c1 MMd      "$c2"/++                "$c1"-sNMd:   $OS"
+    echo -e "$c1 MMNso/\`  "$c2"dMM    \`.::-. .-::.\` "$c1".hMN:  $kernel"
+    echo -e "$c1 ddddMMh  "$c2"dMM   :hNMNMNhNMNMNh: "$c1"\`NMm  $uptime"
+    echo -e "$c1     NMm  "$c2"dMM  .NMN/-+MMM+-/NMN\` "$c1"dMM  $DE"
+    echo -e "$c1     NMm  "$c2"dMM  -MMm  \`MMM   dMM. "$c1"dMM  $WM"
+    echo -e "$c1     NMm  "$c2"dMM  -MMm  \`MMM   dMM. "$c1"dMM  $WM_theme"
+    echo -e "$c1     NMm  "$c2"dMM  .mmd  \`mmm   yMM. "$c1"dMM  $GTK_theme"
+    echo -e "$c1     NMm  "$c2"dMM\`  ..\`   ...   ydm. "$c1"dMM  $GTK_icons"
+    echo -e "$c1     hMM- "$c2"+MMd/-------...-:sdds  "$c1"dMM  $GTK_font"
+    echo -e "$c1     -NMm- "$c2":hNMNNNmdddddddddy/\`  "$c1"dMM"
+    echo -e "$c1      -dMNs-"$c2"\`\`-::::-------.\`\`    "$c1"dMM"
+    echo -e "$c1       \`/dMNmy+/:-------------:/yMMM"
+    echo -e "$c1          ./ydNMMMMMMMMMMMMMMMMMMMMM"$c0
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+
+  "Ubuntu")
+    c1="\e[1;31m" # Light Red
+    c2="\e[1;33m" # Bold Yellow
+    c3="\e[1;37m" # Bold White
+    echo -e "$c1                          ./+o+-"
+    echo -e "$c3                  yyyyy- $c1-yyyyyy+"
+    echo -e "$c3               $c3://+//////$c1-yyyyyyo"
+    echo -e "$c2           .:: $c3.:/++++++/-$c1.+sss/\`     $OS"
+    echo -e "$c2         .:----  $c3/++++++++/:--:/-     $kernel"
+    echo -e "$c2        -:---:::.$c3\`..\`\`\`.-/oo+++++/    $uptime"
+    echo -e "$c2       .:--:::/.$c3          \`+sssoo+/   $DE"
+    echo -e "$c3  .:///:$c2-----:\`$c3             /sssooo.  $WM"
+    echo -e "$c3 -//////:$c2\`----$c3               /::--:.  $WM_theme"
+    echo -e "$c3 -///::::$c2\`----$c1               ++////.  $GTK_theme"
+    echo -e "$c3  .:::::$c2-----:\`$c1             /dddhhh.  $GTK_icons"
+    echo -e "$c2       .-.----:.$c1          \`oddhhhh+   $GTK_font"
+    echo -e "$c2        -:.-----\`\`-\`\`$c1\`\`.:ohdhhhhh+"
+    echo -e "$c2         \`:---- $c1\`ohhhhhhhhyo++os:"
+    echo -e "$c2           .-:$c1\`.syhhhhhhh/$c2.--::-\`"
+    echo -e "$c1               /osyyyyyyo$c2-------/"
+    echo -e "$c1                   \`\`\`\`\` $c2-:-....:"
+    echo -e "$c2                          \`----."$c0
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+
+  "Debian")
+    c1="\e[1;31m" # Light Red
+    c2="\e[1;37m" # Bold White
+    echo -e "  $c2       _,met\$\$\$\$\$gg."
+    echo -e "  $c2    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P."
+    echo -e "  $c2  ,g\$\$P\"\"       \"\"\"Y\$\$.\"."
+    echo -e "  $c2 ,\$\$P'              \`\$\$\$.      $OS"
+    echo -e "  $c2',\$\$P       ,ggs.     \`\$\$b:    $kernel"
+    echo -e "  $c2\`d\$\$'     ,\$P\"\'   $c1.$c2    \$\$\$    $uptime"
+    echo -e "  $c2 \$\$P      d\$\'     $c1,$c2    \$\$P    $DE"
+    echo -e "  $c2 \$\$:      \$\$.   $c1-$c2    ,d\$\$'     $WM"
+    echo -e "  $c2 \$\$\;      Y\$b._   _,d\$P'      $WM_theme"
+    echo -e "  $c2 Y\$\$.    $c1\`.$c2\`\"Y\$\$\$\$P\"'          $GTK_theme"
+    echo -e "  $c2 \`\$\$b      $c1\"-.__               $GTK_icons"
+    echo -e "  $c2  \`Y\$\$                         $GTK_font"
+    echo -e "  $c2   \`Y\$\$."
+    echo -e "  $c2     \`\$\$b."
+    echo -e "  $c2       \`Y\$\$b."
+    echo -e "  $c2          \`\"Y\$b._"
+    echo -e "  $c2              \`\"\"\"\""$c0
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+
+  "Crunchbang")
+    c3="\e[0;37m" # Light Gray
+    echo -e "$c3                ___       ___      _"
+    echo -e "$c3               /  /      /  /     | |"
+    echo -e "$c3              /  /      /  /      | | $OS"
+    echo -e "$c3             /  /      /  /       | | $kernel"
+    echo -e "$c3     _______/  /______/  /______  | | $uptime"
+    echo -e "$c3    /______   _______   _______/  | | $DE"
+    echo -e "$c3          /  /      /  /          | | $WM"
+    echo -e "$c3         /  /      /  /           | | $WM_theme"
+    echo -e "$c3        /  /      /  /            | | $GTK_theme"
+    echo -e "$c3 ______/  /______/  /______       | | $GTK_icons"
+    echo -e "$c3/_____   _______   _______/       | | $GTK_font"
+    echo -e "$c3     /  /      /  /               |_|"
+    echo -e "$c3    /  /      /  /                 _"
+    echo -e "$c3   /  /      /  /                 | |"
+    echo -e "$c3  /__/      /__/                  |_|"$c0
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+
+  "Gentoo")
+    c1="\e[1;37m" # Bold White
+    c2="\e[1;35m" # Light Purple
+    echo -e "$c2         -/oyddmdhs+:."
+    echo -e "$c2     -o"$c1"dNMMMMMMMMNNmhy+"$c2"-\`"
+    echo -e "$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-"
+    echo -e "$c2 \`o"$c1"mMMMMMMMMMMMMNmdmmmmddhhy"$c2"/\`       $OS"
+    echo -e "$c2 om"$c1"MMMMMMMMMMMN"$c2"hhyyyo"$c1"hmdddhhhd"$c2"o\`     $kernel"
+    echo -e "$c2.y"$c1"dMMMMMMMMMMd"$c2"hs++so/s"$c1"mdddhhhhdm"$c2"+\`   $uptime"
+    echo -e "$c2 oy"$c1"hdmNMMMMMMMN"$c2"dyooy"$c1"dmddddhhhhyhN"$c2"d.  $DE"
+    echo -e "$c2  :o"$c1"yhhdNNMMMMMMMNNNmmdddhhhhhyym"$c2"Mh  $WM"
+    echo -e "$c2    .:"$c1"+sydNMMMMMNNNmmmdddhhhhhhmM"$c2"my  $WM_theme"
+    echo -e "$c2       /m"$c1"MMMMMMNNNmmmdddhhhhhmMNh"$c2"s:  $GTK_theme"
+    echo -e "$c2    \`o"$c1"NMMMMMMMNNNmmmddddhhdmMNhs"$c2"+\`   $GTK_icons"
+    echo -e "$c2  \`s"$c1"NMMMMMMMMNNNmmmdddddmNMmhs"$c2"/.     $GTK_font"
+    echo -e "$c2 /N"$c1"MMMMMMMMNNNNmmmdddmNMNdso"$c2":\`"
+    echo -e "$c2+M"$c1"MMMMMMNNNNNmmmmdmNMNdso"$c2"/-"
+    echo -e "$c2yM"$c1"MNNNNNNNmmmmmNNMmhs+/"$c2"-\`"
+    echo -e "$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`"
+    echo -e "$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`"
+    echo -e "$c2  \`-//////:--."$c0
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+
+  "Fedora")
+    c1="\e[1;34m" # Light Blue
+    c2="\e[1;39m" # White
+    echo -e "$c1           :/------------://"
+    echo -e "$c1        :------------------://"
+    echo -e "$c1      :-----------"$c2"/shhdhyo/"$c1"-://"
+    echo -e "$c1    /-----------"$c2"omMMMNNNMMMd/"$c1"-:/"
+    echo -e "$c1   :-----------"$c2"sMMMdo:/"$c1"       -:/    $OS"
+    echo -e "$c1  :-----------"$c2":MMMd"$c1"-------    --:/   $kernel"
+    echo -e "$c1  /-----------"$c2":MMMy"$c1"-------    ---/   $uptime"
+    echo -e "$c1 :------    --"$c2"/+MMMh/"$c1"--        ---:  $DE"
+    echo -e "$c1 :---     "$c2"oNMMMMMMMMMNho"$c1"     -----:  $WM"
+    echo -e "$c1 :--      "$c2"+shhhMMMmhhy++"$c1"   ------:   $WM_theme"
+    echo -e "$c1 :-      -----"$c2":MMMy"$c1"--------------/   $GTK_theme"
+    echo -e "$c1 :-     ------"$c2"/MMMy"$c1"-------------:    $GTK_icons"
+    echo -e "$c1 :-      ----"$c2"/hMMM+"$c1"------------:     $GTK_font"
+    echo -e "$c1 :--"$c2":dMMNdhhdNMMNo"$c1"-----------:"
+    echo -e "$c1 :---"$c2":sdNMMMMNds:"$c1"----------:"
+    echo -e "$c1 :------"$c2":://:"$c1"-----------://"
+    echo -e "$c1 :--------------------://"$c0
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+
+  "BSD")
+    c1="\e[1;39m" # White
+    c2="\e[1;31m" # Light Red
+    echo -e "$c2              ,        ,"
+    echo -e "$c2             /(        )\`"
+    echo -e "$c2             \ \___   / |"
+    echo -e "$c2             /- "$c1"_$c2  \`-/  '"
+    echo -e "$c2            ($c1/\/ \ $c2\   /\\"
+    echo -e "$c1            / /   |$c2 \`    \\     $OS"
+    echo -e "$c1            O O   )$c2 /    |     $kernel"
+    echo -e "$c1            \`-^--'\`$c2<     '     $uptime"
+    echo -e "$c2           (_.)  _  )   /      $DE"
+    echo -e "$c2            \`.___/\`    /       $WM"
+    echo -e "$c2              \`-----' /        $WM_theme"
+    echo -e "$c1 <----.     "$c2"__/ __   \\         $GTK_theme"
+    echo -e "$c1 <----|===="$c2"O}}}$c1==$c2} \} \/$c1====   $GTK_icons"
+    echo -e "$c1 <----'    $c2\`--' \`.__,' \\       $GTK_font"
+    echo -e "$c2              |        |"
+    echo -e "$c2               \       /       /\\"
+    echo -e "$c2          ______( (_  / \______/"
+    echo -e "$c2        ,'  ,-----'   |"
+    echo -e "$c2        \`--{__________)"$c0
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+
+  *)
+    c1="\e[1;39m" # White
+    c2="\e[1;30m" # Light Gray
+    c3="\e[1;33m" # Light Yellow
+    echo " "
+    echo " "
+    echo -e "$c2         #####"
+    echo -e "$c2        #######"
+    echo -e "$c2        ##"$c1"O$c2#"$c1"O$c2##             $OS"
+    echo -e "$c2        #$c3#####$c2#             $kernel"
+    echo -e "$c2      ##$c1##$c3###$c1##$c2##           $uptime"
+    echo -e "$c2     #$c1##########$c2##          $DE"
+    echo -e "$c2    #$c1############$c2##         $WM"
+    echo -e "$c2    #$c1############$c2###        $WM_theme"
+    echo -e "$c3   ##$c2#$c1###########$c2##$c3#        $GTK_theme"
+    echo -e "$c3 ######$c2#$c1#######$c2#$c3######      $GTK_icons"
+    echo -e "$c3 #######$c2#$c1#####$c2#$c3#######      $GTK_font"
+    echo -e "$c3   #####$c2#######$c3#####"$c0
+    echo " "
+    echo " "
+    echo " "
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+    exit
+  ;;
+esac
+}
+
+infoDisplay () {
+  if [ -z "$textcolor" ]; then textcolor="\e[0m"; fi
+  if [ -z "$labelcolor" ]; then labelcolor="$1"; fi
+  sysArch=`uname -m`
+  OS="$labelcolor OS:$textcolor $distro $sysArch"
+  kernel="$labelcolor Kernel:$textcolor $kernel"
+  uptime="$labelcolor Uptime:$textcolor $uptime"
+  DE="$labelcolor DE:$textcolor $DE"
+  WM="$labelcolor WM:$textcolor $WM"
+  WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
+  GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
+  GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
+  GTK_font="$labelcolor Font:$textcolor $gtkFont"
+  if [[ "$display" =~ "ASCII" ]]; then asciiText;
+  else
+    echo -e "$OS"; echo -e "$kernel"; echo -e "$uptime"; echo -e "$DE"; echo -e "$WM"; echo -e "$WM_theme"; echo -e "$GTK_theme"; echo -e "$GTK_icons"; echo -e "$GTK_font"
+    if [ "$screenshot" -eq "1" ]; then takeShot; fi
+  fi
+  exit
+}
+
+#########################
+# End Defining Functions
+#########################
+
+
+
+########################
+# Let's Wrap It All Up!
+########################
+
+while [ "$detections" == "1" ]; do
+  case $distro in
+    "Arch Linux") infoDisplay "\e[1;34m"; detections=0;;
+    "Linux Mint") infoDisplay "\e[1;32m"; detections=0;;
+    "Ubunu") infoDisplay "\e[1;31m"; detections=0;;
+    "Debian") infoDisplay "\e[1;31m"; detections=0;;
+    "Crunchbang") infoDisplay "\e[1;30m"; detections=0;;
+    "Gentoo") infoDisplay "\e[1;35m"; detections=0;;
+    "Fedora") infoDisplay "\e[1;34m"; detections=0;;
+    "BSD") infoDisplay "\e[1;31m"; detections=0;;
+    *) infoDisplay "\e[1;33m"; detections=0;;
+  esac
+done
