@@ -3,6 +3,13 @@
     changelog
 **** **** **** ****
 
+v1.7.6.4 (important)
+ - Working distribution detection! Most of the distributions I've included have been untested as of yet. Which means I could REALLY use some testers 
+for these distros. The ones that still need testing are as follows: SUSE, Mandriva/Mandrake, Gentoo, Fedora, Red Hat Linux, and BSD. If you would like 
+to help test these distributions, let me know by emailing me at kittykatt@archlinux.us
+ - Reworked a lot of the code to be functions instead of repeating parts. Looks a lot cleaner now.
+ - This update was mainly Kingdomcome's doing. So thank him profusely.
+
 v1.7.5 (HUGE)
  - Massive rewrite, cleaning up a huge portion of the code.
  - Made several repeating parts of the code into functions.
