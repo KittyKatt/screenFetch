@@ -40,7 +40,7 @@ scriptVersion="1.7.6.4"
 ######################
 
 # This setting controls what ASCII logo is displayed. Available: Linux Mint, Arch Linux, Ubuntu, Debian, BSD, Crunchbang, Gentoo, Fedora, None
-#distro="Arch Linux"
+# distro="Arch Linux"
 
 # This sets the information to be displayed. Available: OS, Kernel, DE, WM, Win_theme, Theme, Icons, Font, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 display="OS Kernel Uptime DE WM Win_theme Theme Icons Font ASCII"
@@ -221,7 +221,7 @@ detectwmtheme(){
   Win_theme="Not Found"
   case $WM in
     'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme=`awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config`; fi;;
-    'OpenBox') if [ -f $HOME/.config/openbox/rc.xml ]; then Win_theme=`awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml`; fi;;
+    'OpenBox') if [ -f $HOME/.config/openbox/rc.xml ]; then Win_theme=`awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml`; elif [ -f $HOME/.config/openbox/lxde-rc.xml ]; then Win_theme=`awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/lxde-rc.xml`; fi;;
     'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme=`awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init`; fi;;
     'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme=`awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackbox/init`; fi;;
     'Metacity') if gconftool-2 -g /apps/metacity/general/theme; then Win_theme=`gconftool-2 -g /apps/metacity/general/theme`; fi;;
@@ -297,6 +297,19 @@ detectgtk(){
 
       if [[ "$display" =~ "Font" ]] && grep -q font $HOME/.gtkrc-2.0; then
           gtkFont=$(awk -F'"' '/font/ {print $2}' $HOME/.gtkrc-2.0)
+      fi
+    # LXDE
+    elif [ -a $HOME/.config/lxde/config ]; then
+      if grep -q "sNet\/ThemeName" $HOME/.config/lxde/config; then 
+         gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' $HOME/.config/lxde/config)
+      fi
+
+      if [[ "$display" =~ "Icons" ]] && grep -q IconThemeName $HOME/.config/lxde/config; then
+          gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' $HOME/.config/lxde/config)
+      fi
+
+      if [[ "$display" =~ "Font" ]] && grep -q FontName $HOME/.config/lxde/config; then
+          gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' $HOME/.config/lxde/config)
       fi
     fi
   ;;
