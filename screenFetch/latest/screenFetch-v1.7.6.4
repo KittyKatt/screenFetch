@@ -240,7 +240,7 @@ detectgtk(){
   gtkTheme="Not Found"
   gtkIcons="Not Found"
   gtkFont="Not Found"
-  case $WM in
+  case $DE in
     'KDE')  # Desktop Environment found as "KDE"
           if [ -a $HOME/.kde/share/config/kdeglobals ]; then
             if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
