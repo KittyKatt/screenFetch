@@ -3,6 +3,9 @@
     changelog
 **** **** **** ****
 
+v1.7.7
+ - Added FVWM support per request of goran'agar on the Arch forums.
+
 v1.7.6.5
  - Fixed broken -s flag to take screenshot.
  - Put calling for verbose function back into other functions.

@@ -7,12 +7,14 @@ things I want to happen with screenFetch.
    - Compiz
    - Awesome
    - dwm
-   - fvwm
    - Enlightenment
    - wmaker
+   - evilwm
 
  - I'd also like to have working, universal shell type detection. Would 
 be awesome.
+
+ - Working background detection for DE's and multiple background setting applications (feh, nitrogen, etc.)
 
 That's about it for now. If you can help with any of these, please 
 please PLEASE let me know by emailing me at kittykatt@archlinux.us or by 
