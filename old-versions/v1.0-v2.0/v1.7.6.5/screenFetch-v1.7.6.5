@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# screenFetch (v1.7.6.4)
+# screenFetch (v1.7.6.5)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -33,7 +33,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="1.7.6.4"
+scriptVersion="1.7.6.5"
 
 ######################
 # Settings for fetcher
@@ -131,24 +131,25 @@ c0="\e[0m" # End Sequence
 #########################
 
 # Distro Detection - Begin
-detectdistro(){
-if [[ -z $distro ]]; then
-  distro="Unknown"
-  if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="Debian"; fi
-  if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
-  if grep -i mint /etc/lsb-release >/dev/null 2>&1; then distro="Linux Mint"; fi
-  if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
-  if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
-  if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
-  if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-  if [ -f /etc/SUSE-release ]; then distro="SUSE"; fi
-  if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
-  if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
-  if [ -f /etc/crunchbang-lsb-release ]; then distro="Crunchbang"; fi
-  if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-  if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
-  if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
-fi
+detectdistro () {
+  if [[ -z $distro ]]; then
+    distro="Unknown"
+    if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="Debian"; fi
+    if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
+    if grep -i mint /etc/lsb-release >/dev/null 2>&1; then distro="Linux Mint"; fi
+    if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
+    if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
+    if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
+    if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
+    if [ -f /etc/SUSE-release ]; then distro="SUSE"; fi
+    if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
+    if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
+    if [ -f /etc/crunchbang-lsb-release ]; then distro="Crunchbang"; fi
+    if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
+    if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
+    if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
+  fi
+  [ "$verbosity" -eq "1" ] && verboseOut "Finding distro...found as '$distro'"
 }
 # Distro Detection - End
 
@@ -156,14 +157,15 @@ fi
 processnum="$(( $( ps aux | wc -l ) - 1 ))"
 
 # Kernel Version Detection - Begin
-detectkernel(){
+detectkernel () {
   kernel=`uname -r`
+  [ "$verbosity" -eq "1" ] && verboseOut "Finding kernel version...found as '$kernel'"
 }
 # Kernel Version Detection - End
 
 
 # Uptime Detection - Begin
-detectuptime(){
+detectuptime () {
   uptime=`awk -F. '{print $1}' /proc/uptime`
   secs=$((${uptime}%60))
   mins=$((${uptime}/60%60))
@@ -176,12 +178,13 @@ detectuptime(){
       uptime="${days}d ${uptime}"
     fi
   fi
+  [ "$verbosity" -eq "1" ] && verboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
 
 
 # DE Detection - Begin
-detectde(){
+detectde () {
   DE="Not Present"
   for each in $denames; do
     if pidof $each >/dev/null; then
@@ -191,12 +194,13 @@ detectde(){
       [ "$each" == "lxsession" ] && DE="LXDE"
     fi
   done
+  [ "$verbosity" -eq "1" ] && verboseOut "Finding desktop environment...found as '$DE'"
 }
 ### DE Detection - End
 
 
 # WM Detection - Begin
-detectwm(){
+detectwm () {
   WM="Not Found"
   for each in $wmnames; do
     if pidof $each >/dev/null; then
@@ -212,12 +216,13 @@ detectwm(){
       esac
     fi
   done
+  [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
 
 
 # WM Theme Detection - BEGIN
-detectwmtheme(){
+detectwmtheme () {
   Win_theme="Not Found"
   case $WM in
     'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme=`awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config`; fi;;
@@ -230,13 +235,14 @@ detectwmtheme(){
     'KWin') if [ -f $HOME/.kde/share/config/kwinrc ]; then Win_theme=`awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml`; fi;;
     'Emerald') if [ -f $HOME/.config/openbox/rc.xml ]; then Win_theme=`awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml`; fi;;
     esac
+  [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
 
 # try for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done
 
 # GTK Theme\Icon\Font Detection - BEGIN
-detectgtk(){
+detectgtk () {
   gtkTheme="Not Found"
   gtkIcons="Not Found"
   gtkFont="Not Found"
@@ -314,6 +320,11 @@ detectgtk(){
     fi
   ;;
   esac
+  if [ "$verbosity" -eq "1" ]; then
+    verboseOut "Finding GTK theme...found as '$gtkTheme'"
+    verboseOut "Finding icon theme...found as '$gtkIcons'"
+    verboseOut "Finding user font...found as '$gtkFont'"
+  fi
 }
 # GTK Theme\Icon\Font Detection - END
 
@@ -324,9 +335,9 @@ detectgtk(){
 
 takeShot () {
   if [[ -z $screenCommand ]]; then
-    scrot -cd3 'screenFetch-%Y-%m-%d.png'; exit
+    scrot -cd3 'screenFetch-%Y-%m-%d.png'
   else
-    $screenCommand; exit
+    $screenCommand
   fi
 }
 
@@ -352,7 +363,6 @@ case $distro in
     echo -e "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF"
     echo -e "$c1 'EHTI                    !H"
     echo -e "$c1  \`0F'                    '!"$c0
-    exit
   ;;
 
   "Linux Mint")
@@ -373,7 +383,6 @@ case $distro in
     echo -e "$c1      -dMNs-"$c2"\`\`-::::-------.\`\`    "$c1"dMM"
     echo -e "$c1       \`/dMNmy+/:-------------:/yMMM"
     echo -e "$c1          ./ydNMMMMMMMMMMMMMMMMMMMMM"$c0
-    exit
   ;;
 
   "Ubuntu")
@@ -398,7 +407,6 @@ case $distro in
     echo -e "$c1               /osyyyyyyo$c2-------/"
     echo -e "$c1                   \`\`\`\`\` $c2-:-....:"
     echo -e "$c2                          \`----."$c0
-    exit
   ;;
 
   "Debian")
@@ -421,7 +429,6 @@ case $distro in
     echo -e "  $c2       \`Y\$\$b."
     echo -e "  $c2          \`\"Y\$b._"
     echo -e "  $c2              \`\"\"\"\""$c0
-    exit
   ;;
 
   "Crunchbang")
@@ -441,7 +448,6 @@ case $distro in
     echo -e "$c3    /  /      /  /                 _"
     echo -e "$c3   /  /      /  /                 | |"
     echo -e "$c3  /__/      /__/                  |_|"$c0
-    exit
   ;;
 
   "Gentoo")
@@ -465,7 +471,6 @@ case $distro in
     echo -e "$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`"
     echo -e "$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`"
     echo -e "$c2  \`-//////:--."$c0
-    exit
   ;;
 
   "Fedora")
@@ -488,7 +493,6 @@ case $distro in
     echo -e "$c1 :---"$c2":sdNMMMMNds:"$c1"----------:"
     echo -e "$c1 :------"$c2":://:"$c1"-----------://"
     echo -e "$c1 :--------------------://"$c0
-    exit
   ;;
 
   "BSD")
@@ -513,7 +517,6 @@ case $distro in
     echo -e "$c2          ______( (_  / \______/"
     echo -e "$c2        ,'  ,-----'   |"
     echo -e "$c2        \`--{__________)"$c0
-    exit
   ;;
 
   "Mandriva"|"Mandrake")
@@ -534,7 +537,6 @@ case $distro in
     echo -e "$c1     /sss+.    $c2..\`$c1  \`--\`    $c2.:::              $GTK_font"
     echo -e "$c1      -ossso+/:://+/-\`        $c2.:\`"
     echo -e "$c1        -/+ooo+/-.              $c2\`"$c0
-    exit
   ;;
 
   "Red Hat Linux")
@@ -556,7 +558,6 @@ case $distro in
     echo -e "$c2  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM"
     echo -e "$c2   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM "
     echo -e "$c2    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM  "$c0
-    exit
   ;;
 
   *)
@@ -580,7 +581,6 @@ case $distro in
     echo " "
     echo " "
     echo " "
-    exit
   ;;
 esac
 }
@@ -610,47 +610,28 @@ infoDisplay () {
   if [[ "$display" =~ "ASCII" ]]; then 
     asciiText
   else
-    echo -e "$OS"; echo -e "$kernel"; echo -e "$uptime"; echo -e "$DE"; echo -e "$WM"; echo -e "$WM_theme"; echo -e "$GTK_theme"; echo -e "$GTK_icons"; echo -e "$GTK_font"
+    echo -e "$OS" 
+    echo -e "$kernel"
+    echo -e "$uptime"
+    echo -e "$DE"
+    echo -e "$WM"
+    echo -e "$WM_theme"
+    echo -e "$GTK_theme"
+    echo -e "$GTK_icons"
+    echo -e "$GTK_font"
   fi
-  exit
 }
-
 
 ##################
 # Let's Do This!
 ##################
 
-if [[ "$display" =~ "OS" ]]; then
-  detectdistro
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding distro...found as '$distro'"
-fi
-if [[ "$display" =~ "Kernel" ]]; then
-  detectkernel
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding kernel version...found as '$kernel'"
-fi
-if [[ "$display" =~ "Uptime" ]]; then
-  detectuptime
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding current uptime...found as '$uptime'"
-fi
-if [[ "$display" =~ "DE" ]]; then
-  detectde
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding desktop environment...found as '$DE'"
-fi
-if [[ "$display" =~ "WM" ]]; then
-  detectwm
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager...found as '$WM'"
-fi
-if [[ "$display" =~ "Win_theme" ]]; then
-  detectwmtheme
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager theme...found as '$Win_theme'"
-fi
-if [[ "$display" =~ "Theme" ]]; then
-  detectgtk
-  if [ "$verbosity" -eq "1" ]; then
-    verboseOut "Finding GTK theme...found as '$gtkTheme'"
-    verboseOut "Finding icon theme...found as '$gtkIcons'"
-    verboseOut "Finding user font...found as '$gtkFont'"
-  fi
-fi
+[[ "$display" =~ "OS" ]] && detectdistro
+[[ "$display" =~ "Kernel" ]] && detectkernel
+[[ "$display" =~ "Uptime" ]] && detectuptime
+[[ "$display" =~ "DE" ]] && detectde
+[[ "$display" =~ "WM" ]] && detectwm
+[[ "$display" =~ "Win_theme" ]] && detectwmtheme
+[[ "$display" =~ "Theme" ]] && detectgtk
 infoDisplay
 [ "$screenshot" -eq "1" ] && takeShot

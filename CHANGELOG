@@ -3,7 +3,11 @@
     changelog
 **** **** **** ****
 
-v1.7.6.4 (important)
+v1.7.6.5
+ - Fixed broken -s flag to take screenshot.
+ - Put calling for verbose function back into other functions.
+
+v1.7.6 (important)
  - Working distribution detection! Most of the distributions I've included have been untested as of yet. Which means I could REALLY use some testers 
 for these distros. The ones that still need testing are as follows: SUSE, Mandriva/Mandrake, Gentoo, Fedora, Red Hat Linux, and BSD. If you would like 
 to help test these distributions, let me know by emailing me at kittykatt@archlinux.us
