@@ -324,9 +324,9 @@ detectgtk(){
 
 takeShot () {
   if [[ -z $screenCommand ]]; then
-    scrot -cd3 'screenFetch-%Y-%m-%d.png'; exit
+    scrot -cd3 'screenFetch-%Y-%m-%d.png'
   else
-    $screenCommand; exit
+    $screenCommand
   fi
 }
 
@@ -352,7 +352,6 @@ case $distro in
     echo -e "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF"
     echo -e "$c1 'EHTI                    !H"
     echo -e "$c1  \`0F'                    '!"$c0
-    exit
   ;;
 
   "Linux Mint")
@@ -373,7 +372,6 @@ case $distro in
     echo -e "$c1      -dMNs-"$c2"\`\`-::::-------.\`\`    "$c1"dMM"
     echo -e "$c1       \`/dMNmy+/:-------------:/yMMM"
     echo -e "$c1          ./ydNMMMMMMMMMMMMMMMMMMMMM"$c0
-    exit
   ;;
 
   "Ubuntu")
@@ -398,7 +396,6 @@ case $distro in
     echo -e "$c1               /osyyyyyyo$c2-------/"
     echo -e "$c1                   \`\`\`\`\` $c2-:-....:"
     echo -e "$c2                          \`----."$c0
-    exit
   ;;
 
   "Debian")
@@ -421,7 +418,6 @@ case $distro in
     echo -e "  $c2       \`Y\$\$b."
     echo -e "  $c2          \`\"Y\$b._"
     echo -e "  $c2              \`\"\"\"\""$c0
-    exit
   ;;
 
   "Crunchbang")
@@ -441,7 +437,6 @@ case $distro in
     echo -e "$c3    /  /      /  /                 _"
     echo -e "$c3   /  /      /  /                 | |"
     echo -e "$c3  /__/      /__/                  |_|"$c0
-    exit
   ;;
 
   "Gentoo")
@@ -465,7 +460,6 @@ case $distro in
     echo -e "$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`"
     echo -e "$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`"
     echo -e "$c2  \`-//////:--."$c0
-    exit
   ;;
 
   "Fedora")
@@ -488,7 +482,6 @@ case $distro in
     echo -e "$c1 :---"$c2":sdNMMMMNds:"$c1"----------:"
     echo -e "$c1 :------"$c2":://:"$c1"-----------://"
     echo -e "$c1 :--------------------://"$c0
-    exit
   ;;
 
   "BSD")
@@ -513,7 +506,6 @@ case $distro in
     echo -e "$c2          ______( (_  / \______/"
     echo -e "$c2        ,'  ,-----'   |"
     echo -e "$c2        \`--{__________)"$c0
-    exit
   ;;
 
   "Mandriva"|"Mandrake")
@@ -534,7 +526,6 @@ case $distro in
     echo -e "$c1     /sss+.    $c2..\`$c1  \`--\`    $c2.:::              $GTK_font"
     echo -e "$c1      -ossso+/:://+/-\`        $c2.:\`"
     echo -e "$c1        -/+ooo+/-.              $c2\`"$c0
-    exit
   ;;
 
   "Red Hat Linux")
@@ -556,7 +547,6 @@ case $distro in
     echo -e "$c2  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM"
     echo -e "$c2   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM "
     echo -e "$c2    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM  "$c0
-    exit
   ;;
 
   *)
@@ -580,7 +570,6 @@ case $distro in
     echo " "
     echo " "
     echo " "
-    exit
   ;;
 esac
 }
@@ -612,7 +601,6 @@ infoDisplay () {
   else
     echo -e "$OS"; echo -e "$kernel"; echo -e "$uptime"; echo -e "$DE"; echo -e "$WM"; echo -e "$WM_theme"; echo -e "$GTK_theme"; echo -e "$GTK_icons"; echo -e "$GTK_font"
   fi
-  exit
 }
 
 
