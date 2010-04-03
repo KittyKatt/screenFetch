@@ -3,6 +3,9 @@
     changelog
 **** **** **** ****
 
+v1.7.9
+- Added support to DETECT the following window managers: dwm, awesome, and WindowMaker
+
 v1.7.7
  - Added FVWM support per request of goran'agar on the Arch forums.
 
