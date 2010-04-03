@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# screenFetch (v1.7.9)
+# screenFetch (v1.7.7-dev)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -28,7 +28,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="1.7.9"
+scriptVersion="1.7.7-dev"
 
 ######################
 # Settings for fetcher
@@ -86,8 +86,8 @@ while getopts ":hsvVnc:D:" flags; do
       echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
       echo ""
       echo -e "${underline}Supported Distributions${c0}:      Arch Linux, Linux Mint, Ubuntu, Crunchbang, Debian, Fedora, and BSD"
-      echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
-      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4m, Metacity, KWin, IceWM, FVWM, DWM, Awesome, and WindowMaker"
+      echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE"
+      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4m, Metacity, KWin, IceWM and FVWM"
       echo ""
       echo -e "${underline}Options${c0}:"
       echo -e "   ${bold}-v${c0}                 Verbose output."
@@ -238,7 +238,7 @@ detectwmtheme () {
     'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme=`for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done`; fi;;
     'FVWM') Win_theme="Not Present";;
     'DWM') Win_theme="Not Present";;
-    'Awesome') Win_theme="Not Present";;
+    'Awesome') if [ -f $HOME/.config/awesome/rc.lua ]; then Win_theme=`grep -e '\(theme\|beautiful\).*lua' $HOME/.config/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1`; fi;;
     'WindowMaker') Win_theme="Not Present";;
     esac
   [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager theme...found as '$Win_theme'"
