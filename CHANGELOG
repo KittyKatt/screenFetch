@@ -6,6 +6,8 @@
 v1.7.9
  - Added support to DETECT the following window managers: dwm, awesome, and WindowMaker
  - Added support for lighter backgrounds. If you have a lighter background, specify -l as a flag on the command-line. This will turn all white output to dark gray output.
+ - screenFetch was featured in the ALM (Arch Linux Magazine)! The issue can be found
+   and downloaded at http://www.archlinux.org/static/magazine/2010/ALM-2010-Apr.pdf
 
 v1.7.7
  - Added FVWM support per request of goran'agar on the Arch forums.
