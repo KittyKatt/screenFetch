@@ -286,7 +286,7 @@ detectgtk () {
             gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
           fi
   ;;
-  'Xfwm4')  # Desktop Environment found as "XFCE"
+  'XFCE')  # Desktop Environment found as "XFCE"
          if which xfconf-query >/dev/null 2>&1; then
            gtkTheme=$(xfconf-query -c xsettings -p /Net/ThemeName)
          fi
