@@ -38,13 +38,13 @@ specifiedon the command line, and those are shown below or by executing `screenF
         -n              Do no display ASCII distribution logo.
         -s              Using this flag tells the script that you want it to
                         take a screenshot.
+        -l              Specify that you have a light background. This 
+                        turns all white text into dark gray text (in ascii
+                        logos and in information output).
         -c 'COMMAND'    Here you can specify a custom screenshot command for
                         the script to execute. Surrounding quotes are required.
         -D 'DISTRO'     Here you can specify your distribution for the script
                         to use. Surrounding quotes are required.
-        -V              Specify that you have a light background. This 
-                        turns all white text into dark gray text (in ascii
-                        logos and in information output).
         -V              Display current script version.
         -h              Display this help.
 
