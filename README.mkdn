@@ -13,22 +13,18 @@ right. There are options to specify no ascii art, colors, taking a
 screenshot upon displaying info, and even customizing the screenshot
 command! This script is very easy to add to and can easily be extended.
 
-How do I get screenFetch?
+How do I get screenFetch? (Arch Linux)
 ---------------------
 
-Arch Linux Users:
-1. Install screenfetch-git from the AUR. That's it!
+1. Install `screenfetch-git` from the AUR. That's it!
 
-Others:
-1. Download the latest source.
-   Found at http://github.com/KittyKatt/screenFetch/raw/master/latest/screenFetch
-2. In a terminal, make the file executable by doing the following:
-      `chmod +x /path/to/screenFetch`
-3. Then, either keep it there, or move it to somewhere in your $PATH to make it
-   available without having to use the full path to the script.
 
-That's it!
+How do I get screenFetch? (Others)
+---------------------
 
+1. Download the latest source. Found at http://github.com/KittyKatt/screenFetch/raw/master/latest/screenFetch
+2. In a terminal, make the file executable by doing the following: `chmod +x /path/to/screenFetch`
+3. Then, either keep it there, or move it to somewhere in your $PATH to make it available without having to use the full path to the script.
 
 How to run screenFetch
 ------------------------
