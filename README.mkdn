@@ -49,7 +49,7 @@ specifiedon the command line, and those are shown below or by executing `screenF
         -h              Display this help.
 
 
-Contact Mee
+Contact Me
 ------------------------
 If you would like to suggest something new, inform me of an issue in the
 script, become part of the project, or talk to me about anything else,
