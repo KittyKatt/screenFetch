@@ -3,6 +3,10 @@
     changelog
 **** **** **** ****
 
+v1.8.3
+ - Added groundwork for background support, terminal width detection (and thus truncating upon being over this width), and a couple other things I can't remember at the moment.
+ - Gonna update a couple of the ASCII arts. :D
+
 v1.7.9
  - Added support to DETECT the following window managers: dwm, awesome, and WindowMaker
  - Added support for lighter backgrounds. If you have a lighter background, specify -l as a flag on the command-line. This will turn all white output to dark gray output.
