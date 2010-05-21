@@ -4,7 +4,7 @@
 **** **** **** ****
 
 v1.8.3
- - Added groundwork for background support, terminal width detection (and thus truncating upon being over this width), and a couple other things I can't remember at the moment.
+ - Added the groundwork for background support, terminal width detection (and thus truncating upon being over this width), and a couple other things I can't remember at the moment.
  - Gonna update a couple of the ASCII arts. :D
 
 v1.7.9
