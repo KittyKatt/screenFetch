@@ -1,0 +1,57 @@
+screenFetch - The Bash Screenshot Information Tool
+===============
+
+What is screenFetch?
+---------------------
+
+screenFetch is a "Bash Screenshot Information Tool". This handy Bash 
+script can be used to generate one of those nifty terminal theme 
+information + ASCII distribution logos you see in everyone's screenshots
+nowadays. It will auto-detect your distribution and display an ASCII
+version of that distribution's logo and some valuable information to the
+right. There are options to specify no ascii art, colors, taking a
+screenshot upon displaying info, and even customizing the screenshot
+command! This script is very easy to add to and can easily be extended.
+
+How do I get screenFetch? (Arch Linux)
+---------------------
+
+1. Install `screenfetch-git` from the AUR. That's it!
+
+
+How do I get screenFetch? (Others)
+---------------------
+
+1. Download the latest source. Found at http://github.com/KittyKatt/screenFetch/raw/master/latest/screenFetch
+2. In a terminal, make the file executable by doing the following: `chmod +x /path/to/screenFetch`
+3. Then, either keep it there, or move it to somewhere in your $PATH to make it available without having to use the full path to the script.
+
+How to run screenFetch
+------------------------
+
+To run screenFetch, open a terminal of some sort and type in the command `screenFetch`
+or wherever you saved the script to. This will generate an ascii logo with the 
+information printed to the side of the logo. There are some options that may be
+specifiedon the command line, and those are shown below or by executing `screenFetch -h`:
+
+        -v              Verbose output.
+        -n              Do no display ASCII distribution logo.
+        -s              Using this flag tells the script that you want it to
+                        take a screenshot.
+        -l              Specify that you have a light background. This 
+                        turns all white text into dark gray text (in ascii
+                        logos and in information output).
+        -c 'COMMAND'    Here you can specify a custom screenshot command for
+                        the script to execute. Surrounding quotes are required.
+        -D 'DISTRO'     Here you can specify your distribution for the script
+                        to use. Surrounding quotes are required.
+        -V              Display current script version.
+        -h              Display this help.
+
+
+Contact Me
+------------------------
+If you would like to suggest something new, inform me of an issue in the
+script, become part of the project, or talk to me about anything else,
+you can either email me at `kittykattATarchlinuxDOTus` or you can connect
+to my IRC server on SilverIRC at irc://kittykatt.silverirc.com/me0wz

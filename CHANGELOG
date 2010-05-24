@@ -1,0 +1,74 @@
+**** **** **** ****
+   screenFetch
+    changelog
+**** **** **** ****
+
+v1.8.3
+ - Added the groundwork for background support, terminal width detection (and thus truncating upon being over this width), and a couple other things I can't remember at the moment.
+ - Gonna update a couple of the ASCII arts. :D
+
+v1.7.9
+ - Added support to DETECT the following window managers: dwm, awesome, and WindowMaker
+ - Added support for lighter backgrounds. If you have a lighter background, specify -l as a flag on the command-line. This will turn all white output to dark gray output.
+ - screenFetch was featured in the ALM (Arch Linux Magazine)! The issue can be found
+   and downloaded at http://www.archlinux.org/static/magazine/2010/ALM-2010-Apr.pdf
+
+v1.7.7
+ - Added FVWM support per request of goran'agar on the Arch forums.
+
+v1.7.6.5
+ - Fixed broken -s flag to take screenshot.
+ - Put calling for verbose function back into other functions.
+
+v1.7.6 (important)
+ - Working distribution detection! Most of the distributions I've included have been untested as of yet. Which means I could REALLY use some testers 
+for these distros. The ones that still need testing are as follows: SUSE, Mandriva/Mandrake, Gentoo, Fedora, Red Hat Linux, and BSD. If you would like 
+to help test these distributions, let me know by emailing me at kittykatt@archlinux.us
+ - Reworked a lot of the code to be functions instead of repeating parts. Looks a lot cleaner now.
+ - This update was mainly Kingdomcome's doing. So thank him profusely.
+
+v1.7.5 (HUGE)
+ - Massive rewrite, cleaning up a huge portion of the code.
+ - Made several repeating parts of the code into functions.
+ - Learned getopts. Rewrote flag support with it. Flags now supported are as follows:
+    ~ -D 'DISTRO NAME'   Specify distribution name
+    ~ -c 'command'    Specify custom screenshot command.
+    ~ -V    Print current version of script.
+    ~ -v    Turn on verbose output.
+    ~ -s    Take screenshot.
+    ~ -n    Display info only and no ASCII logo.
+    ~ -h    Display help menu.
+ - Added version number to DE reporting. Except LXDE. Because they fail.
+ - Thanks to h2 for many, many, many suggestions and a lot of help. This update would most likely not have been possible without him.
+
+v1.4.5
+ - Cleaned up WM Theme detection code.
+
+v1.4.4
+ - Changed version system
+ - Fixed if statement for "Not Present" or "LXDE" DE (Thanks to 
+ArcherSeven for pointing it out)
+
+v1.4.3 (big)
+ - Complete rewrite of DE and WM detection (Once again thanks to King)
+ - Implemented LXDE support (Yay!)
+ - Discussed ideas for "united" DE detection
+
+v1.4
+ - Complete rewrite of the uptime field (Thanks a bunch Kingdomcome)
+
+v1.3
+ - Added some flag support (notably --version, --screen, and --help)
+ - Added commented lines for --distro and --command flags (future use)
+ - Fixed another color escape sequence.
+
+v1.2
+ - Fixed uptime errors when uptime > 1 day
+
+v1.1
+ - Fixed color closing in the generic tux ASCII logo (thanks Suhana)
+ - Changed architecture detection to "uname -m" across the board
+   (thanks ikey for that one)
+
+v1.0
+ - First version. Let's start! :D
