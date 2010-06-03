@@ -208,6 +208,7 @@ detectwm () {
         'dwm') WM="DWM";;
         'awesome') WM="Awesome";;
         'WindowMaker') WM="WindowMaker";;
+        'compiz') WM="Compiz";;
       esac
     fi
   done
@@ -233,6 +234,7 @@ detectwmtheme () {
     'DWM') Win_theme="Not Present";;
     'Awesome') if [ -f $HOME/.config/awesome/rc.lua ]; then Win_theme=$(grep -e '^[^-].*\(theme\|beautiful\).*lua' $HOME/.config/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1); fi;;
     'WindowMaker') Win_theme="Not Present";;
+    'Compiz') if $(grep -iA 1 'gtk_theme' $HOME/.gconf/desktop/gnome/interface/%gconf.xml | grep -i 'stringvalue' | awk -F\> '{print $2}' | awk -F\< '{print Hola}'); then Win_theme=$(gconftool-2 -g /apps/metacity/general/theme); fi;;
     esac
   [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
@@ -266,18 +268,18 @@ detectgtk () {
           fi
   ;;
   'GNOME')  # Desktop Environment found as "GNOME"
-          if which gconftool >/dev/null 2>&1; then
+          if which gconftool-2 >/dev/null 2>&1; then
             gtkTheme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
           fi
 
-          if [[ "$display" =~ "Icons" ]] && which gconftool >/dev/null 2>&1; then
+          if [[ "$display" =~ "Icons" ]] && which gconftool-2 >/dev/null 2>&1; then
               gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
           fi
 
-          if [[ "$display" =~ "Font" ]] && which gconftool >/dev/null 2>&1; then
+          if [[ "$display" =~ "Font" ]] && which gconftool-2 >/dev/null 2>&1; then
             gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
           fi
-          if [[ "$display" =~ "Background" ]] && which gconftool >/dev/null 2>&1; then
+          if [[ "$display" =~ "Background" ]] && which gconftool-2 >/dev/null 2>&1; then
             gtkBackground=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
           fi
   ;;
