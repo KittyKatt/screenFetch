@@ -15,7 +15,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="1.8.3"
+scriptVersion="1.8.4"
 
 ######################
 # Settings for fetcher
@@ -32,7 +32,7 @@ display="OS Kernel Uptime DE WM Win_theme Theme Icons Font ASCII Background"
 # labelcolor="\e[1;34m"
 
 # WM & DE process names
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm compiz"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Screenshot Settings
@@ -74,7 +74,7 @@ while getopts ":hsvVnlc:D:" flags; do
       echo ""
       echo -e "${underline}Supported Distributions${c0}:      Arch Linux, Linux Mint, Ubuntu, Crunchbang, Debian, Fedora, and BSD"
       echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
-      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4, Metacity, KWin, IceWM, FVWM, DWM, Awesome, and WindowMaker"
+      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4, Metacity, Compiz, StumpWM, KWin, IceWM, FVWM, DWM, Awesome, and WindowMaker"
       echo ""
       echo -e "${underline}Options${c0}:"
       echo -e "   ${bold}-v${c0}                 Verbose output."
@@ -209,6 +209,7 @@ detectwm () {
         'awesome') WM="Awesome";;
         'WindowMaker') WM="WindowMaker";;
         'compiz') WM="Compiz";;
+	'stumpwm') WM="StumpWM";;
       esac
     fi
   done
