@@ -3,6 +3,10 @@
     changelog
 **** **** **** ****
 
+v1.8.4
+ - Added experimental Compiz detection (WM and theme)
+ - Added experimental StumpWM detection (Just WM). Thanks to gtklocker for this part.
+
 v1.8.3
  - Added the groundwork for background support, terminal width detection (and thus truncating upon being over this width), and a couple other things I can't remember at the moment.
  - Gonna update a couple of the ASCII arts. :D
