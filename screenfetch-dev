@@ -1,27 +1,27 @@
 #!/bin/bash
 
 #
-# screenFetch (v1.8.3)
+# screenFetch (v1.9.0)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
-# This script is copyright (C) 2010 to Brett Bohnenkamper (kittykatt@archlinux.us)
+# This script is copyright (C) 2010 to Brett Bohnenkamper (kittykatt@silverirc.com)
 # Do not make any modifications to this script without my explicit permission.
 # Do NOT claim this script as your own. I will find you.
 #
 # Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
 # appreciated by emailing me or by stopping by http://github.com/KittyKatt/screeFetch . You
-# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6669/meowz
+# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6667/meowz
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="1.8.4"
+scriptVersion="1.9.0"
 
 ######################
 # Settings for fetcher
 ######################
 
-# This setting controls what ASCII logo is displayed. Available: Linux Mint, Arch Linux, Ubuntu, Debian, BSD, Crunchbang, Gentoo, Fedora, None
+# This setting controls what ASCII logo is displayed. Available: Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, BSD, and None
 # distro="Arch Linux"
 
 # This sets the information to be displayed. Available: OS, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
@@ -72,7 +72,7 @@ while getopts ":hsvVnlc:D:" flags; do
       echo ""
       echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
       echo ""
-      echo -e "${underline}Supported Distributions${c0}:      Arch Linux, Linux Mint, Ubuntu, Crunchbang, Debian, Fedora, and BSD"
+      echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, and BSD"
       echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
       echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4, Metacity, Compiz, StumpWM, KWin, IceWM, FVWM, DWM, Awesome, and WindowMaker"
       echo ""
@@ -102,7 +102,7 @@ warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     n) display=${display//ASCII/};;
     l) c1="\e[1;30m";;
     :) echo "Error: You're missing an argument somewhere. Exiting."; exit;;
-    ?) echo "Error: Invalide flag somewhere. Exiting."; exit;;
+    ?) echo "Error: Invalid flag somewhere. Exiting."; exit;;
     *) echo "Error"; exit;;
   esac
  done
@@ -340,10 +340,12 @@ detectgtk () {
     if [ -a $HOME/.config/rox.sourceforge.net/ROX-Filer/Options ]; then
       gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' $HOME/.config/rox.sourceforge.net/ROX-Filer/Options)
     fi
-    # Background Detection (feh, )
+    # Background Detection (feh, nitrogen)
     if [[ "$display" =~ "Background" ]]; then
       if [ -a $HOME/.fehbg ]; then
         gtkBackground=$(awk -F"/" '/feh --bg-scale / {print $NF}' $HOME/.fehbg | sed s/\'//)
+      elif [ -a $XDG_CONFIG_HOME/nitrogen/bg-saved.cfg ]; then
+        gtkBackground=$(awk -F"/" '/file=/ {print $NF}' $XDG_CONFIG_HOME/nitrogen/bg-saved.cfg)
       fi
     fi
   ;;
@@ -373,7 +375,7 @@ takeShot () {
 
 asciiText () {
 case $distro in
-  "Arch Linux")
+  "Arch Linux - Old")
     [ -z $c1 ] && c1="\e[1;37m" # White
     c2="\e[1;34m" # Light Blue
     echo -e "$c1              __"
@@ -392,6 +394,30 @@ case $distro in
     echo -e "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF"
     echo -e "$c1 'EHTI                    !H"
     echo -e "$c1  \`0F'                    '!"$c0
+  ;;
+
+  "Arch Linux")
+    [ -z $c1 ] && c1="\e[1;36m" # Light
+    c2="\e[0;36m" # Dark
+    echo -e "${c1}                   -\`"
+    echo -e "${c1}                  .o+\`"
+    echo -e "${c1}                 \`ooo/"
+    echo -e "${c1}                \`+oooo:"
+    echo -e "${c1}               \`+oooooo:             $OS"
+    echo -e "${c1}               -+oooooo+:            $kernel"
+    echo -e "${c1}             \`/:-:++oooo+:           $DE"
+    echo -e "${c1}            \`/++++/+++++++:          $WM"
+    echo -e "${c1}           \`/++++++++++++++:         $WM_theme"
+    echo -e "${c1}          \`/+++o"${c2}"oooooooo"${c1}"oooo/\`       $GTK_theme"
+    echo -e "${c2}         "${c1}"./"${c2}"ooosssso++osssssso"${c1}"+\`      $GTK_icons"
+    echo -e "${c2}        .oossssso-\`\`\`\`/ossssss+\`     $GTK_font"
+    echo -e "${c2}       -osssssso.      :ssssssso.    $GTK_bg"
+    echo -e "${c2}      :osssssss/        osssso+++."
+    echo -e "${c2}     /ossssssss/        +ssssooo/-"
+    echo -e "${c2}   \`/ossssso+/:-        -:/+osssso+-"
+    echo -e "${c2}  \`+sso+:-\`                 \`.-/+oso:"
+    echo -e "${c2} \`++:.                           \`-/+/"
+    echo -e "${c2} .\`                                 \`/" ${c0}
   ;;
 
   "Linux Mint")
@@ -619,7 +645,8 @@ infoDisplay () {
   if [ -z "$textcolor" ]; then textcolor="\e[0m"; fi
   if [ -z "$labelcolor" ]; then
     case $distro in
-      "Arch Linux"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
+      "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
+      "Arch Linux") labelcolor="\e[1;36m";;
       "Linux Mint") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "Crunchbang") labelcolor="\e[1;30m";;
