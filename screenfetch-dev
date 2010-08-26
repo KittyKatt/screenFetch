@@ -32,7 +32,7 @@ display="OS Kernel Uptime DE WM Win_theme Theme Icons Font ASCII Background"
 # labelcolor="\e[1;34m"
 
 # WM & DE process names
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm compiz"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm compiz xmonad"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Screenshot Settings
@@ -74,7 +74,7 @@ while getopts ":hsvVnlc:D:" flags; do
       echo ""
       echo -e "${underline}Supported Distributions${c0}:      Arch Linux, Linux Mint, Ubuntu, Crunchbang, Debian, Fedora, and BSD"
       echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
-      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4, Metacity, Compiz, StumpWM, KWin, IceWM, FVWM, DWM, Awesome, and WindowMaker"
+      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4, Metacity, Compiz, StumpWM, KWin, IceWM, FVWM, DWM, Awesome, XMonad, and WindowMaker"
       echo ""
       echo -e "${underline}Options${c0}:"
       echo -e "   ${bold}-v${c0}                 Verbose output."
@@ -210,6 +210,7 @@ detectwm () {
         'WindowMaker') WM="WindowMaker";;
         'compiz') WM="Compiz";;
 	'stumpwm') WM="StumpWM";;
+	'xmonad') WM="XMonad";;
       esac
     fi
   done
@@ -236,6 +237,7 @@ detectwmtheme () {
     'Awesome') if [ -f $HOME/.config/awesome/rc.lua ]; then Win_theme=$(grep -e '^[^-].*\(theme\|beautiful\).*lua' $HOME/.config/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1); fi;;
     'WindowMaker') Win_theme="Not Present";;
     'Compiz') if $(grep -iA 1 'gtk_theme' $HOME/.gconf/desktop/gnome/interface/%gconf.xml | grep -i 'stringvalue' | awk -F\> '{print $2}' | awk -F\< '{print Hola}'); then Win_theme=$(gconftool-2 -g /apps/metacity/general/theme); fi;;
+    'XMonad') Win_theme="Not Present";;
     esac
   [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
