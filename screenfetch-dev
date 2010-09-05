@@ -189,7 +189,14 @@ detecthost () {
 detectdistro () {
   if [[ -z $distro ]]; then
     distro="Unknown"
-    if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="Debian"; fi
+    if grep -i debian /etc/lsb-release >/dev/null 2>&1; then
+      if which lsb-release >/dev/null 2>&1; then
+        lsbOut=$(lsb-release -i)
+        [[ "$lsbOut" =~ "Crunchbang" ]] && distro="Crunchbang"
+      else
+        distro="Debian"
+      fi
+    fi
     if [ -f /etc/debian_version ]; then distro="Debian"; fi
     if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
     if grep -i mint /etc/lsb-release >/dev/null 2>&1; then distro="Linux Mint"; fi
@@ -201,7 +208,6 @@ detectdistro () {
     if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
     if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
     if [ -f /etc/crunchbang-lsb-release ]; then distro="Crunchbang"; fi
-    if [ `lsb-release -i` =~ "Crunchbang" ]; then distro="Crunchbang"; fi
     if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
     if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
     if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
