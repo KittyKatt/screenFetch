@@ -78,7 +78,7 @@ underline="\e[4m" # Underline Text
 # Begin Flags Phase
 #####################
 
-while getopts ":hsmevVntlc:D:d:o:" flags; do
+while getopts ":hsmevVntlc:D:o:" flags; do
   case $flags in
     h)
       echo -e "${underline}Usage${c0}:"
@@ -100,11 +100,11 @@ while getopts ":hsmevVntlc:D:d:o:" flags; do
       echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
       echo -e "		      command line. Must be in the following format..."
       echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
-      echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
-      echo -e "		      on the command line. Format must be as follows:"
-      echo -e "		      'OPTION OPTION OPTION OPTION'. Valid options are"
-      echo -e "		      Host, OS, Kernel, Uptime, Shell, Resolution, DE, WM,"
-      echo -e "		      Win_theme, Theme, Icons, Font, ASCII, Background."
+      #echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
+      #echo -e "		      on the command line. Format must be as follows:"
+      #echo -e "		      'OPTION OPTION OPTION OPTION'. Valid options are"
+      #echo -e "		      Host, OS, Kernel, Uptime, Shell, Resolution, DE, WM,"
+      #echo -e "		      Win_theme, Theme, Icons, Font, ASCII, Background."
       echo -e "   ${bold}-n${c0}                 Do no display ASCII distribution logo."
       echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
       echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
@@ -141,7 +141,7 @@ warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     c) screenCommand=$OPTARG; continue;;
     n) display=${display//ASCII/};;
     o) overrideOpts=$OPTARG; continue;;
-    d) overrideDisplay=$OPTARG; continue;;
+    # d) overrideDisplay=$OPTARG; continue;;
     l) c1="\e[1;30m";;
     :) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
     ?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
@@ -167,10 +167,10 @@ if [[ "$overrideOpts" ]]; then
   done
   IFS="$OLD_IFS"
 fi
-if [[ "$overrideDisplay" ]]; then
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
-  display="$overrideDisplay"
-fi
+#if [[ "$overrideDisplay" ]]; then
+#  [[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
+#  display="$overrideDisplay"
+#fi
 
 
 #########################
