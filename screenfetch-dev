@@ -201,6 +201,7 @@ detectdistro () {
     if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
     if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
     if [ -f /etc/crunchbang-lsb-release ]; then distro="Crunchbang"; fi
+    if [ `lsb-release -a` =~ "Crunchbang" ]; then distro="Crunchbang"; fi
     if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
     if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
     if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
@@ -621,7 +622,7 @@ case $distro in
 "  $c1              \`\"\"\"\"")
   ;;
 
-  "Crunchbang")
+  "Crunchbang"|"Crunchbang Statler")
     [ -z $c1 ] && c1="\e[1;37m" # White
     "\e[1;30m" # Dark Gray
     fulloutput=("$c1                ___       ___      _"
@@ -808,7 +809,7 @@ infoDisplay () {
       "Arch Linux") labelcolor="\e[1;36m";;
       "Linux Mint") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
-      "Crunchbang") labelcolor="\e[1;30m";;
+      "Crunchbang"|"Crunchbang Statler") labelcolor="\e[1;30m";;
       "Gentoo") labelcolor="\e[1;35m";;
       *) labelcolor="\e[1;33m";;
     esac
