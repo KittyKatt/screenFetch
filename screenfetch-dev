@@ -93,7 +93,7 @@ while getopts ":hsmevVntlc:D:o:" flags; do
       echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
       echo -e "			      Metacity, Compiz, StumpWM, KWin, IceWM, FVWM,"
       echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
-      echo -e "			      Ratpoison, wmii, Wmfs, ScrotWM, and Beryl."
+      echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, and Beryl."
       echo ""
       echo -e "${underline}Options${c0}:"
       echo -e "   ${bold}-v${c0}                 Verbose output."
@@ -323,7 +323,7 @@ detectwm () {
 	'i3') WM="i3";;
 	'ratpoison') WM="Ratpoison";;
 	'scrotwm') WM="ScrotWM";;
-	'wmfs') WM="Wmfs";;
+	'wmfs') WM="WMFS";;
 	'wmii') WM="wmii";;
 	'beryl') WM="Beryl";;
       esac
@@ -355,11 +355,11 @@ detectwmtheme () {
     'XMonad') Win_theme="Not Present";;
     'Musca') Win_theme="Not Present";;
     'i3') Win_theme="Not Present";;
-    'ratpoison') Win_theme="Not Present";;
-    'scrotwm') Win_theme="Not Present";;
-    'wmfs') Win_theme="Not Present";;
+    'Ratpoison') Win_theme="Not Present";;
+    'ScrotWM') Win_theme="Not Present";;
+    'WMFS') Win_theme="Not Present";;
     'wmii') Win_theme="Not Present";;
-    'beryl') Win_theme="Not Present";;
+    'Beryl') Win_theme="Not Present";;
     esac
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
