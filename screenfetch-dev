@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# screenFetch (v2.0.1)
+# screenFetch (v2.1.3)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -15,7 +15,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.0.1"
+scriptVersion="2.1.3"
 
 ######################
 # Settings for fetcher
@@ -25,27 +25,41 @@ scriptVersion="2.0.1"
 # distro="Arch Linux"
 
 # This sets the information to be displayed. Available: OS, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
-display="OS Kernel Uptime DE WM Win_theme Theme Icons Font ASCII Background"
+display="Host OS Kernel Uptime Shell Resolution DE WM Win_theme Theme Icons Font ASCII Background"
 
 # Colors to use for the information found. These are set below according to distribution. If you would like to set your OWN color scheme for these, uncomment the lines below and edit them to your heart's content.
 # textcolor="\e[0m"
 # labelcolor="\e[1;34m"
 
 # WM & DE process names
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm compiz xmonad"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm compiz xmonad musca i3 ratpoison scrotwm wmfs wmii beryl"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
+
+# Export theme settings
+# screenFetch has the capability (on some WM's and GTK) to export your GTK and WM settings to an archive. Specify Yes if you want this and No if you do not.
+exportTheme=
 
 # Screenshot Settings
 # This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
-screenshot=0
+screenshot=
 # You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
+hostshot=
+baseurl="http://www.example.com"
+serveraddr="www.example.com"
+scptimeout="20"
+serverdir="/path/to/directory"
+shotfile=$(echo "screenFetch-`date +'%Y-%m-%d'`.png")
 
 # Verbose Setting - Set to 1 for verbose output.
-verbosity=0
+verbosity=
 
 verboseOut () {
   echo -e "\e[1;31m:: \e[0m$1"
+}
+
+errorOut () {
+  echo -e "\e[1;37m[[ \e[1;31m! \e[1;37m]] \e[0m$1"
 }
 
 #############################################
@@ -64,7 +78,7 @@ underline="\e[4m" # Underline Text
 # Begin Flags Phase
 #####################
 
-while getopts ":hsvVntlc:D:" flags; do
+while getopts ":hsmevVntlc:D:d:o:" flags; do
   case $flags in
     h)
       echo -e "${underline}Usage${c0}:"
@@ -72,23 +86,47 @@ while getopts ":hsvVntlc:D:" flags; do
       echo ""
       echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
       echo ""
-      echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, and BSD"
+      echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
+      echo -e "			      Ubuntu, Crunchbang, Debian, Gentoo, Fedora,"
+      echo -e "			      Mandrake/Mandriva, Slackware, SUSE, and BSD"
       echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
-      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4, Metacity, Compiz, StumpWM, KWin, IceWM, FVWM, DWM, Awesome, XMonad, and WindowMaker"
+      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
+      echo -e "			      Metacity, Compiz, StumpWM, KWin, IceWM, FVWM,"
+      echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
+      echo -e "			      Ratpoison, wmii, Wmfs, ScrotWM, and Beryl."
       echo ""
       echo -e "${underline}Options${c0}:"
       echo -e "   ${bold}-v${c0}                 Verbose output."
+      echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
+      echo -e "		      command line. Must be in the following format..."
+      echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
+      echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
+      echo -e "		      on the command line. Format must be as follows:"
+      echo -e "		      'OPTION OPTION OPTION OPTION'. Valid options are"
+      echo -e "		      Host, OS, Kernel, Uptime, Shell, Resolution, DE, WM,"
+      echo -e "		      Win_theme, Theme, Icons, Font, ASCII, Background."
       echo -e "   ${bold}-n${c0}                 Do no display ASCII distribution logo."
-      echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (EXPERIMENTAL!)."
-      echo -e "   ${bold}-s${c0}                 Using this flag tells the script that you want it to take a screenshot."
-      echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns all white text into dark gray text (in ascii logos and in information output)."
-      echo -e "   ${bold}-c 'COMMAND'${c0}       Here you can specify a custom screenshot command for the script to execute. Surrounding quotes are required."
-      echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script to use. Surrounding quotes are required."
+      echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
+      echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
+      echo -e "		      to take a screenshot. Use the -m flag if you would like"
+      echo -e "		      to move it to a new location afterwards."
+      echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
+      echo -e "		      to export all of your theme settings and archive them"
+      echo -e "		      up for uploading."
+      echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
+      echo -e "		      all white text into dark gray text (in ascii logos and"
+      echo -e "		      in information output)."
+      echo -e "   ${bold}-c 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
+      echo -e "		      the script to execute. Surrounding quotes are required."
+      echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
+      echo -e "		      to use. Surrounding quotes are required."
       echo -e "   ${bold}-V${c0}                 Display current script version."
       echo -e "   ${bold}-h${c0}                 Display this help."
       exit
     ;;
     s) screenshot=1; continue;;
+    m) hostshot=1; continue;;
+    e) exportTheme=1; continue;;
     v) verbosity=1; continue;;
     V)
       echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
@@ -102,10 +140,12 @@ warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     t) truncateSet="Yes";;
     c) screenCommand=$OPTARG; continue;;
     n) display=${display//ASCII/};;
+    o) overrideOpts=$OPTARG; continue;;
+    d) overrideDisplay=$OPTARG; continue;;
     l) c1="\e[1;30m";;
-    :) echo "Error: You're missing an argument somewhere. Exiting."; exit;;
-    ?) echo "Error: Invalid flag somewhere. Exiting."; exit;;
-    *) echo "Error"; exit;;
+    :) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
+    ?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
+    *) errorOut "Error"; exit;;
   esac
  done
 
@@ -114,9 +154,36 @@ warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 ###################
 
 
+####################
+# Override Options
+####################
+
+if [[ "$overrideOpts" ]]; then
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
+  OLD_IFS="$IFS"
+  IFS=";"
+  for overopt in "$overrideOpts"; do
+    eval "$overrideOpts"
+  done
+  IFS="$OLD_IFS"
+fi
+if [[ "$overrideDisplay" ]]; then
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
+  display="$overrideDisplay"
+fi
+
+
 #########################
 # Begin Detection Phase
 #########################
+    
+
+# Host and User detection - Begin
+detecthost () {
+  myUser=$(echo "$USER")
+  myHost=$(hostname)
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
+}
 
 # Distro Detection - Begin
 detectdistro () {
@@ -138,7 +205,7 @@ detectdistro () {
     if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
     if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
   fi
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding distro...found as '$distro'"
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro'"
 }
 # Distro Detection - End
 
@@ -148,7 +215,7 @@ processnum="$(( $( ps aux | wc -l ) - 1 ))"
 # Kernel Version Detection - Begin
 detectkernel () {
   kernel=`uname -r`
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding kernel version...found as '$kernel'"
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding kernel version...found as '$kernel'"
 }
 # Kernel Version Detection - End
 
@@ -167,9 +234,40 @@ detectuptime () {
       uptime="${days}d ${uptime}"
     fi
   fi
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding current uptime...found as '$uptime'"
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
+
+
+# Shell Detection - Begin
+detectshell () {
+  myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
+}
+# Shell Detection - End
+
+
+# Resolution Detection - Begin
+detectres () {
+  if [[ `ps ax | grep bin/X` ]]; then
+    old_IFS=$IFS      # save the field separator   
+    IFS=$'\n'     # new field separator, the end of line   
+    for line in $(xdpyinfo | grep dim)
+    do
+      if [[ -z $xResolution ]]; then
+        xSingleres=$(echo "$line" | awk '/  dimensions:  /{print $2}' | sed 's/^ //')
+        xResolution=$(echo "$xResolution $xSingleres")
+      else
+        xResolution=$(echo "$line" | awk '/  dimensions:  /{print $2}' | sed 's/^ //')
+      fi
+    done
+    IFS=$old_IFS     # restore default field separator 
+  else
+    xResolution="Not Found"
+  fi
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current resolution(s)...found as '$xResolution'"
+}
+# Resolution Detection - End
 
 
 # DE Detection - Begin
@@ -180,12 +278,13 @@ detectde () {
     PID="$(pgrep -U ${userId} $each)"
     if [ "$PID" ]; then
       [ "$each" == "gnome-session" -o "$each" == "gnome-settings-daemon" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
-[ "$each" == "xfce-mcs-manage" -o "$each" == "xfce4-session" -o "$each" == "xfconfd" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
+      # [ "$each" == "xfce-mcs-manage" -o "$each" == "xfce4-session" -o "$each" == "xfconfd" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
+      [ "$each" == "xfce4-session" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
       [ "$each" == "ksmserver" ] && DE="KDE" && DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
       [ "$each" == "lxsession" ] && DE="LXDE"
     fi
   done
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding desktop environment...found as '$DE'"
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
 }
 ### DE Detection - End
 
@@ -200,7 +299,7 @@ detectwm () {
       case $each in
         'fluxbox') WM="FluxBox";;
         'openbox') WM="OpenBox";;
-        'blackbox') WM="blackbox";;
+        'blackbox') WM="Blackbox";;
         'xfwm4') WM="Xfwm4";;
         'metacity') WM="Metacity";;
         'kwin') WM="KWin";;
@@ -213,10 +312,17 @@ detectwm () {
         'compiz') WM="Compiz";;
 	'stumpwm') WM="StumpWM";;
 	'xmonad') WM="XMonad";;
+	'musca') WM="Musca";;
+	'i3') WM="i3";;
+	'ratpoison') WM="Ratpoison";;
+	'scrotwm') WM="ScrotWM";;
+	'wmfs') WM="Wmfs";;
+	'wmii') WM="wmii";;
+	'beryl') WM="Beryl";;
       esac
     fi
   done
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager...found as '$WM'"
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
 
@@ -228,8 +334,8 @@ detectwmtheme () {
     'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme=$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config); fi;;
     'OpenBox') if [ -f $HOME/.config/openbox/rc.xml ]; then Win_theme=$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml); elif [ -f $HOME/.config/openbox/lxde-rc.xml ]; then Win_theme=$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/lxde-rc.xml); fi;;
     'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme=$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init); fi;;
-    'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme=$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackbox/init); fi;;
-    'Metacity') if gconftool-2 -g /apps/metacity/general/theme; then Win_theme=$(gconftool-2 -g /apps/metacity/general/theme); fi;;
+    'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme=$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc); fi;;
+    'Metacity') if [ `gconftool-2 -g /apps/metacity/general/theme` ]; then Win_theme=$(gconftool-2 -g /apps/metacity/general/theme); fi;;
     'Xfwm4') if [ -f $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme=$(xfconf-query -c xfwm4 -p /general/theme); fi;;
     'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme=$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme); fi;;
     'KWin') if [ -f $HOME/.kde/share/config/kwinrc ]; then Win_theme=$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' $HOME/.config/openbox/rc.xml); fi;;
@@ -240,8 +346,15 @@ detectwmtheme () {
     'WindowMaker') Win_theme="Not Present";;
     'Compiz') if $(grep -iA 1 'gtk_theme' $HOME/.gconf/desktop/gnome/interface/%gconf.xml | grep -i 'stringvalue' | awk -F\> '{print $2}' | awk -F\< '{print Hola}'); then Win_theme=$(gconftool-2 -g /apps/metacity/general/theme); fi;;
     'XMonad') Win_theme="Not Present";;
+    'Musca') Win_theme="Not Present";;
+    'i3') Win_theme="Not Present";;
+    'ratpoison') Win_theme="Not Present";;
+    'scrotwm') Win_theme="Not Present";;
+    'wmfs') Win_theme="Not Present";;
+    'wmii') Win_theme="Not Present";;
+    'beryl') Win_theme="Not Present";;
     esac
-  [ "$verbosity" -eq "1" ] && verboseOut "Finding window manager theme...found as '$Win_theme'"
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
 
@@ -285,7 +398,8 @@ detectgtk () {
             gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
           fi
           if [[ "$display" =~ "Background" ]] && which gconftool-2 >/dev/null 2>&1; then
-            gtkBackground=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
+            gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
+	    gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
           fi
   ;;
   'XFCE')  # Desktop Environment found as "XFCE"
@@ -347,14 +461,15 @@ detectgtk () {
     # Background Detection (feh, nitrogen)
     if [[ "$display" =~ "Background" ]]; then
       if [ -a $HOME/.fehbg ]; then
-        gtkBackground=$(awk -F"/" '/feh --bg-scale / {print $NF}' $HOME/.fehbg | sed s/\'//)
+	gtkBackgroundFull=$(awk -F"\'" '/feh --bg-scale/{print $2}' $HOME/.fehbg 2>/dev/null)
+        gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
       elif [ -a $XDG_CONFIG_HOME/nitrogen/bg-saved.cfg ]; then
         gtkBackground=$(awk -F"/" '/file=/ {print $NF}' $XDG_CONFIG_HOME/nitrogen/bg-saved.cfg)
       fi
     fi
   ;;
   esac
-  if [ "$verbosity" -eq "1" ]; then
+  if [[ "$verbosity" -eq "1" ]]; then
     verboseOut "Finding GTK theme...found as '$gtkTheme'"
     verboseOut "Finding icon theme...found as '$gtkIcons'"
     verboseOut "Finding user font...found as '$gtkFont'"
@@ -369,7 +484,23 @@ detectgtk () {
 
 takeShot () {
   if [[ -z $screenCommand ]]; then
-    scrot -cd3 'screenFetch-%Y-%m-%d.png'
+    if [[ "$hostshot" == "1" ]]; then
+      scrot -cd3 "${shotfile}"
+      if [ -f "${shotfile}" ]; then
+      	[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
+      	scp -qo ConnectTimeout="${scptimeout}" "${shotfile}" "${serveraddr}:${serverdir}"
+      	echo -e "${bold}==>${c0} Your screenshot can be viewed at ${baseurl}/$shotfile"
+      else
+        verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+      fi
+    else
+      scrot -cd3 "${shotfile}"
+      if [ -f "${shotfile}" ]; then
+      	[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
+      else
+        verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+      fi
+    fi
   else
     $screenCommand
   fi
@@ -383,19 +514,19 @@ case $distro in
     [ -z $c1 ] && c1="\e[1;37m" # White
     c2="\e[1;34m" # Light Blue
     fulloutput=("$c1              __"
-"$c1          _=(SDGJT=_"
+"$c1          _=(SDGJT=_                  $myInfo"
 "$c1        _GTDJHGGFCVS)                $OS"
 "$c1       ,GTDJGGDTDFBGX0               $kernel"
 "$c1      JDJDIJHRORVFSBSVL$c2-=+=,_        $uptime"
-"$c1     IJFDUFHJNXIXCDXDSV,$c2  \"DEBL      $DE"
-"$c1    [LKDSDJTDU=OUSCSBFLD.$c2   '?ZWX,   $WM"
-"$c1   ,LMDSDSWH'     \`DCBOSI$c2     DRDS], $WM_theme"
-"$c1   SDDFDFH'         !YEWD,$c2   )HDROD  $GTK_theme"
-"$c1  !KMDOCG            &GSU|$c2\_GFHRGO\' $GTK_icons"
-"$c1  HKLSGP'$c2           __$c1\TKM0$c2\GHRBV)'  $GTK_font"
-"$c1 JSNRVW'$c2       __+MNAEC$c1\IOI,$c2\BN'     $GTK_bg"
-"$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)"
-"$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF"
+"$c1     IJFDUFHJNXIXCDXDSV,$c2  \"DEBL      $myShell"
+"$c1    [LKDSDJTDU=OUSCSBFLD.$c2   '?ZWX,   $xResolution"
+"$c1   ,LMDSDSWH'     \`DCBOSI$c2     DRDS], $DE"
+"$c1   SDDFDFH'         !YEWD,$c2   )HDROD  $WM"
+"$c1  !KMDOCG            &GSU|$c2\_GFHRGO\' $WM_theme"
+"$c1  HKLSGP'$c2           __$c1\TKM0$c2\GHRBV)'  $GTK_theme"
+"$c1 JSNRVW'$c2       __+MNAEC$c1\IOI,$c2\BN'     $GTK_icons"
+"$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)         $GTK_font"
+"$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF         $GTK_bg"
 "$c1 'EHTI                    !H"
 "$c1  \`0F'                    '!")
   ;;
@@ -406,19 +537,19 @@ case $distro in
     fulloutput=("${c1}                   -\`"
 "${c1}                  .o+\`"
 "${c1}                 \`ooo/"
-"${c1}                \`+oooo:"
+"${c1}                \`+oooo:               $myInfo"
 "${c1}               \`+oooooo:             $OS"
 "${c1}               -+oooooo+:            $kernel"
-"${c1}             \`/:-:++oooo+:           $DE"
-"${c1}            \`/++++/+++++++:          $WM"
-"${c1}           \`/++++++++++++++:         $WM_theme"
-"${c1}          \`/+++o"${c2}"oooooooo"${c1}"oooo/\`       $GTK_theme"
-"${c2}         "${c1}"./"${c2}"ooosssso++osssssso"${c1}"+\`      $GTK_icons"
-"${c2}        .oossssso-\`\`\`\`/ossssss+\`     $GTK_font"
-"${c2}       -osssssso.      :ssssssso.    $GTK_bg"
-"${c2}      :osssssss/        osssso+++."
-"${c2}     /ossssssss/        +ssssooo/-"
-"${c2}   \`/ossssso+/:-        -:/+osssso+-"
+"${c1}             \`/:-:++oooo+:           $uptime"
+"${c1}            \`/++++/+++++++:          $myShell"
+"${c1}           \`/++++++++++++++:         $xResolution"
+"${c1}          \`/+++o"${c2}"oooooooo"${c1}"oooo/\`       $DE"
+"${c2}         "${c1}"./"${c2}"ooosssso++osssssso"${c1}"+\`      $WM"
+"${c2}        .oossssso-\`\`\`\`/ossssss+\`     $WM_theme"
+"${c2}       -osssssso.      :ssssssso.    $GTK_theme"
+"${c2}      :osssssss/        osssso+++.   $GTK_icons"
+"${c2}     /ossssssss/        +ssssooo/-   $GTK_font"
+"${c2}   \`/ossssso+/:-        -:/+osssso+- $GTK_bg"
 "${c2}  \`+sso+:-\`                 \`.-/+oso:"
 "${c2} \`++:.                           \`-/+/"
 "${c2} .\`                                 \`/")
@@ -428,19 +559,19 @@ case $distro in
     [ -z $c1 ] && c1="\e[1;37m" # White
     c2="\e[1;32m" # Bold Green
     fulloutput=("$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
-"$c2 MMm----::-://////////////oymNMd+\`"
+"$c2 MMm----::-://////////////oymNMd+\`       $myInfo"
 "$c2 MMd      "$c1"/++                "$c2"-sNMd:   $OS"
 "$c2 MMNso/\`  "$c1"dMM    \`.::-. .-::.\` "$c2".hMN:  $kernel"
 "$c2 ddddMMh  "$c1"dMM   :hNMNMNhNMNMNh: "$c2"\`NMm  $uptime"
-"$c2     NMm  "$c1"dMM  .NMN/-+MMM+-/NMN\` "$c2"dMM  $DE"
-"$c2     NMm  "$c1"dMM  -MMm  \`MMM   dMM. "$c2"dMM  $WM"
-"$c2     NMm  "$c1"dMM  -MMm  \`MMM   dMM. "$c2"dMM  $WM_theme"
-"$c2     NMm  "$c1"dMM  .mmd  \`mmm   yMM. "$c2"dMM  $GTK_theme"
-"$c2     NMm  "$c1"dMM\`  ..\`   ...   ydm. "$c2"dMM  $GTK_icons"
-"$c2     hMM- "$c1"+MMd/-------...-:sdds  "$c2"dMM  $GTK_font"
-"$c2     -NMm- "$c1":hNMNNNmdddddddddy/\`  "$c2"dMM  $GTK_bg"
-"$c2      -dMNs-"$c1"\`\`-::::-------.\`\`    "$c2"dMM"
-"$c2       \`/dMNmy+/:-------------:/yMMM"
+"$c2     NMm  "$c1"dMM  .NMN/-+MMM+-/NMN\` "$c2"dMM  $myShell"
+"$c2     NMm  "$c1"dMM  -MMm  \`MMM   dMM. "$c2"dMM  $xResolution"
+"$c2     NMm  "$c1"dMM  -MMm  \`MMM   dMM. "$c2"dMM  $DE"
+"$c2     NMm  "$c1"dMM  .mmd  \`mmm   yMM. "$c2"dMM  $WM"
+"$c2     NMm  "$c1"dMM\`  ..\`   ...   ydm. "$c2"dMM  $WM_theme"
+"$c2     hMM- "$c1"+MMd/-------...-:sdds  "$c2"dMM  $GTK_theme"
+"$c2     -NMm- "$c1":hNMNNNmdddddddddy/\`  "$c2"dMM  $GTK_icons"
+"$c2      -dMNs-"$c1"\`\`-::::-------.\`\`    "$c2"dMM  $GTK_font"
+"$c2       \`/dMNmy+/:-------------:/yMMM  $GTK_bg"
 "$c2          ./ydNMMMMMMMMMMMMMMMMMMMMM")
   ;;
 
@@ -450,19 +581,19 @@ case $distro in
     c3="\e[1;33m" # Bold Yellow
     fulloutput=("$c2                          ./+o+-"
 "$c1                  yyyyy- $c2-yyyyyy+"
-"$c1               $c1://+//////$c2-yyyyyyo"
+"$c1               $c1://+//////$c2-yyyyyyo      $myInfo"
 "$c3           .++ $c1.:/++++++/-$c2.+sss/\`     $OS"
 "$c3         .:++o:  $c1/++++++++/:--:/-     $kernel"
 "$c3        o:+o+:++.$c1\`..\`\`\`.-/oo+++++/    $uptime"
-"$c3       .:+o:+o/.$c1          \`+sssoo+/   $DE"
-"$c1  .++/+:$c3+oo+o:\`$c1             /sssooo.  $WM"
-"$c1 /+++//+:$c3\`oo+o$c1               /::--:.  $WM_theme"
-"$c1 \+/+o+++$c3\`o++o$c2               ++////.  $GTK_theme"
-"$c1  .++.o+$c3++oo+:\`$c2             /dddhhh.  $GTK_icons"
-"$c3       .+.o+oo:.$c2          \`oddhhhh+   $GTK_font"
-"$c3        \+.++o+o\`\`-\`\`$c2\`\`.:ohdhhhhh+    $GTK_bg"
-"$c3         \`:o+++ $c2\`ohhhhhhhhyo++os:"
-"$c3           .o:$c2\`.syhhhhhhh/$c3.oo++o\`"
+"$c3       .:+o:+o/.$c1          \`+sssoo+/   $myShell"
+"$c1  .++/+:$c3+oo+o:\`$c1             /sssooo.  $xResolution"
+"$c1 /+++//+:$c3\`oo+o$c1               /::--:.  $DE"
+"$c1 \+/+o+++$c3\`o++o$c2               ++////.  $WM"
+"$c1  .++.o+$c3++oo+:\`$c2             /dddhhh.  $WM_theme"
+"$c3       .+.o+oo:.$c2          \`oddhhhh+   $GTK_theme"
+"$c3        \+.++o+o\`\`-\`\`$c2\`\`.:ohdhhhhh+    $GTK_icons"
+"$c3         \`:o+++ $c2\`ohhhhhhhhyo++os:     $GTK_font"
+"$c3           .o:$c2\`.syhhhhhhh/$c3.oo++o\`     $GTK_bg"
 "$c2               /osyyyyyyo$c3++ooo+++/"
 "$c2                   \`\`\`\`\` $c3+oo+++o\:"
 "$c3                          \`oo++.")
@@ -473,19 +604,19 @@ case $distro in
     c2="\e[1;31m" # Light Red
     fulloutput=("  $c1       _,met\$\$\$\$\$gg."
 "  $c1    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P."
-"  $c1  ,g\$\$P\"\"       \"\"\"Y\$\$.\"."
+"  $c1  ,g\$\$P\"\"       \"\"\"Y\$\$.\".       $myInfo"
 "  $c1 ,\$\$P'              \`\$\$\$.      $OS"
 "  $c1',\$\$P       ,ggs.     \`\$\$b:    $kernel"
 "  $c1\`d\$\$'     ,\$P\"\'   $c2.$c1    \$\$\$    $uptime"
-"  $c1 \$\$P      d\$\'     $c2,$c1    \$\$P    $DE"
-"  $c1 \$\$:      \$\$.   $c2-$c1    ,d\$\$'     $WM"
-"  $c1 \$\$\;      Y\$b._   _,d\$P'      $WM_theme"
-"  $c1 Y\$\$.    $c2\`.$c1\`\"Y\$\$\$\$P\"'          $GTK_theme"
-"  $c1 \`\$\$b      $c2\"-.__               $GTK_icons"
-"  $c1  \`Y\$\$                         $GTK_font"
-"  $c1   \`Y\$\$.                       $GTK_bg"
-"  $c1     \`\$\$b."
-"  $c1       \`Y\$\$b."
+"  $c1 \$\$P      d\$\'     $c2,$c1    \$\$P    $myShell"
+"  $c1 \$\$:      \$\$.   $c2-$c1    ,d\$\$'     $xResolution"
+"  $c1 \$\$\;      Y\$b._   _,d\$P'      $DE"
+"  $c1 Y\$\$.    $c2\`.$c1\`\"Y\$\$\$\$P\"'          $WM"
+"  $c1 \`\$\$b      $c2\"-.__               $WM_theme"
+"  $c1  \`Y\$\$                         $GTK_theme"
+"  $c1   \`Y\$\$.                       $GTK_icons"
+"  $c1     \`\$\$b.                     $GTK_font"
+"  $c1       \`Y\$\$b.                  $GTK_bg"
 "  $c1          \`\"Y\$b._"
 "  $c1              \`\"\"\"\"")
   ;;
@@ -494,19 +625,19 @@ case $distro in
     [ -z $c1 ] && c1="\e[1;37m" # White
     "\e[1;30m" # Dark Gray
     fulloutput=("$c1                ___       ___      _"
-"$c1               /  /      /  /     | |"
+"$c1               /  /      /  /     | |  $myInfo"
 "$c1              /  /      /  /      | | $OS"
 "$c1             /  /      /  /       | | $kernel"
 "$c1     _______/  /______/  /______  | | $uptime"
-"$c1    /______   _______   _______/  | | $DE"
-"$c1          /  /      /  /          | | $WM"
-"$c1         /  /      /  /           | | $WM_theme"
-"$c1        /  /      /  /            | | $GTK_theme"
-"$c1 ______/  /______/  /______       | | $GTK_icons"
-"$c1/_____   _______   _______/       | | $GTK_font"
-"$c1     /  /      /  /               |_| $GTK_bg"
-"$c1    /  /      /  /                 _"
-"$c1   /  /      /  /                 | |"
+"$c1    /______   _______   _______/  | | $myShell"
+"$c1          /  /      /  /          | | $xResolution"
+"$c1         /  /      /  /           | | $DE"
+"$c1        /  /      /  /            | | $WM"
+"$c1 ______/  /______/  /______       | | $WM_theme"
+"$c1/_____   _______   _______/       | | $GTK_theme"
+"$c1     /  /      /  /               |_| $GTK_icons"
+"$c1    /  /      /  /                 _  $GTK_font"
+"$c1   /  /      /  /                 | | $GTK_bg"
 "$c1  /__/      /__/                  |_|")
   ;;
 
@@ -515,19 +646,19 @@ case $distro in
     c2="\e[1;35m" # Light Purple
     fulloutput=("$c2         -/oyddmdhs+:."
 "$c2     -o"$c1"dNMMMMMMMMNNmhy+"$c2"-\`"
-"$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-"
+"$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-           $myInfo"
 "$c2 \`o"$c1"mMMMMMMMMMMMMNmdmmmmddhhy"$c2"/\`       $OS"
 "$c2 om"$c1"MMMMMMMMMMMN"$c2"hhyyyo"$c1"hmdddhhhd"$c2"o\`     $kernel"
 "$c2.y"$c1"dMMMMMMMMMMd"$c2"hs++so/s"$c1"mdddhhhhdm"$c2"+\`   $uptime"
-"$c2 oy"$c1"hdmNMMMMMMMN"$c2"dyooy"$c1"dmddddhhhhyhN"$c2"d.  $DE"
-"$c2  :o"$c1"yhhdNNMMMMMMMNNNmmdddhhhhhyym"$c2"Mh  $WM"
-"$c2    .:"$c1"+sydNMMMMMNNNmmmdddhhhhhhmM"$c2"my  $WM_theme"
-"$c2       /m"$c1"MMMMMMNNNmmmdddhhhhhmMNh"$c2"s:  $GTK_theme"
-"$c2    \`o"$c1"NMMMMMMMNNNmmmddddhhdmMNhs"$c2"+\`   $GTK_icons"
-"$c2  \`s"$c1"NMMMMMMMMNNNmmmdddddmNMmhs"$c2"/.     $GTK_font"
-"$c2 /N"$c1"MMMMMMMMNNNNmmmdddmNMNdso"$c2":\`       $GTK_bg"
-"$c2+M"$c1"MMMMMMNNNNNmmmmdmNMNdso"$c2"/-"
-"$c2yM"$c1"MNNNNNNNmmmmmNNMmhs+/"$c2"-\`"
+"$c2 oy"$c1"hdmNMMMMMMMN"$c2"dyooy"$c1"dmddddhhhhyhN"$c2"d.  $myShell"
+"$c2  :o"$c1"yhhdNNMMMMMMMNNNmmdddhhhhhyym"$c2"Mh  $xResolution"
+"$c2    .:"$c1"+sydNMMMMMNNNmmmdddhhhhhhmM"$c2"my  $DE"
+"$c2       /m"$c1"MMMMMMNNNmmmdddhhhhhmMNh"$c2"s:  $WM"
+"$c2    \`o"$c1"NMMMMMMMNNNmmmddddhhdmMNhs"$c2"+\`   $WM_theme"
+"$c2  \`s"$c1"NMMMMMMMMNNNmmmdddddmNMmhs"$c2"/.     $GTK_theme"
+"$c2 /N"$c1"MMMMMMMMNNNNmmmdddmNMNdso"$c2":\`       $GTK_icons"
+"$c2+M"$c1"MMMMMMNNNNNmmmmdmNMNdso"$c2"/-          $GTK_font"
+"$c2yM"$c1"MNNNNNNNmmmmmNNMmhs+/"$c2"-\`              $GTK_bg"
 "$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`"
 "$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`"
 "$c2  \`-//////:--.")
@@ -539,19 +670,19 @@ case $distro in
     fulloutput=("$c2           :/------------://"
 "$c2        :------------------://"
 "$c2      :-----------"$c1"/shhdhyo/"$c2"-://"
-"$c2    /-----------"$c1"omMMMNNNMMMd/"$c2"-:/"
+"$c2    /-----------"$c1"omMMMNNNMMMd/"$c2"-:/      $myInfo"
 "$c2   :-----------"$c1"sMMMdo:/"$c2"       -:/    $OS"
 "$c2  :-----------"$c1":MMMd"$c2"-------    --:/   $kernel"
 "$c2  /-----------"$c1":MMMy"$c2"-------    ---/   $uptime"
-"$c2 :------    --"$c1"/+MMMh/"$c2"--        ---:  $DE"
-"$c2 :---     "$c1"oNMMMMMMMMMNho"$c2"     -----:  $WM"
-"$c2 :--      "$c1"+shhhMMMmhhy++"$c2"   ------:   $WM_theme"
-"$c2 :-      -----"$c1":MMMy"$c2"--------------/   $GTK_theme"
-"$c2 :-     ------"$c1"/MMMy"$c2"-------------:    $GTK_icons"
-"$c2 :-      ----"$c1"/hMMM+"$c2"------------:     $GTK_font"
-"$c2 :--"$c1":dMMNdhhdNMMNo"$c2"-----------:       $GTK_bg"
-"$c2 :---"$c1":sdNMMMMNds:"$c2"----------:"
-"$c2 :------"$c1":://:"$c2"-----------://"
+"$c2 :------    --"$c1"/+MMMh/"$c2"--        ---:  $myShell"
+"$c2 :---     "$c1"oNMMMMMMMMMNho"$c2"     -----:  $xResolution"
+"$c2 :--      "$c1"+shhhMMMmhhy++"$c2"   ------:   $DE"
+"$c2 :-      -----"$c1":MMMy"$c2"--------------/   $WM"
+"$c2 :-     ------"$c1"/MMMy"$c2"-------------:    $WM_theme"
+"$c2 :-      ----"$c1"/hMMM+"$c2"------------:     $GTK_theme"
+"$c2 :--"$c1":dMMNdhhdNMMNo"$c2"-----------:       $GTK_icons"
+"$c2 :---"$c1":sdNMMMMNds:"$c2"----------:         $GTK_font"
+"$c2 :------"$c1":://:"$c2"-----------://          $GTK_bg"
 "$c2 :--------------------://")
   ;;
 
@@ -562,19 +693,19 @@ case $distro in
 "$c2             /(        )\`"
 "$c2             \ \___   / |"
 "$c2             /- "$c1"_$c2  \`-/  '"
-"$c2            ($c1/\/ \ $c2\   /\\"
+"$c2            ($c1/\/ \ $c2\   /\\       $myInfo"
 "$c1            / /   |$c2 \`    \\     $OS"
 "$c1            O O   )$c2 /    |     $kernel"
 "$c1            \`-^--'\`$c2<     '     $uptime"
-"$c2           (_.)  _  )   /      $DE"
-"$c2            \`.___/\`    /       $WM"
-"$c2              \`-----' /        $WM_theme"
-"$c1 <----.     "$c2"__/ __   \\         $GTK_theme"
-"$c1 <----|===="$c2"O}}}$c1==$c2} \} \/$c1====   $GTK_icons"
-"$c1 <----'    $c2\`--' \`.__,' \\       $GTK_font"
-"$c2              |        |       $GTK_bg"
-"$c2               \       /       /\\"
-"$c2          ______( (_  / \______/"
+"$c2           (_.)  _  )   /      $myShell"
+"$c2            \`.___/\`    /       $xResolution"
+"$c2              \`-----' /        $DE"
+"$c1 <----.     "$c2"__/ __   \\         $WM"
+"$c1 <----|===="$c2"O}}}$c1==$c2} \} \/$c1====   $WM_theme"
+"$c1 <----'    $c2\`--' \`.__,' \\       $GTK_theme"
+"$c2              |        |       $GTK_icons"
+"$c2               \       /       /\\ $GTK_font"
+"$c2          ______( (_  / \______/  $GTK_bg"
 "$c2        ,'  ,-----'   |"
 "$c2        \`--{__________)")
   ;;
@@ -583,12 +714,12 @@ case $distro in
     c1="\e[1;34m" # Light Blue
     c2="\e[1;33m" # Bold Yellow
     fulloutput=("$c2                         \`\`"
-"$c2                        \`-."
-"$c1       \`               $c2.---"
-"$c1     -/               $c2-::--\`"
-"$c1   \`++    $c2\`----...\`\`\`-:::::.               $OS"
-"$c1  \`os.      $c2.::::::::::::::-\`\`\`     \`  \`   $kernel"
-"$c1  +s+         $c2.::::::::::::::::---...--\`   $uptime"
+"$c2                        \`-.                 $myInfo"
+"$c1       \`               $c2.---                $OS"
+"$c1     -/               $c2-::--\`               $kernel"
+"$c1   \`++    $c2\`----...\`\`\`-:::::.               $uptime"
+"$c1  \`os.      $c2.::::::::::::::-\`\`\`     \`  \`   $myShell"
+"$c1  +s+         $c2.::::::::::::::::---...--\`   $xResolution"
 "$c1 -ss:          $c2\`-::::::::::::::::-.\`\`.\`\`   $DE"
 "$c1 /ss-           $c2.::::::::::::-.\`\`   \`      $WM"
 "$c1 +ss:          $c2.::::::::::::-              $WM_theme"
@@ -604,19 +735,19 @@ case $distro in
     c2="\e[1;31m" # Light Red
     fulloutput=("$c2              \`.-..........\`"
 "$c2             \`////////::.\`-/."
-"$c2             -: ....-////////."
+"$c2             -: ....-////////.               $myInfo"
 "$c2             //:-::///////////\`             $OS"
 "$c2      \`--::: \`-://////////////:             $kernel"
 "$c2      //////-    \`\`.-:///////// .\`          $uptime"
-"$c2      \`://////:-.\`    :///////::///:\`       $DE"
-"$c2        .-/////////:---/////////////:       $WM"
-"$c2           .-://////////////////////.       $WM_theme"
-"$c1          yMN+\`.-$c2::///////////////-\`        $GTK_theme"
-"$c1       .-\`:NMMNMs\`  \`..-------..\`           $GTK_icons"
-"$c1        MN+/mMMMMMhoooyysshsss              $GTK_font"
-"$c1 MMM    MMMMMMMMMMMMMMyyddMMM+              $GTK_bg"
-"$c1  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM"
-"$c1   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM"
+"$c2      \`://////:-.\`    :///////::///:\`       $myShell"
+"$c2        .-/////////:---/////////////:       $xResolution"
+"$c2           .-://////////////////////.       $DE"
+"$c1          yMN+\`.-$c2::///////////////-\`        $WM"
+"$c1       .-\`:NMMNMs\`  \`..-------..\`           $WM_theme"
+"$c1        MN+/mMMMMMhoooyysshsss              $GTK_theme"
+"$c1 MMM    MMMMMMMMMMMMMMyyddMMM+              $GTK_icons"
+"$c1  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM   $GTK_font"
+"$c1   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM    $GTK_bg"
 "$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM")
   ;;
 
@@ -624,18 +755,20 @@ case $distro in
     [ -z $c1 ] && c1="\e[1;37m" # White
     c2="\e[1;30m" # Light Gray
     c3="\e[1;33m" # Light Yellow
-    fulloutput=("$c2         #####$c0"
-"$c2        #######"
-"$c2        ##"$c1"O$c2#"$c1"O$c2##             $OS"
-"$c2        #$c3#####$c2#             $kernel"
-"$c2      ##$c1##$c3###$c1##$c2##           $uptime"
+    fulloutput=("                             $myInfo"
+"$c2         #####$c0              $OS"
+"$c2        #######             $kernel"
+"$c2        ##"$c1"O$c2#"$c1"O$c2##             $uptime"
+"$c2        #$c3#####$c2#             $myShell"
+"$c2      ##$c1##$c3###$c1##$c2##           $xResolution"
 "$c2     #$c1##########$c2##          $DE"
 "$c2    #$c1############$c2##         $WM"
 "$c2    #$c1############$c2###        $WM_theme"
 "$c3   ##$c2#$c1###########$c2##$c3#        $GTK_theme"
 "$c3 ######$c2#$c1#######$c2#$c3######      $GTK_icons"
 "$c3 #######$c2#$c1#####$c2#$c3#######      $GTK_font"
-"$c3   #####$c2#######$c3#####        $GTK_bg $c0")
+"$c3   #####$c2#######$c3#####        $GTK_bg"
+"$c0")
   ;;
 esac
 
@@ -680,18 +813,24 @@ infoDisplay () {
       *) labelcolor="\e[1;33m";;
     esac
   fi
+  # Some verbosity stuff
+  [[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
+  [[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
   # Info Variable Setting
   sysArch=`uname -m`
+  myInfo="${labelcolor}${myUser}$textcolor$bold@${labelcolor}${myHost}"
   OS="$labelcolor OS:$textcolor $distro $sysArch"
   kernel="$labelcolor Kernel:$textcolor $kernel"
   uptime="$labelcolor Uptime:$textcolor $uptime"
+  myShell="$labelcolor Shell:$textcolor $myShell"
+  xResolution="$labelcolor Resolution:${textcolor}${xResolution}"
   DE="$labelcolor DE:$textcolor $DE"
   WM="$labelcolor WM:$textcolor $WM"
   WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
   GTK_theme="$labelcolor GTK Theme:$textcolor $gtkTheme"
   GTK_icons="$labelcolor Icon Theme:$textcolor $gtkIcons"
   GTK_font="$labelcolor Font:$textcolor $gtkFont"
-  if [ $gtkBackground ]; then
+  if [ "$gtkBackground" ]; then
     GTK_bg="$labelcolor BG:$textcolor $gtkBackground"
   fi
   if [[ "$display" =~ "ASCII" ]]; then
@@ -700,6 +839,8 @@ infoDisplay () {
     echo -e "$OS" 
     echo -e "$kernel"
     echo -e "$uptime"
+    echo -e "$myShell"
+    echo -e "$xResolution"
     echo -e "$DE"
     echo -e "$WM"
     echo -e "$WM_theme"
@@ -709,16 +850,128 @@ infoDisplay () {
   fi
 }
 
+########
+# Theme Exporting (Experimental!)
+########
+themeExport () {
+  WM=$(echo "$WM" | awk '{print $NF}')
+  if [[ ! -d /tmp/screenfetch-export ]]; then mkdir -p "/tmp/screenfetch-export/Icons" & mkdir -p "/tmp/screenfetch-export/GTK-Theme" & mkdir -p "/tmp/screenfetch-export/WM-${WM}" ; fi
+  if [[ "$WM" ]]; then
+    if [[ "$WM" =~ "Openbox" ]]; then
+      if [[ "$Win_theme" != "Not Found" ]]; then
+        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
+      fi
+    elif [[ "$WM" =~ "Fluxbox" ]]; then
+      if [[ "$Win_theme" != "Not Found" ]]; then
+        if [[ -d "$HOME/.fluxbox/styles/$Win_theme" ]]; then
+          cp -r "$HOME/.fluxbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
+      fi
+    elif [[ "$WM" =~ "Blackbox" ]]; then
+      if [[ "$Win_theme" != "Not Found" ]]; then
+        if [[ -d "$HOME/.blackbox/styles/$Win_theme" ]]; then
+          cp -r "$HOME/.blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        elif [[ -d "/usr/share/blackbox/styles/$Win_theme" ]]; then
+          cp -r "/usr/share/blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
+      fi
+    elif [[ "$WM" =~ "PekWM" ]]; then
+      if [[ "$Win_theme" != "Not Found" ]]; then
+        if [[ -d "$HOME/.pekwm/themes/$Win_theme" ]]; then
+          cp -r "$HOME/.pekwm/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
+      fi
+    elif [[ "$WM" =~ "Metacity" ]]; then
+      if [[ "$Win_theme" != "Not Found" ]]; then
+        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
+          cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
+      fi
+    elif [[ "$WM" =~ "Xfwm4" ]]; then
+      if [[ "$Win_theme" != "Not Found" ]]; then
+        WM_theme=$(echo "$Win_theme" | awk '{print $NF}')
+        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
+          cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
+      fi
+    fi
+  fi
+  if [[ "$gtkBackgroundFull" ]]; then
+    cp "$gtkBackgroundFull" /tmp/screenfetch-export/
+    [[ "$verbosity" -eq "1" ]] && verboseOut "Found BG file. Transferring to /tmp/screenfetch-export/..."
+  fi
+  if [[ "$GTK_theme" ]]; then
+    GTK_theme=$(echo "$GTK_theme" | awk '{print $NF}')
+    if [ -d "/usr/share/themes/$GTK_theme" ]; then
+      cp -r "/usr/share/themes/$GTK_theme" "/tmp/screenfetch-export/GTK/Theme/$GTK_theme" &>/dev/null
+      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK theme folder. Transferring to /tmp/screenfetch-export/..."
+    fi
+  fi
+  if [[ "$GTK_icons" ]]; then
+    GTK_icons=$(echo "$GTK_icons" | awk '{print $NF}')
+    if [ -d "/usr/share/icons/$GTK_icons" ]; then
+      cp -r "/usr/share/icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
+      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+    fi
+    if [ -d "$HOME/.icons/$GTK_icons" ]; then
+      cp -r "$HOME/.icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
+      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+    fi
+  fi
+  if [[ "$GTK_font" ]]; then
+    GTK_font=$(echo "$GTK_font" | awk '{print $NF}')
+    if [ -d "/usr/share/fonts/$GTK_font" ]; then
+      cp -r "/usr/share/fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
+      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+    elif [ -d "$HOME/.fonts/$GTK_font" ]; then
+      cp -r "$HOME/.fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
+      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+    fi
+  fi
+  if [ "$screenshot" == "1" ]; then
+    if [ -f "${shotfile}" ]; then
+      cp "${shotfile}" "/tmp/screenfetch-export/"
+      [[ "$verbosity" -eq "1" ]] && verboseOut "Found screenshot. Transferring to /tmp/screenfetch-export/..."
+    fi
+  fi
+  cd /tmp/screenfetch-export/
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Creating screenfetch-export.tar.gz archive in /tmp/screenfetch-export/...."
+  tar -czf screenfetch-export.tar.gz ../screenfetch-export &>/dev/null
+  mv /tmp/screenfetch-export/screenfetch-export.tar.gz $HOME/
+  echo -e "${bold}==>${c0} Archive created in /tmp/ and moved to $HOME. Removing /tmp/screenfetch-export/..."
+  rm -rf /tmp/screenfetch-export/
+}
+
+
 ##################
 # Let's Do This!
 ##################
 
+[[ "$display" =~ "Host" ]] && detecthost
 [[ "$display" =~ "OS" ]] && detectdistro
 [[ "$display" =~ "Kernel" ]] && detectkernel
 [[ "$display" =~ "Uptime" ]] && detectuptime
+[[ "$display" =~ "Shell" ]] && detectshell
+[[ "$display" =~ "Resolution" ]] && detectres
 [[ "$display" =~ "DE" ]] && detectde
 [[ "$display" =~ "WM" ]] && detectwm
 [[ "$display" =~ "Win_theme" ]] && detectwmtheme
 [[ "$display" =~ "Theme" ]] && detectgtk
 infoDisplay
-[ "$screenshot" -eq "1" ] && takeShot
+[ "$screenshot" == "1" ] && takeShot
+[ "$exportTheme" == "1" ] && themeExport
