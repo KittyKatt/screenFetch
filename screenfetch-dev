@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# screenFetch (v2.1.3)
+# screenFetch (v2.1.5)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -15,7 +15,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.1.3"
+scriptVersion="2.1.5"
 
 ######################
 # Settings for fetcher
@@ -49,7 +49,7 @@ baseurl="http://www.example.com"
 serveraddr="www.example.com"
 scptimeout="20"
 serverdir="/path/to/directory"
-shotfile=$(echo "screenFetch-`date +'%Y-%m-%d'`.png")
+shotfile=$(echo "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
@@ -199,7 +199,10 @@ detectdistro () {
     fi
     if [ -f /etc/debian_version ]; then distro="Debian"; fi
     if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
-    if grep -i mint /etc/lsb-release >/dev/null 2>&1; then distro="Linux Mint"; fi
+    if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
+      if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="Linux Mint (Debian)"
+      else distro="Linux Mint"; fi
+    fi
     if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
     if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
     if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
@@ -261,7 +264,7 @@ detectres () {
     IFS=$'\n'     # new field separator, the end of line   
     for line in $(xdpyinfo | grep dim)
     do
-      if [[ -z $xResolution ]]; then
+      if [ "$xResolution" ]; then
         xSingleres=$(echo "$line" | awk '/  dimensions:  /{print $2}' | sed 's/^ //')
         xResolution=$(echo "$xResolution $xSingleres")
       else
@@ -562,7 +565,7 @@ case $distro in
 "${c2} .\`                                 \`/")
   ;;
 
-  "Linux Mint")
+  "Linux Mint"|"Linux Mint (Debian)")
     [ -z $c1 ] && c1="\e[1;37m" # White
     c2="\e[1;32m" # Bold Green
     fulloutput=("$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
@@ -813,7 +816,7 @@ infoDisplay () {
     case $distro in
       "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
       "Arch Linux") labelcolor="\e[1;36m";;
-      "Linux Mint") labelcolor="\e[1;32m";;
+      "Linux Mint"|"Linux Mint (Debian)") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "Crunchbang"|"Crunchbang Statler") labelcolor="\e[1;30m";;
       "Gentoo") labelcolor="\e[1;35m";;
