@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# screenFetch (v2.1.5)
+# screenFetch (v2.1.7)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -15,7 +15,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.1.5"
+scriptVersion="2.1.7"
 
 ######################
 # Settings for fetcher
@@ -189,33 +189,35 @@ detecthost () {
 detectdistro () {
   if [[ -z $distro ]]; then
     distro="Unknown"
-    if grep -i debian /etc/lsb-release >/dev/null 2>&1; then
-      if which lsb-release >/dev/null 2>&1; then
-        lsbOut=$(lsb-release -i)
-        [[ "$lsbOut" =~ "Crunchbang" ]] && distro="Crunchbang"
-      else
-        distro="Debian"
+    if which lsb_release >/dev/null 2>&1; then
+      distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
+      if [ "$distro_detect" == "Arch" ]; then distro="Arch Linux"; fi
+      if [ "$distro_detect" == "Debian" ]; then distro="Debian" && distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g'); fi
+      if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint" && distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g'); fi
+      if [ "$distro_detect" == "Fedora" ]; then distro="Fedora" && distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g'); fi
+      if [ "$distro_detect" == "Crunchbang" ]; then distro="Crunchbang" && distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g'); fi
+      if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu" && distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g'); fi
+    else
+      if [ -f /etc/debian_version ]; then distro="Debian"; fi
+      if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
+      if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
+        if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="Mint (Debian)"
+        else distro="Mint"; fi
       fi
+      if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
+      if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
+      if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
+      if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
+      if [ -f /etc/SUSE-release ]; then distro="SUSE"; fi
+      if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
+      if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
+      if [ -f /etc/crunchbang-lsb-release ]; then distro="Crunchbang"; fi
+      if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
+      if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
+      if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
     fi
-    if [ -f /etc/debian_version ]; then distro="Debian"; fi
-    if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
-    if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
-      if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="Linux Mint (Debian)"
-      else distro="Linux Mint"; fi
-    fi
-    if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
-    if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
-    if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
-    if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-    if [ -f /etc/SUSE-release ]; then distro="SUSE"; fi
-    if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
-    if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
-    if [ -f /etc/crunchbang-lsb-release ]; then distro="Crunchbang"; fi
-    if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-    if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
-    if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
   fi
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro'"
+  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
 
@@ -259,19 +261,8 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
-  if [[ `ps ax | grep bin/X` ]]; then
-    old_IFS=$IFS      # save the field separator   
-    IFS=$'\n'     # new field separator, the end of line   
-    for line in $(xdpyinfo | grep dim)
-    do
-      if [ "$xResolution" ]; then
-        xSingleres=$(echo "$line" | awk '/  dimensions:  /{print $2}' | sed 's/^ //')
-        xResolution=$(echo "$xResolution $xSingleres")
-      else
-        xResolution=$(echo "$line" | awk '/  dimensions:  /{print $2}' | sed 's/^ //')
-      fi
-    done
-    IFS=$old_IFS     # restore default field separator 
+  if [[ -n $DISPLAY ]]; then
+        xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
   else
     xResolution="Not Found"
   fi
@@ -439,7 +430,7 @@ detectgtk () {
       fi
 
       if [[ "$display" =~ "Font" ]] && grep -q font $HOME/.gtkrc-2.0; then
-          gtkFont=$(awk -F'"' '/font/ {print $2}' $HOME/.gtkrc-2.0)
+          gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
       fi
     # LXDE
     elif [ -f $HOME/.config/lxde/config ]; then
@@ -565,7 +556,7 @@ case $distro in
 "${c2} .\`                                 \`/")
   ;;
 
-  "Linux Mint"|"Linux Mint (Debian)")
+  "Mint"|"Mint (Debian)")
     [ -z $c1 ] && c1="\e[1;37m" # White
     c2="\e[1;32m" # Bold Green
     fulloutput=("$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
@@ -816,7 +807,7 @@ infoDisplay () {
     case $distro in
       "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
       "Arch Linux") labelcolor="\e[1;36m";;
-      "Linux Mint"|"Linux Mint (Debian)") labelcolor="\e[1;32m";;
+      "Mint"|"Mint (Debian)") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "Crunchbang"|"Crunchbang Statler") labelcolor="\e[1;30m";;
       "Gentoo") labelcolor="\e[1;35m";;
@@ -829,11 +820,12 @@ infoDisplay () {
   # Info Variable Setting
   sysArch=`uname -m`
   myInfo="${labelcolor}${myUser}$textcolor$bold@${labelcolor}${myHost}"
-  OS="$labelcolor OS:$textcolor $distro $sysArch"
+  if [ -n "$distro_release" ]; then OS="$labelcolor OS:$textcolor $distro $distro_release $sysArch"
+  else OS="$labelcolor OS:$textcolor $distro $sysArch"; fi
   kernel="$labelcolor Kernel:$textcolor $kernel"
   uptime="$labelcolor Uptime:$textcolor $uptime"
   myShell="$labelcolor Shell:$textcolor $myShell"
-  xResolution="$labelcolor Resolution:${textcolor}${xResolution}"
+  xResolution="$labelcolor Resolution:${textcolor} $xResolution"
   DE="$labelcolor DE:$textcolor $DE"
   WM="$labelcolor WM:$textcolor $WM"
   WM_theme="$labelcolor WM Theme:$textcolor $Win_theme"
