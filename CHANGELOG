@@ -3,6 +3,30 @@
     changelog
 **** **** **** ****
 
+
+v2.1.3 (HOLY SHIT BIG CHANGES)
+  - Added shitload of new features. Keep reading.
+  - Added function to set script variables on commandline execution. (i.e. screenfetch-dev -o 'baseurl="http://www.example.com"')
+  - Added function to set display info on commandline execution. (i.i. screenfetch-dev -d 'Host, OS, Kernel, Uptime, Theme, Icons')
+  - Added function to export theme if wanted upon execution. Currently only supports the following window managers:  PekWM, OpenBox, BlackBox, FluxBox, Metacity (kind of), Xfwm4 (kind of).
+    This is a really big addition, and quite experimental. Things that are currently sought out and exported are the following:  GTK Theme Folder, Icon Theme Folder, WM Theme Folder, Background
+    Image, and screenshot taken by screenfetch. If you would like anything else exported with this let me know and I'll see what I can do.
+  - Added function to upload screenshot taken to server you have ssh access on after info is displayed. MUST set baseurl, serveraddr, and serverdir variables for this to work. See -o flag.
+  - Added new support for detecting the following window managers:  Musca, i3, Ratpoison, wmii, Wmfs, ScrotWM, and Beryl.
+  - Attempted to fix XFCE detection by limiting the processes that result in XFCE to only "xfce4-desktop". Dunno if this will work or not. Email me.
+  - Added function to detect hostname and user. Displayed in info output.
+  - Added function to detect resolution. Displayed in info output. Untested, and possibly not working, on multiple monitor setups. Email me.
+  - Added function to detect working shell. Might also add function to detect terminal type in the future.
+  - Fixed bug in GNOME background output. Was outputing entire pathname. Now only outputs the filename of the image.
+  - Replaced old Arch Linux logo with new updated one. Don't really like the new one, but it was popular demand. Old one is still available through -D with the 'Arch Linux - Old' argument for
+    those of us that are old school.
+
+ .... oh shit didn't update this ....
+
+v1.8.4
+ - Added experimental Compiz detection (WM and theme)
+ - Added experimental StumpWM detection (Just WM). Thanks to gtklocker for this part.
+
 v1.8.3
  - Added the groundwork for background support, terminal width detection (and thus truncating upon being over this width), and a couple other things I can't remember at the moment.
  - Gonna update a couple of the ASCII arts. :D
