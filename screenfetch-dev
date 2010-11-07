@@ -14,7 +14,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.2.0"
+scriptVersion="2.2.1"
 
 ######################
 # Settings for fetcher
@@ -34,7 +34,7 @@ display_type="ASCII"
 # labelcolor="\e[1;34m"
 
 # WM & DE process names
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm compiz xmonad musca i3 ratpoison scrotwm wmfs wmii beryl"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm compiz xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 sawfish"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Export theme settings
@@ -95,7 +95,8 @@ while getopts ":hsmevVntlc:D:o:" flags; do
       echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
       echo -e "			      Metacity, Compiz, StumpWM, KWin, IceWM, FVWM,"
       echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
-      echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, and Beryl."
+      echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, SubtleWM,"
+      echo -e "			      and Beryl."
       echo ""
       echo -e "${underline}Options${c0}:"
       echo -e "   ${bold}-v${c0}                 Verbose output."
@@ -323,6 +324,9 @@ detectwm () {
 	'scrotwm') WM="ScrotWM";;
 	'wmfs') WM="WMFS";;
 	'wmii') WM="wmii";;
+	'subtle') WM="SubtleWM";;
+	'e16') WM="E16";;
+        'sawfish') WM="Sawfish";;
 	'beryl') WM="Beryl";;
       esac
     fi
@@ -357,6 +361,9 @@ detectwmtheme () {
     'ScrotWM') Win_theme="Not Present";;
     'WMFS') Win_theme="Not Present";;
     'wmii') Win_theme="Not Present";;
+    'SubtleWM') Win_theme="Not Present";;
+    'E16') Win_theme=$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg);;
+    'Sawfish') Win_theme=$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //');;
     'Beryl') Win_theme="Not Present";;
     esac
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
