@@ -14,7 +14,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.2.1"
+scriptVersion="2.2.3"
 
 ######################
 # Settings for fetcher
@@ -409,10 +409,12 @@ detectgtk () {
           if which gconftool-2 >/dev/null 2>&1; then
             gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
           fi
-          if which gconftool-2 >/dev/null 2>&1; then
-            gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
-	    gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
-          fi
+	  if ("$background_detect" = "yes"); then
+            if which gconftool-2 >/dev/null 2>&1; then
+              gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
+  	      gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
+            fi
+	  fi
   ;;
   'XFCE')  # Desktop Environment found as "XFCE"
          if which xfconf-query >/dev/null 2>&1; then
@@ -471,11 +473,13 @@ detectgtk () {
       gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
     fi
     # Background Detection (feh, nitrogen)
-    if [ -a $HOME/.fehbg ]; then
-      gtkBackgroundFull=$(awk -F"'" '/feh --bg/{print $2}' $HOME/.fehbg 2>/dev/null)
-      gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
-    elif [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]; then
-      gtkBackground=$(awk -F"/" '/file=/ {print $NF}' ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg)
+    if ("$background_detect" = "yes"); then
+      if [ -a $HOME/.fehbg ]; then
+        gtkBackgroundFull=$(awk -F"'" '/feh --bg/{print $2}' $HOME/.fehbg 2>/dev/null)
+        gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
+      elif [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]; then
+        gtkBackground=$(awk -F"/" '/file=/ {print $NF}' ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg)
+      fi
     fi
   ;;
   esac
