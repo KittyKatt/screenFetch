@@ -80,7 +80,7 @@ display_index=0
 # Begin Flags Phase
 #####################
 
-while getopts ":hsmevVntlc:D:o:" flags; do
+while getopts ":hsmevVntlc:D:o:B" flags; do
   case $flags in
     h)
       echo -e "${underline}Usage${c0}:"
@@ -113,6 +113,7 @@ while getopts ":hsmevVntlc:D:o:" flags; do
       echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
       echo -e "		      to take a screenshot. Use the -m flag if you would like"
       echo -e "		      to move it to a new location afterwards."
+      echo -e "	  ${bold}-B${c0}		 Enable background detection."
       echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
       echo -e "		      to export all of your theme settings and archive them"
       echo -e "		      up for uploading."
@@ -146,6 +147,7 @@ warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     o) overrideOpts=$OPTARG; continue;;
     # d) overrideDisplay=$OPTARG; continue;;
     l) c1="\e[1;30m";;
+    B) background_detect="1"; continue;;
     :) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
     ?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
     *) errorOut "Error"; exit;;
@@ -409,7 +411,7 @@ detectgtk () {
           if which gconftool-2 >/dev/null 2>&1; then
             gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
           fi
-	  if ("$background_detect" = "yes"); then
+	  if [ "$background_detect" == "1" ]; then
             if which gconftool-2 >/dev/null 2>&1; then
               gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
   	      gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
@@ -473,7 +475,7 @@ detectgtk () {
       gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
     fi
     # Background Detection (feh, nitrogen)
-    if ("$background_detect" = "yes"); then
+    if [ "$background_detect" == "1" ]; then
       if [ -a $HOME/.fehbg ]; then
         gtkBackgroundFull=$(awk -F"'" '/feh --bg/{print $2}' $HOME/.fehbg 2>/dev/null)
         gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
