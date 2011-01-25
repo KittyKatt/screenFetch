@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.2.4)
+# screenFetch (v2.2.7)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -14,7 +14,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.2.4"
+scriptVersion="2.2.7"
 
 ######################
 # Settings for fetcher
@@ -209,7 +209,7 @@ detectdistro () {
       if [ -f /etc/debian_version ]; then distro="Debian"; fi
       if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
       if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
-        if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="Mint (Debian)"
+        if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="LMDE"
         else distro="Mint"; fi
       fi
       if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
@@ -568,7 +568,7 @@ case $distro in
 "${c2} .\`                                 \`/")
   ;;
 
-  "Mint"|"Mint (Debian)")
+  "Mint")
     [ -z $c1 ] && c1="\e[1;37m" # White
     c2="\e[1;32m" # Bold Green
     startline="1"
@@ -587,6 +587,30 @@ case $distro in
 "$c2      -dMNs-"$c1"\`\`-::::-------.\`\`    "$c2"dMM  %s"
 "$c2       \`/dMNmy+/:-------------:/yMMM  %s"
 "$c2          ./ydNMMMMMMMMMMMMMMMMMMMMM")
+  ;;
+
+
+  "LMDE")
+    [ -z $c1 ] && c1="\e[1;37m" # White
+    c2="\e[1;32m" # Bold Green
+    startline="2"
+    fulloutput=("          "${c1}"\`.-::---.."
+"${c2}       .:++++ooooosssoo:."
+"${c2}     .+o++::.      \`.:oos+.     %s"
+"${c2}    :oo:.\`             -+oo"${c1}":   %s"
+"${c2}  "${c1}"\`"${c2}"+o/\`    ."${c1}"::::::"${c2}"-.    .++-"${c1}"\`  %s"
+"${c2} "${c1}"\`"${c2}"/s/    .yyyyyyyyyyo:   +o-"${c1}"\`  %s"
+"${c2} "${c1}"\`"${c2}"so     .ss       ohyo\` :s-"${c1}":  %s"
+"${c2} "${c1}"\`"${c2}"s/     .ss  h  m  myy/ /s\`"${c1}"\`  %s"
+"${c2} \`s:     \`oo  s  m  Myy+-o:\`   %s"
+"${c2} \`oo      :+sdoohyoydyso/.     %s"
+"${c2}  :o.      .:////////++:       %s"
+"${c2}  \`/++        "${c1}"-:::::-          %s"
+"${c2}   "${c1}"\`"${c2}"++-                        %s"
+"${c2}    "${c1}"\`"${c2}"/+-                       %s"
+"${c2}      "${c1}"."${c2}"+/.                     %s"
+"${c2}        "${c1}"."${c2}":+-."
+"${c2}           \`--.\`\`")
   ;;
 
   "Ubuntu")
@@ -623,8 +647,8 @@ case $distro in
 "  $c1  ,g\$\$P\"\"       \"\"\"Y\$\$.\".       %s"
 "  $c1 ,\$\$P'              \`\$\$\$.      %s"
 "  $c1',\$\$P       ,ggs.     \`\$\$b:    %s"
-"  $c1\`d\$\$'     ,\$P\"\'   $c2.$c1    \$\$\$    %s"
-"  $c1 \$\$P      d\$\'     $c2,$c1    \$\$P    %s"
+"  $c1\`d\$\$'     ,\$P\"\'   $c2.$c1    \$\$\$     %s"
+"  $c1 \$\$P      d\$\'     $c2,$c1    \$\$P     %s"
 "  $c1 \$\$:      \$\$.   $c2-$c1    ,d\$\$'     %s"
 "  $c1 \$\$\;      Y\$b._   _,d\$P'      %s"
 "  $c1 Y\$\$.    $c2\`.$c1\`\"Y\$\$\$\$P\"'          %s"
@@ -834,7 +858,7 @@ infoDisplay () {
     case $distro in
       "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
       "Arch Linux") labelcolor="\e[1;36m";;
-      "Mint"|"Mint (Debian)") labelcolor="\e[1;32m";;
+      "Mint"|"LMDE") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "CrunchBang") labelcolor="\e[1;30m";;
       "Gentoo") labelcolor="\e[1;35m";;
