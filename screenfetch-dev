@@ -288,12 +288,9 @@ detectres () {
 # DE Detection - Begin
 detectde () {
   DE="Not Present"
-    userId="$(id -u ${USER})"
     for each in $denames; do
-      PID="$(pgrep -U ${userId} $each)"
-      if [ "$PID" ]; then
+      if [[ `ps aux` =~ "$each" ]]; then
         [ "$each" == "gnome-session" -o "$each" == "gnome-settings-daemon" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
-        # [ "$each" == "xfce-mcs-manage" -o "$each" == "xfce4-session" -o "$each" == "xfconfd" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
         [ "$each" == "xfce4-session" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
         [ "$each" == "ksmserver" ] && DE="KDE" && DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
         [ "$each" == "lxsession" ] && DE="LXDE"
@@ -352,7 +349,7 @@ detectwmtheme () {
     'OpenBox') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; elif [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; fi;;
     'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
     'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
-    'Metacity') if [ `gconftool-2 -g /apps/metacity/general/theme` ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi;;
+    'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
     'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
     'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
     'KWin') if [ -f $HOME/.kde/share/config/kwinrc ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; fi;;
