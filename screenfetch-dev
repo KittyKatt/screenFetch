@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.2.1)
+# screenFetch (v2.2.4)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -14,7 +14,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.2.3"
+scriptVersion="2.2.4"
 
 ######################
 # Settings for fetcher
@@ -34,7 +34,8 @@ display_type="ASCII"
 # labelcolor="\e[1;34m"
 
 # WM & DE process names
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm compiz xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 sawfish"
+# Removed WM's: compiz
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 sawfish"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Export theme settings
@@ -93,7 +94,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
       echo -e "			      Mandrake/Mandriva, Slackware, SUSE, and BSD"
       echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
       echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
-      echo -e "			      Metacity, Compiz, StumpWM, KWin, IceWM, FVWM,"
+      echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
       echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
       echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, subtle,"
       echo -e "			      and Beryl."
@@ -317,7 +318,6 @@ detectwm () {
         'dwm') WM="DWM";;
         'awesome') WM="Awesome";;
         'WindowMaker') WM="WindowMaker";;
-        'compiz') WM="Compiz";;
 	'stumpwm') WM="StumpWM";;
 	'xmonad') WM="XMonad";;
 	'musca') WM="Musca";;
@@ -355,7 +355,6 @@ detectwmtheme () {
     'DWM') Win_theme="Not Present";;
     'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme=$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1); fi;;
     'WindowMaker') Win_theme="Not Present";;
-    'Compiz') if $(grep -iA 1 'gtk_theme' $HOME/.gconf/desktop/gnome/interface/%gconf.xml | grep -i 'stringvalue' | awk -F\> '{print $2}' | awk -F\< '{print Hola}'); then Win_theme=$(gconftool-2 -g /apps/metacity/general/theme); fi;;
     'XMonad') Win_theme="Not Present";;
     'Musca') Win_theme="Not Present";;
     'i3') Win_theme="Not Present";;
@@ -371,10 +370,6 @@ detectwmtheme () {
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
-
-# awk -F"= " '/theme.name/ {print $2}' /home/kittykatt/.e16/e_config--0.0.cfg
-
-# try for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done
 
 # GTK Theme\Icon\Font Detection - BEGIN
 detectgtk () {
