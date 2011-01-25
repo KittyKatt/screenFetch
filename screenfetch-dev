@@ -199,12 +199,18 @@ detectdistro () {
       distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
       if [ "$distro_detect" == "Arch" ]; then distro="Arch Linux"; fi
       if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
-      if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"; fi
+      if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
+        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
+          distro="LMDE"
+          distro_codename=null
+          distro_release=null
+        fi
+      fi
       if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
       if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
       if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
-      if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "N/A" ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
-      if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "N/A" ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
+      if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "N/A" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
+      if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "N/A" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
     else
       if [ -f /etc/debian_version ]; then distro="Debian"; fi
       if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
@@ -342,18 +348,18 @@ detectwm () {
 detectwmtheme () {
   Win_theme="Not Found"
   case $WM in
-    'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme=$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config); fi;;
-    'OpenBox') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then Win_theme=$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml); elif [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml ]; then Win_theme=$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml); fi;;
-    'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme=$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init); fi;;
-    'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme=$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc); fi;;
-    'Metacity') if [ `gconftool-2 -g /apps/metacity/general/theme` ]; then Win_theme=$(gconftool-2 -g /apps/metacity/general/theme); fi;;
-    'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme=$(xfconf-query -c xfwm4 -p /general/theme); fi;;
-    'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme=$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme); fi;;
-    'KWin') if [ -f $HOME/.kde/share/config/kwinrc ]; then Win_theme=$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml); fi;;
-    'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme=$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done); fi;;
+    'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
+    'OpenBox') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; elif [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; fi;;
+    'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
+    'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
+    'Metacity') if [ `gconftool-2 -g /apps/metacity/general/theme` ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi;;
+    'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
+    'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
+    'KWin') if [ -f $HOME/.kde/share/config/kwinrc ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; fi;;
+    'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
     'FVWM') Win_theme="Not Present";;
     'DWM') Win_theme="Not Present";;
-    'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme=$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1); fi;;
+    'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1)"; fi;;
     'WindowMaker') Win_theme="Not Present";;
     'XMonad') Win_theme="Not Present";;
     'Musca') Win_theme="Not Present";;
@@ -363,8 +369,8 @@ detectwmtheme () {
     'WMFS') Win_theme="Not Present";;
     'wmii') Win_theme="Not Present";;
     'subtle') Win_theme="Not Present";;
-    'E16') Win_theme=$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg);;
-    'Sawfish') Win_theme=$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //');;
+    'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
+    'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
     'Beryl') Win_theme="Not Present";;
     esac
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
