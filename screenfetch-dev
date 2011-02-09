@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.2.7)
+# screenFetch (v2.2.9)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -14,7 +14,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.2.7"
+scriptVersion="2.2.9"
 
 ######################
 # Settings for fetcher
@@ -222,7 +222,7 @@ detectdistro () {
       if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
       if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
       if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-      if [ -f /etc/SUSE-release ]; then distro="SUSE"; fi
+      if [ -f /etc/SuSe-release ]; then distro="SuSe"; fi
       if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
       if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
       if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
