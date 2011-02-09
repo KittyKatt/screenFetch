@@ -144,7 +144,7 @@ warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     D) distro=$OPTARG; continue;;
     t) truncateSet="Yes";;
     c) screenCommand=$OPTARG; continue;;
-    n) display=${display//ASCII/};;
+    n) display_type="Text";;
     o) overrideOpts=$OPTARG; continue;;
     # d) overrideDisplay=$OPTARG; continue;;
     l) c1="\e[1;30m";;
@@ -901,8 +901,8 @@ infoDisplay () {
   if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor$bold@${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
   if [[ "${display[@]}" =~ "distro" ]]; then
     sysArch=`uname -m`
-   if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
-   else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
+    if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
+    else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
     out_array=( "${out_array[@]}" "$mydistro" )
     ((display_index++))
   fi
@@ -919,7 +919,7 @@ infoDisplay () {
     myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
     [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
   fi
-  if [[ "$display_type" =~ "ASCII" ]]; then
+  if [[ "$display_type" == "ASCII" ]]; then
     asciiText
   else
     echo -e "$mydistro" 
