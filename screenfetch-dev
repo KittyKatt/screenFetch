@@ -209,8 +209,8 @@ detectdistro () {
       if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
       if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
       if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
-      if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "N/A" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
-      if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "N/A" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
+      if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
+      if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
     else
       if [ -f /etc/debian_version ]; then distro="Debian"; fi
       if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
