@@ -802,6 +802,33 @@ case $distro in
 "$c2              .':ldxkkkkxdl:'.")
   ;;
 
+  "Slackware")
+    c1="\e[1;35m" # Light Purple
+    c2="\e[1;37m" # Bold White
+    startline="4"
+    fulloutput=("$c1                   :::::::"
+"$c1             :::::::::::::::::::"
+"$c1          :::::::::::::::::::::::::"
+"$c1        ::::::::"${c2}"cllcccccllllllll"${c1}"::::::"
+"$c1     :::::::::"${c2}"lc               dc"${c1}":::::::         %s"
+"$c1    ::::::::"${c2}"cl   clllccllll    oc"${c1}":::::::::      %s"
+"$c1   :::::::::"${c2}"o   lc"${c1}"::::::::"${c2}"co   oc"${c1}"::::::::::     %s"
+"$c1  ::::::::::"${c2}"o    cccclc"${c1}":::::"${c2}"clcc"${c1}"::::::::::::    %s"
+"$c1  :::::::::::"${c2}"lc        cclccclc"${c1}":::::::::::::    %s"
+"$c1 ::::::::::::::"${c2}"lcclcc          lc"${c1}"::::::::::::   %s"
+"$c1 ::::::::::"${c2}"cclcc"${c1}":::::"${c2}"lccclc     oc"${c1}":::::::::::   %s"
+"$c1 ::::::::::"${c2}"o    l"${c1}"::::::::::"${c2}"l    lc"${c1}":::::::::::   %s"
+"$c1  :::::"${c2}"cll"${c1}":"${c2}"o     clcllcccll     o"${c1}":::::::::::    %s"
+"$c1  :::::"${c2}"occ"${c1}":"${c2}"o                  clc"${c1}":::::::::::    %s"
+"$c1   ::::"${c2}"ocl"${c1}":"${c2}"ccslclccclclccclclc"${c1}":::::::::::::     %s"
+"$c1    :::"${c2}"oclcccccccccccccllllllllllllll"${c1}":::::      %s"
+"$c1     ::"${c2}"lcc1lcccccccccccccccccccccccco"${c1}"::::       %s"
+"$c1       ::::::::::::::::::::::::::::::::     %s"
+"$c1         ::::::::::::::::::::::::::::"
+"$c1            ::::::::::::::::::::::"
+"$c1                 ::::::::::::")
+  ;;
+
   "Red Hat Linux")
     [ -z $c1 ] && c1="\e[1;37m" # White
     c2="\e[1;31m" # Light Red
@@ -823,6 +850,8 @@ case $distro in
 "$c1   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM    %s"
 "$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM")
   ;;
+
+
 
   *)
     [ -z $c1 ] && c1="\e[1;37m" # White
@@ -888,7 +917,7 @@ infoDisplay () {
       "Mint"|"LMDE"|"OpenSuSe") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "CrunchBang") labelcolor="\e[1;30m";;
-      "Gentoo") labelcolor="\e[1;35m";;
+      "Gentoo"|"Slackware") labelcolor="\e[1;35m";;
       *) labelcolor="\e[1;33m";;
     esac
   fi
