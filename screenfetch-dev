@@ -222,7 +222,7 @@ detectdistro () {
       if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
       if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
       if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-      if [ -f /etc/SuSe-release ]; then distro="OpenSuSe"; fi
+      if [ -f /etc/SuSE-release ]; then distro="OpenSuSe"; fi
       if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
       if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
       if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
@@ -256,9 +256,9 @@ detectuptime () {
   uptime="${mins}m"
   if [ "${hours}" -ne "0" ]; then
     uptime="${hours}h ${uptime}"
-    if [ "${days}" -ne "0" ]; then
-      uptime="${days}d ${uptime}"
-    fi
+  fi
+  if [ "${days}" -ne "0" ]; then
+    uptime="${days}d ${uptime}"
   fi
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
 }
