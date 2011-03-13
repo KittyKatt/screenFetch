@@ -4,9 +4,12 @@
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
-# This script is copyright (C) 2010 to Brett Bohnenkamper (kittykatt@silverirc.com)
-# Do not make any modifications to this script without my explicit permission.
-# Do NOT claim this script as your own. I will find you.
+#
+# This script is released under the General Public License (GPL). Though it's open
+# source and you are free to do with it as you please, I would appreciate if you would
+# send any code modifications/additions upstream to me so that I can include them in
+# the official release. Please do not claim this code as your own as I have worked
+# very hard on this and am quite proud to call this script my own.
 #
 # Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
 # appreciated by emailing me or by stopping by http://github.com/KittyKatt/screeFetch . You
