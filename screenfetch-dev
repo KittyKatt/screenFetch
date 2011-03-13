@@ -206,6 +206,28 @@ detectdistro () {
           distro_release=null
         fi
       fi
+      if [ "$distro_detect" == "MandrivaLinux" ]; then distro="Mandriva"
+        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "turtle" ]; then
+          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+          distro_codename=null
+        fi
+        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Henry_Farman" ]; then
+          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+          distro_codename=null
+        fi
+        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Farman" ]; then
+          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+          distro_codename=null
+        fi
+        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Adelie" ]; then
+          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+          distro_codename=null
+        fi
+        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "pauillac" ]; then
+          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+          distro_codename=null
+        fi
+      fi
       if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
       if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
       if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
