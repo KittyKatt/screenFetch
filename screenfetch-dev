@@ -394,7 +394,7 @@ detectgtk () {
             fi
 
             if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
-              gtkFont=$(awk -F"=" '/Font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+              gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
             fi
           fi
   ;;
