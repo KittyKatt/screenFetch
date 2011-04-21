@@ -228,7 +228,7 @@ detectdistro () {
       if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
       if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
       if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
-      if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
+      if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
     fi
   fi
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
