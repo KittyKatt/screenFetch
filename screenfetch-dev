@@ -35,7 +35,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 sawfish emerald"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 e17 sawfish emerald"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Export theme settings
@@ -331,6 +331,7 @@ detectwm () {
 	'wmii') WM="wmii";;
 	'subtle') WM="subtle";;
 	'e16') WM="E16";;
+        'e17') WM="E17";;
         'sawfish') WM="Sawfish";;
 	'beryl') WM="Beryl";;
         'emerald') WM="Emerald" ;;
@@ -368,6 +369,7 @@ detectwmtheme () {
     'wmii') Win_theme="Not Present";;
     'subtle') Win_theme="Not Present";;
     'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
+    'E17') Win_theme="$(awk '{ print $3 }' $HOME/.e/e/config/profile.cfg)";;
     'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
     'Beryl') Win_theme="Not Present";;
     esac
