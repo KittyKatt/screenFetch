@@ -35,7 +35,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Export theme settings
@@ -97,7 +97,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
       echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
       echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
       echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, subtle,"
-      echo -e "			      Emerald, E17 and Beryl."
+      echo -e "			      E17 and Beryl."
       echo ""
       echo -e "${underline}Options${c0}:"
       echo -e "   ${bold}-v${c0}                 Verbose output."
@@ -331,8 +331,7 @@ detectwm () {
 	'wmii') WM="wmii";;
 	'subtle') WM="subtle";;
 	'e16') WM="E16";;
-	'enlightenment') WM="E17";;
-	'emerald') WM="Emerald";;
+        'enlightenment') WM="E17";;
         'sawfish') WM="Sawfish";;
 	'beryl') WM="Beryl";;
       esac
