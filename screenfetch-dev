@@ -503,7 +503,7 @@ detectgtk () {
       gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
     fi
     # E17 detection
-    if [ -n $E_ICON_THEME ]; then
+    if [ $E_ICON_THEME ]; then
       gtkIcons=${E_ICON_THEME}
       gtkTheme="Not available."
       gtkFont="Not available."
