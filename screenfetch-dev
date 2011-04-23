@@ -839,7 +839,7 @@ case $distro in
   ;;
 
   "Slackware")
-    c1="\e[1;35m" # Light Purple
+    [ -z $c1 ] && c1="\e[1;34m" # Light Blue
     c2="\e[1;37m" # Bold White
     startline="4"
     fulloutput=("$c1                   :::::::"
@@ -945,7 +945,8 @@ fi
 }
 
 infoDisplay () {
-  if [ -z "$textcolor" ]; then textcolor="\e[0m"; fi
+
+#TODO: Centralize colors and use them across the board so we only change them one place.
   if [ -z "$labelcolor" ]; then
     case $distro in
       "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
@@ -953,10 +954,19 @@ infoDisplay () {
       "Mint"|"LMDE"|"OpenSuSe") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "CrunchBang") labelcolor="\e[1;30m";;
-      "Gentoo"|"Slackware") labelcolor="\e[1;35m";;
+      "Gentoo") labelcolor="\e[1;35m";;
+      "Slackware") labelcolor="\e[1;34m";;
       *) labelcolor="\e[1;33m";;
+    esac 
+  fi
+    
+  if [ -z "$textcolor" ]; then 
+    case $distro in
+      "Slackware") textcolor="\e[1;37m";;
+      *) textcolor="\e[0m";;
     esac
   fi
+  
   # Some verbosity stuff
   [[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
   [[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
