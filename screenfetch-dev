@@ -1124,7 +1124,15 @@ themeExport () {
 ##################
 
 for i in "${display[@]}"; do
-  [[ "${display[*]}" =~ "$i" ]] && detect${i}
+
+	if [[ $i == wmtheme ]]; then
+		detectwm
+		detectwmtheme
+	else
+	
+	  [[ "${display[*]}" =~ "$i" ]] && detect${i}
+
+	fi
 done
 infoDisplay
 [ "$screenshot" == "1" ] && takeShot
