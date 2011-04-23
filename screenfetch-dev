@@ -38,7 +38,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 sawfish"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Export theme settings
@@ -100,7 +100,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
       echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
       echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
       echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, subtle,"
-      echo -e "			      and Beryl."
+      echo -e "			      Emerald, E17 and Beryl."
       echo ""
       echo -e "${underline}Options${c0}:"
       echo -e "   ${bold}-v${c0}                 Verbose output."
@@ -253,7 +253,7 @@ detectdistro () {
       if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
       if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
       if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
-      if [ -f /usr/share/doc/tc/release.txt ]; then distro="Tiny Core"; fi
+      if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
     fi
   fi
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
@@ -356,6 +356,8 @@ detectwm () {
 	'wmii') WM="wmii";;
 	'subtle') WM="subtle";;
 	'e16') WM="E16";;
+	'enlightenment') WM="E17";;
+	'emerald') WM="Emerald";;
         'sawfish') WM="Sawfish";;
 	'beryl') WM="Beryl";;
       esac
@@ -377,7 +379,7 @@ detectwmtheme () {
     'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
     'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
     'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
-    'KWin') if [ -f $HOME/.kde/share/config/kwinrc ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; fi;;
+    'KWin') if [ -f $HOME/.kde/share/config/plasmarc ]; then Win_theme="$(awk -F"=" '/^name=/ { getline; print $2 }' ${HOME}/.kde/share/config/plasmarc)"; else Win_theme="Not Present"; fi;;
     'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
     'FVWM') Win_theme="Not Present";;
     'DWM') Win_theme="Not Present";;
@@ -392,6 +394,9 @@ detectwmtheme () {
     'wmii') Win_theme="Not Present";;
     'subtle') Win_theme="Not Present";;
     'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
+    #E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
+    #TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
+    'E17') Win_theme=${E_CONF_PROFILE};;
     'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
     'Beryl') Win_theme="Not Present";;
     esac
@@ -418,7 +423,7 @@ detectgtk () {
             fi
 
             if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
-              gtkFont=$(awk -F"=" '/Font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+              gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
             fi
           fi
   ;;
@@ -496,6 +501,12 @@ detectgtk () {
     # ROX-Filer icon detect only
     if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
       gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
+    fi
+    # E17 detection
+    if [ -n $E_ICON_THEME ]; then
+      gtkIcons=${E_ICON_THEME}
+      gtkTheme="Not available."
+      gtkFont="Not available."
     fi
     # Background Detection (feh, nitrogen)
     if [ "$background_detect" == "1" ]; then
