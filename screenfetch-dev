@@ -945,9 +945,8 @@ fi
 }
 
 infoDisplay () {
-#TODO: Centralize colors and use them across the board so we only change them one place.
-  if [ -z "$textcolor" ]; then textcolor="\e[0m"; fi
 
+#TODO: Centralize colors and use them across the board so we only change them one place.
   if [ -z "$labelcolor" ]; then
     case $distro in
       "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
@@ -961,6 +960,13 @@ infoDisplay () {
     esac 
   fi
     
+  if [ -z "$textcolor" ]; then 
+    case $distro in
+      "Slackware") textcolor="\e[1;37m";;
+      *) textcolor="\e[0m";;
+    esac
+  fi
+  
   # Some verbosity stuff
   [[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
   [[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
