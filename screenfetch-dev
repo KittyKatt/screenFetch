@@ -1120,9 +1120,9 @@ themeExport () {
 
 for i in "${display[@]}"; do
 
-	if [[ $i == wmtheme ]]; then
-		detectwm
-		detectwmtheme
+	if [[ $i =~ wm ]]; then
+		 ! [[ $WM  ]] && detectwm; 
+		 ! [[ $Win_theme ]] && detectwmtheme;
 	else
 	
 	  [[ "${display[*]}" =~ "$i" ]] && detect${i}
