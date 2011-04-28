@@ -318,7 +318,7 @@ detectde () {
         [ "$each" == "gnome-session" -o "$each" == "gnome-settings-daemon" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
         [ "$each" == "xfce4-session" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
         [ "$each" == "ksmserver" ] && DE="KDE" && DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
-        [ "$each" == "lxsession" ] && DE="LXDE"
+        [ "$each" == "lxsession" ] && DE="LXDE" && DEver=$(lxpanel -v)
       fi
     done
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
@@ -373,7 +373,12 @@ detectwmtheme () {
   Win_theme="Not Found"
   case $WM in
     'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
-    'OpenBox') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; elif [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; fi;;
+    'OpenBox') 
+	if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then 
+		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
+	elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then 
+		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
+	fi;;
     'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
     'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
     'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
@@ -459,6 +464,26 @@ detectgtk () {
            gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
          fi
   ;;
+  'LXDE')
+    if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
+      lxdeconf="/lxde/config"
+      else
+      lxdeconf="/lxsession/LXDE/desktop.conf"
+    fi
+    #TODO: Clean me.
+      if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
+         gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+      fi
+
+      if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+          gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+      fi
+
+      if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+          gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+      fi
+    
+  ;;
 
 # /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
@@ -474,19 +499,6 @@ detectgtk () {
 
       if grep -q font $HOME/.gtkrc-2.0; then
           gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
-      fi
-    # LXDE
-    elif [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
-      if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config; then 
-         gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config)
-      fi
-
-      if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config; then
-          gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config)
-      fi
-
-      if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config; then
-          gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config)
       fi
     fi
     # $HOME/.gtkrc.mine theme detect only
