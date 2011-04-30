@@ -256,7 +256,7 @@ detectdistro () {
       if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
     fi
   else
-  
+    
    declare -l lcase
    lcase=$distro
     
@@ -278,22 +278,6 @@ detectdistro () {
       gentoo) distro="Gentoo" ;;
       slackware) distro="Slackware" ;;
    
-   #   [Aa][Rr][Cc][Hh]*[Ll][Ii][Nn][Uu][Xx]*[Oo][Ll][Dd]) distro="Arch Linux - Old" ;;
-   #   [Aa][Rr][Cc][Hh]*[Ll][Ii][Nn][Uu][Xx]) distro="Arch Linux" ;;
-   #   [Ff][Ee][Dd][Oo][Rr][Aa]) distro="Fedora" ;;
-   #   [Mm][Aa][Nn][Dd][Rr][Ii][Vv][Aa]) distro="Mandriva" ;;
-   #   [Mm][Aa][Nn][Dd][Rr][Aa][Kk][Ee]) distro="Mandrake" ;;
-   #   [Mm][Ii][Nn][Tt]) distro="Mint" ;;
-   #   [Ll][Mm][Dd][Ee]) distro="LMDE" ;;
-   #   [Oo][Pp][Ee][Nn][Ss][Uu][Ss][Ee]) distro="OpenSuSe" ;;
-   #   [Uu][Bb][Uu][Nn][Tt][Uu]) distro="Ubuntu" ;;
-   #   [Dd][Ee][Bb][Ii][Aa][Nn]) distro="Debian" ;;
-   #   [Bb][Ss][Dd]) distro="BSD" ;;
-   #   [Rr][Ee][Dd]*[Hh][Aa][Tt]*[Ll][Ii][Nn][Uu][Xx]) distro="Red Hat Linux" ;;
-   #   [Cc][Rr][Uu][Nn][Cc][Hh][Bb][Aa][Nn][Gg]) distro="CrunchBang" ;;
-   #   [Gg][Ee][Nn][Tt][Oo][Oo]) distro="Gentoo" ;;
-   #   [Ss][Ll][Aa][Cc][Kk][Ww][Aa][Rr][Ee]) distro="Slackware" ;;
-      
     esac
     
    fi  
