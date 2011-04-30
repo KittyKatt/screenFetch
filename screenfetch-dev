@@ -259,8 +259,8 @@ detectdistro () {
     
    case $distro in
    
-      [Aa][Rr][Cc][Hh]\ [Ll][Ii][Nn][Uu][Xx]\ \-\ [Oo][Ll][Dd]) distro="Arch Linux - Old" ;;
-      [Aa][Rr][Cc][Hh]\ [Ll][Ii][Nn][Uu][Xx]) distro="Arch Linux" ;;
+      [Aa][Rr][Cc][Hh]*[Ll][Ii][Nn][Uu][Xx]*[Oo][Ll][Dd]) distro="Arch Linux - Old" ;;
+      [Aa][Rr][Cc][Hh]*[Ll][Ii][Nn][Uu][Xx]) distro="Arch Linux" ;;
       [Ff][Ee][Dd][Oo][Rr][Aa]) distro="Fedora" ;;
       [Mm][Aa][Nn][Dd][Rr][Ii][Vv][Aa]) distro="Mandriva" ;;
       [Mm][Aa][Nn][Dd][Rr][Aa][Kk][Ee]) distro="Mandrake" ;;
@@ -270,12 +270,13 @@ detectdistro () {
       [Uu][Bb][Uu][Nn][Tt][Uu]) distro="Ubuntu" ;;
       [Dd][Ee][Bb][Ii][Aa][Nn]) distro="Debian" ;;
       [Bb][Ss][Dd]) distro="BSD" ;;
-      [Rr][Ee][Dd]\ [Hh][Aa][Tt]\ [Ll][Ii][Nn][Uu][Xx]) distro="Red Hat Linux" ;;
+      [Rr][Ee][Dd]*[Hh][Aa][Tt]*[Ll][Ii][Nn][Uu][Xx]) distro="Red Hat Linux" ;;
       [Cc][Rr][Uu][Nn][Cc][Hh][Bb][Aa][Nn][Gg]) distro="CrunchBang" ;;
       [Gg][Ee][Nn][Tt][Oo][Oo]) distro="Gentoo" ;;
       [Ss][Ll][Aa][Cc][Kk][Ww][Aa][Rr][Ee]) distro="Slackware" ;;
       
     esac
+    
    fi  
   
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
@@ -607,7 +608,7 @@ case $distro in
 "$c1    [LKDSDJTDU=OUSCSBFLD.$c2   '?ZWX,   %s"
 "$c1   ,LMDSDSWH'     \`DCBOSI$c2     DRDS], %s"
 "$c1   SDDFDFH'         !YEWD,$c2   )HDROD  %s"
-"$c1  !KMDOCG            &GSU|$c2\_GFHRGO\' %s"
+"$c1  !KMDOCG            &GSU|$c2\_GFHRGO\'  %s"
 "$c1  HKLSGP'$c2           __$c1\TKM0$c2\GHRBV)'  %s"
 "$c1 JSNRVW'$c2       __+MNAEC$c1\IOI,$c2\BN'     %s"
 "$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)         %s"
@@ -646,7 +647,7 @@ case $distro in
     c2="\e[1;32m" # Bold Green
     startline="1"
     fulloutput=("$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
-"$c2 MMm----::-://////////////oymNMd+\`       %s"
+"$c2 MMm----::-://////////////oymNMd+\`     %s"
 "$c2 MMd      "$c1"/++                "$c2"-sNMd:   %s"
 "$c2 MMNso/\`  "$c1"dMM    \`.::-. .-::.\` "$c2".hMN:  %s"
 "$c2 ddddMMh  "$c1"dMM   :hNMNMNhNMNMNh: "$c2"\`NMm  %s"
