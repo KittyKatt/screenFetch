@@ -117,7 +117,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
       echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
       echo -e "		      to take a screenshot. Use the -m flag if you would like"
       echo -e "		      to move it to a new location afterwards."
-      echo -e "	  ${bold}-B${c0}		 Enable background detection."
+      echo -e "   ${bold}-B${c0}                 Enable background detection."
       echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
       echo -e "		      to export all of your theme settings and archive them"
       echo -e "		      up for uploading."
