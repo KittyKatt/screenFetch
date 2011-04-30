@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.3.2)
+# screenFetch (v2.3.3)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -12,7 +12,7 @@
 # very hard on this and am quite proud to call this script my own.
 #
 # Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
-# appreciated by emailing me or by stopping by http://github.com/KittyKatt/screeFetch . You
+# appreciated by emailing me or by stopping by http://github.com/KittyKatt/screenFetch . You
 # could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6667/meowz
 # to put forth suggestions/ideas. Thank you.
 #
@@ -38,8 +38,9 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
+# Removed DE's: gnome-settings-daemon
 wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald"
-denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
+denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession"
 
 # Export theme settings
 # screenFetch has the capability (on some WM's and GTK) to export your GTK and WM settings to an archive. Specify Yes if you want this and No if you do not.
@@ -247,7 +248,7 @@ detectdistro () {
       if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
       if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
       if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-      if [ -f /etc/SuSE-release ]; then distro="OpenSuSe"; fi
+      if [ -f /etc/SuSE-release ]; then distro="OpenSUSE"; fi
       if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
       if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
       if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
@@ -255,7 +256,29 @@ detectdistro () {
       if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
       if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
     fi
-  fi
+  else
+    
+   case $distro in
+   
+      [Aa][Rr][Cc][Hh][:space:]?[Ll][Ii][Nn][Uu][Xx][:space:]?[:punct:]?[:space:]?[Oo][Ll][Dd]) distro="Arch Linux - Old" ;;
+      [Aa][Rr][Cc][Hh][:space:]?[Ll][Ii][Nn][Uu][Xx]) distro="Arch Linux" ;;
+      [Ff][Ee][Dd][Oo][Rr][Aa]) distro="Fedora" ;;
+      [Mm][Aa][Nn][Dd][Rr][Ii][Vv][Aa]) distro="Mandriva" ;;
+      [Mm][Aa][Nn][Dd][Rr][Aa][Kk][Ee]) distro="Mandrake" ;;
+      [Ll]?[Ii]?[Nn]?[Uu]?[Xx]?[:space:]?[Mm][Ii][Nn][Tt]) distro="Mint" ;;
+      [Ll][Mm][Dd][Ee]) distro="LMDE" ;;
+      [Oo][Pp][Ee][Nn][Ss][Uu][Ss][Ee]) distro="OpenSUSE" ;;
+      [Uu][Bb][Uu][Nn][Tt][Uu]) distro="Ubuntu" ;;
+      [Dd][Ee][Bb][Ii][Aa][Nn]) distro="Debian" ;;
+      [Bb][Ss][Dd]) distro="BSD" ;;
+      [Rr][Ee][Dd][:space:]?[Hh][Aa][Tt][:space:]?[Ll]?[Ii]?[Nn]?[Uu]?[Xx]?) distro="Red Hat Linux" ;;
+      [Cc][Rr][Uu][Nn][Cc][Hh][Bb][Aa][Nn][Gg]) distro="CrunchBang" ;;
+      [Gg][Ee][Nn][Tt][Oo][Oo]) distro="Gentoo" ;;
+      [Ss][Ll][Aa][Cc][Kk][Ww][Aa][Rr][Ee]) distro="Slackware" ;;
+      
+    esac
+   fi  
+  
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
@@ -315,10 +338,10 @@ detectde () {
   DE="Not Present"
     for each in $denames; do
       if [[ `ps aux` =~ "$each" ]]; then
-        [ "$each" == "gnome-session" -o "$each" == "gnome-settings-daemon" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
+        [ "$each" == "gnome-session" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
         [ "$each" == "xfce4-session" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
         [ "$each" == "ksmserver" ] && DE="KDE" && DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
-        [ "$each" == "lxsession" ] && DE="LXDE"
+        [ "$each" == "lxsession" ] && DE="LXDE" && DEver=$(lxpanel -v)
       fi
     done
   [[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
@@ -373,7 +396,12 @@ detectwmtheme () {
   Win_theme="Not Found"
   case $WM in
     'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
-    'OpenBox') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; elif [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml ]; then Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; fi;;
+    'OpenBox') 
+	if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then 
+		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
+	elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then 
+		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
+	fi;;
     'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
     'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
     'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
@@ -459,6 +487,26 @@ detectgtk () {
            gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
          fi
   ;;
+  'LXDE')
+    if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
+      lxdeconf="/lxde/config"
+      else
+      lxdeconf="/lxsession/LXDE/desktop.conf"
+    fi
+    #TODO: Clean me.
+      if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
+         gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+      fi
+
+      if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+          gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+      fi
+
+      if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+          gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+      fi
+    
+  ;;
 
 # /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
@@ -474,19 +522,6 @@ detectgtk () {
 
       if grep -q font $HOME/.gtkrc-2.0; then
           gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
-      fi
-    # LXDE
-    elif [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
-      if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config; then 
-         gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config)
-      fi
-
-      if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config; then
-          gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config)
-      fi
-
-      if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config; then
-          gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config)
       fi
     fi
     # $HOME/.gtkrc.mine theme detect only
@@ -814,7 +849,7 @@ case $distro in
 "$c1     -/+ooo+/-.              $c2\`")
   ;;
 
-  "OpenSuSe")
+  "OpenSUSE")
     c1="\e[1;32m" # Bold Green
     c2="\e[1;37m" # Bold White
     startline="3"
@@ -953,7 +988,7 @@ infoDisplay () {
     case $distro in
       "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
       "Arch Linux") labelcolor="\e[1;36m";;
-      "Mint"|"LMDE"|"OpenSuSe") labelcolor="\e[1;32m";;
+      "Mint"|"LMDE"|"OpenSUSE") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "CrunchBang") labelcolor="\e[1;30m";;
       "Gentoo") labelcolor="\e[1;35m";;
@@ -1120,9 +1155,9 @@ themeExport () {
 
 for i in "${display[@]}"; do
 
-	if [[ $i == wmtheme ]]; then
-		detectwm
-		detectwmtheme
+	if [[ $i =~ wm ]]; then
+		 ! [[ $WM  ]] && detectwm; 
+		 ! [[ $Win_theme ]] && detectwmtheme;
 	else
 	
 	  [[ "${display[*]}" =~ "$i" ]] && detect${i}
