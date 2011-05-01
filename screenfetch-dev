@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.3.2)
+# screenFetch (v2.3.3)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -94,7 +94,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
       echo ""
       echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
       echo -e "			      Ubuntu, Crunchbang, Debian, Gentoo, Fedora,"
-      echo -e "			      Mandrake/Mandriva, Slackware, SUSE, and BSD"
+      echo -e "			      Mandrake/Mandriva, Slackware, openSUSE, and BSD"
       echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
       echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
       echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
@@ -247,7 +247,7 @@ detectdistro () {
       if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
       if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
       if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-      if [ -f /etc/SuSE-release ]; then distro="OpenSuSe"; fi
+      if [ -f /etc/SuSE-release ]; then distro="openSUSE"; fi
       if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
       if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
       if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
@@ -266,7 +266,7 @@ detectdistro () {
       [Mm][Aa][Nn][Dd][Rr][Aa][Kk][Ee]) distro="Mandrake" ;;
       [Mm][Ii][Nn][Tt]) distro="Mint" ;;
       [Ll][Mm][Dd][Ee]) distro="LMDE" ;;
-      [Oo][Pp][Ee][Nn][Ss][Uu][Ss][Ee]) distro="OpenSuSe" ;;
+      [Oo][Pp][Ee][Nn][Ss][Uu][Ss][Ee]) distro="openSUSE" ;;
       [Uu][Bb][Uu][Nn][Tt][Uu]) distro="Ubuntu" ;;
       [Dd][Ee][Bb][Ii][Aa][Nn]) distro="Debian" ;;
       [Bb][Ss][Dd]) distro="BSD" ;;
@@ -849,7 +849,7 @@ case $distro in
 "$c1     -/+ooo+/-.              $c2\`")
   ;;
 
-  "OpenSuSe")
+  "openSUSE")
     c1="\e[1;32m" # Bold Green
     c2="\e[1;37m" # Bold White
     startline="3"
@@ -988,7 +988,7 @@ infoDisplay () {
     case $distro in
       "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
       "Arch Linux") labelcolor="\e[1;36m";;
-      "Mint"|"LMDE"|"OpenSuSe") labelcolor="\e[1;32m";;
+      "Mint"|"LMDE"|"openSUSE") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "CrunchBang") labelcolor="\e[1;30m";;
       "Gentoo") labelcolor="\e[1;35m";;
