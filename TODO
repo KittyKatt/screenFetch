@@ -3,15 +3,13 @@
 This small list will be the central place where I will list ideas and 
 things I want to happen with screenFetch.
 
- - WMs still needing support:
-   - Compiz
-   - Enlightenment
-   - evilwm
+~ WM's that still need to be supported:
+   - ?
 
- - I'd also like to have working, universal shell type detection. Would 
-be awesome.
+~ Would like to add more distributions. If anyone has any distributions that they would 
+   like to add to screenfetch, let me know.
 
- - Working background detection for DE's and multiple background setting applications (feh, nitrogen, etc.)
+~ I'd also like to have working, universal shell type detection. Would be awesome.
 
 That's about it for now. If you can help with any of these, please 
 please PLEASE let me know by emailing me at kittykatt@archlinux.us or by 
