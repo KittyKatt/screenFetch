@@ -244,7 +244,7 @@ detectdistro () {
       if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
     # Check and Parsing for /etc/os-release
     elif [ -f /etc/os-release ]; then
-      distrib_id=$(awk -F'=' '/ID/{print $2}' /etc/os-release 2>/dev/null)
+      distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
       if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
     # Existing File Check
     else
