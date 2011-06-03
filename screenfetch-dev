@@ -198,6 +198,7 @@ detecthost () {
 detectdistro () {
   if [[ -z $distro ]]; then
     distro="Unknown"
+    # LSB Release Check
     if which lsb_release >/dev/null 2>&1; then
       distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
       if [ "$distro_detect" == "Arch" ]; then distro="Arch Linux"; fi
@@ -234,8 +235,14 @@ detectdistro () {
       if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
       if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
       if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
+      if [ "$distro_detect" == "frugalware" ]; then
+        distro="Frugalware";
+        distro_codename=null
+        distro_release=null
+      fi
       if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
       if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
+    # Existing File Check
     else
       if [ -f /etc/debian_version ]; then distro="Debian"; fi
       if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
@@ -254,6 +261,7 @@ detectdistro () {
       if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
       if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
       if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
+      if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
     fi
   else
     
@@ -277,6 +285,7 @@ detectdistro () {
       crunchbang) distro="CrunchBang" ;;
       gentoo) distro="Gentoo" ;;
       slackware) distro="Slackware" ;;
+      frugalware) distro="Frugalware" ;;
    
     esac
     
@@ -925,6 +934,34 @@ case $distro in
 "$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM")
   ;;
 
+  "Frugalware")
+    [ -z $c1 ] && c1="\e[1;37m" # White
+    c2="\e[1;36m" # Light Blue
+    startline="7"
+    fulloutput=("${c2}           \`++/::-.\`"
+"${c2}          /o+++++++++/::-.\`"
+"${c2}         \`o+++++++++++++++o++/::-.\`"
+"${c2}         /+++++++++++++++++++++++oo++/:-.\`\`"
+"${c2}        .o+ooooooooooooooooooosssssssso++oo++/:-\`"
+"${c2}        ++osoooooooooooosssssssssssssyyo+++++++o:"
+"${c2}       -o+ssoooooooooooosssssssssssssyyo+++++++s\`"
+"${c2}       o++ssoooooo++++++++++++++sssyyyyo++++++o:    %s"
+"${c2}      :o++ssoooooo"${c1}"/-------------"${c2}"+syyyyyo+++++oo    %s"
+"${c2}     \`o+++ssoooooo"${c1}"/-----"${c2}"+++++ooosyyyyyyo++++os:    %s"
+"${c2}     /o+++ssoooooo"${c1}"/-----"${c2}"ooooooosyyyyyyyo+oooss     %s"
+"${c2}    .o++++ssooooos"${c1}"/------------"${c2}"syyyyyyhsosssy-     %s"
+"${c2}    ++++++ssooooss"${c1}"/-----"${c2}"+++++ooyyhhhhhdssssso      %s"
+"${c2}   -s+++++syssssss"${c1}"/-----"${c2}"yyhhhhhhhhhhhddssssy.      %s"
+"${c2}   sooooooyhyyyyyh"${c1}"/-----"${c2}"hhhhhhhhhhhddddyssy+       %s"
+"${c2}  :yooooooyhyyyhhhyyyyyyhhhhhhhhhhdddddyssy\`       %s"
+"${c2}  yoooooooyhyyhhhhhhhhhhhhhhhhhhhddddddysy/        %s"
+"${c2} -ysooooooydhhhhhhhhhhhddddddddddddddddssy         %s"
+"${c2}  .-:/+osssyyyysyyyyyyyyyyyyyyyyyyyyyyssy:         %s"
+"${c2}        \`\`.-/+oosysssssssssssssssssssssss          %s"
+"${c2}                \`\`.:/+osyysssssssssssssh."
+"${c2}                         \`-:/+osyyssssyo"
+"${c2}                                 .-:+++\`")
+  ;;
 
 
   *)
@@ -990,7 +1027,7 @@ infoDisplay () {
   if [ -z "$labelcolor" ]; then
     case $distro in
       "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
-      "Arch Linux") labelcolor="\e[1;36m";;
+      "Arch Linux"|"Frugalware") labelcolor="\e[1;36m";;
       "Mint"|"LMDE"|"openSUSE") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
       "CrunchBang") labelcolor="\e[1;30m";;
