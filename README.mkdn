@@ -16,7 +16,7 @@ command! This script is very easy to add to and can easily be extended.
 How do I get screenFetch? (Arch Linux)
 ---------------------
 
-1. Install `screenfetch-git` from the AUR. That's it!
+1. Install `screenfetch-git` or 'screenfetch' from the AUR. That's it!
 
 
 How do I get screenFetch? (Others)
