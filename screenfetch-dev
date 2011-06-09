@@ -830,7 +830,7 @@ detectwmtheme () {
         'Beryl') 
             Win_theme="Not Present"
             ;;
-        esac
+    esac
     
     [[ "$verbosity" -eq "1" ]] && \
     VerboseOut "Finding window manager theme...found as '$Win_theme'"
@@ -839,77 +839,94 @@ detectwmtheme () {
 
 # GTK Theme\Icon\Font Detection - BEGIN
 detectgtk () {
-  gtkTheme="Not Found"
-  gtkIcons="Not Found"
-  gtkFont="Not Found"
-  case $DE in
-    'KDE')  # Desktop Environment found as "KDE"
-          if [ -a $HOME/.kde/share/config/kdeglobals ]; then
-            if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
-              gtkTheme=$(awk -F"=" '/widgetStyle=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-            elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals; then
-              gtkTheme=$(awk -F"=" '/colorScheme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+    gtkTheme="Not Found"
+    gtkIcons="Not Found"
+    gtkFont="Not Found"
+    case $DE in
+        'KDE')  # Desktop Environment found as "KDE"
+            if [[ -a $HOME/.kde/share/config/kdeglobals ]]; then
+                if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
+                    gtkTheme=$(awk -F"=" '/widgetStyle=/ {print $2}' \
+                                $HOME/.kde/share/config/kdeglobals)
+                elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals; then
+                    gtkTheme=$(awk -F"=" '/colorScheme=/ {print $2}' \
+                                $HOME/.kde/share/config/kdeglobals)
+                fi
+
+                if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
+                    gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' \
+                                $HOME/.kde/share/config/kdeglobals)
+                fi
+
+                if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
+                    gtkFont=$(awk -F"=" '/font=/ {print $2}' \
+                                $HOME/.kde/share/config/kdeglobals)
+                fi
             fi
+            ;;
 
-            if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
-              gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-            fi
-
-            if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
-              gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-            fi
-          fi
-  ;;
-  'GNOME')  # Desktop Environment found as "GNOME"
-          if which gconftool-2 >/dev/null 2>&1; then
-            gtkTheme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
-          fi
-
-          if which gconftool-2 >/dev/null 2>&1; then
-              gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
-          fi
-
-          if which gconftool-2 >/dev/null 2>&1; then
-            gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
-          fi
-	  if [ "$background_detect" == "1" ]; then
+        'GNOME')  # Desktop Environment found as "GNOME"
             if which gconftool-2 >/dev/null 2>&1; then
-              gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
-  	      gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
+                gtkTheme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
             fi
-	  fi
-  ;;
-  'XFCE')  # Desktop Environment found as "XFCE"
-         if which xfconf-query >/dev/null 2>&1; then
-           gtkTheme=$(xfconf-query -c xsettings -p /Net/ThemeName)
-         fi
 
-         if which xfconf-query >/dev/null 2>&1; then
-           gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
-         fi
+            if which gconftool-2 >/dev/null 2>&1; then
+                gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
+            fi
 
-         if which xfconf-query >/dev/null 2>&1; then
-           gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
-         fi
-  ;;
-  'LXDE')
-    if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
-      lxdeconf="/lxde/config"
-      else
-      lxdeconf="/lxsession/LXDE/desktop.conf"
-    fi
-    #TODO: Clean me.
-      if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
-         gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-      fi
+            if which gconftool-2 >/dev/null 2>&1; then
+                gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
+            fi
+	  
+            if [[ "$background_detect" == "1" ]]; then
+                if which gconftool-2 >/dev/null 2>&1; then
+                    gtkBackgroundFull=$(gconftool-2 -g \
+                                    /desktop/gnome/background/picture_filename)
+  	            gtkBackground=$(echo "$gtkBackgroundFull" | \
+                                    awk -F"/" '{print $NF}')
+                fi
+	    fi
+            ;;
 
-      if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-          gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-      fi
+        'XFCE')  # Desktop Environment found as "XFCE"
+            if which xfconf-query >/dev/null 2>&1; then
+                gtkTheme=$(xfconf-query -c xsettings -p /Net/ThemeName)
+            fi
 
-      if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-          gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-      fi
+            if which xfconf-query >/dev/null 2>&1; then
+                gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
+            fi
+
+            if which xfconf-query >/dev/null 2>&1; then
+                gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
+            fi
+            ;;
+
+        'LXDE')
+            if [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]]; then
+                lxdeconf="/lxde/config"
+            else
+                lxdeconf="/lxsession/LXDE/desktop.conf"
+            fi
+        
+            #TODO: Clean me.
+            if grep -q "sNet\/ThemeName" \
+            ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
+                gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' \
+                            ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+            fi
+
+            if grep -q IconThemeName \
+            ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+                gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' \
+                            ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+            fi
+
+            if grep -q FontName \
+            ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+                gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' \
+                            ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+            fi
     
   ;;
 
