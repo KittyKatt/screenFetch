@@ -74,7 +74,7 @@ baseurl="http://www.example.com"
 serveraddr="www.example.com"
 scptimeout="20"
 serverdir="/path/to/directory"
-shotfile=$(echo "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
+shotfile=$(printf "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png\n")
 
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
@@ -192,7 +192,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
             ;;
         V)
             # FIXME - revisit this 
-            echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
+            printf $underline"screenFetch"$c0" - Version $scriptVersion\n"
             printf "%s\n\n" \
             "Copyright (C) Brett Bohnenkamper (kittykatt@silverirc.com)\n"
             printf "%s %s\n%s %s %s\n"
@@ -280,7 +280,8 @@ fi
 
 # Host and User detection - Begin
 detecthost () {
-    myUser=$(echo "$USER")
+    #myUser=$(echo "$USER") #not sure why the echo
+    myUser="$USER"
     myHost=$(hostname)
 
     [[ "$verbosity" -eq "1" ]] && \
@@ -882,7 +883,7 @@ detectgtk () {
                 if which gconftool-2 >/dev/null 2>&1; then
                     gtkBackgroundFull=$(gconftool-2 -g \
                                     /desktop/gnome/background/picture_filename)
-  	            gtkBackground=$(echo "$gtkBackgroundFull" | \
+  	            gtkBackground=$(printf "$gtkBackgroundFull\n" | \
                                     awk -F"/" '{print $NF}')
                 fi
 	    fi
@@ -981,7 +982,7 @@ detectgtk () {
             if [[ -a $HOME/.fehbg ]]; then
                 gtkBackgroundFull=$(awk -F"'" '/feh --bg/{print $2}' \
                                             $HOME/.fehbg 2>/dev/null)
-                gtkBackground=$(echo "$gtkBackgroundFull" \
+                gtkBackground=$(printf "$gtkBackgroundFull\n" \
                                             | awk -F"/" '{print $NF}')
             elif [[ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]]; then
                 gtkBackground=$(awk -F"/" '/file=/ {print $NF}' \
@@ -1430,13 +1431,14 @@ if [ "$truncateSet" == "Yes" ]; then
 		targetPercent=100
 		termWidth=$(tput cols)
 		# stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\x1b\[[0-9];[0-9]*m\?//g')
-		stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\\e\[[0-9];[0-9]*m//g' -e 's/\\e\[[0-9]*m//g')
+		stringReal=$(printf "${fulloutput[i]}\n" \
+                    | sed -e 's/\\e\[[0-9];[0-9]*m//g' -e 's/\\e\[[0-9]*m//g')
 		stringLength=${#stringReal}
 		targetLength="$((termWidth*targetPercent/100))"
 		if [ "$stringLength" -le "$targetLength" ]; then
-			echo -e "${fulloutput[i]}"$c0
+			printf "${fulloutput[i]}\n"$c0
 		elif [ "$stringLength" -gt "$targetLength" ]; then
-		 	echo "${fulloutput[i]:0:$targetLength}..."$c0
+		 	printf "${fulloutput[i]:0:$targetLength}...\n"$c0
 		fi
 		# Debugging widths
 		# echo "Term Width: $termWidth"
@@ -1458,171 +1460,322 @@ fi
 
 infoDisplay () {
 
-  if [ -z "$textcolor" ]; then textcolor="\e[0m"; fi
+    if [[ -z "$textcolor" ]]; then 
+        textcolor="\e[0m"; 
+    fi
 
-  #TODO: Centralize colors and use them across the board so we only change them one place.
-  if [ -z "$labelcolor" ]; then
-    case $distro in
-      "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
-      "Arch Linux"|"Frugalware") labelcolor="\e[1;36m";;
-      "Mint"|"LMDE"|"openSUSE") labelcolor="\e[1;32m";;
-      "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") labelcolor="\e[1;31m";;
-      "CrunchBang") labelcolor="\e[1;30m";;
-      "Gentoo") labelcolor="\e[1;35m";;
-      "Slackware") labelcolor="\e[1;34m";;
-      *) labelcolor="\e[1;33m";;
-    esac 
-  fi
+    # TODO: Centralize colors and use them across the board so we only change 
+    # them one place.
+    if [[ -z "$labelcolor" ]]; then
+        case $distro in
+            "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") 
+                labelcolor="\e[1;34m"
+                ;;
+
+            "Arch Linux"|"Frugalware") 
+                labelcolor="\e[1;36m"
+                ;;
+      
+            "Mint"|"LMDE"|"openSUSE") 
+                labelcolor="\e[1;32m"
+                ;;
+
+            "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux") 
+                labelcolor="\e[1;31m"
+                ;;
+
+            "CrunchBang") 
+                labelcolor="\e[1;30m"
+                ;;
+
+            "Gentoo") 
+                labelcolor="\e[1;35m"
+                ;;
+
+            "Slackware") 
+                labelcolor="\e[1;34m"
+                ;;
+
+            *) 
+                labelcolor="\e[1;33m"
+                ;;
+        esac 
+    fi
     
-  # Some verbosity stuff
-  [[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && VerboseOut "Screenshot will be taken after info is displayed."
-  [[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && VerboseOut "Screenshot will be transferred/uploaded to specified location."
-  #########################
-  # Info Variable Setting #
-  #########################
-  if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor$bold@${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "distro" ]]; then
-    sysArch=`uname -m`
-    if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
-    else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
-    out_array=( "${out_array[@]}" "$mydistro" )
-    ((display_index++))
-  fi
-  if [[ "${display[@]}" =~ "kernel" ]]; then mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "uptime" ]]; then myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime"); out_array=( "${out_array[@]}" "$myuptime" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "shell" ]]; then myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell"); out_array=( "${out_array[@]}" "$myshell" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "de" ]]; then myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "wmtheme" ]]; then mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "gtk" ]]; then 
-    mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor $gtkTheme"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
-    myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
-    myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
-    [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
-  fi
-  if [[ "$display_type" == "ASCII" ]]; then
-    asciiText
-  else
-    echo -e "$mydistro" 
-    echo -e "$mykernel"
-    echo -e "$myuptime"
-    echo -e "$myshell"
-    echo -e "$myres"
-    echo -e "$myde"
-    echo -e "$mywm"
-    echo -e "$mywmtheme"
-    echo -e "$mygtk"
-    echo -e "$myicons"
-    echo -e "$myfont"
-  fi
+    # Some verbosity stuff
+    [[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && \
+    VerboseOut "Screenshot will be taken after info is displayed."
+
+    [[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && \
+    VerboseOut "Screenshot will be transferred/uploaded to specified location."
+  
+    #########################
+    # Info Variable Setting #
+    #########################
+    if [[ "${display[@]}" =~ "host" ]]; then 
+        myinfo=$(printf "${labelcolor}${myUser}$textcolor$bold@${labelcolor}${myHost}\n"); 
+        out_array=( "${out_array[@]}" "$myinfo" )
+        ((display_index++))
+    fi
+  
+    if [[ "${display[@]}" =~ "distro" ]]; then
+        sysArch=`uname -m`
+    
+            if [[ -n "$distro_more" ]]; then 
+                mydistro=$(printf "$labelcolor OS:$textcolor $distro_more $sysArch\n")
+            else 
+                mydistro=$(printf "$labelcolor OS:$textcolor $distro $sysArch\n")
+            fi
+        
+        out_array=( "${out_array[@]}" "$mydistro" )
+        ((display_index++))
+    fi
+  
+    if [[ "${display[@]}" =~ "kernel" ]]; then 
+        mykernel=$(printf "$labelcolor Kernel:$textcolor $kernel\n")
+        out_array=( "${out_array[@]}" "$mykernel" )
+        ((display_index++)) 
+    fi
+    
+    if [[ "${display[@]}" =~ "uptime" ]]; then 
+        myuptime=$(printf "$labelcolor Uptime:$textcolor $uptime\n")
+        out_array=( "${out_array[@]}" "$myuptime" )
+        ((display_index++))
+    fi
+    
+    if [[ "${display[@]}" =~ "shell" ]]; then 
+        myshell=$(printf "$labelcolor Shell:$textcolor $myShell\n")
+        out_array=( "${out_array[@]}" "$myshell" )
+        ((display_index++))
+    fi
+    
+    if [[ "${display[@]}" =~ "res" ]]; then 
+        myres=$(printf "$labelcolor Resolution:${textcolor} $xResolution\n")
+        out_array=( "${out_array[@]}" "$myres" )
+        ((display_index++))
+    fi
+    
+    if [[ "${display[@]}" =~ "de" ]]; then 
+        myde=$(printf "$labelcolor DE:$textcolor $DE\n")
+        out_array=( "${out_array[@]}" "$myde" )
+        ((display_index++))
+    fi
+  
+    if [[ "${display[@]}" =~ "wm" ]]; then 
+        mywm=$(printf "$labelcolor WM:$textcolor $WM\n")
+        out_array=( "${out_array[@]}" "$mywm" )
+        ((display_index++))
+    fi
+  
+    if [[ "${display[@]}" =~ "wmtheme" ]]; then 
+        mywmtheme=$(printf "$labelcolor WM Theme:$textcolor $Win_theme\n")
+        out_array=( "${out_array[@]}" "$mywmtheme" )
+        ((display_index++))
+    fi
+  
+    if [[ "${display[@]}" =~ "gtk" ]]; then 
+        mygtk=$(printf "$labelcolor GTK Theme:$textcolor $gtkTheme\n")
+        out_array=( "${out_array[@]}" "$mygtk" )
+        ((display_index++))
+        myicons=$(printf "$labelcolor Icon Theme:$textcolor $gtkIcons\n")
+        out_array=( "${out_array[@]}" "$myicons" )
+        ((display_index++))
+        myfont=$(printf "$labelcolor Font:$textcolor $gtkFont\n")
+        out_array=( "${out_array[@]}" "$myfont" )
+        ((display_index++))
+    
+        [[ "$gtkBackground" ]] && \
+        mybg=$(printf "$labelcolor BG:$textcolor $gtkBackground\n")
+        
+        out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
+    fi
+  
+    if [[ "$display_type" == "ASCII" ]]; then
+        asciiText
+    else
+        printf "$mydistro\n" 
+        printf "$mykernel\n"
+        printf "$myuptime\n"
+        printf "$myshell\n"
+        printf "$myres\n"
+        printf "$myde\n"
+        printf "$mywm\n"
+        printf "$mywmtheme\n"
+        printf "$mygtk\n"
+        printf "$myicons\n"
+        printf "$myfont\n"
+    fi
 }
 
 ########
 # Theme Exporting (Experimental!)
 ########
 themeExport () {
-  WM=$(echo "$mywm" | awk '{print $NF}')
-  if [[ ! -d /tmp/screenfetch-export ]]; then mkdir -p "/tmp/screenfetch-export/Icons" & mkdir -p "/tmp/screenfetch-export/GTK-Theme" & mkdir -p "/tmp/screenfetch-export/WM-${WM}" ; fi
-  if [[ "$WM" ]]; then
-    if [[ "$WM" =~ "Openbox" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "Fluxbox" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.fluxbox/styles/$Win_theme" ]]; then
-          cp -r "$HOME/.fluxbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "Blackbox" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.blackbox/styles/$Win_theme" ]]; then
-          cp -r "$HOME/.blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        elif [[ -d "/usr/share/blackbox/styles/$Win_theme" ]]; then
-          cp -r "/usr/share/blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "PekWM" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.pekwm/themes/$Win_theme" ]]; then
-          cp -r "$HOME/.pekwm/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "Metacity" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
-          cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "Xfwm4" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        WM_theme=$(echo "$Win_theme" | awk '{print $NF}')
-        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
-          cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
+
+    WM=$(printf "$mywm\n" | awk '{print $NF}')
+    
+    if [[ ! -d /tmp/screenfetch-export ]]; then 
+        mkdir -p "/tmp/screenfetch-export/Icons" & \
+        mkdir -p "/tmp/screenfetch-export/GTK-Theme" & \
+        mkdir -p "/tmp/screenfetch-export/WM-${WM}" 
     fi
-  fi
-  if [[ "$gtkBackgroundFull" ]]; then
-    cp "$gtkBackgroundFull" /tmp/screenfetch-export/
-    [[ "$verbosity" -eq "1" ]] && VerboseOut "Found BG file. Transferring to /tmp/screenfetch-export/..."
-  fi
-  if [[ "$mygtk" ]]; then
-    GTK_theme=$(echo "$mygtk" | awk '{print $NF}')
-    if [ -d "/usr/share/themes/$GTK_theme" ]; then
-      cp -r "/usr/share/themes/$GTK_theme" "/tmp/screenfetch-export/GTK/Theme/$GTK_theme" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK theme folder. Transferring to /tmp/screenfetch-export/..."
+  
+    if [[ "$WM" ]]; then
+        if [[ "$WM" =~ "Openbox" ]]; then
+            if [[ "$Win_theme" != "Not Found" ]]; then
+                if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+                    cp -r "$HOME/.themes/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          
+                    [[ "$verbosity" -eq "1" ]] && \
+                    VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                fi
+            fi
+        elif [[ "$WM" =~ "Fluxbox" ]]; then
+            if [[ "$Win_theme" != "Not Found" ]]; then
+                if [[ -d "$HOME/.fluxbox/styles/$Win_theme" ]]; then
+                    cp -r "$HOME/.fluxbox/styles/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+                    
+                    [[ "$verbosity" -eq "1" ]] && \
+                    VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                fi
+            fi
+        elif [[ "$WM" =~ "Blackbox" ]]; then
+            if [[ "$Win_theme" != "Not Found" ]]; then
+                if [[ -d "$HOME/.blackbox/styles/$Win_theme" ]]; then
+                    cp -r "$HOME/.blackbox/styles/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+                    
+                    [[ "$verbosity" -eq "1" ]] && VerboseOut \
+                    "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                elif [[ -d "/usr/share/blackbox/styles/$Win_theme" ]]; then
+                    cp -r "/usr/share/blackbox/styles/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          
+                    [[ "$verbosity" -eq "1" ]] && VerboseOut \
+                    "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                fi
+            fi
+        elif [[ "$WM" =~ "PekWM" ]]; then
+            if [[ "$Win_theme" != "Not Found" ]]; then
+                if [[ -d "$HOME/.pekwm/themes/$Win_theme" ]]; then
+                    cp -r "$HOME/.pekwm/themes/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+                    
+                    [[ "$verbosity" -eq "1" ]] && VerboseOut \
+                    "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                fi
+            fi
+        elif [[ "$WM" =~ "Metacity" ]]; then
+            if [[ "$Win_theme" != "Not Found" ]]; then
+                if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+                    cp -r "$HOME/.themes/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+                    
+                    [[ "$verbosity" -eq "1" ]] && VerboseOut \
+                    "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
+                    cp -r "/usr/share/themes/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+                    
+                    [[ "$verbosity" -eq "1" ]] && VerboseOut \
+                    "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                fi
+            fi
+        elif [[ "$WM" =~ "Xfwm4" ]]; then
+            if [[ "$Win_theme" != "Not Found" ]]; then
+                WM_theme=$(printf "$Win_theme\n" | awk '{print $NF}')
+                
+                if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+                    cp -r "$HOME/.themes/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+                    
+                    [[ "$verbosity" -eq "1" ]] && VerboseOut \
+                    "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
+                    cp -r "/usr/share/themes/$Win_theme" \
+                    "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+          
+                    [[ "$verbosity" -eq "1" ]] && VerboseOut \
+                    "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+                fi
+            fi
+        fi
     fi
-  fi
-  if [[ "$myicons" ]]; then
-    GTK_icons=$(echo "$myicons" | awk '{print $NF}')
-    if [ -d "/usr/share/icons/$GTK_icons" ]; then
-      cp -r "/usr/share/icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+    
+    if [[ "$gtkBackgroundFull" ]]; then
+        cp "$gtkBackgroundFull" /tmp/screenfetch-export/
+        
+        [[ "$verbosity" -eq "1" ]] && VerboseOut \
+        "Found BG file. Transferring to /tmp/screenfetch-export/..."
     fi
-    if [ -d "$HOME/.icons/$GTK_icons" ]; then
-      cp -r "$HOME/.icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+  
+    if [[ "$mygtk" ]]; then
+        GTK_theme=$(printf "$mygtk\n" | awk '{print $NF}')
+        if [[ -d "/usr/share/themes/$GTK_theme" ]]; then
+            cp -r "/usr/share/themes/$GTK_theme" \
+            "/tmp/screenfetch-export/GTK/Theme/$GTK_theme" &>/dev/null
+      
+        [[ "$verbosity" -eq "1" ]] && VerboseOut \
+        "Found GTK theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
     fi
-  fi
-  if [[ "$myfont" ]]; then
-    GTK_font=$(echo "$myfont" | awk '{print $NF}')
-    if [ -d "/usr/share/fonts/$GTK_font" ]; then
-      cp -r "/usr/share/fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
-    elif [ -d "$HOME/.fonts/$GTK_font" ]; then
-      cp -r "$HOME/.fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+  
+    if [[ "$myicons" ]]; then
+        GTK_icons=$(printf "$myicons\n" | awk '{print $NF}')
+        if [[ -d "/usr/share/icons/$GTK_icons" ]]; then
+            cp -r "/usr/share/icons/$GTK_icons" \
+            "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
+      
+            [[ "$verbosity" -eq "1" ]] && VerboseOut \
+            "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
+        if [[ -d "$HOME/.icons/$GTK_icons" ]]; then
+            cp -r "$HOME/.icons/$GTK_icons" \
+            "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
+            
+            [[ "$verbosity" -eq "1" ]] && VerboseOut \
+            "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+        fi
     fi
-  fi
-  if [ "$screenshot" == "1" ]; then
-    if [ -f "${shotfile}" ]; then
-      cp "${shotfile}" "/tmp/screenfetch-export/"
-      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found screenshot. Transferring to /tmp/screenfetch-export/..."
+    
+    if [[ "$myfont" ]]; then
+        GTK_font=$(printf "$myfont\n" | awk '{print $NF}')
+        if [[ -d "/usr/share/fonts/$GTK_font" ]]; then
+            cp -r "/usr/share/fonts/$GTK_font" \
+                "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
+            
+            [[ "$verbosity" -eq "1" ]] && VerboseOut \
+            "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+        
+        elif [[ -d "$HOME/.fonts/$GTK_font" ]]; then
+            cp -r "$HOME/.fonts/$GTK_font" \
+            "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
+      
+            [[ "$verbosity" -eq "1" ]] && VerboseOut \
+            "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+        fi
     fi
-  fi
-  cd /tmp/screenfetch-export/
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Creating screenfetch-export.tar.gz archive in /tmp/screenfetch-export/...."
-  tar -czf screenfetch-export.tar.gz ../screenfetch-export &>/dev/null
-  mv /tmp/screenfetch-export/screenfetch-export.tar.gz $HOME/
-  echo -e "${bold}==>${c0} Archive created in /tmp/ and moved to $HOME. Removing /tmp/screenfetch-export/..."
-  rm -rf /tmp/screenfetch-export/
+    
+    if [[ "$screenshot" == "1" ]]; then
+        if [[ -f "${shotfile}" ]]; then
+            cp "${shotfile}" "/tmp/screenfetch-export/"
+            
+            [[ "$verbosity" -eq "1" ]] && VerboseOut \
+            "Found screenshot. Transferring to /tmp/screenfetch-export/..."
+        fi
+    fi
+  
+    cd /tmp/screenfetch-export/
+    
+    [[ "$verbosity" -eq "1" ]] && VerboseOut \
+    "Creating screenfetch-export.tar.gz archive in /tmp/screenfetch-export/...."
+  
+    tar -czf screenfetch-export.tar.gz ../screenfetch-export &>/dev/null
+    mv /tmp/screenfetch-export/screenfetch-export.tar.gz $HOME/
+    printf "${bold}==>${c0} Archive created in /tmp/ and moved to $HOME. Removing /tmp/screenfetch-export/...\n"
+    rm -rf /tmp/screenfetch-export/
 }
 
 
@@ -1632,15 +1785,16 @@ themeExport () {
 
 for i in "${display[@]}"; do
 
-	if [[ $i =~ wm ]]; then
-		 ! [[ $WM  ]] && detectwm; 
-		 ! [[ $Win_theme ]] && detectwmtheme;
-	else
-	
-	  [[ "${display[*]}" =~ "$i" ]] && detect${i}
+    if [[ $i =~ wm ]]; then
+        ! [[ $WM  ]] && detectwm; 
+	! [[ $Win_theme ]] && detectwmtheme;
+    else
+        [[ "${display[*]}" =~ "$i" ]] && detect${i}
 
-	fi
+    fi
 done
-infoDisplay
-[ "$screenshot" == "1" ] && takeShot
-[ "$exportTheme" == "1" ] && themeExport
+
+infoDisplay ;
+
+[[ "$screenshot" == "1" ]] && takeShot
+[[ "$exportTheme" == "1" ]] && themeExport
