@@ -83,7 +83,7 @@ function VerboseOut {
     printf "\e[1;31m:: \e[0m$1\n"
 }
 
-ErrorOut () {
+function ErrorOut {
     printf "\e[1;37m[[ \e[1;31m! \e[1;37m]] \e[0m$1\n"
 }
 
@@ -280,21 +280,23 @@ fi
 
 # Host and User detection - Begin
 detecthost () {
-  myUser=$(echo "$USER")
-  myHost=$(hostname)
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding hostname and user...found as '$myUser@$myHost'"
+    myUser=$(echo "$USER")
+    myHost=$(hostname)
+
+    [[ "$verbosity" -eq "1" ]] && \
+    VerboseOut "Finding hostname and user...found as '$myUser@$myHost'"
 }
 
 # Distro Detection - Begin
 detectdistro () {
-  if [[ -z $distro ]]; then
-    distro="Unknown"
-    # LSB Release Check
-    if which lsb_release >/dev/null 2>&1; then
-      distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
-      if [ "$distro_detect" == "Arch" ]; then distro="Arch Linux"; fi
-      if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
-      if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
+    if [[ -z $distro ]]; then
+        distro="Unknown"
+        # LSB Release Check
+        if which lsb_release >/dev/null 2>&1; then
+        distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
+        if [[ "$distro_detect" == "Arch" ]]; then distro="Arch Linux"; fi
+        if [[ "$distro_detect" == "Debian" ]]; then distro="Debian"; fi
+        if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
         if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
           distro="LMDE"
           distro_codename=null
@@ -331,7 +333,11 @@ detectdistro () {
         distro_codename=null
         distro_release=null
       fi
-      if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
+        if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] \
+        && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | \
+        sed -e 's/Release://' -e 's/\t//g') && \
+        distro_more="$distro $distro_release"; 
+        fi
       if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
     # Check and Parsing for /etc/os-release
     elif [ -f /etc/os-release ]; then
