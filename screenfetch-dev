@@ -293,106 +293,237 @@ detectdistro () {
         distro="Unknown"
         # LSB Release Check
         if which lsb_release >/dev/null 2>&1; then
-        distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
-        if [[ "$distro_detect" == "Arch" ]]; then distro="Arch Linux"; fi
-        if [[ "$distro_detect" == "Debian" ]]; then distro="Debian"; fi
-        if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
-          distro="LMDE"
-          distro_codename=null
-          distro_release=null
+            distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
+        
+            # Check for the Distro
+            case $distro_detect in
+                "Arch")
+                    distro="Arch Linux"
+                    ;;
+
+                "Debian")
+                    distro="Debian"
+                    ;;
+
+                "LinuxMint")
+                    distro="LinuxMint"
+                    ;;
+
+                "MandrivaLinux")
+                    if [[ "$(lsb_release -c | \
+                    sed -e 's/Codename://' -e 's/\t//g')" == "turtle" ]]; then
+                
+                        distro="Mandriva"-lsb_release | \
+                            sed -e 's/Release://' -e 's/\t//g'
+                    
+                        distro_codename=null
+                    fi
+                
+                    if [[ "$(lsb_release -c | \
+                    sed -e 's/Codename://' -e 's/\t//g')" == 
+                    "Henry_Farman" ]]; then
+                
+                        distro="Mandriva"-lsb_release | \
+                            sed -e 's/Release://' -e 's/\t//g'
+                        distro_codename=null
+                    fi
+                
+                    if [[ "$(lsb_release -c | \
+                    sed -e 's/Codename://' -e 's/\t//g')" == "Farman" ]]; then
+
+                        distro="Mandriva"-lsb_release | \
+                            sed -e 's/Release://' -e 's/\t//g'
+                        distro_codename=null
+                    fi
+                
+                    if [[ "$(lsb_release -c | \
+                    sed -e 's/Codename://' -e 's/\t//g')" == "Adelie" ]]; then
+                    
+                        distro="Mandriva"-lsb_release | \
+                            sed -e 's/Release://' -e 's/\t//g'
+                        distro_codename=null
+                    fi
+        
+                    if [[ "$(lsb_release -c | \
+                    sed -e 's/Codename://' -e 's/\t//g')" == "pauillac" ]]; then
+                        distro="Mandriva"-lsb_release | \
+                            sed -e 's/Release://' -e 's/\t//g'
+                        distro_codename=null
+                    fi
+                    ;;
+
+                "Fedora")
+                    distro="Fedora"
+                    ;;
+
+                "CrunchBang")
+                    distro="CrunchBang"
+                    ;;
+
+                "Ubuntu")
+                    distro="Ubuntu"
+                    ;;
+
+                "frugalware")
+                    distro="frugalware"
+                    distro_codename=null
+                    distro_release=null
+                    ;;
+            esac
+
+            if [[ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" \
+                                                        == "debian" ]]; then
+                distro="LMDE"
+                distro_codename=null
+                distro_release=null
+            fi
+        
+            # Handle special cases for distro recognition
+            if [[ $(lsb_release -r | \
+            sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] \
+            && [[ ! $distro_release ]]; then 
+                distro_release=$(lsb_release -r | \
+                    sed -e 's/Release://' -e 's/\t//g') && \
+                distro_more="$distro $distro_release"; 
+            fi
+      
+            if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') \
+            != "n/a" ]] && [[ ! $distro_codename ]]; then 
+                distro_codename=$(lsb_release -c | \
+                    sed -e 's/Codename://' -e 's/\t//g') && \
+                distro_more="$distro $distro_codename"; 
+            fi
+        # Check and Parsing for /etc/os-release
+        elif [[ -f /etc/os-release ]]; then
+            distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
+        
+            if [[ "$distrib_id" == "frugalware" ]]; then 
+                distro="Frugalware"; 
+            fi
+            # Existing File Check
+        else
+            if [[ -f /etc/debian_version ]]; then 
+                distro="Debian"; 
+            fi
+      
+            if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then 
+                distro="Ubuntu"; 
+            fi
+        
+            if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
+                if grep -i debian /etc/lsb-release >/dev/null 2>&1; then 
+                    distro="LMDE"
+                else 
+                    distro="Mint"; 
+                fi
+            fi
+          
+            if [[ -f /etc/arch-release ]]; then 
+                distro="Arch Linux"; 
+            fi
+            
+            # Placed redhat-release check first because it is still existing on 
+            # Fedora installations so if this gets checked first, then the 
+            # /etc/fedora-release is checked next ... Fedora will be the final
+            # assignment.
+            if [[ -f /etc/redhat-release ]]; then 
+                distro="Red Hat Linux"; 
+            fi
+            if [[ -f /etc/fedora-release ]]; then 
+                distro="Fedora"; 
+            fi
+
+            if [[ -f /etc/slackware-version ]]; then 
+                distro="Slackware"; 
+            fi
+            if [[ -f /etc/SuSE-release ]]; then 
+                distro="openSUSE"; 
+            fi
+            if [[ -f /etc/mandrake-release ]]; then 
+                distro="Mandrake"; 
+            fi
+            if [[ -f /etc/mandriva-release ]]; then 
+                distro="Mandriva"; 
+            fi
+            if [[ -f /etc/crunchbang-lsb-release ]]; then 
+                distro="CrunchBang"; 
+            fi
+            if [[ -f /etc/gentoo-release ]]; then 
+                distro="Gentoo"; 
+            fi
+            if [[ -f /var/run/dmesg.boot ]] && \
+            grep -i bsd /var/run/dmesg.boot; then 
+                distro="BSD"; 
+            fi
+            if [[ -f /usr/share/doc/tc/release.txt ]]; then 
+                distro="TinyCore"; 
+            fi
+            if [[ -f /etc/frugalware-release ]]; then 
+                distro="Frugalware"; 
+            fi
         fi
-      fi
-      if [ "$distro_detect" == "MandrivaLinux" ]; then distro="Mandriva"
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "turtle" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Henry_Farman" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Farman" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Adelie" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "pauillac" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-      fi
-      if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
-      if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
-      if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
-      if [ "$distro_detect" == "frugalware" ]; then
-        distro="Frugalware"
-        distro_codename=null
-        distro_release=null
-      fi
-        if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] \
-        && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | \
-        sed -e 's/Release://' -e 's/\t//g') && \
-        distro_more="$distro $distro_release"; 
-        fi
-      if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
-    # Check and Parsing for /etc/os-release
-    elif [ -f /etc/os-release ]; then
-      distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
-      if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
-    # Existing File Check
     else
-      if [ -f /etc/debian_version ]; then distro="Debian"; fi
-      if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
-      if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
-        if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="LMDE"
-        else distro="Mint"; fi
-      fi
-      if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
-      if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
-      if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
-      if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-      if [ -f /etc/SuSE-release ]; then distro="openSUSE"; fi
-      if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
-      if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
-      if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
-      if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-      if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
-      if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
-      if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
-    fi
-  else
     
-   declare -l lcase
-   lcase=$distro
+        declare -l lcase
+        lcase=$distro
     
-   case $lcase in
+        case $lcase in
    
-      arch*linux*old) distro="Arch Linux - Old" ;;
-      arch*linux) distro="Arch Linux" ;;
-      fedora) distro="Fedora" ;;
-      mandriva) distro="Mandriva" ;;
-      mandrake) distro="Mandrake" ;;
-      mint) distro="Mint" ;;
-      lmde) distro="LMDE" ;;
-      opensuse) distro="OpenSuSe" ;;
-      ubuntu) distro="Ubuntu" ;;
-      debain) distro="Debian" ;;
-      bsd) distro="BSD" ;;
-      red*hat*) distro="Red Hat Linux" ;;
-      crunchbang) distro="CrunchBang" ;;
-      gentoo) distro="Gentoo" ;;
-      slackware) distro="Slackware" ;;
-      frugalware) distro="Frugalware" ;;
-   
-    esac
-    
-   fi  
+            arch*linux*old) 
+                distro="Arch Linux - Old" 
+                ;;
+            arch*linux) 
+                distro="Arch Linux" 
+                ;;
+            fedora) 
+                distro="Fedora" 
+                ;;
+            mandriva) 
+                distro="Mandriva" 
+                ;;
+            mandrake) 
+                distro="Mandrake" 
+                ;;
+            mint) 
+                distro="Mint" 
+                ;;
+            lmde)
+                distro="LMDE" 
+                ;;
+            opensuse) 
+                distro="OpenSuSe" 
+                ;;
+            ubuntu) 
+                distro="Ubuntu" 
+                ;;
+            debain) 
+                distro="Debian" 
+                ;;
+            bsd) 
+                distro="BSD" 
+                ;;
+            red*hat*) 
+                distro="Red Hat Linux" 
+                ;;
+            crunchbang) 
+                distro="CrunchBang" 
+                ;;
+            gentoo) 
+                distro="Gentoo" 
+                ;;
+            slackware) 
+                distro="Slackware" 
+                ;;
+            frugalware) 
+                distro="Frugalware" 
+                ;;
+           
+        esac
+            
+    fi  
   
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding distro...found as '$distro $distro_release'"
+  [[ "$verbosity" -eq "1" ]] && \
+  VerboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
 
@@ -401,47 +532,55 @@ detectdistro () {
 
 # Kernel Version Detection - Begin
 detectkernel () {
-  kernel=`uname -r`
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding kernel version...found as '$kernel'"
+    kernel=`uname -r`
+    [[ "$verbosity" -eq "1" ]] && \
+    VerboseOut "Finding kernel version...found as '$kernel'"
 }
 # Kernel Version Detection - End
 
 
 # Uptime Detection - Begin
 detectuptime () {
-  uptime=`awk -F. '{print $1}' /proc/uptime`
-  secs=$((${uptime}%60))
-  mins=$((${uptime}/60%60))
-  hours=$((${uptime}/3600%24))
-  days=$((${uptime}/86400))
-  uptime="${mins}m"
-  if [ "${hours}" -ne "0" ]; then
-    uptime="${hours}h ${uptime}"
-  fi
-  if [ "${days}" -ne "0" ]; then
-    uptime="${days}d ${uptime}"
-  fi
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding current uptime...found as '$uptime'"
+    uptime=`awk -F. '{print $1}' /proc/uptime`
+    secs=$((${uptime}%60))
+    mins=$((${uptime}/60%60))
+    hours=$((${uptime}/3600%24))
+    days=$((${uptime}/86400))
+    uptime="${mins}m"
+    if [[ "${hours}" -ne "0" ]]; then
+        uptime="${hours}h ${uptime}"
+    fi
+    if [[ "${days}" -ne "0" ]]; then
+        uptime="${days}d ${uptime}"
+    fi
+    
+    [[ "$verbosity" -eq "1" ]] && \
+    VerboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
 
 
 # Shell Detection - Begin
 detectshell () {
-  myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding current shell...found as '$myShell'"
+    myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
+    [[ "$verbosity" -eq "1" ]] && \
+    VerboseOut "Finding current shell...found as '$myShell'"
 }
 # Shell Detection - End
 
 
 # Resolution Detection - Begin
 detectres () {
-  if [[ -n $DISPLAY ]]; then
-    xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
-  else
-    xResolution="No X Server"
-  fi
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding current resolution(s)...found as '$xResolution'"
+    if [[ -n $DISPLAY ]]; then
+        xResolution=$(xdpyinfo | \
+            sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | \
+            sed ':a;N;$!ba;s/\n/ /g')
+    else
+        xResolution="No X Server"
+    fi
+    
+    [[ "$verbosity" -eq "1" ]] && \
+    VerboseOut "Finding current resolution(s)...found as '$xResolution'"
 }
 # Resolution Detection - End
 
