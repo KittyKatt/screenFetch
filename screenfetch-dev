@@ -932,56 +932,73 @@ detectgtk () {
 
 # /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
-  *) # Lightweight or No DE Found
-    if [ -f $HOME/.gtkrc-2.0 ]; then
-      if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
-         gtkTheme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
-      fi
+    *) # Lightweight or No DE Found
+        if [[ -f $HOME/.gtkrc-2.0 ]]; then
+            if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
+                gtkTheme=$(awk -F'"' '/gtk-theme/ {print $2}' \
+                                                    $HOME/.gtkrc-2.0)
+            fi
 
-      if grep -q icon-theme $HOME/.gtkrc-2.0; then
-          gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
-      fi
+            if grep -q icon-theme $HOME/.gtkrc-2.0; then
+                gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' \
+                                                    $HOME/.gtkrc-2.0)
+            fi
 
-      if grep -q font $HOME/.gtkrc-2.0; then
-          gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
-      fi
+            if grep -q font $HOME/.gtkrc-2.0; then
+                gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' \
+                                                    $HOME/.gtkrc-2.0)
+            fi
+        fi
+        
+        # $HOME/.gtkrc.mine theme detect only
+        if [[ -f $HOME/.gtkrc.mine ]]; then
+            if grep -q "^include" $HOME/.gtkrc.mine; then
+                gtkTheme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine \
+                                            | awk -F "/" '{ print $5 }')
+            fi
+            
+            if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
+                gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine \
+                                            | awk -F '"' '{print $2}')
+            fi
+        fi
+    
+        # ROX-Filer icon detect only
+        if [[ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]]; then
+            gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' \
+                ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
+        fi
+    
+        # E17 detection
+        if [[ $E_ICON_THEME ]]; then
+            gtkIcons=${E_ICON_THEME}
+            gtkTheme="Not available."
+            gtkFont="Not available."
+        fi
+        
+        # Background Detection (feh, nitrogen)
+        if [[ "$background_detect" == "1" ]]; then
+            if [[ -a $HOME/.fehbg ]]; then
+                gtkBackgroundFull=$(awk -F"'" '/feh --bg/{print $2}' \
+                                            $HOME/.fehbg 2>/dev/null)
+                gtkBackground=$(echo "$gtkBackgroundFull" \
+                                            | awk -F"/" '{print $NF}')
+            elif [[ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]]; then
+                gtkBackground=$(awk -F"/" '/file=/ {print $NF}' \
+                    ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg)
+            fi
+        fi
+        ;;
+    esac
+  
+    if [[ "$verbosity" -eq "1" ]]; then
+        VerboseOut "Finding GTK theme...found as '$gtkTheme'"
+        VerboseOut "Finding icon theme...found as '$gtkIcons'"
+        VerboseOut "Finding user font...found as '$gtkFont'"
+    
+        [[ $gtkBackground ]] && \
+        VerboseOut "Finding background...found as '$gtkBackground'"
     fi
-    # $HOME/.gtkrc.mine theme detect only
-    if [ -f $HOME/.gtkrc.mine ]; then
-      if grep -q "^include" $HOME/.gtkrc.mine; then
-        gtkTheme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
-      fi
-      if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
-        gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
-      fi
-    fi
-    # ROX-Filer icon detect only
-    if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
-      gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
-    fi
-    # E17 detection
-    if [ $E_ICON_THEME ]; then
-      gtkIcons=${E_ICON_THEME}
-      gtkTheme="Not available."
-      gtkFont="Not available."
-    fi
-    # Background Detection (feh, nitrogen)
-    if [ "$background_detect" == "1" ]; then
-      if [ -a $HOME/.fehbg ]; then
-        gtkBackgroundFull=$(awk -F"'" '/feh --bg/{print $2}' $HOME/.fehbg 2>/dev/null)
-        gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
-      elif [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]; then
-        gtkBackground=$(awk -F"/" '/file=/ {print $NF}' ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg)
-      fi
-    fi
-  ;;
-  esac
-  if [[ "$verbosity" -eq "1" ]]; then
-    VerboseOut "Finding GTK theme...found as '$gtkTheme'"
-    VerboseOut "Finding icon theme...found as '$gtkIcons'"
-    VerboseOut "Finding user font...found as '$gtkFont'"
-    [[ $gtkBackground ]] && VerboseOut "Finding background...found as '$gtkBackground'"
-  fi
 }
 # GTK Theme\Icon\Font Detection - END
 
@@ -990,411 +1007,421 @@ detectgtk () {
 #######################
 
 takeShot () {
-  if [[ -z $screenCommand ]]; then
-    if [[ "$hostshot" == "1" ]]; then
-      scrot -cd3 "${shotfile}"
-      if [ -f "${shotfile}" ]; then
-      	[[ "$verbosity" -eq "1" ]] && VerboseOut "Screenshot saved at '${shotfile}'"
-      	scp -qo ConnectTimeout="${scptimeout}" "${shotfile}" "${serveraddr}:${serverdir}"
-      	echo -e "${bold}==>${c0} Your screenshot can be viewed at ${baseurl}/$shotfile"
-      else
-        VerboseOut "ERROR: Problem saving screenshot to ${shotfile}"
-      fi
+    if [[ -z $screenCommand ]]; then
+        if [[ "$hostshot" == "1" ]]; then
+            scrot -cd3 "${shotfile}"
+            
+            if [[ -f "${shotfile}" ]]; then
+      	        
+                [[ "$verbosity" -eq "1" ]] && \
+                VerboseOut "Screenshot saved at '${shotfile}'"
+      	
+                scp -qo ConnectTimeout="${scptimeout}" "${shotfile}" \
+                                            "${serveraddr}:${serverdir}"
+      	
+                printf "${bold}==>${c0} %s ${baseurl}/$shotfile\n" \
+                        "Your screenshot can be viewed at" 
+            else
+                VerboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+            fi
+        else
+            scrot -cd3 "${shotfile}"
+            
+            if [[ -f "${shotfile}" ]]; then
+      	    
+                [[ "$verbosity" -eq "1" ]] && \
+                VerboseOut "Screenshot saved at '${shotfile}'"
+            else
+                VerboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+            fi
+        fi
     else
-      scrot -cd3 "${shotfile}"
-      if [ -f "${shotfile}" ]; then
-      	[[ "$verbosity" -eq "1" ]] && VerboseOut "Screenshot saved at '${shotfile}'"
-      else
-        VerboseOut "ERROR: Problem saving screenshot to ${shotfile}"
-      fi
+        $screenCommand
     fi
-  else
-    $screenCommand
-  fi
 }
 
 
 asciiText () {
 # Distro logos and ASCII outputs
-case $distro in
-  "Arch Linux - Old")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;34m" # Light Blue
-    startline="1"
-    fulloutput=("$c1              __"
-"$c1          _=(SDGJT=_                  %s"
-"$c1        _GTDJHGGFCVS)                %s"
-"$c1       ,GTDJGGDTDFBGX0               %s"
-"$c1      JDJDIJHRORVFSBSVL$c2-=+=,_        %s"
-"$c1     IJFDUFHJNXIXCDXDSV,$c2  \"DEBL      %s"
-"$c1    [LKDSDJTDU=OUSCSBFLD.$c2   '?ZWX,   %s"
-"$c1   ,LMDSDSWH'     \`DCBOSI$c2     DRDS], %s"
-"$c1   SDDFDFH'         !YEWD,$c2   )HDROD  %s"
-"$c1  !KMDOCG            &GSU|$c2\_GFHRGO\'  %s"
-"$c1  HKLSGP'$c2           __$c1\TKM0$c2\GHRBV)'  %s"
-"$c1 JSNRVW'$c2       __+MNAEC$c1\IOI,$c2\BN'     %s"
-"$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)         %s"
-"$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF         %s"
-"$c1 'EHTI                    !H"
-"$c1  \`0F'                    '!")
-  ;;
+    case $distro in
+        "Arch Linux - Old")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;34m" # Light Blue
+            startline="1"
+            fulloutput=("$c1              __"
+            "$c1          _=(SDGJT=_                  %s"
+            "$c1        _GTDJHGGFCVS)                %s"
+            "$c1       ,GTDJGGDTDFBGX0               %s"
+            "$c1      JDJDIJHRORVFSBSVL$c2-=+=,_        %s"
+            "$c1     IJFDUFHJNXIXCDXDSV,$c2  \"DEBL      %s"
+            "$c1    [LKDSDJTDU=OUSCSBFLD.$c2   '?ZWX,   %s"
+            "$c1   ,LMDSDSWH'     \`DCBOSI$c2     DRDS], %s"
+            "$c1   SDDFDFH'         !YEWD,$c2   )HDROD  %s"
+            "$c1  !KMDOCG            &GSU|$c2\_GFHRGO\'  %s"
+            "$c1  HKLSGP'$c2           __$c1\TKM0$c2\GHRBV)'  %s"
+            "$c1 JSNRVW'$c2       __+MNAEC$c1\IOI,$c2\BN'     %s"
+            "$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)         %s"
+            "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF         %s"
+            "$c1 'EHTI                    !H"
+            "$c1  \`0F'                    '!")
+            ;;
 
-  "Arch Linux")
-    [ -z $c1 ] && c1="\e[1;36m" # Light
-    c2="\e[0;36m" # Dark
-    startline="3"
-    fulloutput=("${c1}                   -\`"
-"${c1}                  .o+\`"
-"${c1}                 \`ooo/"
-"${c1}                \`+oooo:               %s"
-"${c1}               \`+oooooo:             %s"
-"${c1}               -+oooooo+:            %s"
-"${c1}             \`/:-:++oooo+:           %s"
-"${c1}            \`/++++/+++++++:          %s"
-"${c1}           \`/++++++++++++++:         %s"
-"${c1}          \`/+++o"${c2}"oooooooo"${c1}"oooo/\`       %s"
-"${c2}         "${c1}"./"${c2}"ooosssso++osssssso"${c1}"+\`      %s"
-"${c2}        .oossssso-\`\`\`\`/ossssss+\`     %s"
-"${c2}       -osssssso.      :ssssssso.    %s"
-"${c2}      :osssssss/        osssso+++.   %s"
-"${c2}     /ossssssss/        +ssssooo/-   %s"
-"${c2}   \`/ossssso+/:-        -:/+osssso+- %s"
-"${c2}  \`+sso+:-\`                 \`.-/+oso:"
-"${c2} \`++:.                           \`-/+/"
-"${c2} .\`                                 \`/")
-  ;;
+        "Arch Linux")
+            [[ -z $c1 ]] && c1="\e[1;36m" # Light
+            c2="\e[0;36m" # Dark
+            startline="3"
+            fulloutput=("${c1}                   -\`"
+            "${c1}                  .o+\`"
+            "${c1}                 \`ooo/"
+            "${c1}                \`+oooo:               %s"
+            "${c1}               \`+oooooo:             %s"
+            "${c1}               -+oooooo+:            %s"
+            "${c1}             \`/:-:++oooo+:           %s"
+            "${c1}            \`/++++/+++++++:          %s"
+            "${c1}           \`/++++++++++++++:         %s"
+            "${c1}          \`/+++o"${c2}"oooooooo"${c1}"oooo/\`       %s"
+            "${c2}         "${c1}"./"${c2}"ooosssso++osssssso"${c1}"+\`      %s"
+            "${c2}        .oossssso-\`\`\`\`/ossssss+\`     %s"
+            "${c2}       -osssssso.      :ssssssso.    %s"
+            "${c2}      :osssssss/        osssso+++.   %s"
+            "${c2}     /ossssssss/        +ssssooo/-   %s"
+            "${c2}   \`/ossssso+/:-        -:/+osssso+- %s"
+            "${c2}  \`+sso+:-\`                 \`.-/+oso:"
+            "${c2} \`++:.                           \`-/+/"
+            "${c2} .\`                                 \`/")
+            ;;
 
-  "Mint")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;32m" # Bold Green
-    startline="1"
-    fulloutput=("$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
-"$c2 MMm----::-://////////////oymNMd+\`     %s"
-"$c2 MMd      "$c1"/++                "$c2"-sNMd:   %s"
-"$c2 MMNso/\`  "$c1"dMM    \`.::-. .-::.\` "$c2".hMN:  %s"
-"$c2 ddddMMh  "$c1"dMM   :hNMNMNhNMNMNh: "$c2"\`NMm  %s"
-"$c2     NMm  "$c1"dMM  .NMN/-+MMM+-/NMN\` "$c2"dMM  %s"
-"$c2     NMm  "$c1"dMM  -MMm  \`MMM   dMM. "$c2"dMM  %s"
-"$c2     NMm  "$c1"dMM  -MMm  \`MMM   dMM. "$c2"dMM  %s"
-"$c2     NMm  "$c1"dMM  .mmd  \`mmm   yMM. "$c2"dMM  %s"
-"$c2     NMm  "$c1"dMM\`  ..\`   ...   ydm. "$c2"dMM  %s"
-"$c2     hMM- "$c1"+MMd/-------...-:sdds  "$c2"dMM  %s"
-"$c2     -NMm- "$c1":hNMNNNmdddddddddy/\`  "$c2"dMM  %s"
-"$c2      -dMNs-"$c1"\`\`-::::-------.\`\`    "$c2"dMM  %s"
-"$c2       \`/dMNmy+/:-------------:/yMMM  %s"
-"$c2          ./ydNMMMMMMMMMMMMMMMMMMMMM")
-  ;;
-
-
-  "LMDE")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;32m" # Bold Green
-    startline="2"
-    fulloutput=("          "${c1}"\`.-::---.."
-"${c2}       .:++++ooooosssoo:."
-"${c2}     .+o++::.      \`.:oos+.     %s"
-"${c2}    :oo:.\`             -+oo"${c1}":   %s"
-"${c2}  "${c1}"\`"${c2}"+o/\`    ."${c1}"::::::"${c2}"-.    .++-"${c1}"\`  %s"
-"${c2} "${c1}"\`"${c2}"/s/    .yyyyyyyyyyo:   +o-"${c1}"\`  %s"
-"${c2} "${c1}"\`"${c2}"so     .ss       ohyo\` :s-"${c1}":  %s"
-"${c2} "${c1}"\`"${c2}"s/     .ss  h  m  myy/ /s\`"${c1}"\`  %s"
-"${c2} \`s:     \`oo  s  m  Myy+-o:\`   %s"
-"${c2} \`oo      :+sdoohyoydyso/.     %s"
-"${c2}  :o.      .:////////++:       %s"
-"${c2}  \`/++        "${c1}"-:::::-          %s"
-"${c2}   "${c1}"\`"${c2}"++-                        %s"
-"${c2}    "${c1}"\`"${c2}"/+-                       %s"
-"${c2}      "${c1}"."${c2}"+/.                     %s"
-"${c2}        "${c1}"."${c2}":+-."
-"${c2}           \`--.\`\`")
-  ;;
-
-  "Ubuntu")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    c3="\e[1;33m" # Bold Yellow
-    startline="2"
-    fulloutput=("$c2                          ./+o+-"
-"$c1                  yyyyy- $c2-yyyyyy+"
-"$c1               $c1://+//////$c2-yyyyyyo      %s"
-"$c3           .++ $c1.:/++++++/-$c2.+sss/\`     %s"
-"$c3         .:++o:  $c1/++++++++/:--:/-     %s"
-"$c3        o:+o+:++.$c1\`..\`\`\`.-/oo+++++/    %s"
-"$c3       .:+o:+o/.$c1          \`+sssoo+/   %s"
-"$c1  .++/+:$c3+oo+o:\`$c1             /sssooo.  %s"
-"$c1 /+++//+:$c3\`oo+o$c1               /::--:.  %s"
-"$c1 \+/+o+++$c3\`o++o$c2               ++////.  %s"
-"$c1  .++.o+$c3++oo+:\`$c2             /dddhhh.  %s"
-"$c3       .+.o+oo:.$c2          \`oddhhhh+   $mygtk"
-"$c3        \+.++o+o\`\`-\`\`$c2\`\`.:ohdhhhhh+    %s"
-"$c3         \`:o+++ $c2\`ohhhhhhhhyo++os:     %s"
-"$c3           .o:$c2\`.syhhhhhhh/$c3.oo++o\`     %s"
-"$c2               /osyyyyyyo$c3++ooo+++/"
-"$c2                   \`\`\`\`\` $c3+oo+++o\:"
-"$c3                          \`oo++.")
-  ;;
-
-  "Debian")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    startline="2"
-    fulloutput=("  $c1       _,met\$\$\$\$\$gg."
-"  $c1    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P."
-"  $c1  ,g\$\$P\"\"       \"\"\"Y\$\$.\".\t %s"
-"  $c1 ,\$\$P'              \`\$\$\$.\t%s"
-"  $c1',\$\$P       ,ggs.     \`\$\$b:\t%s"
-"  $c1\`d\$\$'     ,\$P\"\'   $c2.$c1    \$\$\$\t%s"
-"  $c1 \$\$P      d\$\'     $c2,$c1    \$\$P\t%s"
-"  $c1 \$\$:      \$\$.   $c2-$c1    ,d\$\$'\t%s"
-"  $c1 \$\$\;      Y\$b._   _,d\$P'\t%s"
-"  $c1 Y\$\$.    $c2\`.$c1\`\"Y\$\$\$\$P\"'\t\t%s"
-"  $c1 \`\$\$b      $c2\"-.__\t\t%s"
-"  $c1  \`Y\$\$\t\t\t%s"
-"  $c1   \`Y\$\$.\t\t\t%s"
-"  $c1     \`\$\$b.\t\t\t%s"
-"  $c1       \`Y\$\$b.\t\t\t%s"
-"  $c1          \`\"Y\$b._"
-"  $c1              \`\"\"\"\"")
-  ;;
-
-  "CrunchBang")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;30m" # Dark Gray
-    startline="1"
-    fulloutput=("$c1                ___       ___      _"
-"$c1               /  /      /  /     | |  %s"
-"$c1              /  /      /  /      | | %s"
-"$c1             /  /      /  /       | | %s"
-"$c1     _______/  /______/  /______  | | %s"
-"$c1    /______   _______   _______/  | | %s"
-"$c1          /  /      /  /          | | %s"
-"$c1         /  /      /  /           | | %s"
-"$c1        /  /      /  /            | | %s"
-"$c1 ______/  /______/  /______       | | %s"
-"$c1/_____   _______   _______/       | | %s"
-"$c1     /  /      /  /               |_| %s"
-"$c1    /  /      /  /                 _  %s"
-"$c1   /  /      /  /                 | | %s"
-"$c1  /__/      /__/                  |_|")
-  ;;
-
-  "Gentoo")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;35m" # Light Purple
-    startline="2"
-    fulloutput=("$c2         -/oyddmdhs+:."
-"$c2     -o"$c1"dNMMMMMMMMNNmhy+"$c2"-\`"
-"$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-           %s"
-"$c2 \`o"$c1"mMMMMMMMMMMMMNmdmmmmddhhy"$c2"/\`       %s"
-"$c2 om"$c1"MMMMMMMMMMMN"$c2"hhyyyo"$c1"hmdddhhhd"$c2"o\`     %s"
-"$c2.y"$c1"dMMMMMMMMMMd"$c2"hs++so/s"$c1"mdddhhhhdm"$c2"+\`   %s"
-"$c2 oy"$c1"hdmNMMMMMMMN"$c2"dyooy"$c1"dmddddhhhhyhN"$c2"d.  %s"
-"$c2  :o"$c1"yhhdNNMMMMMMMNNNmmdddhhhhhyym"$c2"Mh  %s"
-"$c2    .:"$c1"+sydNMMMMMNNNmmmdddhhhhhhmM"$c2"my  %s"
-"$c2       /m"$c1"MMMMMMNNNmmmdddhhhhhmMNh"$c2"s:  %s"
-"$c2    \`o"$c1"NMMMMMMMNNNmmmddddhhdmMNhs"$c2"+\`   %s"
-"$c2  \`s"$c1"NMMMMMMMMNNNmmmdddddmNMmhs"$c2"/.     %s"
-"$c2 /N"$c1"MMMMMMMMNNNNmmmdddmNMNdso"$c2":\`       %s"
-"$c2+M"$c1"MMMMMMNNNNNmmmmdmNMNdso"$c2"/-          %s"
-"$c2yM"$c1"MNNNNNNNmmmmmNNMmhs+/"$c2"-\`              %s"
-"$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`"
-"$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`"
-"$c2  \`-//////:--.")
-  ;;
-
-  "Fedora")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;34m" # Light Blue
-    startline="3"
-    fulloutput=("$c2           :/------------://"
-"$c2        :------------------://"
-"$c2      :-----------"$c1"/shhdhyo/"$c2"-://"
-"$c2    /-----------"$c1"omMMMNNNMMMd/"$c2"-:/      %s"
-"$c2   :-----------"$c1"sMMMdo:/"$c2"       -:/    %s"
-"$c2  :-----------"$c1":MMMd"$c2"-------    --:/   %s"
-"$c2  /-----------"$c1":MMMy"$c2"-------    ---/   %s"
-"$c2 :------    --"$c1"/+MMMh/"$c2"--        ---:  %s"
-"$c2 :---     "$c1"oNMMMMMMMMMNho"$c2"     -----:  %s"
-"$c2 :--      "$c1"+shhhMMMmhhy++"$c2"   ------:   %s"
-"$c2 :-      -----"$c1":MMMy"$c2"--------------/   %s"
-"$c2 :-     ------"$c1"/MMMy"$c2"-------------:    %s"
-"$c2 :-      ----"$c1"/hMMM+"$c2"------------:     %s"
-"$c2 :--"$c1":dMMNdhhdNMMNo"$c2"-----------:       %s"
-"$c2 :---"$c1":sdNMMMMNds:"$c2"----------:         %s"
-"$c2 :------"$c1":://:"$c2"-----------://          %s"
-"$c2 :--------------------://")
-  ;;
-
-  "BSD")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    startline="4"
-    fulloutput=("$c2              ,        ,"
-"$c2             /(        )\`"
-"$c2             \ \___   / |"
-"$c2             /- "$c1"_$c2  \`-/  '"
-"$c2            ($c1/\/ \ $c2\   /\\       %s"
-"$c1            / /   |$c2 \`    \\     %s"
-"$c1            O O   )$c2 /    |     %s"
-"$c1            \`-^--'\`$c2<     '     %s"
-"$c2           (_.)  _  )   /      %s"
-"$c2            \`.___/\`    /       %s"
-"$c2              \`-----' /        %s"
-"$c1 <----.     "$c2"__/ __   \\         %s"
-"$c1 <----|===="$c2"O}}}$c1==$c2} \} \/$c1====   %s"
-"$c1 <----'    $c2\`--' \`.__,' \\       %s"
-"$c2              |        |       %s"
-"$c2               \       /       /\\ %s"
-"$c2          ______( (_  / \______/  %s"
-"$c2        ,'  ,-----'   |"
-"$c2        \`--{__________)")
-  ;;
-
-  "Mandriva"|"Mandrake")
-    c1="\e[1;34m" # Light Blue
-    c2="\e[1;33m" # Bold Yellow
-    startline="1"
-    fulloutput=("$c2                         \`\`"
-"$c2                        \`-.                 %s"
-"$c1       \`               $c2.---                %s"
-"$c1     -/               $c2-::--\`               %s"
-"$c1   \`++    $c2\`----...\`\`\`-:::::.               %s"
-"$c1  \`os.      $c2.::::::::::::::-\`\`\`     \`  \`   %s"
-"$c1  +s+         $c2.::::::::::::::::---...--\`   %s"
-"$c1 -ss:          $c2\`-::::::::::::::::-.\`\`.\`\`   %s"
-"$c1 /ss-           $c2.::::::::::::-.\`\`   \`      %s"
-"$c1 +ss:          $c2.::::::::::::-              %s"
-"$c1 /sso         $c2.::::::-::::::-              %s"
-"$c1 .sss/       $c2-:::-.\`   .:::::              %s"
-"$c1  /sss+.    $c2..\`$c1  \`--\`    $c2.:::              %s"
-"$c1   -ossso+/:://+/-\`        $c2.:\`             %s"
-"$c1     -/+ooo+/-.              $c2\`")
-  ;;
-
-  "openSUSE")
-    c1="\e[1;32m" # Bold Green
-    c2="\e[1;37m" # Bold White
-    startline="3"
-    fulloutput=("$c2             .;ldkO0000Okdl;."
-"$c2         .;d00xl:,'....';:ok00d;."
-"$c2       .d00l'                ,o00d."
-"$c2     .d0Kd."$c1" :Okxol:;'.          "$c2":O0d.        %s"
-"$c2    'OK"$c1"KKK0kOKKKKKKKKKKOxo:'      "$c2"lKO'      %s"
-"$c2   ,0K"$c1"KKKKKKKKKKKKKKK0d:"$c2",,,"$c1":dx:"$c2"    ;00,     %s"
-"$c2  .OK"$c1"KKKKKKKKKKKKKKKk."$c2".oOkdl."$c1"'0k."$c2"   cKO.    %s"
-"$c2  :KK"$c1"KKKKKKKKKKKKKKK: "$c2"kKx..od "$c1"lKd"$c2"   .OK:    %s"
-"$c2  dKK"$c1"KKKKKKKKKOx0KKKd "$c2";0KKKO, "$c1"kKKc"$c2"   dKd    %s"
-"$c2  dKK"$c1"KKKKKKKKKK;.;oOKx,.."$c2"'"$c1"..;kKKK0."$c2"  dKd    %s"
-"$c2  :KK"$c1"KKKKKKKKKK0o;...;cdxxOK0Oxc,.  "$c2".0K:    %s"
-"$c2   kKK"$c1"KKKKKKKKKKKKK0xl;'......,cdo  "$c2"lKk     %s"
-"$c2   '0K"$c1"KKKKKKKKKKKKKKKKKKKK00KKOo;  "$c2"c00'     %s"
-"$c2    .kK"$c1"KKOxddxkOO00000Okxoc;'.   "$c2".dKk.      %s"
-"$c2      l0Ko.                    .c00l.       %s"
-"$c2       .l0Kk:.              .;xK0l.         %s"
-"$c2          ,lkK0xl:;,,,,;:ldO0kl,"
-"$c2              .':ldxkkkkxdl:'.")
-  ;;
-
-  "Slackware")
-    [ -z $c1 ] && c1="\e[1;34m" # Light Blue
-    c2="\e[1;37m" # Bold White
-    startline="4"
-    fulloutput=("$c1                   :::::::"
-"$c1             :::::::::::::::::::"
-"$c1          :::::::::::::::::::::::::"
-"$c1        ::::::::"${c2}"cllcccccllllllll"${c1}"::::::"
-"$c1     :::::::::"${c2}"lc               dc"${c1}":::::::         %s"
-"$c1    ::::::::"${c2}"cl   clllccllll    oc"${c1}":::::::::      %s"
-"$c1   :::::::::"${c2}"o   lc"${c1}"::::::::"${c2}"co   oc"${c1}"::::::::::     %s"
-"$c1  ::::::::::"${c2}"o    cccclc"${c1}":::::"${c2}"clcc"${c1}"::::::::::::    %s"
-"$c1  :::::::::::"${c2}"lc        cclccclc"${c1}":::::::::::::    %s"
-"$c1 ::::::::::::::"${c2}"lcclcc          lc"${c1}"::::::::::::   %s"
-"$c1 ::::::::::"${c2}"cclcc"${c1}":::::"${c2}"lccclc     oc"${c1}":::::::::::   %s"
-"$c1 ::::::::::"${c2}"o    l"${c1}"::::::::::"${c2}"l    lc"${c1}":::::::::::   %s"
-"$c1  :::::"${c2}"cll"${c1}":"${c2}"o     clcllcccll     o"${c1}":::::::::::    %s"
-"$c1  :::::"${c2}"occ"${c1}":"${c2}"o                  clc"${c1}":::::::::::    %s"
-"$c1   ::::"${c2}"ocl"${c1}":"${c2}"ccslclccclclccclclc"${c1}":::::::::::::     %s"
-"$c1    :::"${c2}"oclcccccccccccccllllllllllllll"${c1}":::::      %s"
-"$c1     ::"${c2}"lcc1lcccccccccccccccccccccccco"${c1}"::::       %s"
-"$c1       ::::::::::::::::::::::::::::::::     %s"
-"$c1         ::::::::::::::::::::::::::::"
-"$c1            ::::::::::::::::::::::"
-"$c1                 ::::::::::::")
-  ;;
-
-  "Red Hat Linux")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    startline="2"
-    fulloutput=("$c2              \`.-..........\`"
-"$c2             \`////////::.\`-/."
-"$c2             -: ....-////////.               %s"
-"$c2             //:-::///////////\`             %s"
-"$c2      \`--::: \`-://////////////:             %s"
-"$c2      //////-    \`\`.-:///////// .\`          %s"
-"$c2      \`://////:-.\`    :///////::///:\`       %s"
-"$c2        .-/////////:---/////////////:       %s"
-"$c2           .-://////////////////////.       %s"
-"$c1          yMN+\`.-$c2::///////////////-\`        %s"
-"$c1       .-\`:NMMNMs\`  \`..-------..\`           %s"
-"$c1        MN+/mMMMMMhoooyysshsss              %s"
-"$c1 MMM    MMMMMMMMMMMMMMyyddMMM+              %s"
-"$c1  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM   %s"
-"$c1   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM    %s"
-"$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM")
-  ;;
-
-  "Frugalware")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;36m" # Light Blue
-    startline="7"
-    fulloutput=("${c2}           \`++/::-.\`"
-"${c2}          /o+++++++++/::-.\`"
-"${c2}         \`o+++++++++++++++o++/::-.\`"
-"${c2}         /+++++++++++++++++++++++oo++/:-.\`\`"
-"${c2}        .o+ooooooooooooooooooosssssssso++oo++/:-\`"
-"${c2}        ++osoooooooooooosssssssssssssyyo+++++++o:"
-"${c2}       -o+ssoooooooooooosssssssssssssyyo+++++++s\`"
-"${c2}       o++ssoooooo++++++++++++++sssyyyyo++++++o:    %s"
-"${c2}      :o++ssoooooo"${c1}"/-------------"${c2}"+syyyyyo+++++oo    %s"
-"${c2}     \`o+++ssoooooo"${c1}"/-----"${c2}"+++++ooosyyyyyyo++++os:    %s"
-"${c2}     /o+++ssoooooo"${c1}"/-----"${c2}"ooooooosyyyyyyyo+oooss     %s"
-"${c2}    .o++++ssooooos"${c1}"/------------"${c2}"syyyyyyhsosssy-     %s"
-"${c2}    ++++++ssooooss"${c1}"/-----"${c2}"+++++ooyyhhhhhdssssso      %s"
-"${c2}   -s+++++syssssss"${c1}"/-----"${c2}"yyhhhhhhhhhhhddssssy.      %s"
-"${c2}   sooooooyhyyyyyh"${c1}"/-----"${c2}"hhhhhhhhhhhddddyssy+       %s"
-"${c2}  :yooooooyhyyyhhhyyyyyyhhhhhhhhhhdddddyssy\`       %s"
-"${c2}  yoooooooyhyyhhhhhhhhhhhhhhhhhhhddddddysy/        %s"
-"${c2} -ysooooooydhhhhhhhhhhhddddddddddddddddssy         %s"
-"${c2}  .-:/+osssyyyysyyyyyyyyyyyyyyyyyyyyyyssy:         %s"
-"${c2}        \`\`.-/+oosysssssssssssssssssssssss          %s"
-"${c2}                \`\`.:/+osyysssssssssssssh."
-"${c2}                         \`-:/+osyyssssyo"
-"${c2}                                 .-:+++\`")
-  ;;
+        "Mint")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;32m" # Bold Green
+            startline="1"
+            fulloutput=("$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
+            "$c2 MMm----::-://////////////oymNMd+\`     %s"
+            "$c2 MMd      "$c1"/++                "$c2"-sNMd:   %s"
+            "$c2 MMNso/\`  "$c1"dMM    \`.::-. .-::.\` "$c2".hMN:  %s"
+            "$c2 ddddMMh  "$c1"dMM   :hNMNMNhNMNMNh: "$c2"\`NMm  %s"
+            "$c2     NMm  "$c1"dMM  .NMN/-+MMM+-/NMN\` "$c2"dMM  %s"
+            "$c2     NMm  "$c1"dMM  -MMm  \`MMM   dMM. "$c2"dMM  %s"
+            "$c2     NMm  "$c1"dMM  -MMm  \`MMM   dMM. "$c2"dMM  %s"
+            "$c2     NMm  "$c1"dMM  .mmd  \`mmm   yMM. "$c2"dMM  %s"
+            "$c2     NMm  "$c1"dMM\`  ..\`   ...   ydm. "$c2"dMM  %s"
+            "$c2     hMM- "$c1"+MMd/-------...-:sdds  "$c2"dMM  %s"
+            "$c2     -NMm- "$c1":hNMNNNmdddddddddy/\`  "$c2"dMM  %s"
+            "$c2      -dMNs-"$c1"\`\`-::::-------.\`\`    "$c2"dMM  %s"
+            "$c2       \`/dMNmy+/:-------------:/yMMM  %s"
+            "$c2          ./ydNMMMMMMMMMMMMMMMMMMMMM")
+            ;;
 
 
-  *)
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;30m" # Light Gray
-    c3="\e[1;33m" # Light Yellow
-    startline="0"
-    fulloutput=("                             %s"
-"$c2         #####$c0              %s"
-"$c2        #######             %s"
-"$c2        ##"$c1"O$c2#"$c1"O$c2##             %s"
-"$c2        #$c3#####$c2#             %s"
-"$c2      ##$c1##$c3###$c1##$c2##           %s"
-"$c2     #$c1##########$c2##          %s"
-"$c2    #$c1############$c2##         %s"
-"$c2    #$c1############$c2###        %s"
-"$c3   ##$c2#$c1###########$c2##$c3#        %s"
-"$c3 ######$c2#$c1#######$c2#$c3######      %s"
-"$c3 #######$c2#$c1#####$c2#$c3#######      %s"
-"$c3   #####$c2#######$c3#####        %s"
-"$c0")
-  ;;
-esac
+        "LMDE")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;32m" # Bold Green
+            startline="2"
+            fulloutput=("          "${c1}"\`.-::---.."
+            "${c2}       .:++++ooooosssoo:."
+            "${c2}     .+o++::.      \`.:oos+.     %s"
+            "${c2}    :oo:.\`             -+oo"${c1}":   %s"
+            "${c2}  "${c1}"\`"${c2}"+o/\`    ."${c1}"::::::"${c2}"-.    .++-"${c1}"\`  %s"
+            "${c2} "${c1}"\`"${c2}"/s/    .yyyyyyyyyyo:   +o-"${c1}"\`  %s"
+            "${c2} "${c1}"\`"${c2}"so     .ss       ohyo\` :s-"${c1}":  %s"
+            "${c2} "${c1}"\`"${c2}"s/     .ss  h  m  myy/ /s\`"${c1}"\`  %s"
+            "${c2} \`s:     \`oo  s  m  Myy+-o:\`   %s"
+            "${c2} \`oo      :+sdoohyoydyso/.     %s"
+            "${c2}  :o.      .:////////++:       %s"
+            "${c2}  \`/++        "${c1}"-:::::-          %s"
+            "${c2}   "${c1}"\`"${c2}"++-                        %s"
+            "${c2}    "${c1}"\`"${c2}"/+-                       %s"
+            "${c2}      "${c1}"."${c2}"+/.                     %s"
+            "${c2}        "${c1}"."${c2}":+-."
+            "${c2}           \`--.\`\`")
+            ;;
+
+        "Ubuntu")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;31m" # Light Red
+            c3="\e[1;33m" # Bold Yellow
+            startline="2"
+            fulloutput=("$c2                          ./+o+-"
+            "$c1                  yyyyy- $c2-yyyyyy+"
+            "$c1               $c1://+//////$c2-yyyyyyo      %s"
+            "$c3           .++ $c1.:/++++++/-$c2.+sss/\`     %s"
+            "$c3         .:++o:  $c1/++++++++/:--:/-     %s"
+            "$c3        o:+o+:++.$c1\`..\`\`\`.-/oo+++++/    %s"
+            "$c3       .:+o:+o/.$c1          \`+sssoo+/   %s"
+            "$c1  .++/+:$c3+oo+o:\`$c1             /sssooo.  %s"
+            "$c1 /+++//+:$c3\`oo+o$c1               /::--:.  %s"
+            "$c1 \+/+o+++$c3\`o++o$c2               ++////.  %s"
+            "$c1  .++.o+$c3++oo+:\`$c2             /dddhhh.  %s"
+            "$c3       .+.o+oo:.$c2          \`oddhhhh+   $mygtk"
+            "$c3        \+.++o+o\`\`-\`\`$c2\`\`.:ohdhhhhh+    %s"
+            "$c3         \`:o+++ $c2\`ohhhhhhhhyo++os:     %s"
+            "$c3           .o:$c2\`.syhhhhhhh/$c3.oo++o\`     %s"
+            "$c2               /osyyyyyyo$c3++ooo+++/"
+            "$c2                   \`\`\`\`\` $c3+oo+++o\:"
+            "$c3                          \`oo++.")
+            ;;
+
+        "Debian")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;31m" # Light Red
+            startline="2"
+            fulloutput=("  $c1       _,met\$\$\$\$\$gg."
+            "  $c1    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P."
+            "  $c1  ,g\$\$P\"\"       \"\"\"Y\$\$.\".\t %s"
+            "  $c1 ,\$\$P'              \`\$\$\$.\t%s"
+            "  $c1',\$\$P       ,ggs.     \`\$\$b:\t%s"
+            "  $c1\`d\$\$'     ,\$P\"\'   $c2.$c1    \$\$\$\t%s"
+            "  $c1 \$\$P      d\$\'     $c2,$c1    \$\$P\t%s"
+            "  $c1 \$\$:      \$\$.   $c2-$c1    ,d\$\$'\t%s"
+            "  $c1 \$\$\;      Y\$b._   _,d\$P'\t%s"
+            "  $c1 Y\$\$.    $c2\`.$c1\`\"Y\$\$\$\$P\"'\t\t%s"
+            "  $c1 \`\$\$b      $c2\"-.__\t\t%s"
+            "  $c1  \`Y\$\$\t\t\t%s"
+            "  $c1   \`Y\$\$.\t\t\t%s"
+            "  $c1     \`\$\$b.\t\t\t%s"
+            "  $c1       \`Y\$\$b.\t\t\t%s"
+            "  $c1          \`\"Y\$b._"
+            "  $c1              \`\"\"\"\"")
+            ;;
+
+        "CrunchBang")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;30m" # Dark Gray
+            startline="1"
+            fulloutput=("$c1                ___       ___      _"
+            "$c1               /  /      /  /     | |  %s"
+            "$c1              /  /      /  /      | | %s"
+            "$c1             /  /      /  /       | | %s"
+            "$c1     _______/  /______/  /______  | | %s"
+            "$c1    /______   _______   _______/  | | %s"
+            "$c1          /  /      /  /          | | %s"
+            "$c1         /  /      /  /           | | %s"
+            "$c1        /  /      /  /            | | %s"
+            "$c1 ______/  /______/  /______       | | %s"
+            "$c1/_____   _______   _______/       | | %s"
+            "$c1     /  /      /  /               |_| %s"
+            "$c1    /  /      /  /                 _  %s"
+            "$c1   /  /      /  /                 | | %s"
+            "$c1  /__/      /__/                  |_|")
+            ;;
+
+        "Gentoo")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;35m" # Light Purple
+            startline="2"
+            fulloutput=("$c2         -/oyddmdhs+:."
+            "$c2     -o"$c1"dNMMMMMMMMNNmhy+"$c2"-\`"
+            "$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-           %s"
+            "$c2 \`o"$c1"mMMMMMMMMMMMMNmdmmmmddhhy"$c2"/\`       %s"
+            "$c2 om"$c1"MMMMMMMMMMMN"$c2"hhyyyo"$c1"hmdddhhhd"$c2"o\`     %s"
+            "$c2.y"$c1"dMMMMMMMMMMd"$c2"hs++so/s"$c1"mdddhhhhdm"$c2"+\`   %s"
+            "$c2 oy"$c1"hdmNMMMMMMMN"$c2"dyooy"$c1"dmddddhhhhyhN"$c2"d.  %s"
+            "$c2  :o"$c1"yhhdNNMMMMMMMNNNmmdddhhhhhyym"$c2"Mh  %s"
+            "$c2    .:"$c1"+sydNMMMMMNNNmmmdddhhhhhhmM"$c2"my  %s"
+            "$c2       /m"$c1"MMMMMMNNNmmmdddhhhhhmMNh"$c2"s:  %s"
+            "$c2    \`o"$c1"NMMMMMMMNNNmmmddddhhdmMNhs"$c2"+\`   %s"
+            "$c2  \`s"$c1"NMMMMMMMMNNNmmmdddddmNMmhs"$c2"/.     %s"
+            "$c2 /N"$c1"MMMMMMMMNNNNmmmdddmNMNdso"$c2":\`       %s"
+            "$c2+M"$c1"MMMMMMNNNNNmmmmdmNMNdso"$c2"/-          %s"
+            "$c2yM"$c1"MNNNNNNNmmmmmNNMmhs+/"$c2"-\`              %s"
+            "$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`"
+            "$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`"
+            "$c2  \`-//////:--.")
+            ;;
+
+        "Fedora")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;34m" # Light Blue
+            startline="3"
+            fulloutput=("$c2           :/------------://"
+            "$c2        :------------------://"
+            "$c2      :-----------"$c1"/shhdhyo/"$c2"-://"
+            "$c2    /-----------"$c1"omMMMNNNMMMd/"$c2"-:/      %s"
+            "$c2   :-----------"$c1"sMMMdo:/"$c2"       -:/    %s"
+            "$c2  :-----------"$c1":MMMd"$c2"-------    --:/   %s"
+            "$c2  /-----------"$c1":MMMy"$c2"-------    ---/   %s"
+            "$c2 :------    --"$c1"/+MMMh/"$c2"--        ---:  %s"
+            "$c2 :---     "$c1"oNMMMMMMMMMNho"$c2"     -----:  %s"
+            "$c2 :--      "$c1"+shhhMMMmhhy++"$c2"   ------:   %s"
+            "$c2 :-      -----"$c1":MMMy"$c2"--------------/   %s"
+            "$c2 :-     ------"$c1"/MMMy"$c2"-------------:    %s"
+            "$c2 :-      ----"$c1"/hMMM+"$c2"------------:     %s"
+            "$c2 :--"$c1":dMMNdhhdNMMNo"$c2"-----------:       %s"
+            "$c2 :---"$c1":sdNMMMMNds:"$c2"----------:         %s"
+            "$c2 :------"$c1":://:"$c2"-----------://          %s"
+            "$c2 :--------------------://")
+            ;;
+
+        "BSD")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;31m" # Light Red
+            startline="4"
+            fulloutput=("$c2              ,        ,"
+            "$c2             /(        )\`"
+            "$c2             \ \___   / |"
+            "$c2             /- "$c1"_$c2  \`-/  '"
+            "$c2            ($c1/\/ \ $c2\   /\\       %s"
+            "$c1            / /   |$c2 \`    \\     %s"
+            "$c1            O O   )$c2 /    |     %s"
+            "$c1            \`-^--'\`$c2<     '     %s"
+            "$c2           (_.)  _  )   /      %s"
+            "$c2            \`.___/\`    /       %s"
+            "$c2              \`-----' /        %s"
+            "$c1 <----.     "$c2"__/ __   \\         %s"
+            "$c1 <----|===="$c2"O}}}$c1==$c2} \} \/$c1====   %s"
+            "$c1 <----'    $c2\`--' \`.__,' \\       %s"
+            "$c2              |        |       %s"
+            "$c2               \       /       /\\ %s"
+            "$c2          ______( (_  / \______/  %s"
+            "$c2        ,'  ,-----'   |"
+            "$c2        \`--{__________)")
+            ;;
+
+        "Mandriva"|"Mandrake")
+            c1="\e[1;34m" # Light Blue
+            c2="\e[1;33m" # Bold Yellow
+            startline="1"
+            fulloutput=("$c2                         \`\`"
+            "$c2                        \`-.                 %s"
+            "$c1       \`               $c2.---                %s"
+            "$c1     -/               $c2-::--\`               %s"
+            "$c1   \`++    $c2\`----...\`\`\`-:::::.               %s"
+            "$c1  \`os.      $c2.::::::::::::::-\`\`\`     \`  \`   %s"
+            "$c1  +s+         $c2.::::::::::::::::---...--\`   %s"
+            "$c1 -ss:          $c2\`-::::::::::::::::-.\`\`.\`\`   %s"
+            "$c1 /ss-           $c2.::::::::::::-.\`\`   \`      %s"
+            "$c1 +ss:          $c2.::::::::::::-              %s"
+            "$c1 /sso         $c2.::::::-::::::-              %s"
+            "$c1 .sss/       $c2-:::-.\`   .:::::              %s"
+            "$c1  /sss+.    $c2..\`$c1  \`--\`    $c2.:::              %s"
+            "$c1   -ossso+/:://+/-\`        $c2.:\`             %s"
+            "$c1     -/+ooo+/-.              $c2\`")
+            ;;
+
+        "openSUSE")
+            c1="\e[1;32m" # Bold Green
+            c2="\e[1;37m" # Bold White
+            startline="3"
+            fulloutput=("$c2             .;ldkO0000Okdl;."
+            "$c2         .;d00xl:,'....';:ok00d;."
+            "$c2       .d00l'                ,o00d."
+            "$c2     .d0Kd."$c1" :Okxol:;'.          "$c2":O0d.        %s"
+            "$c2    'OK"$c1"KKK0kOKKKKKKKKKKOxo:'      "$c2"lKO'      %s"
+            "$c2   ,0K"$c1"KKKKKKKKKKKKKKK0d:"$c2",,,"$c1":dx:"$c2"    ;00,     %s"
+            "$c2  .OK"$c1"KKKKKKKKKKKKKKKk."$c2".oOkdl."$c1"'0k."$c2"   cKO.    %s"
+            "$c2  :KK"$c1"KKKKKKKKKKKKKKK: "$c2"kKx..od "$c1"lKd"$c2"   .OK:    %s"
+            "$c2  dKK"$c1"KKKKKKKKKOx0KKKd "$c2";0KKKO, "$c1"kKKc"$c2"   dKd    %s"
+            "$c2  dKK"$c1"KKKKKKKKKK;.;oOKx,.."$c2"'"$c1"..;kKKK0."$c2"  dKd    %s"
+            "$c2  :KK"$c1"KKKKKKKKKK0o;...;cdxxOK0Oxc,.  "$c2".0K:    %s"
+            "$c2   kKK"$c1"KKKKKKKKKKKKK0xl;'......,cdo  "$c2"lKk     %s"
+            "$c2   '0K"$c1"KKKKKKKKKKKKKKKKKKKK00KKOo;  "$c2"c00'     %s"
+            "$c2    .kK"$c1"KKOxddxkOO00000Okxoc;'.   "$c2".dKk.      %s"
+            "$c2      l0Ko.                    .c00l.       %s"
+            "$c2       .l0Kk:.              .;xK0l.         %s"
+            "$c2          ,lkK0xl:;,,,,;:ldO0kl,"
+            "$c2              .':ldxkkkkxdl:'.")
+            ;;
+
+        "Slackware")
+            [[ -z $c1 ]] && c1="\e[1;34m" # Light Blue
+            c2="\e[1;37m" # Bold White
+            startline="4"
+            fulloutput=("$c1                   :::::::"
+            "$c1             :::::::::::::::::::"
+            "$c1          :::::::::::::::::::::::::"
+            "$c1        ::::::::"${c2}"cllcccccllllllll"${c1}"::::::"
+            "$c1     :::::::::"${c2}"lc               dc"${c1}":::::::         %s"
+            "$c1    ::::::::"${c2}"cl   clllccllll    oc"${c1}":::::::::      %s"
+            "$c1   :::::::::"${c2}"o   lc"${c1}"::::::::"${c2}"co   oc"${c1}"::::::::::     %s"
+            "$c1  ::::::::::"${c2}"o    cccclc"${c1}":::::"${c2}"clcc"${c1}"::::::::::::    %s"
+            "$c1  :::::::::::"${c2}"lc        cclccclc"${c1}":::::::::::::    %s"
+            "$c1 ::::::::::::::"${c2}"lcclcc          lc"${c1}"::::::::::::   %s"
+            "$c1 ::::::::::"${c2}"cclcc"${c1}":::::"${c2}"lccclc     oc"${c1}":::::::::::   %s"
+            "$c1 ::::::::::"${c2}"o    l"${c1}"::::::::::"${c2}"l    lc"${c1}":::::::::::   %s"
+            "$c1  :::::"${c2}"cll"${c1}":"${c2}"o     clcllcccll     o"${c1}":::::::::::    %s"
+            "$c1  :::::"${c2}"occ"${c1}":"${c2}"o                  clc"${c1}":::::::::::    %s"
+            "$c1   ::::"${c2}"ocl"${c1}":"${c2}"ccslclccclclccclclc"${c1}":::::::::::::     %s"
+            "$c1    :::"${c2}"oclcccccccccccccllllllllllllll"${c1}":::::      %s"
+            "$c1     ::"${c2}"lcc1lcccccccccccccccccccccccco"${c1}"::::       %s"
+            "$c1       ::::::::::::::::::::::::::::::::     %s"
+            "$c1         ::::::::::::::::::::::::::::"
+            "$c1            ::::::::::::::::::::::"
+            "$c1                 ::::::::::::")
+            ;;
+
+        "Red Hat Linux")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;31m" # Light Red
+            startline="2"
+            fulloutput=("$c2              \`.-..........\`"
+            "$c2             \`////////::.\`-/."
+            "$c2             -: ....-////////.               %s"
+            "$c2             //:-::///////////\`             %s"
+            "$c2      \`--::: \`-://////////////:             %s"
+            "$c2      //////-    \`\`.-:///////// .\`          %s"
+            "$c2      \`://////:-.\`    :///////::///:\`       %s"
+            "$c2        .-/////////:---/////////////:       %s"
+            "$c2           .-://////////////////////.       %s"
+            "$c1          yMN+\`.-$c2::///////////////-\`        %s"
+            "$c1       .-\`:NMMNMs\`  \`..-------..\`           %s"
+            "$c1        MN+/mMMMMMhoooyysshsss              %s"
+            "$c1 MMM    MMMMMMMMMMMMMMyyddMMM+              %s"
+            "$c1  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM   %s"
+            "$c1   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM    %s"
+            "$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM")
+            ;;
+
+        "Frugalware")
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;36m" # Light Blue
+            startline="7"
+            fulloutput=("${c2}           \`++/::-.\`"
+            "${c2}          /o+++++++++/::-.\`"
+            "${c2}         \`o+++++++++++++++o++/::-.\`"
+            "${c2}         /+++++++++++++++++++++++oo++/:-.\`\`"
+            "${c2}        .o+ooooooooooooooooooosssssssso++oo++/:-\`"
+            "${c2}        ++osoooooooooooosssssssssssssyyo+++++++o:"
+            "${c2}       -o+ssoooooooooooosssssssssssssyyo+++++++s\`"
+            "${c2}       o++ssoooooo++++++++++++++sssyyyyo++++++o:    %s"
+            "${c2}      :o++ssoooooo"${c1}"/-------------"${c2}"+syyyyyo+++++oo    %s"
+            "${c2}     \`o+++ssoooooo"${c1}"/-----"${c2}"+++++ooosyyyyyyo++++os:    %s"
+            "${c2}     /o+++ssoooooo"${c1}"/-----"${c2}"ooooooosyyyyyyyo+oooss     %s"
+            "${c2}    .o++++ssooooos"${c1}"/------------"${c2}"syyyyyyhsosssy-     %s"
+            "${c2}    ++++++ssooooss"${c1}"/-----"${c2}"+++++ooyyhhhhhdssssso      %s"
+            "${c2}   -s+++++syssssss"${c1}"/-----"${c2}"yyhhhhhhhhhhhddssssy.      %s"
+            "${c2}   sooooooyhyyyyyh"${c1}"/-----"${c2}"hhhhhhhhhhhddddyssy+       %s"
+            "${c2}  :yooooooyhyyyhhhyyyyyyhhhhhhhhhhdddddyssy\`       %s"
+            "${c2}  yoooooooyhyyhhhhhhhhhhhhhhhhhhhddddddysy/        %s"
+            "${c2} -ysooooooydhhhhhhhhhhhddddddddddddddddssy         %s"
+            "${c2}  .-:/+osssyyyysyyyyyyyyyyyyyyyyyyyyyyssy:         %s"
+            "${c2}        \`\`.-/+oosysssssssssssssssssssssss          %s"
+            "${c2}                \`\`.:/+osyysssssssssssssh."
+            "${c2}                         \`-:/+osyyssssyo"
+            "${c2}                                 .-:+++\`")
+            ;;
+
+
+        *)
+            [[ -z $c1 ]] && c1="\e[1;37m" # White
+            c2="\e[1;30m" # Light Gray
+            c3="\e[1;33m" # Light Yellow
+            startline="0"
+            fulloutput=("                             %s"
+            "$c2         #####$c0              %s"
+            "$c2        #######             %s"
+            "$c2        ##"$c1"O$c2#"$c1"O$c2##             %s"
+            "$c2        #$c3#####$c2#             %s"
+            "$c2      ##$c1##$c3###$c1##$c2##           %s"
+            "$c2     #$c1##########$c2##          %s"
+            "$c2    #$c1############$c2##         %s"
+            "$c2    #$c1############$c2###        %s"
+            "$c3   ##$c2#$c1###########$c2##$c3#        %s"
+            "$c3 ######$c2#$c1#######$c2#$c3######      %s"
+            "$c3 #######$c2#$c1#####$c2#$c3#######      %s"
+            "$c3   #####$c2#######$c3#####        %s"
+            "$c0")
+              ;;
+    esac
 
 # Truncate lines based on terminal width.
 if [ "$truncateSet" == "Yes" ]; then
