@@ -5,15 +5,22 @@
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
 #
-# This script is released under the General Public License (GPL). Though it's open
-# source and you are free to do with it as you please, I would appreciate if you would
-# send any code modifications/additions upstream to me so that I can include them in
-# the official release. Please do not claim this code as your own as I have worked
-# very hard on this and am quite proud to call this script my own.
+# This script is released under the General Public License (GPL). Though it's 
+# open source and you are free to do with it as you please, I would appreciate 
+# if you would send any code modifications/additions upstream to me so that I 
+# can include them in the official release. Please do not claim this code as 
+# your own as I have worked very hard on this and am quite proud to call this 
+# script my own.
 #
-# Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
-# appreciated by emailing me or by stopping by http://github.com/KittyKatt/screenFetch . You
-# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6667/meowz
+# Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions
+# would be appreciated by emailing me or by stopping by 
+# 
+# http://github.com/KittyKatt/screenFetch  
+# 
+# You could also drop in on my IRC network, SilverIRC, at 
+# 
+# irc://kittykatt.silverirc.com:6667/meowz
+# 
 # to put forth suggestions/ideas. Thank you.
 #
 
@@ -23,16 +30,24 @@ scriptVersion="2.3.5"
 # Settings for fetcher
 ######################
 
-# This setting controls what ASCII logo is displayed. Available: Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, BSD, and None
+# This setting controls what ASCII logo is displayed. Available: Arch Linux (
+# Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, 
+# Mandrake/Mandriva, Slackware, SUSE, Fedora, BSD, and None
 # distro="Arch Linux"
 
-# This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
-#display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
+# This sets the information to be displayed. Available: distro, Kernel, DE, WM,
+# Win_theme, Theme, Icons, Font, Background, ASCII. To get just the 
+# information, and not a text-art logo, you would take "ASCII" out of the 
+# below variable.
+# display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
 display=( host distro kernel uptime shell res de wm wmtheme gtk )
+
 # Display Type: ASCII or Text
 display_type="ASCII"
 
-# Colors to use for the information found. These are set below according to distribution. If you would like to set your OWN color scheme for these, uncomment the lines below and edit them to your heart's content.
+# Colors to use for the information found. These are set below according to 
+# distribution. If you would like to set your OWN color scheme for these, 
+# uncomment the lines below and edit them to your heart's content.
 # textcolor="\e[0m"
 # labelcolor="\e[1;34m"
 
@@ -42,13 +57,17 @@ wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm aweso
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Export theme settings
-# screenFetch has the capability (on some WM's and GTK) to export your GTK and WM settings to an archive. Specify Yes if you want this and No if you do not.
+# screenFetch has the capability (on some WM's and GTK) to export your GTK and 
+# WM settings to an archive. Specify Yes if you want this and No if you do not.
 exportTheme=
 
 # Screenshot Settings
-# This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
+# This setting lets the script know if you want to take a screenshot or not. 
+# 1=Yes 0=No
 screenshot=
-# You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
+
+# You can specify a custom screenshot command here. Just uncomment and edit. 
+# Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
 hostshot=
 baseurl="http://www.example.com"
@@ -60,12 +79,12 @@ shotfile=$(echo "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
 
-verboseOut () {
-  echo -e "\e[1;31m:: \e[0m$1"
+function VerboseOut {
+    printf "\e[1;31m:: \e[0m$1\n"
 }
 
-errorOut () {
-  echo -e "\e[1;37m[[ \e[1;31m! \e[1;37m]] \e[0m$1"
+ErrorOut () {
+    printf "\e[1;37m[[ \e[1;31m! \e[1;37m]] \e[0m$1\n"
 }
 
 #############################################
@@ -80,83 +99,151 @@ bold="\e[1m" # Bold Text
 underline="\e[4m" # Underline Text
 display_index=0
 
+
+function Usage {
+
+    printf "${underline}Usage${c0}:\n"
+    printf "\tscreenFetch [OPTIONAL FLAGS]\n\n"
+            
+    printf "\tscreenFetch - %s\n\n" \
+        "a CLI Bash script to show system/theme info in screenshots"
+            
+    printf "${underline}Supported Distributions${c0}: %s\n" \
+        "Arch Linux (Old and Current Logos), Linux Mint,"
+
+    printf "\t\t%s\n\t\t%s\n\n" \
+        "Ubuntu, Crunchbang, Debian, Gentoo, Fedora," \
+        "Mandrake/Mandriva, Slackware, openSUSE, and BSD"
+
+    printf "${underline}Supported Desktop Managers${c0}:\n\t\t%s\n\n" \
+        "KDE, GNOME, XFCE, and LXDE, and Not Present"
+
+    printf  "${underline}Supported Window Managers${c0}:\n" 
+    printf "\t\t%s\n\t\t%s\n\t\t%s\n\t\t%s\n\t\t%s\n\n" \
+        "PekWM, OpenBox, FluxBox, BlackBox, Xfwm4," \
+        "Metacity, StumpWM, KWin, IceWM, FVWM," \
+        "DWM, Awesome, XMonad, Musca, i3, WindowMaker," \
+        "Ratpoison, wmii, WMFS, ScrotWM, subtle," \
+        "Emerald, E17 and Beryl." \
+            
+    printf "${underline}Options${c0}:\n"
+    printf "\t${bold}-v${c0}\tVerbose output.\n"
+    printf "\t${bold}-o 'OPTIONS'${c0}\n\t\t%s\n\t\t%s\n" \
+        "Allows for setting script variables on the command line." \
+        "Must be in the following format..."
+    printf "\t\t'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'\n"
+    #${bold}-d 'ARGUMENTS'${c0}
+    #Allows for setting what information is displayed"
+    #on the command line. Format must be as follows:"
+    #'OPTION OPTION OPTION OPTION'. Valid options are"
+    #host, distro, Kernel, Uptime, Shell, Resolution, DE, WM,"
+    #Win_theme, Theme, Icons, Font, ASCII, Background."
+    printf "\t${bold}-n${c0}\tDo no display ASCII distribution logo.\n"
+    printf "\t${bold}-t${c0}\t%s\n" \
+        "Truncate output based on terminal width (Experimental!)."
+    printf "\t${bold}-s(m)${c0}\t%s\n\t\t%s\n\t\t%s\n" \
+        "Using this flag tells the script that you want it" \
+        "to take a screenshot. Use the -m flag if you would like" \
+        "to move it to a new location afterwards."
+    printf "\t${bold}-B${c0}\tEnable background detection.\n"
+    printf "\t${bold}-e${c0}\t%s\n\t\t%s\n\t\t%s\n" \
+        "When this flag is specified, screenFetch will attempt" \
+        "to export all of your theme settings and archive them" \
+        "up for uploading."
+    printf "\t${bold}-l${c0}\t%s\n\t\t%s\n\t\t%s\n" \
+        "Specify that you have a light background. This turns" \
+        "all white text into dark gray text (in ascii logos and" \
+        "in information output)."
+    printf "\t${bold}-c 'COMMAND'${c0}\n\t\t%s\n\t\t%s\n" \
+        "Here you can specify a custom screenshot command for" \
+        "the script to execute. Surrounding quotes are required."
+    printf "\t${bold}-D 'DISTRO'${c0}\n\t\t%s\n\t%s\n" \
+        "Here you can specify your distribution for the script" \
+        "to use. Surrounding quotes are required."
+    printf "\t${bold}-V${c0}\tDisplay current script version.\n"
+    printf "\t${bold}-h${c0}\tDisplay this help.\n"
+}
+
 #####################
 # Begin Flags Phase
 #####################
 
 while getopts ":hsmevVntlc:D:o:B" flags; do
-  case $flags in
-    h)
-      echo -e "${underline}Usage${c0}:"
-      echo -e "  screenFetch [OPTIONAL FLAGS]"
-      echo ""
-      echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
-      echo ""
-      echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
-      echo -e "			      Ubuntu, Crunchbang, Debian, Gentoo, Fedora,"
-      echo -e "			      Mandrake/Mandriva, Slackware, openSUSE, and BSD"
-      echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
-      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
-      echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
-      echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
-      echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, subtle,"
-      echo -e "			      Emerald, E17 and Beryl."
-      echo ""
-      echo -e "${underline}Options${c0}:"
-      echo -e "   ${bold}-v${c0}                 Verbose output."
-      echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
-      echo -e "		      command line. Must be in the following format..."
-      echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
-      #echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
-      #echo -e "		      on the command line. Format must be as follows:"
-      #echo -e "		      'OPTION OPTION OPTION OPTION'. Valid options are"
-      #echo -e "		      host, distro, Kernel, Uptime, Shell, Resolution, DE, WM,"
-      #echo -e "		      Win_theme, Theme, Icons, Font, ASCII, Background."
-      echo -e "   ${bold}-n${c0}                 Do no display ASCII distribution logo."
-      echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
-      echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
-      echo -e "		      to take a screenshot. Use the -m flag if you would like"
-      echo -e "		      to move it to a new location afterwards."
-      echo -e "   ${bold}-B${c0}                 Enable background detection."
-      echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
-      echo -e "		      to export all of your theme settings and archive them"
-      echo -e "		      up for uploading."
-      echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
-      echo -e "		      all white text into dark gray text (in ascii logos and"
-      echo -e "		      in information output)."
-      echo -e "   ${bold}-c 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
-      echo -e "		      the script to execute. Surrounding quotes are required."
-      echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
-      echo -e "		      to use. Surrounding quotes are required."
-      echo -e "   ${bold}-V${c0}                 Display current script version."
-      echo -e "   ${bold}-h${c0}                 Display this help."
-      exit
-    ;;
-    s) screenshot=1; continue;;
-    m) hostshot=1; continue;;
-    e) exportTheme=1; continue;;
-    v) verbosity=1; continue;;
-    V)
-      echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
-      echo "Copyright (C) Brett Bohnenkamper (kittykatt@silverirc.com)"
-      echo ""
-      echo "This is free software; see the source for copying conditions.  There is NO
-warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-      exit
-    ;;
-    D) distro=$OPTARG; continue;;
-    t) truncateSet="Yes";;
-    c) screenCommand=$OPTARG; continue;;
-    n) display_type="Text";;
-    o) overrideOpts=$OPTARG; continue;;
-    # d) overrideDisplay=$OPTARG; continue;;
-    l) c1="\e[1;30m";;
-    B) background_detect="1"; continue;;
-    :) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
-    ?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
-    *) errorOut "Error"; exit;;
-  esac
- done
+    case $flags in
+        h)
+            Usage;
+            exit
+            ;;
+        s) 
+            screenshot=1; 
+            continue
+            ;;
+        m) 
+            hostshot=1; 
+            continue
+            ;;
+        e)  
+            exportTheme=1; 
+            continue
+            ;;
+        v) 
+            verbosity=1; 
+            continue
+            ;;
+        V)
+            # FIXME - revisit this 
+            echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
+            printf "%s\n\n" \
+            "Copyright (C) Brett Bohnenkamper (kittykatt@silverirc.com)\n"
+            printf "%s %s\n%s %s %s\n"
+                "This is free software;" \
+                "see the source for copying conditions." \
+                "There is NO warranty;" \
+                "not even MERCHANTABILITY or FITNESS FOR A" \
+                "PARTICULAR PURPOSE."
+            exit
+            ;;
+
+        D) 
+            distro=$OPTARG; 
+            continue
+            ;;
+        t) 
+            truncateSet="Yes"
+            ;;
+        c) 
+            screenCommand=$OPTARG; 
+            continue
+            ;;
+        n)  
+            display_type="Text"
+            ;;
+        o) 
+            overrideOpts=$OPTARG; 
+            continue
+            ;;
+        # d) overrideDisplay=$OPTARG; continue;;
+        l) 
+            c1="\e[1;30m"
+            ;;
+        B) 
+            background_detect="1"; 
+            continue
+            ;;
+        :) 
+            ErrorOut "Error: You're missing an argument somewhere. Exiting."; 
+            exit
+            ;;
+        ?) 
+            ErrorOut "Error: Invalid flag somewhere. Exiting."; 
+            exit
+            ;;
+        *) 
+            ErrorOut "Error"; 
+            exit
+            ;;
+    esac
+done
 
 ###################
 # End Flags Phase
@@ -168,16 +255,20 @@ warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 ####################
 
 if [[ "$overrideOpts" ]]; then
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
-  OLD_IFS="$IFS"
-  IFS=";"
-  for overopt in "$overrideOpts"; do
-    eval "$overrideOpts"
-  done
-  IFS="$OLD_IFS"
+    if [[ "$verbosity" -eq "1" ]]; then
+        VerboseOut "Found 'o' flag in syntax. Overriding some script variables..."
+    fi
+    
+    OLD_IFS="$IFS"
+    IFS=";"
+    for overopt in "$overrideOpts"; do
+        eval "$overrideOpts"
+    done
+    IFS="$OLD_IFS"
 fi
+
 #if [[ "$overrideDisplay" ]]; then
-#  [[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
+#  [[ "$verbosity" -eq "1" ]] && VerboseOut "Found 'd' flag in syntax. Overriding some display options..."
 #  display="$overrideDisplay"
 #fi
 
@@ -191,7 +282,7 @@ fi
 detecthost () {
   myUser=$(echo "$USER")
   myHost=$(hostname)
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding hostname and user...found as '$myUser@$myHost'"
 }
 
 # Distro Detection - Begin
@@ -295,7 +386,7 @@ detectdistro () {
     
    fi  
   
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
 
@@ -305,7 +396,7 @@ detectdistro () {
 # Kernel Version Detection - Begin
 detectkernel () {
   kernel=`uname -r`
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding kernel version...found as '$kernel'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding kernel version...found as '$kernel'"
 }
 # Kernel Version Detection - End
 
@@ -324,7 +415,7 @@ detectuptime () {
   if [ "${days}" -ne "0" ]; then
     uptime="${days}d ${uptime}"
   fi
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
 
@@ -332,7 +423,7 @@ detectuptime () {
 # Shell Detection - Begin
 detectshell () {
   myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding current shell...found as '$myShell'"
 }
 # Shell Detection - End
 
@@ -344,7 +435,7 @@ detectres () {
   else
     xResolution="No X Server"
   fi
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current resolution(s)...found as '$xResolution'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding current resolution(s)...found as '$xResolution'"
 }
 # Resolution Detection - End
 
@@ -360,7 +451,7 @@ detectde () {
         [ "$each" == "lxsession" ] && DE="LXDE" && DEver=$(lxpanel -v)
       fi
     done
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding desktop environment...found as '$DE'"
 }
 ### DE Detection - End
 
@@ -402,7 +493,7 @@ detectwm () {
       esac
     fi
   done
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
 
@@ -444,7 +535,7 @@ detectwmtheme () {
     'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
     'Beryl') Win_theme="Not Present";;
     esac
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
 
@@ -571,10 +662,10 @@ detectgtk () {
   ;;
   esac
   if [[ "$verbosity" -eq "1" ]]; then
-    verboseOut "Finding GTK theme...found as '$gtkTheme'"
-    verboseOut "Finding icon theme...found as '$gtkIcons'"
-    verboseOut "Finding user font...found as '$gtkFont'"
-    [[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
+    VerboseOut "Finding GTK theme...found as '$gtkTheme'"
+    VerboseOut "Finding icon theme...found as '$gtkIcons'"
+    VerboseOut "Finding user font...found as '$gtkFont'"
+    [[ $gtkBackground ]] && VerboseOut "Finding background...found as '$gtkBackground'"
   fi
 }
 # GTK Theme\Icon\Font Detection - END
@@ -588,18 +679,18 @@ takeShot () {
     if [[ "$hostshot" == "1" ]]; then
       scrot -cd3 "${shotfile}"
       if [ -f "${shotfile}" ]; then
-      	[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
+      	[[ "$verbosity" -eq "1" ]] && VerboseOut "Screenshot saved at '${shotfile}'"
       	scp -qo ConnectTimeout="${scptimeout}" "${shotfile}" "${serveraddr}:${serverdir}"
       	echo -e "${bold}==>${c0} Your screenshot can be viewed at ${baseurl}/$shotfile"
       else
-        verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+        VerboseOut "ERROR: Problem saving screenshot to ${shotfile}"
       fi
     else
       scrot -cd3 "${shotfile}"
       if [ -f "${shotfile}" ]; then
-      	[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
+      	[[ "$verbosity" -eq "1" ]] && VerboseOut "Screenshot saved at '${shotfile}'"
       else
-        verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+        VerboseOut "ERROR: Problem saving screenshot to ${shotfile}"
       fi
     fi
   else
@@ -1042,8 +1133,8 @@ infoDisplay () {
   fi
     
   # Some verbosity stuff
-  [[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
-  [[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
+  [[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && VerboseOut "Screenshot will be taken after info is displayed."
+  [[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && VerboseOut "Screenshot will be transferred/uploaded to specified location."
   #########################
   # Info Variable Setting #
   #########################
@@ -1096,41 +1187,41 @@ themeExport () {
       if [[ "$Win_theme" != "Not Found" ]]; then
         if [[ -d "$HOME/.themes/$Win_theme" ]]; then
           cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         fi
       fi
     elif [[ "$WM" =~ "Fluxbox" ]]; then
       if [[ "$Win_theme" != "Not Found" ]]; then
         if [[ -d "$HOME/.fluxbox/styles/$Win_theme" ]]; then
           cp -r "$HOME/.fluxbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         fi
       fi
     elif [[ "$WM" =~ "Blackbox" ]]; then
       if [[ "$Win_theme" != "Not Found" ]]; then
         if [[ -d "$HOME/.blackbox/styles/$Win_theme" ]]; then
           cp -r "$HOME/.blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         elif [[ -d "/usr/share/blackbox/styles/$Win_theme" ]]; then
           cp -r "/usr/share/blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         fi
       fi
     elif [[ "$WM" =~ "PekWM" ]]; then
       if [[ "$Win_theme" != "Not Found" ]]; then
         if [[ -d "$HOME/.pekwm/themes/$Win_theme" ]]; then
           cp -r "$HOME/.pekwm/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         fi
       fi
     elif [[ "$WM" =~ "Metacity" ]]; then
       if [[ "$Win_theme" != "Not Found" ]]; then
         if [[ -d "$HOME/.themes/$Win_theme" ]]; then
           cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
           cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         fi
       fi
     elif [[ "$WM" =~ "Xfwm4" ]]; then
@@ -1138,54 +1229,54 @@ themeExport () {
         WM_theme=$(echo "$Win_theme" | awk '{print $NF}')
         if [[ -d "$HOME/.themes/$Win_theme" ]]; then
           cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
           cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+          [[ "$verbosity" -eq "1" ]] && VerboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
         fi
       fi
     fi
   fi
   if [[ "$gtkBackgroundFull" ]]; then
     cp "$gtkBackgroundFull" /tmp/screenfetch-export/
-    [[ "$verbosity" -eq "1" ]] && verboseOut "Found BG file. Transferring to /tmp/screenfetch-export/..."
+    [[ "$verbosity" -eq "1" ]] && VerboseOut "Found BG file. Transferring to /tmp/screenfetch-export/..."
   fi
   if [[ "$mygtk" ]]; then
     GTK_theme=$(echo "$mygtk" | awk '{print $NF}')
     if [ -d "/usr/share/themes/$GTK_theme" ]; then
       cp -r "/usr/share/themes/$GTK_theme" "/tmp/screenfetch-export/GTK/Theme/$GTK_theme" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK theme folder. Transferring to /tmp/screenfetch-export/..."
+      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK theme folder. Transferring to /tmp/screenfetch-export/..."
     fi
   fi
   if [[ "$myicons" ]]; then
     GTK_icons=$(echo "$myicons" | awk '{print $NF}')
     if [ -d "/usr/share/icons/$GTK_icons" ]; then
       cp -r "/usr/share/icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
     fi
     if [ -d "$HOME/.icons/$GTK_icons" ]; then
       cp -r "$HOME/.icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
     fi
   fi
   if [[ "$myfont" ]]; then
     GTK_font=$(echo "$myfont" | awk '{print $NF}')
     if [ -d "/usr/share/fonts/$GTK_font" ]; then
       cp -r "/usr/share/fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
     elif [ -d "$HOME/.fonts/$GTK_font" ]; then
       cp -r "$HOME/.fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
     fi
   fi
   if [ "$screenshot" == "1" ]; then
     if [ -f "${shotfile}" ]; then
       cp "${shotfile}" "/tmp/screenfetch-export/"
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found screenshot. Transferring to /tmp/screenfetch-export/..."
+      [[ "$verbosity" -eq "1" ]] && VerboseOut "Found screenshot. Transferring to /tmp/screenfetch-export/..."
     fi
   fi
   cd /tmp/screenfetch-export/
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Creating screenfetch-export.tar.gz archive in /tmp/screenfetch-export/...."
+  [[ "$verbosity" -eq "1" ]] && VerboseOut "Creating screenfetch-export.tar.gz archive in /tmp/screenfetch-export/...."
   tar -czf screenfetch-export.tar.gz ../screenfetch-export &>/dev/null
   mv /tmp/screenfetch-export/screenfetch-export.tar.gz $HOME/
   echo -e "${bold}==>${c0} Archive created in /tmp/ and moved to $HOME. Removing /tmp/screenfetch-export/..."
