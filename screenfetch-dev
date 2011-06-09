@@ -53,7 +53,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald gnome-shell"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Export theme settings
@@ -635,84 +635,205 @@ detectde () {
 
 # WM Detection - Begin
 detectwm () {
-  WM="Not Found"
-  userId="$(id -u ${USER})"
-  for each in $wmnames; do
-    PID="$(pgrep -U ${userId} $each)"
-    if [ "$PID" ]; then
-      case $each in
-        'fluxbox') WM="FluxBox";;
-        'openbox') WM="OpenBox";;
-        'blackbox') WM="Blackbox";;
-        'xfwm4') WM="Xfwm4";;
-        'metacity') WM="Metacity";;
-        'kwin') WM="KWin";;
-        'icewm') WM="IceWM";;
-        'pekwm') WM="PekWM";;
-        'fvwm') WM="FVWM";;
-        'dwm') WM="DWM";;
-        'awesome') WM="Awesome";;
-        'WindowMaker') WM="WindowMaker";;
-	'stumpwm') WM="StumpWM";;
-	'xmonad') WM="XMonad";;
-	'musca') WM="Musca";;
-	'i3') WM="i3";;
-	'ratpoison') WM="Ratpoison";;
-	'scrotwm') WM="ScrotWM";;
-	'wmfs') WM="WMFS";;
-	'wmii') WM="wmii";;
-	'subtle') WM="subtle";;
-	'e16') WM="E16";;
-	'enlightenment') WM="E17";;
-	'emerald') WM="Emerald";;
-        'sawfish') WM="Sawfish";;
-	'beryl') WM="Beryl";;
-      esac
-    fi
-  done
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding window manager...found as '$WM'"
+    WM="Not Found"
+    userId="$(id -u ${USER})"
+    
+    for each in $wmnames; do
+        PID="$(pgrep -U ${userId} $each)"
+        if [[ "$PID" ]]; then
+            case $each in
+                'fluxbox') WM="FluxBox";;
+                'openbox') WM="OpenBox";;
+                'blackbox') WM="Blackbox";;
+                'xfwm4') WM="Xfwm4";;
+                'metacity') WM="Metacity";;
+                'kwin') WM="KWin";;
+                'icewm') WM="IceWM";;
+                'pekwm') WM="PekWM";;
+                'fvwm') WM="FVWM";;
+                'dwm') WM="DWM";;
+                'awesome') WM="Awesome";;
+                'WindowMaker') WM="WindowMaker";;
+	        'stumpwm') WM="StumpWM";;
+	        'xmonad') WM="XMonad";;
+	        'musca') WM="Musca";;
+	        'i3') WM="i3";;
+	        'ratpoison') WM="Ratpoison";;
+	        'scrotwm') WM="ScrotWM";;
+	        'wmfs') WM="WMFS";;
+	        'wmii') WM="wmii";;
+	        'subtle') WM="subtle";;
+	        'e16') WM="E16";;
+	        'enlightenment') WM="E17";;
+	        'emerald') WM="Emerald";;
+                'sawfish') WM="Sawfish";;
+	        'beryl') WM="Beryl";;
+	            
+                #NOTE: mutter doesn't seem to show up in 'ps' so if gnome-shell
+                #      is present, we know its running mutter as the UI depends
+                #      on it.
+                'gnome-shell') WM="Mutter";;
+
+            esac
+        fi
+    done
+    [[ "$verbosity" -eq "1" ]] && \
+    VerboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
 
 
 # WM Theme Detection - BEGIN
 detectwmtheme () {
-  Win_theme="Not Found"
-  case $WM in
-    'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
-    'OpenBox') 
-	if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then 
-		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
-	elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then 
-		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
-	fi;;
-    'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
-    'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
-    'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
-    'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
-    'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
-    'KWin') if [ -f $HOME/.kde/share/config/plasmarc ]; then Win_theme="$(awk -F"=" '/^name=/ { getline; print $2 }' ${HOME}/.kde/share/config/plasmarc | head -1)"; else Win_theme="Not Present"; fi;;
-    'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
-    'FVWM') Win_theme="Not Present";;
-    'DWM') Win_theme="Not Present";;
-    'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1)"; fi;;
-    'WindowMaker') Win_theme="Not Present";;
-    'XMonad') Win_theme="Not Present";;
-    'Musca') Win_theme="Not Present";;
-    'i3') Win_theme="Not Present";;
-    'Ratpoison') Win_theme="Not Present";;
-    'ScrotWM') Win_theme="Not Present";;
-    'WMFS') Win_theme="Not Present";;
-    'wmii') Win_theme="Not Present";;
-    'subtle') Win_theme="Not Present";;
-    'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
-    #E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
-    #TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
-    'E17') Win_theme=${E_CONF_PROFILE};;
-    'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
-    'Beryl') Win_theme="Not Present";;
-    esac
-  [[ "$verbosity" -eq "1" ]] && VerboseOut "Finding window manager theme...found as '$Win_theme'"
+    Win_theme="Not Found"
+    case $WM in
+        'PekWM') 
+            if [[ -f $HOME/.pekwm/config ]]; then 
+                Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' \
+                            $HOME/.pekwm/config)"; 
+            fi
+            ;;
+
+        'OpenBox') 
+	    if [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]]; then
+                Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' \
+                        ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
+	    elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml \
+            && $DE == "LXDE" ]]; then 
+		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' \
+                ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
+	    fi
+            ;;
+
+        'FluxBox') 
+            if [[ -f $HOME/.fluxbox/init ]]; then 
+                Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' \
+                            $HOME/.fluxbox/init)"; 
+            fi
+            ;;
+
+        'BlackBox') 
+            if [[ -f $HOME/.blackboxrc ]]; then 
+                Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' \
+                            $HOME/.blackboxrc)"; 
+            fi
+            ;;
+
+        'Metacity') 
+            if [[ "`gconftool-2 -g /apps/metacity/general/theme`" ]]; then 
+                Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; 
+            fi 
+            ;;
+        
+        'Xfwm4') 
+            if [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]]; then 
+                Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; 
+            fi
+            ;;
+
+        'IceWM') 
+            if [[ -f $HOME/.icewm/theme ]]; then 
+                Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; 
+            fi
+            ;;
+
+        'KWin') 
+            if [[ -f $HOME/.kde/share/config/plasmarc ]]; then 
+                Win_theme="$(awk -F"=" '/^name=/ { getline; print $2 }' \
+                            ${HOME}/.kde/share/config/plasmarc | head -1)"; 
+            else 
+                Win_theme="Not Present"; 
+            fi
+            ;;
+
+        'Emerald') 
+            if [[ -f $HOME/.emerald/theme/theme.ini ]]; then 
+                Win_theme="$(for a in /usr/share/emerald/themes/* \
+                            $HOME/.emerald/themes/*; do 
+                                cmp "$HOME/.emerald/theme/theme.ini" \
+                                    "$a/theme.ini" &>/dev/null && \
+                                    basename "$a"; done)";
+            fi
+            ;;
+
+        'FVWM') 
+            Win_theme="Not Present"
+            ;;
+
+        'DWM') 
+            Win_theme="Not Present"
+            ;;
+
+        'Awesome') 
+            if [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]]; then \
+                Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' \
+                            ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua \
+                            | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o \
+                            | cut -d'/' -f1)"; 
+            fi
+            ;;
+    
+        'WindowMaker') 
+            Win_theme="Not Present"
+            ;;
+
+        'XMonad') 
+            Win_theme="Not Present"
+            ;;
+
+        'Musca') 
+            Win_theme="Not Present"
+            ;;
+
+        'i3') 
+            Win_theme="Not Present"
+            ;;
+
+        'Ratpoison') 
+            Win_theme="Not Present"
+            ;;
+
+        'ScrotWM') 
+            Win_theme="Not Present"
+            ;;
+
+        'WMFS') 
+            Win_theme="Not Present"
+            ;;
+
+        'wmii') 
+            Win_theme="Not Present"
+            ;;
+
+        'subtle') 
+            Win_theme="Not Present"
+            ;;
+
+        'E16') 
+            Win_theme="$(awk -F"= " '/theme.name/ {print $2}' \
+                        $HOME/.e16/e_config--0.0.cfg)"
+            ;;
+
+        # E17 doesn't store cfg files in text format so for now get the profile
+        # as opposed to theme. atyoung
+        # TODO: Find a way to extract and read E17 .cfg files ( google seems to 
+        # have nothing ). atyoung
+        'E17') 
+            Win_theme=${E_CONF_PROFILE}
+            ;;
+
+        'Sawfish') 
+            Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' \
+                        $HOME/.sawfish/custom | sed 's/ (quote //')"
+            ;;
+
+        'Beryl') 
+            Win_theme="Not Present"
+            ;;
+        esac
+    
+    [[ "$verbosity" -eq "1" ]] && \
+    VerboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
 
