@@ -283,6 +283,7 @@ detectdistro () {
       fedora) distro="Fedora" ;;
       mandriva) distro="Mandriva" ;;
       mandrake) distro="Mandrake" ;;
+      crunchbang) distro="CrunchBang" ;;
       mint) distro="Mint" ;;
       lmde) distro="LMDE" ;;
       opensuse) distro="OpenSuSe" ;;
