@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.3.5)
+# screenFetch (v2.3.6)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.3.5"
+scriptVersion="2.3.6"
 
 ######################
 # Settings for fetcher
@@ -240,6 +240,10 @@ detectdistro () {
         distro_codename=null
         distro_release=null
       fi
+      if [ "$distro_detect" == "Peppermint" ]; then
+        distro="PeppermintOS"
+        distro_codename=null
+      fi
       if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
       if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
     # Check and Parsing for /etc/os-release
@@ -290,6 +294,7 @@ detectdistro () {
       gentoo) distro="Gentoo" ;;
       slackware) distro="Slackware" ;;
       frugalware) distro="Frugalware" ;;
+      peppermintos) distro="PeppermintOS" ;;
    
     esac
     
@@ -965,6 +970,32 @@ case $distro in
 "${c2}                \`\`.:/+osyysssssssssssssh."
 "${c2}                         \`-:/+osyyssssyo"
 "${c2}                                 .-:+++\`")
+  ;;
+
+
+  "PeppermintOS")
+    [ -z $c1 ] && c1="\e[1;37m" # White
+    c2="\e[1;31m" # Light Red
+    startline="2"
+    fulloutput=("${c2}             8ZZZZZZ${c1}MMMMM"
+"${c2}          .ZZZZZZZZZ${c1}MMMMMMM."
+"${c1}        MM${c2}ZZZZZZZZZ${c1}MMMMMMM${c2}ZZZZ"
+"${c1}      MMMMM${c2}ZZZZZZZZ${c1}MMMMM${c2}ZZZZZZZM"
+"${c1}     MMMMMMM${c2}ZZZZZZZ${c1}MMMM${c2}ZZZZZZZZZ."
+"${c1}    MMMMMMMMM${c2}ZZZZZZ${c1}MMM${c2}ZZZZZZZZZZZI"
+"${c1}   MMMMMMMMMMM${c2}ZZZZZZ${c1}MM${c2}ZZZZZZZZZZ${c1}MMM"
+"${c2}   .ZZZ${c1}MMMMMMMMMM${c2}IZZ${c1}MM${c2}ZZZZZ${c1}MMMMMMMMM"    
+"${c2}   ZZZZZZZ${c1}MMMMMMMM${c2}ZZ${c1}M${c2}ZZZZ${c1}MMMMMMMMMMM"
+"${c2}   ZZZZZZZZZZZZZZZZ${c1}M${c2}Z${c1}MMMMMMMMMMMMMMM"
+"${c2}   .ZZZZZZZZZZZZZ${c1}MMM${c2}Z${c1}M${c2}ZZZZZZZZZZ${c1}MMMM"
+"${c2}   .ZZZZZZZZZZZ${c1}MMM${c2}7ZZ${c1}MM${c2}ZZZZZZZZZZ7${c1}M"
+"${c2}    ZZZZZZZZZ${c1}MMMM${c2}ZZZZ${c1}MMMM${c2}ZZZZZZZ77"
+"${c1}     MMMMMMMMMMMM${c2}ZZZZZ${c1}MMMM${c2}ZZZZZ77"
+"${c1}      MMMMMMMMMM${c2}7ZZZZZZ${c1}MMMMM${c2}ZZ77"
+"${c1}       .MMMMMMM${c2}ZZZZZZZZ${c1}MMMMM${c2}Z7Z"
+"${c1}         MMMMM${c2}ZZZZZZZZZ${c1}MMMMMMM"
+"${c2}           NZZZZZZZZZZZ${c1}MMMMM"
+"${c2}              ZZZZZZZZZ${c1}MM")
   ;;
 
 
