@@ -999,6 +999,35 @@ case $distro in
 "${c2}              ZZZZZZZZZ"${c1}"MM")
   ;;
 
+  "SolusOS")
+    [ -z $c1 ] && c1="\e[1;37m" # White
+    c2="\e[1;30m" # Light Gray
+    startline="5"
+    fulloutput=("${c1}                             e           e"
+"${c1}                            ee         ee"
+"${c1}                           eee       eee"
+"${c2}            wwwwwwwwww    "${c1}"eeee     eeee"
+"${c2}        wwwwwwwwwwwwwwww"${c1}"eeeeeeeeeeeeeee"
+"${c2}     wwwwwwwwwwwwwwwwwwwwww"${c1}"eeeeeeeeeee            %s"
+"${c2}   wwwww            "${c1}"eee"${c2}"wwwwwwww"${c1}"eeeeeeee          %s"
+"${c2}  wwwww             "${c1}"eeee"${c2}"wwwwwwwww"${c1}"eeeeeeeeee      %s"
+"${c2} wwww               "${c1}"eeeeee"${c2}"wwwwwwwww"${c1}"eeeeeeeeeeee  %s"
+"${c2} ww                  "${c1}"eeeeeee"${c2}"wwwwwwwww"${c1}"ee          %s"
+"${c2} w                     "${c1}"eeeeee"${c2}"wwwwwwwwww          %s"
+"${c2}                          "${c1}"eeeee"${c2}"wwwwwwww          %s"
+"${c2}                                wwwwwww          %s"
+"${c2}                                 wwwwww          %s"
+"${c2}                                 wwwwww          %s"
+"${c2}                                 wwwww           %s"
+"${c2}                                wwww             %s"
+"${c2}                               wwww              %s"
+"${c2}                             wwww"
+"${c2}                           wwww"
+"${c2}                         www"
+"${c2}                       ww"
+"${c2}                     w")
+  ;;
+
 
   *)
     [ -z $c1 ] && c1="\e[1;37m" # White
@@ -1066,7 +1095,7 @@ infoDisplay () {
       "Arch Linux"|"Frugalware") labelcolor="\e[1;36m";;
       "Mint"|"LMDE"|"openSUSE") labelcolor="\e[1;32m";;
       "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
-      "CrunchBang") labelcolor="\e[1;30m";;
+      "CrunchBang"|"SolusOS") labelcolor="\e[1;30m";;
       "Gentoo") labelcolor="\e[1;35m";;
       "Slackware") labelcolor="\e[1;34m";;
       *) labelcolor="\e[1;33m";;
