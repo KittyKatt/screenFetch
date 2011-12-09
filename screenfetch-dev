@@ -270,6 +270,7 @@ detectdistro () {
       if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
       if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
       if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
+      if grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
     fi
   else
     
