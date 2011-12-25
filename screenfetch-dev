@@ -258,6 +258,7 @@ detectdistro () {
 				distro="Peppermint"
 				distro_codename=null
 			fi
+			if [ "$distro_detect" == "SUSE LINUX" ]; then distro="openSUSE"; fi
 			if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
 			if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
 		# Check and Parsing for /etc/os-release
