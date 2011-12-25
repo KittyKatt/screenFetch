@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.3.6"
+scriptVersion="2.3.7"
 
 ######################
 # Settings for fetcher
@@ -61,11 +61,11 @@ shotfile=$(echo "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 verbosity=
 
 verboseOut () {
-  echo -e "\e[1;31m:: \e[0m$1"
+	echo -e "\e[1;31m:: \e[0m$1"
 }
 
 errorOut () {
-  echo -e "\e[1;37m[[ \e[1;31m! \e[1;37m]] \e[0m$1"
+	echo -e "\e[1;37m[[ \e[1;31m! \e[1;37m]] \e[0m$1"
 }
 
 #############################################
@@ -85,78 +85,78 @@ display_index=0
 #####################
 
 while getopts ":hsmevVntlc:D:o:B" flags; do
-  case $flags in
-    h)
-      echo -e "${underline}Usage${c0}:"
-      echo -e "  screenFetch [OPTIONAL FLAGS]"
-      echo ""
-      echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
-      echo ""
-      echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
-      echo -e "			      Ubuntu, Crunchbang, Debian, Gentoo, Fedora,"
-      echo -e "			      Mandrake/Mandriva, Slackware, openSUSE, and BSD"
-      echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
-      echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
-      echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
-      echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
-      echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, subtle,"
-      echo -e "			      Emerald, E17 and Beryl."
-      echo ""
-      echo -e "${underline}Options${c0}:"
-      echo -e "   ${bold}-v${c0}                 Verbose output."
-      echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
-      echo -e "		      command line. Must be in the following format..."
-      echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
-      #echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
-      #echo -e "		      on the command line. Format must be as follows:"
-      #echo -e "		      'OPTION OPTION OPTION OPTION'. Valid options are"
-      #echo -e "		      host, distro, Kernel, Uptime, Shell, Resolution, DE, WM,"
-      #echo -e "		      Win_theme, Theme, Icons, Font, ASCII, Background."
-      echo -e "   ${bold}-n${c0}                 Do no display ASCII distribution logo."
-      echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
-      echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
-      echo -e "		      to take a screenshot. Use the -m flag if you would like"
-      echo -e "		      to move it to a new location afterwards."
-      echo -e "   ${bold}-B${c0}                 Enable background detection."
-      echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
-      echo -e "		      to export all of your theme settings and archive them"
-      echo -e "		      up for uploading."
-      echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
-      echo -e "		      all white text into dark gray text (in ascii logos and"
-      echo -e "		      in information output)."
-      echo -e "   ${bold}-c 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
-      echo -e "		      the script to execute. Surrounding quotes are required."
-      echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
-      echo -e "		      to use. Surrounding quotes are required."
-      echo -e "   ${bold}-V${c0}                 Display current script version."
-      echo -e "   ${bold}-h${c0}                 Display this help."
-      exit
-    ;;
-    s) screenshot=1; continue;;
-    m) hostshot=1; continue;;
-    e) exportTheme=1; continue;;
-    v) verbosity=1; continue;;
-    V)
-      echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
-      echo "Copyright (C) Brett Bohnenkamper (kittykatt@silverirc.com)"
-      echo ""
-      echo "This is free software; see the source for copying conditions.  There is NO
-warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-      exit
-    ;;
-    D) distro=$OPTARG; continue;;
-    t) truncateSet="Yes";;
-    c) screenCommand=$OPTARG; continue;;
-    n) display_type="Text";;
-    o) overrideOpts=$OPTARG; continue;;
-    # d) overrideDisplay=$OPTARG; continue;;
-    l) c1="\e[1;30m";;
-    B) background_detect="1"; continue;;
-    :) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
-    ?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
-    *) errorOut "Error"; exit;;
-  esac
- done
+	case $flags in
+		h)
+			echo -e "${underline}Usage${c0}:"
+			echo -e "  screenFetch [OPTIONAL FLAGS]"
+			echo ""
+			echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
+			echo ""
+			echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
+			echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
+			echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
+			echo -e "			      Peppermint, and BSD"
+			echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
+			echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
+			echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
+			echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
+			echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, subtle,"
+			echo -e "			      Emerald, E17 and Beryl."
+			echo ""
+			echo -e "${underline}Options${c0}:"
+			echo -e "   ${bold}-v${c0}                 Verbose output."
+			echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
+			echo -e "		      command line. Must be in the following format..."
+			echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
+			#echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
+			#echo -e "		      on the command line. Format must be as follows:"
+			#echo -e "		      'OPTION OPTION OPTION OPTION'. Valid options are"
+			#echo -e "		      host, distro, Kernel, Uptime, Shell, Resolution, DE, WM,"
+			#echo -e "		      Win_theme, Theme, Icons, Font, ASCII, Background."
+			echo -e "   ${bold}-n${c0}                 Do no display ASCII distribution logo."
+			echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
+			echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
+			echo -e "		      to take a screenshot. Use the -m flag if you would like"
+			echo -e "		      to move it to a new location afterwards."
+			echo -e "   ${bold}-B${c0}                 Enable background detection."
+			echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
+			echo -e "		      to export all of your theme settings and archive them"
+			echo -e "		      up for uploading."
+			echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
+			echo -e "		      all white text into dark gray text (in ascii logos and"
+			echo -e "		      in information output)."
+			echo -e "   ${bold}-c 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
+			echo -e "		      the script to execute. Surrounding quotes are required."
+			echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
+			echo -e "		      to use. Surrounding quotes are required."
+			echo -e "   ${bold}-V${c0}                 Display current script version."
+			echo -e "   ${bold}-h${c0}                 Display this help."
+			exit
+		;;
+		s) screenshot=1; continue;;
+		m) hostshot=1; continue;;
+		e) exportTheme=1; continue;;
+		v) verbosity=1; continue;;
+		V)
+			echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
+			echo "Copyright (C) Brett Bohnenkamper (kittykatt@silverirc.com)"
+			echo ""
+			echo "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+			exit
+		;;
+		D) distro=$OPTARG; continue;;
+		t) truncateSet="Yes";;
+		c) screenCommand=$OPTARG; continue;;
+		n) display_type="Text";;
+		o) overrideOpts=$OPTARG; continue;;
+		# d) overrideDisplay=$OPTARG; continue;;
+		l) c1="\e[1;30m";;
+		B) background_detect="1"; continue;;
+		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
+		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
+		*) errorOut "Error"; exit;;
+	esac
+done
 
 ###################
 # End Flags Phase
@@ -168,141 +168,157 @@ warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 ####################
 
 if [[ "$overrideOpts" ]]; then
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
-  OLD_IFS="$IFS"
-  IFS=";"
-  for overopt in "$overrideOpts"; do
-    eval "$overrideOpts"
-  done
-  IFS="$OLD_IFS"
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
+	OLD_IFS="$IFS"
+	IFS=";"
+	for overopt in "$overrideOpts"; do
+		eval "$overrideOpts"
+	done
+	IFS="$OLD_IFS"
 fi
 #if [[ "$overrideDisplay" ]]; then
-#  [[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
-#  display="$overrideDisplay"
+#	[[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
+#	display="$overrideDisplay"
 #fi
 
 
 #########################
 # Begin Detection Phase
 #########################
-    
+		
 
 # Host and User detection - Begin
 detecthost () {
-  myUser=$(echo "$USER")
-  myHost=$(hostname)
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
+	myUser=$(echo "$USER")
+	myHost=$(hostname)
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
+}
+
+
+#########################
+# Begin Detection Phase
+#########################
+		
+
+# Host and User detection - Begin
+detecthost () {
+	myUser=$(echo "$USER")
+	myHost=$(hostname)
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
 }
 
 # Distro Detection - Begin
 detectdistro () {
-  if [[ -z $distro ]]; then
-    distro="Unknown"
-    # LSB Release Check
-    if which lsb_release >/dev/null 2>&1; then
-      distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
-      if [ "$distro_detect" == "Arch" ]; then distro="Arch Linux"; fi
-      if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
-      if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
-          distro="LMDE"
-          distro_codename=null
-          distro_release=null
-        fi
-      fi
-      if [ "$distro_detect" == "MandrivaLinux" ]; then distro="Mandriva"
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "turtle" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Henry_Farman" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Farman" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Adelie" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-        if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "pauillac" ]; then
-          distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-          distro_codename=null
-        fi
-      fi
-      if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
-      if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
-      if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
-      if [ "$distro_detect" == "frugalware" ]; then
-        distro="Frugalware"
-        distro_codename=null
-        distro_release=null
-      fi
-      if [ "$distro_detect" == "Peppermint" ]; then
-        distro="Peppermint"
-        distro_codename=null
-      fi
-      if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
-      if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
-    # Check and Parsing for /etc/os-release
-    elif [ -f /etc/os-release ]; then
-      distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
-      if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
-    # Existing File Check
-    else
-      if [ -f /etc/debian_version ]; then distro="Debian"; fi
-      if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
-      if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
-        if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="LMDE"
-        else distro="Mint"; fi
-      fi
-      if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
-      if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
-      if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
-      if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-      if [ -f /etc/SuSE-release ]; then distro="openSUSE"; fi
-      if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
-      if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
-      if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
-      if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-      if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
-      if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
-      if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
-      if grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
-    fi
-  else
-    
-   declare -l lcase
-   lcase=$distro
-    
-   case $lcase in
-   
-      arch*linux*old) distro="Arch Linux - Old" ;;
-      arch*linux) distro="Arch Linux" ;;
-      fedora) distro="Fedora" ;;
-      mandriva) distro="Mandriva" ;;
-      mandrake) distro="Mandrake" ;;
-      crunchbang) distro="CrunchBang" ;;
-      mint) distro="Mint" ;;
-      lmde) distro="LMDE" ;;
-      opensuse) distro="OpenSuSe" ;;
-      ubuntu) distro="Ubuntu" ;;
-      debain) distro="Debian" ;;
-      bsd) distro="BSD" ;;
-      red*hat*) distro="Red Hat Linux" ;;
-      crunchbang) distro="CrunchBang" ;;
-      gentoo) distro="Gentoo" ;;
-      slackware) distro="Slackware" ;;
-      frugalware) distro="Frugalware" ;;
-      peppermint) distro="Peppermint" ;;
-   
-    esac
-    
-   fi  
-  
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
+	if [[ -z $distro ]]; then
+		distro="Unknown"
+		# LSB Release Check
+		if which lsb_release >/dev/null 2>&1; then
+			distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
+			if [ "$distro_detect" == "Arch" ]; then distro="Arch Linux"; fi
+			if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
+			if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
+				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
+					distro="LMDE"
+					distro_codename=null
+					distro_release=null
+				fi
+			fi
+			if [ "$distro_detect" == "Mageia" ]; then distro="Mageia"; fi
+			if [ "$distro_detect" == "MandrivaLinux" ]; then distro="Mandriva"
+				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "turtle" ]; then
+					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+					distro_codename=null
+				fi
+				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Henry_Farman" ]; then
+					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+					distro_codename=null
+				fi
+				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Farman" ]; then
+					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+					distro_codename=null
+				fi
+				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Adelie" ]; then
+					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+					distro_codename=null
+				fi
+				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "pauillac" ]; then
+					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+					distro_codename=null
+				fi
+			fi
+			if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
+			if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
+			if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
+			if [ "$distro_detect" == "frugalware" ]; then
+				distro="Frugalware"
+				distro_codename=null
+				distro_release=null
+			fi
+			if [ "$distro_detect" == "Peppermint" ]; then
+				distro="Peppermint"
+				distro_codename=null
+			fi
+			if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
+			if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
+		# Check and Parsing for /etc/os-release
+		elif [ -f /etc/os-release ]; then
+			distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
+			if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
+		# Existing File Check
+		else
+			if [ -f /etc/debian_version ]; then distro="Debian"; fi
+			if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
+			if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
+				if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="LMDE"
+				else distro="Mint"; fi
+			fi
+			if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
+			if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
+			if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
+			if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
+			if [ -f /etc/SuSE-release ]; then distro="openSUSE"; fi
+			if [ -f /etc/mageia-release ]; then distro="Mageia"; fi
+			if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
+			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
+			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
+			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
+			if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
+			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
+			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
+			if grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
+		fi
+	else
+		
+	declare -l lcase
+	lcase=$distro
+		
+	case $lcase in
+	 
+			arch*linux*old) distro="Arch Linux - Old" ;;
+			arch*linux) distro="Arch Linux" ;;
+			fedora) distro="Fedora" ;;
+			mageia) distro="Mageia" ;;
+			mandriva) distro="Mandriva" ;;
+			mandrake) distro="Mandrake" ;;
+			crunchbang) distro="CrunchBang" ;;
+			mint) distro="Mint" ;;
+			lmde) distro="LMDE" ;;
+			opensuse) distro="OpenSuSe" ;;
+			ubuntu) distro="Ubuntu" ;;
+			debain) distro="Debian" ;;
+			bsd) distro="BSD" ;;
+			red*hat*) distro="Red Hat Linux" ;;
+			crunchbang) distro="CrunchBang" ;;
+			gentoo) distro="Gentoo" ;;
+			slackware) distro="Slackware" ;;
+			frugalware) distro="Frugalware" ;;
+			peppermint) distro="Peppermint" ;;
+	 
+		esac
+		
+	fi	
+	
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
 
@@ -311,318 +327,319 @@ detectdistro () {
 
 # Kernel Version Detection - Begin
 detectkernel () {
-  kernel=`uname -r`
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding kernel version...found as '$kernel'"
+	kernel=`uname -r`
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding kernel version...found as '$kernel'"
 }
 # Kernel Version Detection - End
 
 
 # Uptime Detection - Begin
 detectuptime () {
-  uptime=`awk -F. '{print $1}' /proc/uptime`
-  secs=$((${uptime}%60))
-  mins=$((${uptime}/60%60))
-  hours=$((${uptime}/3600%24))
-  days=$((${uptime}/86400))
-  uptime="${mins}m"
-  if [ "${hours}" -ne "0" ]; then
-    uptime="${hours}h ${uptime}"
-  fi
-  if [ "${days}" -ne "0" ]; then
-    uptime="${days}d ${uptime}"
-  fi
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
+	uptime=`awk -F. '{print $1}' /proc/uptime`
+	secs=$((${uptime}%60))
+	mins=$((${uptime}/60%60))
+	hours=$((${uptime}/3600%24))
+	days=$((${uptime}/86400))
+	uptime="${mins}m"
+	if [ "${hours}" -ne "0" ]; then
+		uptime="${hours}h ${uptime}"
+	fi
+	if [ "${days}" -ne "0" ]; then
+		uptime="${days}d ${uptime}"
+	fi
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
 
 
 # Shell Detection - Begin
 detectshell () {
-  myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
+	myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
 }
 # Shell Detection - End
 
 
 # Resolution Detection - Begin
 detectres () {
-  if [[ -n $DISPLAY ]]; then
-    xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
-  else
-    xResolution="No X Server"
-  fi
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current resolution(s)...found as '$xResolution'"
+	if [[ -n $DISPLAY ]]; then
+		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
+	else
+		xResolution="No X Server"
+	fi
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current resolution(s)...found as '$xResolution'"
 }
 # Resolution Detection - End
 
 
 # DE Detection - Begin
 detectde () {
-  DE="Not Present"
-    for each in $denames; do
-      if [[ `ps aux` =~ "$each" ]]; then
-        [ "$each" == "gnome-session" -o "$each" == "gnome-settings-daemon" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
-        [ "$each" == "xfce4-session" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
-        [ "$each" == "ksmserver" ] && DE="KDE" && DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
-        [ "$each" == "lxsession" ] && DE="LXDE" && DEver=$(lxpanel -v)
-      fi
-    done
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
+	DE="Not Present"
+		for each in $denames; do
+			if [[ `ps aux` =~ "$each" ]]; then
+				[ "$each" == "gnome-session" -o "$each" == "gnome-settings-daemon" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
+				[ "$each" == "xfce4-session" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
+				[ "$each" == "ksmserver" ] && DE="KDE" && DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
+				[ "$each" == "lxsession" ] && DE="LXDE" && DEver=$(lxpanel -v)
+			fi
+		done
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
 }
 ### DE Detection - End
 
 
 # WM Detection - Begin
 detectwm () {
-  WM="Not Found"
-  userId="$(id -u ${USER})"
-  for each in $wmnames; do
-    PID="$(pgrep -U ${userId} $each)"
-    if [ "$PID" ]; then
-      case $each in
-        'fluxbox') WM="FluxBox";;
-        'openbox') WM="OpenBox";;
-        'blackbox') WM="Blackbox";;
-        'xfwm4') WM="Xfwm4";;
-        'metacity') WM="Metacity";;
-        'kwin') WM="KWin";;
-        'icewm') WM="IceWM";;
-        'pekwm') WM="PekWM";;
-        'fvwm') WM="FVWM";;
-        'dwm') WM="DWM";;
-        'awesome') WM="Awesome";;
-        'WindowMaker') WM="WindowMaker";;
-	'stumpwm') WM="StumpWM";;
-	'xmonad') WM="XMonad";;
-	'musca') WM="Musca";;
-	'i3') WM="i3";;
-	'ratpoison') WM="Ratpoison";;
-	'scrotwm') WM="ScrotWM";;
-	'wmfs') WM="WMFS";;
-	'wmii') WM="wmii";;
-	'subtle') WM="subtle";;
-	'e16') WM="E16";;
-	'enlightenment') WM="E17";;
-	'emerald') WM="Emerald";;
-        'sawfish') WM="Sawfish";;
-	'beryl') WM="Beryl";;
-      esac
-    fi
-  done
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
+WM="Not Found"
+	userId="$(id -u ${USER})"
+	for each in $wmnames; do
+		PID="$(pgrep -U ${userId} $each)"
+		if [ "$PID" ]; then
+			case $each in
+				'fluxbox') WM="FluxBox";;
+				'openbox') WM="OpenBox";;
+				'blackbox') WM="Blackbox";;
+				'xfwm4') WM="Xfwm4";;
+				'metacity') WM="Metacity";;
+				'kwin') WM="KWin";;
+				'icewm') WM="IceWM";;
+				'pekwm') WM="PekWM";;
+				'fvwm') WM="FVWM";;
+				'dwm') WM="DWM";;
+				'awesome') WM="Awesome";;
+				'WindowMaker') WM="WindowMaker";;
+				'stumpwm') WM="StumpWM";;
+				'xmonad') WM="XMonad";;
+				'musca') WM="Musca";;
+				'i3') WM="i3";;
+				'ratpoison') WM="Ratpoison";;
+				'scrotwm') WM="ScrotWM";;
+				'wmfs') WM="WMFS";;
+				'wmii') WM="wmii";;
+				'subtle') WM="subtle";;
+				'e16') WM="E16";;
+				'enlightenment') WM="E17";;
+				'emerald') WM="Emerald";;
+				'sawfish') WM="Sawfish";;
+				'beryl') WM="Beryl";;
+			esac
+		fi
+	done
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
 
 
 # WM Theme Detection - BEGIN
 detectwmtheme () {
-  Win_theme="Not Found"
-  case $WM in
-    'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
-    'OpenBox') 
-	if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then 
-		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
-	elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then 
-		Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
-	fi;;
-    'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
-    'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
-    'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
-    'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
-    'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
-    'KWin') if [ -f $HOME/.kde/share/config/plasmarc ]; then Win_theme="$(awk -F"=" '/^name=/ { getline; print $2 }' ${HOME}/.kde/share/config/plasmarc | head -1)"; else Win_theme="Not Present"; fi;;
-    'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
-    'FVWM') Win_theme="Not Present";;
-    'DWM') Win_theme="Not Present";;
-    'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1)"; fi;;
-    'WindowMaker') Win_theme="Not Present";;
-    'XMonad') Win_theme="Not Present";;
-    'Musca') Win_theme="Not Present";;
-    'i3') Win_theme="Not Present";;
-    'Ratpoison') Win_theme="Not Present";;
-    'ScrotWM') Win_theme="Not Present";;
-    'WMFS') Win_theme="Not Present";;
-    'wmii') Win_theme="Not Present";;
-    'subtle') Win_theme="Not Present";;
-    'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
-    #E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
-    #TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
-    'E17') Win_theme=${E_CONF_PROFILE};;
-    'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
-    'Beryl') Win_theme="Not Present";;
-    esac
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
+	Win_theme="Not Found"
+	case $WM in
+		'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
+		'OpenBox') 
+			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then 
+				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
+			elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then 
+				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
+			fi;;
+		'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
+		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
+		'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
+		'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
+		'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
+		'KWin') if [ -f $HOME/.kde/share/config/plasmarc ]; then Win_theme="$(awk -F"=" '/^name=/ { getline; print $2 }' ${HOME}/.kde/share/config/plasmarc | head -1)"; else Win_theme="Not Present"; fi;;
+		'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
+		'FVWM') Win_theme="Not Present";;
+		'DWM') Win_theme="Not Present";;
+		'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1)"; fi;;
+		'WindowMaker') Win_theme="Not Present";;
+		'XMonad') Win_theme="Not Present";;
+		'Musca') Win_theme="Not Present";;
+		'i3') Win_theme="Not Present";;
+		'Ratpoison') Win_theme="Not Present";;
+		'ScrotWM') Win_theme="Not Present";;
+		'WMFS') Win_theme="Not Present";;
+		'wmii') Win_theme="Not Present";;
+		'subtle') Win_theme="Not Present";;
+		'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
+		#E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
+		#TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
+		'E17') Win_theme=${E_CONF_PROFILE};;
+		'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
+		'Beryl') Win_theme="Not Present";;
+		esac
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
 
 # GTK Theme\Icon\Font Detection - BEGIN
 detectgtk () {
-  gtkTheme="Not Found"
-  gtkIcons="Not Found"
-  gtkFont="Not Found"
-  case $DE in
-    'KDE')  # Desktop Environment found as "KDE"
-          if [ -a $HOME/.kde/share/config/kdeglobals ]; then
-            if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
-              gtkTheme=$(awk -F"=" '/widgetStyle=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-            elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals; then
-              gtkTheme=$(awk -F"=" '/colorScheme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-            fi
+	gtkTheme="Not Found"
+	gtkIcons="Not Found"
+	gtkFont="Not Found"
+	case $DE in
+		'KDE')	# Desktop Environment found as "KDE"
+			if [ -a $HOME/.kde/share/config/kdeglobals ]; then
+				if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
+					gtkTheme=$(awk -F"=" '/widgetStyle=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+				elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals; then
+					gtkTheme=$(awk -F"=" '/colorScheme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+				fi
 
-            if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
-              gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-            fi
+				if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
+					gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+				fi
 
-            if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
-              gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-            fi
-          fi
-  ;;
-  'GNOME')  # Desktop Environment found as "GNOME"
-          if which gconftool-2 >/dev/null 2>&1; then
-            gtkTheme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
-          fi
+				if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
+					gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+				fi
+			fi
+		;;
+		'GNOME') # Desktop Environment found as "GNOME"
+			if which gconftool-2 >/dev/null 2>&1; then
+				gtkTheme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
+			fi
 
-          if which gconftool-2 >/dev/null 2>&1; then
-              gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
-          fi
+			if which gconftool-2 >/dev/null 2>&1; then
+				gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
+			fi
 
-          if which gconftool-2 >/dev/null 2>&1; then
-            gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
-          fi
-	  if [ "$background_detect" == "1" ]; then
-            if which gconftool-2 >/dev/null 2>&1; then
-              gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
-  	      gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
-            fi
-	  fi
-  ;;
-  'XFCE')  # Desktop Environment found as "XFCE"
-         if which xfconf-query >/dev/null 2>&1; then
-           gtkTheme=$(xfconf-query -c xsettings -p /Net/ThemeName)
-         fi
+			if which gconftool-2 >/dev/null 2>&1; then
+				gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
+			fi
+			if [ "$background_detect" == "1" ]; then
+				if which gconftool-2 >/dev/null 2>&1; then
+					gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
+			gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
+				fi
+			fi
+		;;
+		'XFCE')	# Desktop Environment found as "XFCE"
+			if which xfconf-query >/dev/null 2>&1; then
+				gtkTheme=$(xfconf-query -c xsettings -p /Net/ThemeName)
+			fi
 
-         if which xfconf-query >/dev/null 2>&1; then
-           gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
-         fi
+			if which xfconf-query >/dev/null 2>&1; then
+				gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
+			fi
 
-         if which xfconf-query >/dev/null 2>&1; then
-           gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
-         fi
-  ;;
-  'LXDE')
-    if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
-      lxdeconf="/lxde/config"
-      else
-      lxdeconf="/lxsession/LXDE/desktop.conf"
-    fi
-    #TODO: Clean me.
-      if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
-         gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-      fi
+			if which xfconf-query >/dev/null 2>&1; then
+				gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
+			fi
+		;;
+		'LXDE')
+			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
+				lxdeconf="/lxde/config"
+			else
+				lxdeconf="/lxsession/LXDE/desktop.conf"
+			fi
+			# TODO: Clean me.
+			if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
+			 gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+			fi
 
-      if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-          gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-      fi
+			if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+				gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+			fi
 
-      if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-          gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-      fi
-    
-  ;;
+			if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+				gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+			fi	 
+		;;
 
-# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
+		# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
-  *) # Lightweight or No DE Found
-    if [ -f $HOME/.gtkrc-2.0 ]; then
-      if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
-         gtkTheme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
-      fi
+		*)	# Lightweight or No DE Found
+			if [ -f $HOME/.gtkrc-2.0 ]; then
+				if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
+					gtkTheme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
+				fi
 
-      if grep -q icon-theme $HOME/.gtkrc-2.0; then
-          gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
-      fi
+				if grep -q icon-theme $HOME/.gtkrc-2.0; then
+					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
+				fi
 
-      if grep -q font $HOME/.gtkrc-2.0; then
-          gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
-      fi
-    fi
-    # $HOME/.gtkrc.mine theme detect only
-    if [ -f $HOME/.gtkrc.mine ]; then
-      if grep -q "^include" $HOME/.gtkrc.mine; then
-        gtkTheme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
-      fi
-      if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
-        gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
-      fi
-    fi
-    # ROX-Filer icon detect only
-    if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
-      gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
-    fi
-    # E17 detection
-    if [ $E_ICON_THEME ]; then
-      gtkIcons=${E_ICON_THEME}
-      gtkTheme="Not available."
-      gtkFont="Not available."
-    fi
-    # Background Detection (feh, nitrogen)
-    if [ "$background_detect" == "1" ]; then
-      if [ -a $HOME/.fehbg ]; then
-        gtkBackgroundFull=$(awk -F"'" '/feh --bg/{print $2}' $HOME/.fehbg 2>/dev/null)
-        gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
-      elif [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]; then
-        gtkBackground=$(awk -F"/" '/file=/ {print $NF}' ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg)
-      fi
-    fi
-  ;;
-  esac
-  if [[ "$verbosity" -eq "1" ]]; then
-    verboseOut "Finding GTK theme...found as '$gtkTheme'"
-    verboseOut "Finding icon theme...found as '$gtkIcons'"
-    verboseOut "Finding user font...found as '$gtkFont'"
-    [[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
-  fi
+				if grep -q font $HOME/.gtkrc-2.0; then
+					gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
+				fi
+			fi
+			# $HOME/.gtkrc.mine theme detect only
+			if [ -f $HOME/.gtkrc.mine ]; then
+				if grep -q "^include" $HOME/.gtkrc.mine; then
+					gtkTheme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
+				fi
+				if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
+					gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
+				fi
+			fi
+			# ROX-Filer icon detect only
+			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
+				gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
+			fi
+			# E17 detection
+			if [ $E_ICON_THEME ]; then
+				gtkIcons=${E_ICON_THEME}
+				gtkTheme="Not available."
+				gtkFont="Not available."
+			fi
+			# Background Detection (feh, nitrogen)
+			if [ "$background_detect" == "1" ]; then
+				if [ -a $HOME/.fehbg ]; then
+					gtkBackgroundFull=$(awk -F"'" '/feh --bg/{print $2}' $HOME/.fehbg 2>/dev/null)
+					gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
+				elif [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]; then
+					gtkBackground=$(awk -F"/" '/file=/ {print $NF}' ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg)
+				fi
+			fi
+		;;
+	esac
+	if [[ "$verbosity" -eq "1" ]]; then
+		verboseOut "Finding GTK theme...found as '$gtkTheme'"
+		verboseOut "Finding icon theme...found as '$gtkIcons'"
+		verboseOut "Finding user font...found as '$gtkFont'"
+		[[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
+	fi
 }
 # GTK Theme\Icon\Font Detection - END
+
 
 #######################
 # End Detection Phase
 #######################
 
 takeShot () {
-  if [[ -z $screenCommand ]]; then
-    if [[ "$hostshot" == "1" ]]; then
-      scrot -cd3 "${shotfile}"
-      if [ -f "${shotfile}" ]; then
-      	[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
-      	scp -qo ConnectTimeout="${scptimeout}" "${shotfile}" "${serveraddr}:${serverdir}"
-      	echo -e "${bold}==>${c0} Your screenshot can be viewed at ${baseurl}/$shotfile"
-      else
-        verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
-      fi
-    else
-      scrot -cd3 "${shotfile}"
-      if [ -f "${shotfile}" ]; then
-      	[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
-      else
-        verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
-      fi
-    fi
-  else
-    $screenCommand
-  fi
+	if [[ -z $screenCommand ]]; then
+		if [[ "$hostshot" == "1" ]]; then
+			scrot -cd3 "${shotfile}"
+			if [ -f "${shotfile}" ]; then
+				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
+				scp -qo ConnectTimeout="${scptimeout}" "${shotfile}" "${serveraddr}:${serverdir}"
+				echo -e "${bold}==>${c0} Your screenshot can be viewed at ${baseurl}/$shotfile"
+			else
+				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+			fi
+		else
+			scrot -cd3 "${shotfile}"
+			if [ -f "${shotfile}" ]; then
+				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
+			else
+				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+			fi
+		fi
+	else
+		$screenCommand
+	fi
 }
+
 
 
 asciiText () {
 # Distro logos and ASCII outputs
-case $distro in
-  "Arch Linux - Old")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;34m" # Light Blue
-    startline="1"
-    fulloutput=("$c1              __"
+	case $distro in
+		"Arch Linux - Old")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;34m" # Light Blue
+			startline="1"
+			fulloutput=("$c1              __"
 "$c1          _=(SDGJT=_                  %s"
 "$c1        _GTDJHGGFCVS)                %s"
 "$c1       ,GTDJGGDTDFBGX0               %s"
@@ -638,13 +655,13 @@ case $distro in
 "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF         %s"
 "$c1 'EHTI                    !H"
 "$c1  \`0F'                    '!")
-  ;;
+		;;
 
-  "Arch Linux")
-    [ -z $c1 ] && c1="\e[1;36m" # Light
-    c2="\e[0;36m" # Dark
-    startline="3"
-    fulloutput=("${c1}                   -\`"
+		"Arch Linux")
+			[ -z $c1 ] && c1="\e[1;36m" # Light
+			c2="\e[0;36m" # Dark
+			startline="3"
+			fulloutput=("${c1}                   -\`"
 "${c1}                  .o+\`"
 "${c1}                 \`ooo/"
 "${c1}                \`+oooo:               %s"
@@ -663,13 +680,13 @@ case $distro in
 "${c2}  \`+sso+:-\`                 \`.-/+oso:"
 "${c2} \`++:.                           \`-/+/"
 "${c2} .\`                                 \`/")
-  ;;
+		;;
 
-  "Mint")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;32m" # Bold Green
-    startline="1"
-    fulloutput=("$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
+		"Mint")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;32m" # Bold Green
+			startline="1"
+			fulloutput=("$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+."
 "$c2 MMm----::-://////////////oymNMd+\`     %s"
 "$c2 MMd      "$c1"/++                "$c2"-sNMd:   %s"
 "$c2 MMNso/\`  "$c1"dMM    \`.::-. .-::.\` "$c2".hMN:  %s"
@@ -684,14 +701,14 @@ case $distro in
 "$c2      -dMNs-"$c1"\`\`-::::-------.\`\`    "$c2"dMM  %s"
 "$c2       \`/dMNmy+/:-------------:/yMMM  %s"
 "$c2          ./ydNMMMMMMMMMMMMMMMMMMMMM")
-  ;;
+		;;
 
 
-  "LMDE")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;32m" # Bold Green
-    startline="2"
-    fulloutput=("          "${c1}"\`.-::---.."
+		"LMDE")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;32m" # Bold Green
+			startline="2"
+			fulloutput=("          "${c1}"\`.-::---.."
 "${c2}       .:++++ooooosssoo:."
 "${c2}     .+o++::.      \`.:oos+.     %s"
 "${c2}    :oo:.\`             -+oo"${c1}":   %s"
@@ -708,14 +725,14 @@ case $distro in
 "${c2}      "${c1}"."${c2}"+/.                     %s"
 "${c2}        "${c1}"."${c2}":+-."
 "${c2}           \`--.\`\`")
-  ;;
+		;;
 
-  "Ubuntu")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    c3="\e[1;33m" # Bold Yellow
-    startline="2"
-    fulloutput=("$c2                          ./+o+-"
+		"Ubuntu")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;31m" # Light Red
+			c3="\e[1;33m" # Bold Yellow
+			startline="2"
+			fulloutput=("$c2                          ./+o+-"
 "$c1                  yyyyy- $c2-yyyyyy+"
 "$c1               $c1://+//////$c2-yyyyyyo      %s"
 "$c3           .++ $c1.:/++++++/-$c2.+sss/\`     %s"
@@ -733,13 +750,13 @@ case $distro in
 "$c2               /osyyyyyyo$c3++ooo+++/"
 "$c2                   \`\`\`\`\` $c3+oo+++o\:"
 "$c3                          \`oo++.")
-  ;;
+		;;
 
-  "Debian")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    startline="2"
-    fulloutput=("  $c1       _,met\$\$\$\$\$gg."
+		"Debian")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;31m" # Light Red
+			startline="2"
+			fulloutput=("  $c1       _,met\$\$\$\$\$gg."
 "  $c1    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P."
 "  $c1  ,g\$\$P\"\"       \"\"\"Y\$\$.\".\t %s"
 "  $c1 ,\$\$P'              \`\$\$\$.\t%s"
@@ -756,13 +773,13 @@ case $distro in
 "  $c1       \`Y\$\$b.\t\t\t%s"
 "  $c1          \`\"Y\$b._"
 "  $c1              \`\"\"\"\"")
-  ;;
+		;;
 
-  "CrunchBang")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;30m" # Dark Gray
-    startline="1"
-    fulloutput=("$c1                ___       ___      _"
+		"CrunchBang")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;30m" # Dark Gray
+			startline="1"
+			fulloutput=("$c1                ___       ___      _"
 "$c1               /  /      /  /     | |  %s"
 "$c1              /  /      /  /      | | %s"
 "$c1             /  /      /  /       | | %s"
@@ -777,13 +794,13 @@ case $distro in
 "$c1    /  /      /  /                 _  %s"
 "$c1   /  /      /  /                 | | %s"
 "$c1  /__/      /__/                  |_|")
-  ;;
+		;;
 
-  "Gentoo")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;35m" # Light Purple
-    startline="2"
-    fulloutput=("$c2         -/oyddmdhs+:."
+		"Gentoo")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;35m" # Light Purple
+			startline="2"
+			fulloutput=("$c2         -/oyddmdhs+:."
 "$c2     -o"$c1"dNMMMMMMMMNNmhy+"$c2"-\`"
 "$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-           %s"
 "$c2 \`o"$c1"mMMMMMMMMMMMMNmdmmmmddhhy"$c2"/\`       %s"
@@ -801,13 +818,13 @@ case $distro in
 "$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`"
 "$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`"
 "$c2  \`-//////:--.")
-  ;;
+		;;
 
-  "Fedora")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;34m" # Light Blue
-    startline="3"
-    fulloutput=("$c2           :/------------://"
+		"Fedora")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;34m" # Light Blue
+			startline="3"
+			fulloutput=("$c2           :/------------://"
 "$c2        :------------------://"
 "$c2      :-----------"$c1"/shhdhyo/"$c2"-://"
 "$c2    /-----------"$c1"omMMMNNNMMMd/"$c2"-:/      %s"
@@ -824,13 +841,13 @@ case $distro in
 "$c2 :---"$c1":sdNMMMMNds:"$c2"----------:         %s"
 "$c2 :------"$c1":://:"$c2"-----------://          %s"
 "$c2 :--------------------://")
-  ;;
+		;;
 
-  "BSD")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    startline="4"
-    fulloutput=("$c2              ,        ,"
+		"BSD")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;31m" # Light Red
+			startline="4"
+			fulloutput=("$c2              ,        ,"
 "$c2             /(        )\`"
 "$c2             \ \___   / |"
 "$c2             /- "$c1"_$c2  \`-/  '"
@@ -849,13 +866,13 @@ case $distro in
 "$c2          ______( (_  / \______/  %s"
 "$c2        ,'  ,-----'   |"
 "$c2        \`--{__________)")
-  ;;
+		;;
 
-  "Mandriva"|"Mandrake")
-    c1="\e[1;34m" # Light Blue
-    c2="\e[1;33m" # Bold Yellow
-    startline="1"
-    fulloutput=("$c2                         \`\`"
+		"Mandriva"|"Mandrake")
+			c1="\e[1;34m" # Light Blue
+			c2="\e[1;33m" # Bold Yellow
+			startline="1"
+			fulloutput=("$c2                         \`\`"
 "$c2                        \`-.                 %s"
 "$c1       \`               $c2.---                %s"
 "$c1     -/               $c2-::--\`               %s"
@@ -870,13 +887,13 @@ case $distro in
 "$c1  /sss+.    $c2..\`$c1  \`--\`    $c2.:::              %s"
 "$c1   -ossso+/:://+/-\`        $c2.:\`             %s"
 "$c1     -/+ooo+/-.              $c2\`")
-  ;;
+		;;
 
-  "openSUSE")
-    c1="\e[1;32m" # Bold Green
-    c2="\e[1;37m" # Bold White
-    startline="3"
-    fulloutput=("$c2             .;ldkO0000Okdl;."
+		"openSUSE")
+			c1="\e[1;32m" # Bold Green
+			c2="\e[1;37m" # Bold White
+			startline="3"
+			fulloutput=("$c2             .;ldkO0000Okdl;."
 "$c2         .;d00xl:,'....';:ok00d;."
 "$c2       .d00l'                ,o00d."
 "$c2     .d0Kd."$c1" :Okxol:;'.          "$c2":O0d.        %s"
@@ -894,13 +911,13 @@ case $distro in
 "$c2       .l0Kk:.              .;xK0l.         %s"
 "$c2          ,lkK0xl:;,,,,;:ldO0kl,"
 "$c2              .':ldxkkkkxdl:'.")
-  ;;
+		;;
 
-  "Slackware")
-    [ -z $c1 ] && c1="\e[1;34m" # Light Blue
-    c2="\e[1;37m" # Bold White
-    startline="4"
-    fulloutput=("$c1                   :::::::"
+		"Slackware")
+			[ -z $c1 ] && c1="\e[1;34m" # Light Blue
+			c2="\e[1;37m" # Bold White
+			startline="4"
+			fulloutput=("$c1                   :::::::"
 "$c1             :::::::::::::::::::"
 "$c1          :::::::::::::::::::::::::"
 "$c1        ::::::::"${c2}"cllcccccllllllll"${c1}"::::::"
@@ -921,13 +938,13 @@ case $distro in
 "$c1         ::::::::::::::::::::::::::::"
 "$c1            ::::::::::::::::::::::"
 "$c1                 ::::::::::::")
-  ;;
+		;;
 
-  "Red Hat Linux")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    startline="2"
-    fulloutput=("$c2              \`.-..........\`"
+		"Red Hat Linux")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;31m" # Light Red
+			startline="2"
+			fulloutput=("$c2              \`.-..........\`"
 "$c2             \`////////::.\`-/."
 "$c2             -: ....-////////.               %s"
 "$c2             //:-::///////////\`             %s"
@@ -943,13 +960,13 @@ case $distro in
 "$c1  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM   %s"
 "$c1   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM    %s"
 "$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM")
-  ;;
+		;;
 
-  "Frugalware")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;36m" # Light Blue
-    startline="7"
-    fulloutput=("${c2}           \`++/::-.\`"
+		"Frugalware")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;36m" # Light Blue
+			startline="7"
+			fulloutput=("${c2}           \`++/::-.\`"
 "${c2}          /o+++++++++/::-.\`"
 "${c2}         \`o+++++++++++++++o++/::-.\`"
 "${c2}         /+++++++++++++++++++++++oo++/:-.\`\`"
@@ -972,14 +989,14 @@ case $distro in
 "${c2}                \`\`.:/+osyysssssssssssssh."
 "${c2}                         \`-:/+osyyssssyo"
 "${c2}                                 .-:+++\`")
-  ;;
+		;;
 
 
-  "Peppermint")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;31m" # Light Red
-    startline="3"
-    fulloutput=("${c2}             8ZZZZZZ"${c1}"MMMMM"
+		"Peppermint")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;31m" # Light Red
+			startline="3"
+			fulloutput=("${c2}             8ZZZZZZ"${c1}"MMMMM"
 "${c2}          .ZZZZZZZZZ"${c1}"MMMMMMM."
 "${c1}        MM"${c2}"ZZZZZZZZZ"${c1}"MMMMMMM"${c2}"ZZZZ"
 "${c1}      MMMMM"${c2}"ZZZZZZZZ"${c1}"MMMMM"${c2}"ZZZZZZZM        %s"
@@ -998,13 +1015,13 @@ case $distro in
 "${c1}         MMMMM"${c2}"ZZZZZZZZZ"${c1}"MMMMMMM"
 "${c2}           NZZZZZZZZZZZ"${c1}"MMMMM"
 "${c2}              ZZZZZZZZZ"${c1}"MM")
-  ;;
+		;;
 
-  "SolusOS")
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;30m" # Light Gray
-    startline="5"
-    fulloutput=("${c1}                             e           e"
+		"SolusOS")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;30m" # Light Gray
+			startline="5"
+			fulloutput=("${c1}                             e           e"
 "${c1}                            ee         ee"
 "${c1}                           eee       eee"
 "${c2}            wwwwwwwwww    "${c1}"eeee     eeee"
@@ -1027,15 +1044,40 @@ case $distro in
 "${c2}                         www"
 "${c2}                       ww"
 "${c2}                     w")
-  ;;
+		;;
 
 
-  *)
-    [ -z $c1 ] && c1="\e[1;37m" # White
-    c2="\e[1;30m" # Light Gray
-    c3="\e[1;33m" # Light Yellow
-    startline="0"
-    fulloutput=("                             %s"
+		"Mageia")
+			[ -z $c1 ] && c1="\e[1;34m" # Light Blue
+			c2="\e[0;36m" # Light Cyan
+			startline="3"
+			fulloutput=("$c2             .''   "
+"$c2              '.     ..            "
+"$c2                    .,,.           "
+"$c2                 ,;;.             %s"
+"$c2                 ... ...         %s"
+"$c2              ',,'  .:::.        %s"
+"$c1            .$c2,:c,$c1    .. .        %s"
+"$c1          :dkxc;'.  ..,cxkd;     %s"
+"$c1        .dkkxxkkkkkkkkkkxxkkd.   %s"
+"$c1       .dkko. ';cloolc;. .dkkd   %s"
+"$c1       ckkx.              .xkk;  %s"
+"$c1       xOO:                cOOd  %s"
+"$c1       xOO:                lOOd  %s"
+"$c1       lOOx.              .kOO:  %s"
+"$c1       .k00d.            .x00x   %s"
+"$c1        .k00O;          ;k00O.   %s"
+"$c1         .lO0KOdc;,,;cdO0KOc.      "
+"$c1            ;d0KKKKKKKK0d;         "
+"$c1               .,;::;,.            ")
+		;;
+
+		*)
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;30m" # Light Gray
+			c3="\e[1;33m" # Light Yellow
+			startline="0"
+			fulloutput=("                             %s"
 "$c2         #####$c0              %s"
 "$c2        #######             %s"
 "$c2        ##"$c1"O$c2#"$c1"O$c2##             %s"
@@ -1049,209 +1091,206 @@ case $distro in
 "$c3 #######$c2#$c1#####$c2#$c3#######      %s"
 "$c3   #####$c2#######$c3#####        %s"
 "$c0")
-  ;;
-esac
+  		;;
+	esac
 
-# Truncate lines based on terminal width.
-if [ "$truncateSet" == "Yes" ]; then
-	n=${#fulloutput[*]}
-	for ((i=0;i<n;i++)); do
-		targetPercent=100
-		termWidth=$(tput cols)
-		# stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\x1b\[[0-9];[0-9]*m\?//g')
-		stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\\e\[[0-9];[0-9]*m//g' -e 's/\\e\[[0-9]*m//g')
-		stringLength=${#stringReal}
-		targetLength="$((termWidth*targetPercent/100))"
-		if [ "$stringLength" -le "$targetLength" ]; then
-			echo -e "${fulloutput[i]}"$c0
-		elif [ "$stringLength" -gt "$targetLength" ]; then
-		 	echo "${fulloutput[i]:0:$targetLength}..."$c0
-		fi
-		# Debugging widths
-		# echo "Term Width: $termWidth"
-		# echo "String Length: $stringLength"
-	done
-else
-	n=${#fulloutput[*]}
-	for ((i=0;i<n;i++)); do
-		# echo "${out_array[@]}"
-		printf "${fulloutput[i]}$c0\n" "${out_array}"
-		if [[ "$i" -ge "$startline" ]]; then
-			unset out_array[0]
-			out_array=( "${out_array[@]}" )
-		fi
-	done
-fi
-# Done with ASCII output
+	# Truncate lines based on terminal width.
+	if [ "$truncateSet" == "Yes" ]; then
+		n=${#fulloutput[*]}
+		for ((i=0;i<n;i++)); do
+			targetPercent=100
+			termWidth=$(tput cols)
+			# stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\x1b\[[0-9];[0-9]*m\?//g')
+			stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\\e\[[0-9];[0-9]*m//g' -e 's/\\e\[[0-9]*m//g')
+			stringLength=${#stringReal}
+			targetLength="$((termWidth*targetPercent/100))"
+			if [ "$stringLength" -le "$targetLength" ]; then
+				echo -e "${fulloutput[i]}"$c0
+			elif [ "$stringLength" -gt "$targetLength" ]; then
+			 	echo "${fulloutput[i]:0:$targetLength}..."$c0
+			fi
+			# Debugging widths
+			# echo "Term Width: $termWidth"
+			# echo "String Length: $stringLength"
+		done
+	else
+		n=${#fulloutput[*]}
+		for ((i=0;i<n;i++)); do
+			# echo "${out_array[@]}"
+			printf "${fulloutput[i]}$c0\n" "${out_array}"
+			if [[ "$i" -ge "$startline" ]]; then
+				unset out_array[0]
+				out_array=( "${out_array[@]}" )
+			fi
+		done
+	fi
+	# Done with ASCII output
 }
 
 infoDisplay () {
-
-  if [ -z "$textcolor" ]; then textcolor="\e[0m"; fi
-
-  #TODO: Centralize colors and use them across the board so we only change them one place.
-  if [ -z "$labelcolor" ]; then
-    case $distro in
-      "Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
-      "Arch Linux"|"Frugalware") labelcolor="\e[1;36m";;
-      "Mint"|"LMDE"|"openSUSE") labelcolor="\e[1;32m";;
-      "Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
-      "CrunchBang"|"SolusOS") labelcolor="\e[1;30m";;
-      "Gentoo") labelcolor="\e[1;35m";;
-      "Slackware") labelcolor="\e[1;34m";;
-      *) labelcolor="\e[1;33m";;
-    esac 
-  fi
-    
-  # Some verbosity stuff
-  [[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
-  [[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
-  #########################
-  # Info Variable Setting #
-  #########################
-  if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor$bold@${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "distro" ]]; then
-    sysArch=`uname -m`
-    if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
-    else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
-    out_array=( "${out_array[@]}" "$mydistro" )
-    ((display_index++))
-  fi
-  if [[ "${display[@]}" =~ "kernel" ]]; then mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "uptime" ]]; then myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime"); out_array=( "${out_array[@]}" "$myuptime" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "shell" ]]; then myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell"); out_array=( "${out_array[@]}" "$myshell" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "de" ]]; then myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "wmtheme" ]]; then mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
-  if [[ "${display[@]}" =~ "gtk" ]]; then 
-    mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor $gtkTheme"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
-    myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
-    myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
-    [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
-  fi
-  if [[ "$display_type" == "ASCII" ]]; then
-    asciiText
-  else
-    echo -e "$mydistro" 
-    echo -e "$mykernel"
-    echo -e "$myuptime"
-    echo -e "$myshell"
-    echo -e "$myres"
-    echo -e "$myde"
-    echo -e "$mywm"
-    echo -e "$mywmtheme"
-    echo -e "$mygtk"
-    echo -e "$myicons"
-    echo -e "$myfont"
-  fi
+	if [ -z "$textcolor" ]; then textcolor="\e[0m"; fi
+	#TODO: Centralize colors and use them across the board so we only change them one place.
+	if [ -z "$labelcolor" ]; then
+		case $distro in
+			"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
+			"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
+			"Mint"|"LMDE"|"openSUSE") labelcolor="\e[1;32m";;
+			"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
+			"CrunchBang"|"SolusOS") labelcolor="\e[1;30m";;
+			"Gentoo") labelcolor="\e[1;35m";;
+			"Slackware") labelcolor="\e[1;34m";;
+			*) labelcolor="\e[1;33m";;
+		esac 
+	fi
+	# Some verbosity stuff
+	[[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
+	[[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
+	#########################
+	# Info Variable Setting #
+	#########################
+	if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor$bold@${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "distro" ]]; then
+		sysArch=`uname -m`
+		if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
+		else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
+		out_array=( "${out_array[@]}" "$mydistro" )
+		((display_index++))
+	fi
+	if [[ "${display[@]}" =~ "kernel" ]]; then mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "uptime" ]]; then myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime"); out_array=( "${out_array[@]}" "$myuptime" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "shell" ]]; then myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell"); out_array=( "${out_array[@]}" "$myshell" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "de" ]]; then myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "wmtheme" ]]; then mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "gtk" ]]; then 
+		mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor $gtkTheme"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+		myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
+		myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
+		[ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
+	fi
+	if [[ "$display_type" == "ASCII" ]]; then
+		asciiText
+	else
+		echo -e "$mydistro" 
+		echo -e "$mykernel"
+		echo -e "$myuptime"
+		echo -e "$myshell"
+		echo -e "$myres"
+		echo -e "$myde"
+		echo -e "$mywm"
+		echo -e "$mywmtheme"
+		echo -e "$mygtk"
+		echo -e "$myicons"
+		echo -e "$myfont"
+	fi
 }
 
 ########
 # Theme Exporting (Experimental!)
 ########
 themeExport () {
-  WM=$(echo "$mywm" | awk '{print $NF}')
-  if [[ ! -d /tmp/screenfetch-export ]]; then mkdir -p "/tmp/screenfetch-export/Icons" & mkdir -p "/tmp/screenfetch-export/GTK-Theme" & mkdir -p "/tmp/screenfetch-export/WM-${WM}" ; fi
-  if [[ "$WM" ]]; then
-    if [[ "$WM" =~ "Openbox" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "Fluxbox" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.fluxbox/styles/$Win_theme" ]]; then
-          cp -r "$HOME/.fluxbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "Blackbox" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.blackbox/styles/$Win_theme" ]]; then
-          cp -r "$HOME/.blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        elif [[ -d "/usr/share/blackbox/styles/$Win_theme" ]]; then
-          cp -r "/usr/share/blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "PekWM" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.pekwm/themes/$Win_theme" ]]; then
-          cp -r "$HOME/.pekwm/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "Metacity" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
-          cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    elif [[ "$WM" =~ "Xfwm4" ]]; then
-      if [[ "$Win_theme" != "Not Found" ]]; then
-        WM_theme=$(echo "$Win_theme" | awk '{print $NF}')
-        if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-          cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
-          cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-          [[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-        fi
-      fi
-    fi
-  fi
-  if [[ "$gtkBackgroundFull" ]]; then
-    cp "$gtkBackgroundFull" /tmp/screenfetch-export/
-    [[ "$verbosity" -eq "1" ]] && verboseOut "Found BG file. Transferring to /tmp/screenfetch-export/..."
-  fi
-  if [[ "$mygtk" ]]; then
-    GTK_theme=$(echo "$mygtk" | awk '{print $NF}')
-    if [ -d "/usr/share/themes/$GTK_theme" ]; then
-      cp -r "/usr/share/themes/$GTK_theme" "/tmp/screenfetch-export/GTK/Theme/$GTK_theme" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK theme folder. Transferring to /tmp/screenfetch-export/..."
-    fi
-  fi
-  if [[ "$myicons" ]]; then
-    GTK_icons=$(echo "$myicons" | awk '{print $NF}')
-    if [ -d "/usr/share/icons/$GTK_icons" ]; then
-      cp -r "/usr/share/icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
-    fi
-    if [ -d "$HOME/.icons/$GTK_icons" ]; then
-      cp -r "$HOME/.icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
-    fi
-  fi
-  if [[ "$myfont" ]]; then
-    GTK_font=$(echo "$myfont" | awk '{print $NF}')
-    if [ -d "/usr/share/fonts/$GTK_font" ]; then
-      cp -r "/usr/share/fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
-    elif [ -d "$HOME/.fonts/$GTK_font" ]; then
-      cp -r "$HOME/.fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
-    fi
-  fi
-  if [ "$screenshot" == "1" ]; then
-    if [ -f "${shotfile}" ]; then
-      cp "${shotfile}" "/tmp/screenfetch-export/"
-      [[ "$verbosity" -eq "1" ]] && verboseOut "Found screenshot. Transferring to /tmp/screenfetch-export/..."
-    fi
-  fi
-  cd /tmp/screenfetch-export/
-  [[ "$verbosity" -eq "1" ]] && verboseOut "Creating screenfetch-export.tar.gz archive in /tmp/screenfetch-export/...."
-  tar -czf screenfetch-export.tar.gz ../screenfetch-export &>/dev/null
-  mv /tmp/screenfetch-export/screenfetch-export.tar.gz $HOME/
-  echo -e "${bold}==>${c0} Archive created in /tmp/ and moved to $HOME. Removing /tmp/screenfetch-export/..."
-  rm -rf /tmp/screenfetch-export/
+	WM=$(echo "$mywm" | awk '{print $NF}')
+	if [[ ! -d /tmp/screenfetch-export ]]; then mkdir -p "/tmp/screenfetch-export/Icons" & mkdir -p "/tmp/screenfetch-export/GTK-Theme" & mkdir -p "/tmp/screenfetch-export/WM-${WM}" ; fi
+	if [[ "$WM" ]]; then
+		if [[ "$WM" =~ "Openbox" ]]; then
+			if [[ "$Win_theme" != "Not Found" ]]; then
+				if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+					cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				fi
+			fi
+		elif [[ "$WM" =~ "Fluxbox" ]]; then
+			if [[ "$Win_theme" != "Not Found" ]]; then
+				if [[ -d "$HOME/.fluxbox/styles/$Win_theme" ]]; then
+					cp -r "$HOME/.fluxbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				fi
+			fi
+		elif [[ "$WM" =~ "Blackbox" ]]; then
+			if [[ "$Win_theme" != "Not Found" ]]; then
+				if [[ -d "$HOME/.blackbox/styles/$Win_theme" ]]; then
+					cp -r "$HOME/.blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				elif [[ -d "/usr/share/blackbox/styles/$Win_theme" ]]; then
+					cp -r "/usr/share/blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				fi
+			fi
+		elif [[ "$WM" =~ "PekWM" ]]; then
+			if [[ "$Win_theme" != "Not Found" ]]; then
+				if [[ -d "$HOME/.pekwm/themes/$Win_theme" ]]; then
+					cp -r "$HOME/.pekwm/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				fi
+			fi
+		elif [[ "$WM" =~ "Metacity" ]]; then
+			if [[ "$Win_theme" != "Not Found" ]]; then
+				if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+					cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
+					cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				fi
+			fi
+		elif [[ "$WM" =~ "Xfwm4" ]]; then
+			if [[ "$Win_theme" != "Not Found" ]]; then
+				WM_theme=$(echo "$Win_theme" | awk '{print $NF}')
+				if [[ -d "$HOME/.themes/$Win_theme" ]]; then
+					cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
+					cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
+					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
+				fi
+			fi
+		fi
+	fi
+	if [[ "$gtkBackgroundFull" ]]; then
+		cp "$gtkBackgroundFull" /tmp/screenfetch-export/
+		[[ "$verbosity" -eq "1" ]] && verboseOut "Found BG file. Transferring to /tmp/screenfetch-export/..."
+	fi
+	if [[ "$mygtk" ]]; then
+		GTK_theme=$(echo "$mygtk" | awk '{print $NF}')
+		if [ -d "/usr/share/themes/$GTK_theme" ]; then
+			cp -r "/usr/share/themes/$GTK_theme" "/tmp/screenfetch-export/GTK/Theme/$GTK_theme" &>/dev/null
+			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK theme folder. Transferring to /tmp/screenfetch-export/..."
+		fi
+	fi
+	if [[ "$myicons" ]]; then
+		GTK_icons=$(echo "$myicons" | awk '{print $NF}')
+		if [ -d "/usr/share/icons/$GTK_icons" ]; then
+			cp -r "/usr/share/icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
+			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+		fi
+		if [ -d "$HOME/.icons/$GTK_icons" ]; then
+			cp -r "$HOME/.icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
+			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
+		fi
+	fi
+	if [[ "$myfont" ]]; then
+		GTK_font=$(echo "$myfont" | awk '{print $NF}')
+		if [ -d "/usr/share/fonts/$GTK_font" ]; then
+			cp -r "/usr/share/fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
+			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+		elif [ -d "$HOME/.fonts/$GTK_font" ]; then
+			cp -r "$HOME/.fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
+			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
+		fi
+	fi
+	if [ "$screenshot" == "1" ]; then
+		if [ -f "${shotfile}" ]; then
+			cp "${shotfile}" "/tmp/screenfetch-export/"
+			[[ "$verbosity" -eq "1" ]] && verboseOut "Found screenshot. Transferring to /tmp/screenfetch-export/..."
+		fi
+	fi
+	cd /tmp/screenfetch-export/
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Creating screenfetch-export.tar.gz archive in /tmp/screenfetch-export/...."
+	tar -czf screenfetch-export.tar.gz ../screenfetch-export &>/dev/null
+	mv /tmp/screenfetch-export/screenfetch-export.tar.gz $HOME/
+	echo -e "${bold}==>${c0} Archive created in /tmp/ and moved to $HOME. Removing /tmp/screenfetch-export/..."
+	rm -rf /tmp/screenfetch-export/
 }
 
 
