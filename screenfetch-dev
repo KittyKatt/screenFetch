@@ -38,8 +38,8 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm"
-denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm"
+denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon"
 
 # Export theme settings
 # screenFetch has the capability (on some WM's and GTK) to export your GTK and WM settings to an archive. Specify Yes if you want this and No if you do not.
@@ -381,6 +381,7 @@ detectde () {
 		for each in $denames; do
 			if [[ `ps aux` =~ "$each" ]]; then
 				[ "$each" == "gnome-session" -o "$each" == "gnome-settings-daemon" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
+				[ "$each" == "mate-session" -o "$each" == "mate-settings-daemon" ] && DE="MATE" && DEver=$(mate-session --version | awk {'print $NF'})
 				[ "$each" == "xfce4-session" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
 				[ "$each" == "ksmserver" ] && DE="KDE" && DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
 				[ "$each" == "lxsession" ] && DE="LXDE" && DEver=$(lxpanel -v)
@@ -410,7 +411,7 @@ WM="Not Found"
 				'fvwm') WM="FVWM";;
 				'dwm') WM="DWM";;
 				'awesome') WM="Awesome";;
-				'WindowMaker') WM="WindowMaker";;
+				'wmaker') WM="WindowMaker";;
 				'stumpwm') WM="StumpWM";;
 				'xmonad') WM="XMonad";;
 				'musca') WM="Musca";;
@@ -501,7 +502,7 @@ detectgtk () {
 				fi
 			fi
 		;;
-		'GNOME') # Desktop Environment found as "GNOME"
+		'GNOME'|'MATE') # Desktop Environment found as "GNOME"
 			if which gconftool-2 >/dev/null 2>&1; then
 				gtkTheme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
 			fi
