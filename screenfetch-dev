@@ -38,7 +38,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome WindowMaker stumpwm xmonad musca i3 ratpoison scrotwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon"
 
 # Export theme settings
@@ -426,6 +426,7 @@ WM="Not Found"
 				'sawfish') WM="Sawfish";;
 				'beryl') WM="Beryl";;
 				'monsterwm') WM="monsterwm";;
+				'dminiwm') WM="dminiwm";;
 			esac
 		fi
 	done
@@ -471,6 +472,7 @@ detectwmtheme () {
 		'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
 		'Beryl') Win_theme="Not Present";;
 		'monsterwm') Win_theme="Not Present";;
+		'dminiwm') Win_theme="Not Present";;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
