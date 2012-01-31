@@ -24,7 +24,7 @@ scriptVersion="2.3.8"
 ######################
 
 # This setting controls what ASCII logo is displayed. Available: Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, BSD, and None
-# distro="Arch Linux"
+# distro="Linux"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
@@ -203,7 +203,9 @@ detecthost () {
 # Host and User detection - Begin
 detecthost () {
 	myUser=$(echo "$USER")
-	myHost=$(hostname)
+	# net-tools is becoming deprecated
+	# myHost=$(hostname)
+	myHost=$(cat /proc/sys/kernel/hostname)
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
 }
 
