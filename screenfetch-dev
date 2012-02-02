@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.3.8)
+# screenFetch (v2.3.9)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.3.8"
+scriptVersion="2.3.9"
 
 ######################
 # Settings for fetcher
@@ -218,6 +218,7 @@ detectdistro () {
 			distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
 			if [ "$distro_detect" == "Arch" ]; then distro="Arch Linux"; fi
 			if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
+			if [ "$distro_detect" == "SolusOS" ]; then distro="SolusOS"; fi
 			if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
 				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
 					distro="LMDE"
@@ -271,6 +272,7 @@ detectdistro () {
 		else
 			if [ -f /etc/debian_version ]; then distro="Debian"; fi
 			if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
+			if grep -i SolusOS /etc/issue >/dev/null 2>&1; then distro="SolusOS"; fi
 			if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
 				if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="LMDE"
 				else distro="Mint"; fi

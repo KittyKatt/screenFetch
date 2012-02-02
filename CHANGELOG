@@ -3,6 +3,21 @@
     changelog
 **** **** **** ****
 
+########## v2.3.9 ###########
+ - Fixed SolusOS detection.
+ - Added MATE detection, theme detection possibly not working yet. Fixed WindowMaker detection.
+ - Getting a DEB out! \o/
+
+
+########### v2.3.8 ###########
+ - Changed to relying on /proc/sys/kernel/hostname for hostname now instead of the `hostname`.
+ - Added tentative support for monsterwm and dminiwm.
+###############################
+
+#################
+Crap,  I didn't update this....
+#################
+
 
 v2.1.3 (HOLY SHIT BIG CHANGES)
   - Added shitload of new features. Keep reading.
