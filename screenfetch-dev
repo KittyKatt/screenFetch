@@ -1100,7 +1100,7 @@ asciiText () {
 "${c2}                                wwww            %s"
 "${c2}                               wwww             %s"
 "${c2}                             wwww               %s"
-"${c2}                           wwww"
+"${c2}                           wwww                 %s"
 "${c2}                         www"
 "${c2}                       ww"
 "${c2}                     w")
