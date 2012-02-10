@@ -28,7 +28,7 @@ scriptVersion="2.3.9-ss"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
-display=( host distro kernel uptime shell res de wm wmtheme gtk cpu mem )
+display=( host distro kernel uptime pkgs shell res de wm wmtheme gtk cpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
 
@@ -361,7 +361,22 @@ detectuptime () {
 # Uptime Detection - End
 
 
-# CPU Detection
+# Package Count - Begin
+detectpkgs () {
+	case $distro in
+		'Arch Linux'|'Frugalware') pkgs=$(pacman -Qq | wc -l) ;;
+		'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint') pkgs=$(dpkg --get-selections | wc -l) ;;
+		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
+		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
+		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia') pkgs=$(rpm -qa | wc -l) ;;
+	esac
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
+}
+
+
+
+
+# CPU Detection - Begin
 detectcpu () {
 	cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //')
 	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
@@ -371,7 +386,8 @@ detectcpu () {
 # CPU Detection - End
 
 
-# Memory Detection
+
+# Memory Detection - Begin
 detectmem () {
 	total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 	totalmem=$((${total_mem}/1024))
@@ -821,8 +837,9 @@ asciiText () {
 			[ -z $c1 ] && c1="\e[1;37m" # White
 			c2="\e[1;30m" # Dark Gray
 			startline="1"
-			fulloutput=("$c1                ___       ___      _"
-"$c1               /  /      /  /     | |  %s"
+			fulloutput=("$c1                 ___       ___     _"
+"$c1                /  /      /  /    | |  %s"
+"$c1               /  /      /  /     | | %s"
 "$c1              /  /      /  /      | | %s"
 "$c1             /  /      /  /       | | %s"
 "$c1     _______/  /______/  /______  | | %s"
@@ -832,10 +849,11 @@ asciiText () {
 "$c1        /  /      /  /            | | %s"
 "$c1 ______/  /______/  /______       | | %s"
 "$c1/_____   _______   _______/       | | %s"
-"$c1     /  /      /  /               |_| %s"
-"$c1    /  /      /  /                 _  %s"
-"$c1   /  /      /  /                 | | %s"
-"$c1  /__/      /__/                  |_|")
+"$c1     /  /      /  /               | | %s"
+"$c1    /  /      /  /                |_| %s"
+"$c1   /  /      /  /                  _  %s"
+"$c1  /  /      /  /                  | | %s"
+"$c1 /__/      /__/                   |_| %s")
 		;;
 
 		"Gentoo")
@@ -1200,6 +1218,7 @@ infoDisplay () {
 	fi
 	if [[ "${display[@]}" =~ "kernel" ]]; then mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "uptime" ]]; then myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime"); out_array=( "${out_array[@]}" "$myuptime" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "pkgs" ]]; then mypkgs=$(echo -e "$labelcolor Packages:$textcolor $pkgs"); out_array=( "${out_array[@]}" "$mypkgs" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "shell" ]]; then myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell"); out_array=( "${out_array[@]}" "$myshell" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "de" ]]; then myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++)); fi
