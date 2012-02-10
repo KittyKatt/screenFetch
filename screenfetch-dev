@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.3.9-ss)
+# screenFetch (v2.4.0)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.3.9-ss"
+scriptVersion="2.4.0"
 
 ######################
 # Settings for fetcher
