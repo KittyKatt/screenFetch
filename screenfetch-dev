@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.3.9)
+# screenFetch (v2.3.9-ss)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.3.9"
+scriptVersion="2.3.9-ss"
 
 ######################
 # Settings for fetcher
@@ -28,7 +28,7 @@ scriptVersion="2.3.9"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
-display=( host distro kernel uptime shell res de wm wmtheme gtk )
+display=( host distro kernel uptime shell res de wm wmtheme gtk cpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
 
@@ -151,7 +151,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
 		o) overrideOpts=$OPTARG; continue;;
 		# d) overrideDisplay=$OPTARG; continue;;
 		l) c1="\e[1;30m";;
-		B) background_detect="1"; continue;;
+		# B) background_detect="1"; continue;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
 		*) errorOut "Error"; exit;;
@@ -357,6 +357,32 @@ detectuptime () {
 # Uptime Detection - End
 
 
+# CPU Detection
+detectcpu () {
+	cpu=$(uname -p)
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
+}
+# CPU Detection - End
+
+
+# Memory Detection
+detectmem () {
+	total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
+	totalmem=$((${total_mem}/1024))
+	if free | grep -q '/cache'; then
+		used_mem=$(free | awk '/cache:/ { print $3 }')
+		usedmem=$((${used_mem}/1024))
+	else
+		free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
+		used_mem=$((${total_mem} - ${free_mem}))
+		usedmem=$((${used_mem}/1024))
+	fi
+	mem="${usedmem}MB / ${totalmem}MB"
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current RAM usage...found as '$mem'"
+}
+# Memory Detection - End
+
+
 # Shell Detection - Begin
 detectshell () {
 	myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
@@ -519,7 +545,7 @@ detectgtk () {
 			if [ "$background_detect" == "1" ]; then
 				if which gconftool-2 >/dev/null 2>&1; then
 					gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
-			gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
+					gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
 				fi
 			fi
 		;;
@@ -670,11 +696,11 @@ asciiText () {
 		"Arch Linux")
 			[ -z $c1 ] && c1="\e[1;36m" # Light
 			c2="\e[0;36m" # Dark
-			startline="3"
+			startline="1"
 			fulloutput=("${c1}                   -\`"
-"${c1}                  .o+\`"
-"${c1}                 \`ooo/"
-"${c1}                \`+oooo:               %s"
+"${c1}                  .o+\`                %s"
+"${c1}                 \`ooo/               %s"
+"${c1}                \`+oooo:              %s"
 "${c1}               \`+oooooo:             %s"
 "${c1}               -+oooooo+:            %s"
 "${c1}             \`/:-:++oooo+:           %s"
@@ -1177,8 +1203,10 @@ infoDisplay () {
 		mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor $gtkTheme"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
 		myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 		myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
-		[ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
+		# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
 	fi
+	if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
 	if [[ "$display_type" == "ASCII" ]]; then
 		asciiText
 	else
