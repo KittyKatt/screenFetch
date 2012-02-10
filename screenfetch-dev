@@ -363,7 +363,9 @@ detectuptime () {
 
 # CPU Detection
 detectcpu () {
-	cpu=$(uname -p)
+	cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //')
+	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
+	# cpu_ghz=$(echo "scale=2; ${cpu_mhz} / 1000" | bc )
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
