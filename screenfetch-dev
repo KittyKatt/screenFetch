@@ -218,7 +218,11 @@ detectdistro () {
 			distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
 			if [ "$distro_detect" == "Arch" ]; then distro="Arch Linux"; fi
 			if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
-			if [ "$distro_detect" == "SolusOS" ]; then distro="SolusOS"; fi
+			if [ "$distro_detect" == "SolusOS" ]; then
+				distro="SolusOS"
+				distro_codename=null
+				distro_release=null
+			fi
 			if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
 				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
 					distro="LMDE"
