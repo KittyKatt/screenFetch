@@ -139,7 +139,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
 		v) verbosity=1; continue;;
 		V)
 			echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
-			echo "Copyright (C) Brett Bohnenkamper (kittykatt@silverirc.com)"
+			echo "Created by and licensed to Brett Bohnenkamper (kittykatt@silverirc.com)"
 			echo ""
 			echo "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 			exit
@@ -268,12 +268,12 @@ detectdistro () {
 			if [ "$distro_detect" == "SUSE LINUX" ]; then distro="openSUSE"; fi
 			if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
 			if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
-		# Check and Parsing for /etc/os-release
-		elif [ -f /etc/os-release ]; then
-			distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
-			if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
 		# Existing File Check
 		else
+			if [ -f /etc/os-release ]; then
+				distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
+				if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
+			fi
 			if [ -f /etc/debian_version ]; then distro="Debian"; fi
 			if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
 			if grep -i SolusOS /etc/issue >/dev/null 2>&1; then distro="SolusOS"; fi
@@ -297,12 +297,9 @@ detectdistro () {
 			if grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
 		fi
 	else
-		
-	declare -l lcase
-	lcase=$distro
-		
-	case $lcase in
-	 
+		declare -l lcase
+		lcase=$distro
+		case $lcase in
 			arch*linux*old) distro="Arch Linux - Old" ;;
 			arch*linux) distro="Arch Linux" ;;
 			fedora) distro="Fedora" ;;
@@ -321,12 +318,9 @@ detectdistro () {
 			gentoo) distro="Gentoo" ;;
 			slackware) distro="Slackware" ;;
 			frugalware) distro="Frugalware" ;;
-			peppermint) distro="Peppermint" ;;
-	 
+			peppermint) distro="Peppermint" ;;	 
 		esac
-		
 	fi	
-	
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
