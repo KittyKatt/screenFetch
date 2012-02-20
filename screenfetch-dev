@@ -95,7 +95,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
 			echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
 			echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
 			echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
-			echo -e "			      Peppermint, ParabolaGNU,and BSD"
+			echo -e "			      Peppermint, ParabolaGNU, Viperr, and BSD"
 			echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
 			echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
 			echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
@@ -265,6 +265,10 @@ detectdistro () {
 				distro="Peppermint"
 				distro_codename=null
 			fi
+			if [ "$distro_detect" == "Viperr" ]; then
+				distro="Viperr"
+				distro_release=null
+			fi
 			if [ "$distro_detect" == "SUSE LINUX" ]; then distro="openSUSE"; fi
 			if [ "$distro_detect" == "ParabolaGNU/Linux-libre" ]; then distro="ParabolaGNU"; fi
 			if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
@@ -368,7 +372,7 @@ detectpkgs () {
 		'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
-		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
 }
@@ -1153,6 +1157,30 @@ asciiText () {
 		;;
 
 
+		"Viperr")
+			[ -z $c1 ] && c1="\e[1;37m" # White
+			c2="\e[1;30m" # Dark Gray
+			startline="1"
+			fulloutput=("${c1}    wwzapd         dlzazw"
+"${c1}   an"${c2}"#"${c1}"zncmqzepweeirzpas"${c2}"#"${c1}"xz      %s"
+"${c1} apez"${c2}"##"${c1}"qzdkawweemvmzdm"${c2}"##"${c1}"dcmv   %s"
+"${c1}zwepd"${c2}"####"${c1}"qzdweewksza"${c2}"####"${c1}"ezqpa  %s"
+"${c1}ezqpdkapeifjeeazezqpdkazdkwqz  %s"
+"${c1} ezqpdksz"${c2}"##"${c1}"wepuizp"${c2}"##"${c1}"wzeiapdk   %s"
+"${c1}  zqpakdpa"${c2}"#"${c1}"azwewep"${c2}"#"${c1}"zqpdkqze    %s"
+"${c1}    apqxalqpewenwazqmzazq      %s"
+"${c1}     mn"${c2}"##"${c1}"=="${c2}"#######"${c1}"=="${c2}"##"${c1}"qp       %s"
+"${c1}      qw"${c2}"##"${c1}"="${c2}"#######"${c1}"="${c2}"##"${c1}"zl        %s"
+"${c1}      z0"${c2}"######"${c1}"="${c2}"######"${c1}"0a        %s"
+"${c1}       qp"${c2}"#####"${c1}"="${c2}"#####"${c1}"mq         %s"
+"${c1}       az"${c2}"####"${c1}"==="${c2}"####"${c1}"mn         %s"
+"${c1}        ap"${c2}"#########"${c1}"qz          %s"
+"${c1}         9qlzskwdewz           %s"
+"${c1}          zqwpakaiw            %s"
+"${c1}            qoqpe")
+		;;
+
+
 		*)
 			[ -z $c1 ] && c1="\e[1;37m" # White
 			c2="\e[1;30m" # Light Gray
@@ -1219,7 +1247,7 @@ infoDisplay () {
 			"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 			"Mint"|"LMDE"|"openSUSE") labelcolor="\e[1;32m";;
 			"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
-			"CrunchBang"|"SolusOS") labelcolor="\e[1;30m";;
+			"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
 			"Gentoo"|"ParabolaGNU") labelcolor="\e[1;35m";;
 			"Slackware") labelcolor="\e[1;34m";;
 			*) labelcolor="\e[1;33m";;
