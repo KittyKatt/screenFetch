@@ -267,7 +267,7 @@ detectdistro () {
 			fi
 			if [ "$distro_detect" == "Viperr" ]; then
 				distro="Viperr"
-				distro_release=null
+				distro_codename=null
 			fi
 			if [ "$distro_detect" == "SUSE LINUX" ]; then distro="openSUSE"; fi
 			if [ "$distro_detect" == "ParabolaGNU/Linux-libre" ]; then distro="ParabolaGNU"; fi
