@@ -95,7 +95,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
 			echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
 			echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
 			echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
-			echo -e "			      Peppermint, and BSD"
+			echo -e "			      Peppermint, ParabolaGNU, and BSD"
 			echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
 			echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
 			echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
