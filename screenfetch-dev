@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# screenFetch (v2.4.1)
+# screenFetch (v2.4.2)
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.4.1"
+scriptVersion="2.4.2"
 
 ######################
 # Settings for fetcher
@@ -95,7 +95,7 @@ while getopts ":hsmevVntlc:D:o:B" flags; do
 			echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
 			echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
 			echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
-			echo -e "			      Peppermint, ParabolaGNU, Viperr, and BSD"
+			echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, and BSD"
 			echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
 			echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
 			echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
@@ -271,6 +271,10 @@ detectdistro () {
 			fi
 			if [ "$distro_detect" == "SUSE LINUX" ]; then distro="openSUSE"; fi
 			if [ "$distro_detect" == "ParabolaGNU/Linux-libre" ]; then distro="ParabolaGNU"; fi
+			if [ "$distro_detect" == "LinuxDeepin" ]; then
+				distro="LinuxDeepin"
+				distro_codename=null
+			fi
 			if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
 			if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
 		fi
@@ -300,6 +304,7 @@ detectdistro () {
 			if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
+			if grep -q "LinuxDeepin" /etc/issue; then distro="LinuxDeepin"; fi
 			if grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
 			if grep -q "Parabola GNU/Linux-libre" /etc/issue; then distro="ParabolaGNU"; fi
 		fi
@@ -328,6 +333,8 @@ detectdistro () {
 			peppermint) distro="Peppermint" ;;
 			solusos) distro="SolusOS" ;;
 			parabolagnu) distro="ParabolaGNU" ;;
+			viperr) distro="Viperr" ;;
+			linuxdeeping) distro="LinuxDeepin" ;;
 		esac
 	fi	
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
@@ -369,7 +376,7 @@ detectpkgs () {
 	case $distro in
 		'Arch Linux'|'ParabolaGNU') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Qq | wc -l) ;;
-		'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint') pkgs=$(dpkg --get-selections | wc -l) ;;
+		'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
@@ -1181,6 +1188,30 @@ asciiText () {
 		;;
 
 
+		"LinuxDeepin")
+			[ -z $c1 ] && c1="\e[1;32m" # Bold Green
+			startline="1"
+			fulloutput=("${c1}        eeeee            eeeeee"
+"${c1}      eeeeeee          eeeeeee   %s"
+"${c1}     eeeeeeeee      eeeeeeeee   %s"
+"${c1}    eeeeeeeee     eeeeeeeee     %s"
+"${c1}    eeeeeee    eeeeeeeeee       %s"
+"${c1}    eeeeee    eeeee             %s"
+"${c1}     eeeee    eee  eee          %s"
+"${c1}      eeeee   ee eeeeee         %s"
+"${c1}       eeeee   eee   eee        %s"
+"${c1}        eeeeeeeeee  eeee        %s"
+"${c1}          eeeee    eeee         %s"
+"${c1}                eeeeee          %s"
+"${c1}             eeeeeee            %s"
+"${c1}  eee     eeeeeeee              %s"
+"${c1}eeeeeeeeeeeeeeee                %s"
+"${c1}eeeeeeeeeeeeee                  %s"
+"${c1}eeeeeeeeeeeee                   %s"
+"${c1}  eeeeeeee")
+		;;
+
+
 		*)
 			[ -z $c1 ] && c1="\e[1;37m" # White
 			c2="\e[1;30m" # Light Gray
@@ -1245,7 +1276,7 @@ infoDisplay () {
 		case $distro in
 			"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
 			"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
-			"Mint"|"LMDE"|"openSUSE") labelcolor="\e[1;32m";;
+			"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin") labelcolor="\e[1;32m";;
 			"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
 			"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
 			"Gentoo"|"ParabolaGNU") labelcolor="\e[1;35m";;
