@@ -105,7 +105,7 @@ detectColors() {
 	        13) export my_lcolor='\e[1;35m';;
 	        14) export my_lcolor='\e[1;36m';;
 	        15) export my_lcolor='\e[1;37m';;
-		*) unset $my_lcolor; continue ;;
+		*) unset my_lcolor; continue ;;
 	esac
 	my_hcolor=$(echo -n "$OPTARG" 2>/dev/null | awk -F',' '{ print $2 }')
 	case $my_hcolor in
@@ -125,7 +125,7 @@ detectColors() {
 	        13) export my_hcolor='\e[1;35m';;
 	        14) export my_hcolor='\e[1;36m';;
 	        15) export my_hcolor='\e[1;37m';;
-		*) unset $my_hcolor; continue ;;
+		*) unset my_hcolor; continue ;;
 	esac
 }
 
