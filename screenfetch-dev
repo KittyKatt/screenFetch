@@ -1,6 +1,6 @@
-#!/bin/bash
+ #!/bin/bash
 #
-# screenFetch (v2.4.2)
+# screenFetch
 #
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.4.2"
+scriptVersion="2.4.4"
 
 ######################
 # Settings for fetcher
@@ -202,7 +202,7 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 		# c) my_color=$(echo "$OPTARG" | awk -F',' '{ print $1 }'); my_bgcolor=$(echo "$OPTARG" | awk -F',' '{ print $2 }'); continue;;
 		c) detectColors "$OPTARGS"; continue;;
 		# d) overrideDisplay=$OPTARG; continue;;
-		l) c1="\e[1;30m";;
+		# l) c1="\e[1;30m";;
 		# B) background_detect="1"; continue;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
@@ -322,7 +322,7 @@ detectdistro () {
 				distro_codename=null
 			fi
 			if [ "$distro_detect" == "SUSE LINUX" ]; then distro="openSUSE"; fi
-			if [ "$distro_detect" == "ParabolaGNU/Linux-libre" ]; then distro="ParabolaGNU"; fi
+			if [ "$distro_detect" == "ParabolaGNU/Linux-libre" ]; then distro="ParabolaGNU/Linux-libre"; fi
 			if [ "$distro_detect" == "LinuxDeepin" ]; then
 				distro="LinuxDeepin"
 				distro_codename=null
@@ -358,7 +358,7 @@ detectdistro () {
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if grep -q "LinuxDeepin" /etc/issue; then distro="LinuxDeepin"; fi
 			if grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
-			if grep -q "Parabola GNU/Linux-libre" /etc/issue; then distro="ParabolaGNU"; fi
+			if grep -q "Parabola GNU/Linux-libre" /etc/issue; then distro="ParabolaGNU/Linux-libre"; fi
 		fi
 	else
 		declare -l lcase
@@ -384,7 +384,7 @@ detectdistro () {
 			frugalware) distro="Frugalware" ;;
 			peppermint) distro="Peppermint" ;;
 			solusos) distro="SolusOS" ;;
-			parabolagnu) distro="ParabolaGNU" ;;
+			parabolagnu|parabolagnu/linux-libre) distro="ParabolaGNU/Linux-libre" ;;
 			viperr) distro="Viperr" ;;
 			linuxdeeping) distro="LinuxDeepin" ;;
 		esac
@@ -426,7 +426,7 @@ detectuptime () {
 # Package Count - Begin
 detectpkgs () {
 	case $distro in
-		'Arch Linux'|'ParabolaGNU') pkgs=$(pacman -Qq | wc -l) ;;
+		'Arch Linux'|'ParabolaGNU/Linux-libre') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Qq | wc -l) ;;
 		'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
@@ -1212,7 +1212,7 @@ asciiText () {
 		;;
 
 
-		"ParabolaGNU")
+		"ParabolaGNU/Linux-libre")
 			c1="\e[1;35m" # Light Purple
 			c2="\e[1;37m" # White
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
@@ -1266,24 +1266,24 @@ asciiText () {
 			c1="\e[1;32m" # Bold Green
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="1"
-			fulloutput=("${c1}        eeeee            eeeeee"
-"${c1}      eeeeeee          eeeeeee   %s"
-"${c1}     eeeeeeeee      eeeeeeeee   %s"
-"${c1}    eeeeeeeee     eeeeeeeee     %s"
-"${c1}    eeeeeee    eeeeeeeeee       %s"
-"${c1}    eeeeee    eeeee             %s"
-"${c1}     eeeee    eee  eee          %s"
-"${c1}      eeeee   ee eeeeee         %s"
-"${c1}       eeeee   eee   eee        %s"
-"${c1}        eeeeeeeeee  eeee        %s"
-"${c1}          eeeee    eeee         %s"
-"${c1}                eeeeee          %s"
-"${c1}             eeeeeee            %s"
-"${c1}  eee     eeeeeeee              %s"
-"${c1}eeeeeeeeeeeeeeee                %s"
-"${c1}eeeeeeeeeeeeee                  %s"
-"${c1}eeeeeeeeeeeee                   %s"
-"${c1}  eeeeeeee")
+			fulloutput=("${c1}  eeeeeeeeeeeeeeeeeeeeeeeeeeee"
+"${c1} eee  eeeeeee          eeeeeeee   %s"
+"${c1}ee   eeeeeeeee      eeeeeeeee ee %s"
+"${c1}e   eeeeeeeee     eeeeeeeee    e %s"
+"${c1}e   eeeeeee    eeeeeeeeee      e %s"
+"${c1}e   eeeeee    eeeee            e %s"
+"${c1}e    eeeee    eee  eee         e %s"
+"${c1}e     eeeee   ee eeeeee        e %s"
+"${c1}e      eeeee   eee   eee       e %s"
+"${c1}e       eeeeeeeeee  eeee       e %s"
+"${c1}e         eeeee    eeee        e %s"
+"${c1}e               eeeeee         e %s"
+"${c1}e            eeeeeee           e %s"
+"${c1}e eee     eeeeeeee             e %s"
+"${c1}eeeeeeeeeeeeeeee               e %s"
+"${c1}eeeeeeeeeeeee                 ee %s"
+"${c1} eeeeeeeeeee                eee  %s"
+"${c1}  eeeeeeeeeeeeeeeeeeeeeeeeeeee")
 		;;
 
 
@@ -1355,7 +1355,7 @@ infoDisplay () {
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin") labelcolor="\e[1;32m";;
 		"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
 		"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
-		"Gentoo"|"ParabolaGNU") labelcolor="\e[1;35m";;
+		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
 		*) labelcolor="\e[1;33m";;
 	esac 
