@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.4.4"
+scriptVersion="2.4.5"
 
 ######################
 # Settings for fetcher
@@ -327,6 +327,10 @@ detectdistro () {
 				distro="LinuxDeepin"
 				distro_codename=null
 			fi
+			if [ "$distro_detect" == "Chakra" ]; then
+				distro="Chakra"
+				distro_release=null
+			fi
 			if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
 			if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
 		fi
@@ -344,6 +348,7 @@ detectdistro () {
 				else distro="Mint"; fi
 			fi
 			if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
+			if [ -f /etc/chakra-release ]; then distro="Chakra"; fi
 			if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
 			if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
 			if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
@@ -386,7 +391,8 @@ detectdistro () {
 			solusos) distro="SolusOS" ;;
 			parabolagnu|parabolagnu/linux-libre) distro="ParabolaGNU/Linux-libre" ;;
 			viperr) distro="Viperr" ;;
-			linuxdeeping) distro="LinuxDeepin" ;;
+			linuxdeepin) distro="LinuxDeepin" ;;
+			chakra) distro="Chakra" ;;
 		esac
 	fi	
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
@@ -426,7 +432,7 @@ detectuptime () {
 # Package Count - Begin
 detectpkgs () {
 	case $distro in
-		'Arch Linux'|'ParabolaGNU/Linux-libre') pkgs=$(pacman -Qq | wc -l) ;;
+		'Arch Linux'|'ParabolaGNU/Linux-libre'|'Chakra') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Qq | wc -l) ;;
 		'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
@@ -1287,6 +1293,32 @@ asciiText () {
 		;;
 
 
+		"Chakra")
+			c1="\e[1;34m" # Light Blue
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			fulloutput=("${c1}      _ _ _        \"kkkkkkkk."
+"${c1}    ,kkkkkkkk.,    \'kkkkkkkkk,         %s"
+"${c1}    ,kkkkkkkkkkkk., \'kkkkkkkkk.       %s"
+"${c1}   ,kkkkkkkkkkkkkkkk,\'kkkkkkkk,       %s"
+"${c1}  ,kkkkkkkkkkkkkkkkkkk\'kkkkkkk.       %s"
+"${c1}   \"\'\'\"\'\'\',;::,,\"\'\'kkk\'\'kkkkk;   __   %s"
+"${c1}       ,kkkkkkkkkk, \"k\'\'kkkkk\' ,kkkk  %s"
+"${c1}     ,kkkkkkk\' ., \' .: \'kkkk\',kkkkkk  %s"
+"${c1}   ,kkkkkkkk\'.k\'   ,  ,kkkk;kkkkkkkkk %s"
+"${c1}  ,kkkkkkkk\';kk \'k  \"\'k\',kkkkkkkkkkkk %s"
+"${c1} .kkkkkkkkk.kkkk.\'kkkkkkkkkkkkkkkkkk\' %s"
+"${c1} ;kkkkkkkk\'\'kkkkkk;\'kkkkkkkkkkkkk\'\'   %s"
+"${c1} \'kkkkkkk; \'kkkkkkkk.,\"\"\'\'\"\'\'\"\"       %s"
+"${c1}   \'\'kkkk;  \'kkkkkkkkkk.,             %s"
+"${c1}      \';\'    \'kkkkkkkkkkkk.,          %s"
+"${c1}              ';kkkkkkkkkk\'           %s"
+"${c1}                ';kkkkkk\'"
+"${c1}                   \"\'\'\"")
+		;;
+
+
+
 		*)
 			c1="\e[1;37m" # White
 			c2="\e[1;30m" # Light Gray
@@ -1350,7 +1382,7 @@ infoDisplay () {
 	[[ "$my_hcolor" ]] && textcolor="${my_hcolor}"
 	#TODO: Centralize colors and use them across the board so we only change them one place.
 	case $distro in
-		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake") labelcolor="\e[1;34m";;
+		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin") labelcolor="\e[1;32m";;
 		"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
