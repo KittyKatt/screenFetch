@@ -145,7 +145,7 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 			echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
 			echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
 			echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
-			echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, and BSD"
+			echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and BSD"
 			echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
 			echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
 			echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
@@ -602,38 +602,38 @@ detectwmtheme () {
 
 # GTK Theme\Icon\Font Detection - BEGIN
 detectgtk () {
-	gtkTheme="Not Found"
-	gtkIcons="Not Found"
-	gtkFont="Not Found"
+	gtk2Theme="Not Found"
+	gtk2Icons="Not Found"
+	gtk2Font="Not Found"
 	case $DE in
 		'KDE')	# Desktop Environment found as "KDE"
 			if [ -a $HOME/.kde/share/config/kdeglobals ]; then
 				if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
-					gtkTheme=$(awk -F"=" '/widgetStyle=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+					gtk2Theme=$(awk -F"=" '/widgetStyle=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
 				elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals; then
-					gtkTheme=$(awk -F"=" '/colorScheme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+					gtk2Theme=$(awk -F"=" '/colorScheme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
 				fi
 
 				if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
-					gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+					gtk2Icons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
 				fi
 
 				if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
-					gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+					gtk2Font=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
 				fi
 			fi
 		;;
 		'GNOME'|'MATE') # Desktop Environment found as "GNOME"
 			if which gconftool-2 >/dev/null 2>&1; then
-				gtkTheme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
+				gtk2Theme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
 			fi
 
 			if which gconftool-2 >/dev/null 2>&1; then
-				gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
+				gtk2Icons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
 			fi
 
 			if which gconftool-2 >/dev/null 2>&1; then
-				gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
+				gtk2Font=$(gconftool-2 -g /desktop/gnome/interface/font_name)
 			fi
 			if [ "$background_detect" == "1" ]; then
 				if which gconftool-2 >/dev/null 2>&1; then
@@ -644,15 +644,15 @@ detectgtk () {
 		;;
 		'XFCE')	# Desktop Environment found as "XFCE"
 			if which xfconf-query >/dev/null 2>&1; then
-				gtkTheme=$(xfconf-query -c xsettings -p /Net/ThemeName)
+				gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName)
 			fi
 
 			if which xfconf-query >/dev/null 2>&1; then
-				gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
+				gtk2Icons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
 			fi
 
 			if which xfconf-query >/dev/null 2>&1; then
-				gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
+				gtk2Font=$(xfconf-query -c xsettings -p /Gtk/FontName)
 			fi
 		;;
 		'LXDE')
@@ -663,15 +663,15 @@ detectgtk () {
 			fi
 			# TODO: Clean me.
 			if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
-			 gtkTheme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+			 gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi
 
 			if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-				gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+				gtk2Icons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi
 
 			if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-				gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+				gtk2Font=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi	 
 		;;
 
@@ -680,35 +680,56 @@ detectgtk () {
 		*)	# Lightweight or No DE Found
 			if [ -f $HOME/.gtkrc-2.0 ]; then
 				if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
-					gtkTheme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
+					gtk2Theme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 
 				if grep -q icon-theme $HOME/.gtkrc-2.0; then
-					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
+					gtk2Icons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 
 				if grep -q font $HOME/.gtkrc-2.0; then
-					gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
+					gtk2Font=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 			fi
 			# $HOME/.gtkrc.mine theme detect only
 			if [ -f $HOME/.gtkrc.mine ]; then
 				if grep -q "^include" $HOME/.gtkrc.mine; then
-					gtkTheme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
+					gtk2Theme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
 				fi
 				if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
-					gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
+					gtk2Icons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
 				fi
 			fi
+			# /etc/gtk-2.0/gtkrc compatability
+			if [ -f /etc/gtk-2.0/gtkrc && ! -f $HOME/.gtkrc-2.0 && ! -f $HOME/.gtkrc.mine ]; then
+				if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
+					gtk2Theme=$(awk -F'"' '/gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
+				fi
+				if [ grep -q gtk-fallback-theme-name /etc/gtk-2.0/gtkrc  && ! $gtk2Theme ]; then
+					gtk2Theme=$(awk -F'"' '/gtk-fallback-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
+				fi
+
+				if grep -q icon-theme /etc/gtk-2.0/gtkrc; then
+					gtk2Icons=$(awk -F'"' '/icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
+				fi
+				if [ grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! $gtk2Icons]; then
+					gtk2Icons=$(awk -F'"' '/gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
+				fi
+
+				if grep -q font /etc/gtk-2.0/gtkrc; then
+					gtk2Font=$(awk -F'"' '/gtk-font-name/ {print $2}' /etc/gtk-2.0/gtkrc)
+				fi
+			fi
+
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
-				gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
+				gtk2Icons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
 			fi
 			# E17 detection
 			if [ $E_ICON_THEME ]; then
-				gtkIcons=${E_ICON_THEME}
-				gtkTheme="Not available."
-				gtkFont="Not available."
+				gtk2Icons=${E_ICON_THEME}
+				gtk2Theme="Not available."
+				gtk2Font="Not available."
 			fi
 			# Background Detection (feh, nitrogen)
 			if [ "$background_detect" == "1" ]; then
@@ -722,9 +743,9 @@ detectgtk () {
 		;;
 	esac
 	if [[ "$verbosity" -eq "1" ]]; then
-		verboseOut "Finding GTK theme...found as '$gtkTheme'"
-		verboseOut "Finding icon theme...found as '$gtkIcons'"
-		verboseOut "Finding user font...found as '$gtkFont'"
+		verboseOut "Finding GTK theme...found as '$gtk2Theme'"
+		verboseOut "Finding icon theme...found as '$gtk2Icons'"
+		verboseOut "Finding user font...found as '$gtk2Font'"
 		[[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
 	fi
 }
@@ -1415,9 +1436,9 @@ infoDisplay () {
 	if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "wmtheme" ]]; then mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "gtk" ]]; then 
-		mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor $gtkTheme"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
-		myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
-		myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
+		mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+		myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtk2Icons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
+		myfont=$(echo -e "$labelcolor Font:$textcolor $gtk2Font"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 		# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
 	fi
 	if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
