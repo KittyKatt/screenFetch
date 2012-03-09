@@ -603,8 +603,8 @@ detectwmtheme () {
 # GTK Theme\Icon\Font Detection - BEGIN
 detectgtk () {
 	gtk2Theme="Not Found"
-	gtk2Icons="Not Found"
-	gtk2Font="Not Found"
+	gtkIcons="Not Found"
+	gtkFont="Not Found"
 	case $DE in
 		'KDE')	# Desktop Environment found as "KDE"
 			if [ -a $HOME/.kde/share/config/kdeglobals ]; then
@@ -615,11 +615,11 @@ detectgtk () {
 				fi
 
 				if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
-					gtk2Icons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+					gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
 				fi
 
 				if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
-					gtk2Font=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+					gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
 				fi
 			fi
 		;;
@@ -629,11 +629,11 @@ detectgtk () {
 			fi
 
 			if which gconftool-2 >/dev/null 2>&1; then
-				gtk2Icons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
+				gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
 			fi
 
 			if which gconftool-2 >/dev/null 2>&1; then
-				gtk2Font=$(gconftool-2 -g /desktop/gnome/interface/font_name)
+				gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
 			fi
 			if [ "$background_detect" == "1" ]; then
 				if which gconftool-2 >/dev/null 2>&1; then
@@ -648,11 +648,11 @@ detectgtk () {
 			fi
 
 			if which xfconf-query >/dev/null 2>&1; then
-				gtk2Icons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
+				gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
 			fi
 
 			if which xfconf-query >/dev/null 2>&1; then
-				gtk2Font=$(xfconf-query -c xsettings -p /Gtk/FontName)
+				gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
 			fi
 		;;
 		'LXDE')
@@ -667,11 +667,11 @@ detectgtk () {
 			fi
 
 			if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-				gtk2Icons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+				gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi
 
 			if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-				gtk2Font=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+				gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi	 
 		;;
 
@@ -684,11 +684,11 @@ detectgtk () {
 				fi
 
 				if grep -q icon-theme $HOME/.gtkrc-2.0; then
-					gtk2Icons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
+					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 
 				if grep -q font $HOME/.gtkrc-2.0; then
-					gtk2Font=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
+					gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 			fi
 			# $HOME/.gtkrc.mine theme detect only
@@ -697,11 +697,11 @@ detectgtk () {
 					gtk2Theme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
 				fi
 				if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
-					gtk2Icons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
+					gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
 				fi
 			fi
 			# /etc/gtk-2.0/gtkrc compatability
-			if [ -f /etc/gtk-2.0/gtkrc && ! -f $HOME/.gtkrc-2.0 && ! -f $HOME/.gtkrc.mine ]; then
+			if [[ -f /etc/gtk-2.0/gtkrc && ! -f $HOME/.gtkrc-2.0 && ! -f $HOME/.gtkrc.mine ]]; then
 				if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
 					gtk2Theme=$(awk -F'"' '/gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
@@ -710,26 +710,33 @@ detectgtk () {
 				fi
 
 				if grep -q icon-theme /etc/gtk-2.0/gtkrc; then
-					gtk2Icons=$(awk -F'"' '/icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
+					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
-				if [ grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! $gtk2Icons]; then
-					gtk2Icons=$(awk -F'"' '/gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
+				if [ grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! $gtkIcons]; then
+					gtkIcons=$(awk -F'"' '/gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 
 				if grep -q font /etc/gtk-2.0/gtkrc; then
-					gtk2Font=$(awk -F'"' '/gtk-font-name/ {print $2}' /etc/gtk-2.0/gtkrc)
+					gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' /etc/gtk-2.0/gtkrc)
+				fi
+			fi
+
+			# EXPERIMENTAL gtk3 Theme detection
+			if [ -f $HOME/.config/gtk-3.0/settings.ini ]; then
+				if grep -q gtk-theme-name $HOME/.config/gtk-3.0/settings.ini; then
+					gtk3Theme=$(awk -F'=' '/gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
 				fi
 			fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
-				gtk2Icons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
+				gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
 			fi
 			# E17 detection
 			if [ $E_ICON_THEME ]; then
-				gtk2Icons=${E_ICON_THEME}
+				gtkIcons=${E_ICON_THEME}
 				gtk2Theme="Not available."
-				gtk2Font="Not available."
+				gtkFont="Not available."
 			fi
 			# Background Detection (feh, nitrogen)
 			if [ "$background_detect" == "1" ]; then
@@ -743,9 +750,10 @@ detectgtk () {
 		;;
 	esac
 	if [[ "$verbosity" -eq "1" ]]; then
-		verboseOut "Finding GTK theme...found as '$gtk2Theme'"
-		verboseOut "Finding icon theme...found as '$gtk2Icons'"
-		verboseOut "Finding user font...found as '$gtk2Font'"
+		verboseOut "Finding GTK2 theme...found as '$gtk2Theme'"
+		verboseOut "Finding GTK3 theme...found as '$gtk2Theme'"
+		verboseOut "Finding icon theme...found as '$gtkIcons'"
+		verboseOut "Finding user font...found as '$gtkFont'"
 		[[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
 	fi
 }
@@ -805,7 +813,7 @@ asciiText () {
 "$c1 HELK['$c2    __,=OFFXCBGHC$c1\FD)         %s"
 "$c1 ?KGHE $c2\_-#DASDFLSV='$c1    'EF         %s"
 "$c1 'EHTI                    !H         %s"
-"$c1  \`0F'                    '!")
+"$c1  \`0F'                    '!         %s")
 		;;
 
 		"Arch Linux")
@@ -814,22 +822,22 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("${c1}                   -\`"
-"${c1}                  .o+\`                %s"
-"${c1}                 \`ooo/               %s"
-"${c1}                \`+oooo:              %s"
-"${c1}               \`+oooooo:             %s"
-"${c1}               -+oooooo+:            %s"
-"${c1}             \`/:-:++oooo+:           %s"
-"${c1}            \`/++++/+++++++:          %s"
-"${c1}           \`/++++++++++++++:         %s"
-"${c1}          \`/+++o"${c2}"oooooooo"${c1}"oooo/\`       %s"
-"${c2}         "${c1}"./"${c2}"ooosssso++osssssso"${c1}"+\`      %s"
-"${c2}        .oossssso-\`\`\`\`/ossssss+\`     %s"
-"${c2}       -osssssso.      :ssssssso.    %s"
-"${c2}      :osssssss/        osssso+++.   %s"
-"${c2}     /ossssssss/        +ssssooo/-   %s"
-"${c2}   \`/ossssso+/:-        -:/+osssso+- %s"
-"${c2}  \`+sso+:-\`                 \`.-/+oso:"
+"${c1}                  .o+\`                 %s"
+"${c1}                 \`ooo/                %s"
+"${c1}                \`+oooo:               %s"
+"${c1}               \`+oooooo:              %s"
+"${c1}               -+oooooo+:             %s"
+"${c1}             \`/:-:++oooo+:            %s"
+"${c1}            \`/++++/+++++++:           %s"
+"${c1}           \`/++++++++++++++:          %s"
+"${c1}          \`/+++o"${c2}"oooooooo"${c1}"oooo/\`        %s"
+"${c2}         "${c1}"./"${c2}"ooosssso++osssssso"${c1}"+\`       %s"
+"${c2}        .oossssso-\`\`\`\`/ossssss+\`      %s"
+"${c2}       -osssssso.      :ssssssso.     %s"
+"${c2}      :osssssss/        osssso+++.    %s"
+"${c2}     /ossssssss/        +ssssooo/-    %s"
+"${c2}   \`/ossssso+/:-        -:/+osssso+-  %s"
+"${c2}  \`+sso+:-\`                 \`.-/+oso: %s"
 "${c2} \`++:.                           \`-/+/"
 "${c2} .\`                                 \`/")
 		;;
@@ -853,7 +861,8 @@ asciiText () {
 "$c2     -NMm- "$c1":hNMNNNmdddddddddy/\`  "$c2"dMM  %s"
 "$c2      -dMNs-"$c1"\`\`-::::-------.\`\`    "$c2"dMM  %s"
 "$c2       \`/dMNmy+/:-------------:/yMMM  %s"
-"$c2          ./ydNMMMMMMMMMMMMMMMMMMMMM  %s")
+"$c2          ./ydNMMMMMMMMMMMMMMMMMMMMM  %s"
+"$c2             \.MMMMMMMMMMMMMMMMMMM   %s")
 		;;
 
 
@@ -878,7 +887,7 @@ asciiText () {
 "${c2}    "${c1}"\`"${c2}"/+-                       %s"
 "${c2}      "${c1}"."${c2}"+/.                     %s"
 "${c2}        "${c1}"."${c2}":+-.                  %s"
-"${c2}           \`--.\`\`")
+"${c2}           \`--.\`\`              %s")
 		;;
 
 		"Ubuntu")
@@ -898,12 +907,12 @@ asciiText () {
 "$c1 /+++//+:$c3\`oo+o$c1               /::--:.  %s"
 "$c1 \+/+o+++$c3\`o++o$c2               ++////.  %s"
 "$c1  .++.o+$c3++oo+:\`$c2             /dddhhh.  %s"
-"$c3       .+.o+oo:.$c2          \`oddhhhh+   $mygtk"
+"$c3       .+.o+oo:.$c2          \`oddhhhh+   %s"
 "$c3        \+.++o+o\`\`-\`\`$c2\`\`.:ohdhhhhh+    %s"
 "$c3         \`:o+++ $c2\`ohhhhhhhhyo++os:     %s"
 "$c3           .o:$c2\`.syhhhhhhh/$c3.oo++o\`     %s"
 "$c2               /osyyyyyyo$c3++ooo+++/    %s"
-"$c2                   \`\`\`\`\` $c3+oo+++o\:"
+"$c2                   \`\`\`\`\` $c3+oo+++o\:    %s"
 "$c3                          \`oo++.")
 		;;
 
@@ -911,9 +920,9 @@ asciiText () {
 			c1="\e[1;37m" # White
 			c2="\e[1;31m" # Light Red
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="1"
-			fulloutput=("  $c1       _,met\$\$\$\$\$gg."
-"  $c1    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P.\t %s"
+			startline="0"
+			fulloutput=("  $c1       _,met\$\$\$\$\$gg.\t\t %s"
+"  $c1    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P.\t%s"
 "  $c1  ,g\$\$P\"\"       \"\"\"Y\$\$.\".\t%s"
 "  $c1 ,\$\$P'              \`\$\$\$.\t%s"
 "  $c1',\$\$P       ,ggs.     \`\$\$b:\t%s"
@@ -959,10 +968,10 @@ asciiText () {
 			c1="\e[1;37m" # White
 			c2="\e[1;35m" # Light Purple
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="2"
+			startline="1"
 			fulloutput=("$c2         -/oyddmdhs+:."
-"$c2     -o"$c1"dNMMMMMMMMNNmhy+"$c2"-\`"
-"$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-           %s"
+"$c2     -o"$c1"dNMMMMMMMMNNmhy+"$c2"-\`             %s"
+"$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-          %s"
 "$c2 \`o"$c1"mMMMMMMMMMMMMNmdmmmmddhhy"$c2"/\`       %s"
 "$c2 om"$c1"MMMMMMMMMMMN"$c2"hhyyyo"$c1"hmdddhhhd"$c2"o\`     %s"
 "$c2.y"$c1"dMMMMMMMMMMd"$c2"hs++so/s"$c1"mdddhhhhdm"$c2"+\`   %s"
@@ -975,8 +984,8 @@ asciiText () {
 "$c2 /N"$c1"MMMMMMMMNNNNmmmdddmNMNdso"$c2":\`       %s"
 "$c2+M"$c1"MMMMMMNNNNNmmmmdmNMNdso"$c2"/-          %s"
 "$c2yM"$c1"MNNNNNNNmmmmmNNMmhs+/"$c2"-\`              %s"
-"$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`"
-"$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`"
+"$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`               %s"
+"$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`                  %s"
 "$c2  \`-//////:--.")
 		;;
 
@@ -984,9 +993,9 @@ asciiText () {
 			c1="\e[1;37m" # White
 			c2="\e[1;34m" # Light Blue
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="1"
-			fulloutput=("$c2           :/------------://"
-"$c2        :------------------://        %s"
+			startline="0"
+			fulloutput=("$c2           :/------------://          %s"
+"$c2        :------------------://       %s"
 "$c2      :-----------"$c1"/shhdhyo/"$c2"-://      %s"
 "$c2    /-----------"$c1"omMMMNNNMMMd/"$c2"-:/     %s"
 "$c2   :-----------"$c1"sMMMdo:/"$c2"       -:/    %s"
@@ -1008,10 +1017,10 @@ asciiText () {
 			c1="\e[1;37m" # White
 			c2="\e[1;31m" # Light Red
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="2"
+			startline="1"
 			fulloutput=("$c2              ,        ,"
-"$c2             /(        )\`"
-"$c2             \ \___   / |          %s"
+"$c2             /(        )\`          %s"
+"$c2             \ \___   / |         %s"
 "$c2             /- "$c1"_$c2  \`-/  '         %s"
 "$c2            ($c1/\/ \ $c2\   /\\         %s"
 "$c1            / /   |$c2 \`    \\        %s"
@@ -1049,17 +1058,18 @@ asciiText () {
 "$c1 .sss/       $c2-:::-.\`   .:::::            %s"
 "$c1  /sss+.    $c2..\`$c1  \`--\`    $c2.:::            %s"
 "$c1   -ossso+/:://+/-\`        $c2.:\`           %s"
-"$c1     -/+ooo+/-.              $c2\`           %s")
+"$c1     -/+ooo+/-.              $c2\`           %s"
+"                                         %s")
 		;;
 
 		"openSUSE")
 			c1="\e[1;32m" # Bold Green
 			c2="\e[1;37m" # Bold White
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="2"
+			startline="1"
 			fulloutput=("$c2             .;ldkO0000Okdl;."
-"$c2         .;d00xl:,'....';:ok00d;."
-"$c2       .d00l'                ,o00d.          %s"
+"$c2         .;d00xl:,'....';:ok00d;.            %s"
+"$c2       .d00l'                ,o00d.         %s"
 "$c2     .d0Kd."$c1" :Okxol:;'.          "$c2":O0d.       %s"
 "$c2    'OK"$c1"KKK0kOKKKKKKKKKKOxo:'      "$c2"lKO'      %s"
 "$c2   ,0K"$c1"KKKKKKKKKKKKKKK0d:"$c2",,,"$c1":dx:"$c2"    ;00,     %s"
@@ -1081,11 +1091,11 @@ asciiText () {
 			c1="\e[1;34m" # Light Blue
 			c2="\e[1;37m" # Bold White
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="3"
+			startline="2"
 			fulloutput=("$c1                   :::::::"
 "$c1             :::::::::::::::::::"
-"$c1          :::::::::::::::::::::::::"
-"$c1        ::::::::"${c2}"cllcccccllllllll"${c1}"::::::         %s"
+"$c1          :::::::::::::::::::::::::            %s"
+"$c1        ::::::::"${c2}"cllcccccllllllll"${c1}"::::::        %s"
 "$c1     :::::::::"${c2}"lc               dc"${c1}":::::::      %s"
 "$c1    ::::::::"${c2}"cl   clllccllll    oc"${c1}":::::::::    %s"
 "$c1   :::::::::"${c2}"o   lc"${c1}"::::::::"${c2}"co   oc"${c1}"::::::::::   %s"
@@ -1125,20 +1135,20 @@ asciiText () {
 "$c1 MMM    MMMMMMMMMMMMMMyyddMMM+            %s"
 "$c1  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM %s"
 "$c1   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM  %s"
-"$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM")
+"$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM   %s")
 		;;
 
 		"Frugalware")
 			c1="\e[1;37m" # White
 			c2="\e[1;36m" # Light Blue
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="5"
+			startline="4"
 			fulloutput=("${c2}          \`++/::-.\`"
 "${c2}         /o+++++++++/::-.\`"
 "${c2}        \`o+++++++++++++++o++/::-.\`"
 "${c2}        /+++++++++++++++++++++++oo++/:-.\`\`"
-"${c2}       .o+ooooooooooooooooooosssssssso++oo++/:-\`"
-"${c2}       ++osoooooooooooosssssssssssssyyo+++++++o:   %s"
+"${c2}       .o+ooooooooooooooooooosssssssso++oo++/:-\`   %s"
+"${c2}       ++osoooooooooooosssssssssssssyyo+++++++o:  %s"
 "${c2}      -o+ssoooooooooooosssssssssssssyyo+++++++s\`  %s"
 "${c2}      o++ssoooooo++++++++++++++sssyyyyo++++++o:   %s"
 "${c2}     :o++ssoooooo"${c1}"/-------------"${c2}"+syyyyyo+++++oo    %s"
@@ -1163,10 +1173,10 @@ asciiText () {
 			c1="\e[1;37m" # White
 			c2="\e[1;31m" # Light Red
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="2"
+			startline="1"
 			fulloutput=("${c2}             8ZZZZZZ"${c1}"MMMMM"
-"${c2}          .ZZZZZZZZZ"${c1}"MMMMMMM."
-"${c1}        MM"${c2}"ZZZZZZZZZ"${c1}"MMMMMMM"${c2}"ZZZZ          %s"
+"${c2}          .ZZZZZZZZZ"${c1}"MMMMMMM.            %s"
+"${c1}        MM"${c2}"ZZZZZZZZZ"${c1}"MMMMMMM"${c2}"ZZZZ         %s"
 "${c1}      MMMMM"${c2}"ZZZZZZZZ"${c1}"MMMMM"${c2}"ZZZZZZZM       %s"
 "${c1}     MMMMMMM"${c2}"ZZZZZZZ"${c1}"MMMM"${c2}"ZZZZZZZZZ.      %s"
 "${c1}    MMMMMMMMM"${c2}"ZZZZZZ"${c1}"MMM"${c2}"ZZZZZZZZZZZI     %s"
@@ -1189,10 +1199,10 @@ asciiText () {
 			c1="\e[1;37m" # White
 			c2="\e[1;30m" # Light Gray
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="2"
+			startline="1"
 			fulloutput=("${c1}               e         e"
-"${c1}             eee       ee"
-"${c1}            eeee     eee        %s"
+"${c1}             eee       ee       %s"
+"${c1}            eeee     eee       %s"
 "${c2}        wwwwwwwww"${c1}"eeeeee        %s"
 "${c2}     wwwwwwwwwwwwwww"${c1}"eee        %s"
 "${c2}   wwwwwwwwwwwwwwwwwww"${c1}"eeeeeeee %s"
@@ -1216,10 +1226,10 @@ asciiText () {
 			c1="\e[1;34m" # Light Blue
 			c2="\e[0;36m" # Light Cyan
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="2"
+			startline="1"
 			fulloutput=("$c2             .''   "
-"$c2              '.     ..           "
-"$c2                    .,,.          %s"
+"$c2              '.     ..           %s"
+"$c2                    .,,.         %s"
 "$c2                 ,;;.            %s"
 "$c2                 ... ...         %s"
 "$c2              ',,'  .:::.        %s"
@@ -1243,9 +1253,9 @@ asciiText () {
 			c1="\e[1;35m" # Light Purple
 			c2="\e[1;37m" # White
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="1"
-			fulloutput=("${c1}              eeeeeeeee"
-"${c1}          eeeeeeeeeeeeeee         %s"
+			startline="0"
+			fulloutput=("${c1}              eeeeeeeee           %s"
+"${c1}          eeeeeeeeeeeeeee        %s"
 "${c1}       eeeeee"${c2}"//////////"${c1}"eeeee     %s"
 "${c1}     eeeee"${c2}"///////////////"${c1}"eeeee   %s"
 "${c1}   eeeee"${c2}"///           ////"${c1}"eeee   %s"
@@ -1268,9 +1278,9 @@ asciiText () {
 			c1="\e[1;37m" # White
 			c2="\e[1;30m" # Dark Gray
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="1"
-			fulloutput=("${c1}    wwzapd         dlzazw"
-"${c1}   an"${c2}"#"${c1}"zncmqzepweeirzpas"${c2}"#"${c1}"xz      %s"
+			startline="0"
+			fulloutput=("${c1}    wwzapd         dlzazw       %s"
+"${c1}   an"${c2}"#"${c1}"zncmqzepweeirzpas"${c2}"#"${c1}"xz     %s"
 "${c1} apez"${c2}"##"${c1}"qzdkawweemvmzdm"${c2}"##"${c1}"dcmv   %s"
 "${c1}zwepd"${c2}"####"${c1}"qzdweewksza"${c2}"####"${c1}"ezqpa  %s"
 "${c1}ezqpdkapeifjeeazezqpdkazdkwqz  %s"
@@ -1292,9 +1302,9 @@ asciiText () {
 		"LinuxDeepin")
 			c1="\e[1;32m" # Bold Green
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
-			startline="1"
-			fulloutput=("${c1}  eeeeeeeeeeeeeeeeeeeeeeeeeeee"
-"${c1} eee  eeeeeee          eeeeeeee   %s"
+			startline="0"
+			fulloutput=("${c1}  eeeeeeeeeeeeeeeeeeeeeeeeeeee    %s"
+"${c1} eee  eeeeeee          eeeeeeee  %s"
 "${c1}ee   eeeeeeeee      eeeeeeeee ee %s"
 "${c1}e   eeeeeeeee     eeeeeeeee    e %s"
 "${c1}e   eeeeeee    eeeeeeeeee      e %s"
@@ -1334,7 +1344,7 @@ asciiText () {
 "${c1}   \'\'kkkk;  \'kkkkkkkkkk.,             %s"
 "${c1}      \';\'    \'kkkkkkkkkkkk.,          %s"
 "${c1}              ';kkkkkkkkkk\'           %s"
-"${c1}                ';kkkkkk\'"
+"${c1}                ';kkkkkk\'             %s"
 "${c1}                   \"\'\'\"")
 		;;
 
@@ -1361,7 +1371,7 @@ asciiText () {
 "$c3 #######$c2#$c1#####$c2#$c3#######      %s"
 "$c3   #####$c2#######$c3#####        %s"
 "                            %s"
-"$c0")
+"                            %s")
   		;;
 	esac
 
@@ -1436,9 +1446,10 @@ infoDisplay () {
 	if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "wmtheme" ]]; then mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "gtk" ]]; then 
-		mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
-		myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtk2Icons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
-		myfont=$(echo -e "$labelcolor Font:$textcolor $gtk2Font"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
+		mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++))
+		mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
+		myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
+		myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 		# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
 	fi
 	if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
