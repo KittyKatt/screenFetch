@@ -606,6 +606,7 @@ detectwmtheme () {
 # GTK Theme\Icon\Font Detection - BEGIN
 detectgtk () {
 	gtk2Theme="Not Found"
+	gtk3Theme="Not Found"
 	gtkIcons="Not Found"
 	gtkFont="Not Found"
 	case $DE in
