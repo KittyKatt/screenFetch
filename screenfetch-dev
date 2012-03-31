@@ -434,6 +434,7 @@ detectuptime () {
 
 # Package Count - Begin
 detectpkgs () {
+	pkgs="Unknown"
 	case $distro in
 		'Arch Linux'|'ParabolaGNU/Linux-libre'|'Chakra') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Qq | wc -l) ;;
