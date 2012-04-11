@@ -437,7 +437,7 @@ detectpkgs () {
 	pkgs="Unknown"
 	case $distro in
 		'Arch Linux'|'ParabolaGNU/Linux-libre'|'Chakra') pkgs=$(pacman -Qq | wc -l) ;;
-		'Frugalware') pkgs=$(pacman-g2 -Qq | wc -l) ;;
+		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
