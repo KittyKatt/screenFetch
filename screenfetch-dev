@@ -60,11 +60,11 @@ shotfile=$(echo "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
 
-verboseOut () {
+function verboseOut () {
 	echo -e "\e[1;31m:: \e[0m$1"
 }
 
-errorOut () {
+function errorOut () {
 	echo -e "\e[1;37m[[ \e[1;31m! \e[1;37m]] \e[0m$1"
 }
 
@@ -481,7 +481,8 @@ detectmem () {
 
 # Shell Detection - Begin
 detectshell () {
-	myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
+	# myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
+	myShell=${SHELL##*/}
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
 }
 # Shell Detection - End
