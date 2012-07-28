@@ -38,7 +38,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm xmonad musca i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm xmonad musca i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon"
 
 # Export theme settings
@@ -553,6 +553,7 @@ WM="Not Found"
 				'beryl') WM="Beryl";;
 				'monsterwm') WM="monsterwm";;
 				'dminiwm') WM="dminiwm";;
+				'compiz') WM="Compiz";;
 			esac
 		fi
 	done
@@ -600,6 +601,7 @@ detectwmtheme () {
 		'Beryl') Win_theme="Not Present";;
 		'monsterwm') Win_theme="Not Present";;
 		'dminiwm') Win_theme="Not Present";;
+		'Compiz') Win_theme=$(gsettings get org.gnome.desktop.wm.preferences theme | tr -d "'");;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
@@ -733,6 +735,10 @@ detectgtk () {
 					gtk3Theme=$(awk -F'=' '/gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
 				fi
 			fi
+			# Proper gtk3 Theme detection
+			if [ -x $(which gsettings) ]; then
+				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
+			fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
@@ -757,7 +763,7 @@ detectgtk () {
 	esac
 	if [[ "$verbosity" -eq "1" ]]; then
 		verboseOut "Finding GTK2 theme...found as '$gtk2Theme'"
-		verboseOut "Finding GTK3 theme...found as '$gtk2Theme'"
+		verboseOut "Finding GTK3 theme...found as '$gtk3Theme'"
 		verboseOut "Finding icon theme...found as '$gtkIcons'"
 		verboseOut "Finding user font...found as '$gtkFont'"
 		[[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
