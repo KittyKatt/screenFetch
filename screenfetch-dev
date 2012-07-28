@@ -309,6 +309,7 @@ detectdistro () {
 				fi
 			fi
 			if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
+			if [ "$distro_detect" == "Gentoo" ]; then distro="Gentoo"; fi
 			if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
 			if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
 			if [ "$distro_detect" == "frugalware" ]; then
