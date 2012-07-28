@@ -1470,9 +1470,12 @@ infoDisplay () {
 		echo -e "$myde"
 		echo -e "$mywm"
 		echo -e "$mywmtheme"
-		echo -e "$mygtk"
+		echo -e "$mygtk2"
+		echo -e "$mygtk3"
 		echo -e "$myicons"
 		echo -e "$myfont"
+		echo -e "$mycpu"
+		echo -e "$myram"
 	fi
 }
 
