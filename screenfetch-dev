@@ -504,11 +504,32 @@ detectde () {
 	DE="Not Present"
 		for each in $denames; do
 			if [[ `ps aux` =~ "$each" ]]; then
-				[ "$each" == "gnome-session" -o "$each" == "gnome-settings-daemon" ] && DE="GNOME" && DEver=$(gnome-session --version | awk {'print $NF'})
-				[ "$each" == "mate-session" -o "$each" == "mate-settings-daemon" ] && DE="MATE" && DEver=$(mate-session --version | awk {'print $NF'})
-				[ "$each" == "xfce4-session" ] && DE="XFCE" && DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
-				[ "$each" == "ksmserver" ] && DE="KDE" && DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
-				[ "$each" == "lxsession" ] && DE="LXDE" && DEver=$(lxpanel -v)
+				if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
+					ps -ef | grep gnome-shell | grep -v grep > /dev/null 2>&1
+					if [[ "$?" -eq "0" ]]; then
+						# FIXME - making a very liberal assumption on this ... 
+						DEver=$(gnome-session-properties --version | awk '{ print $2 }')
+					else
+						DEver=$(gnome-session --version | awk {'print $NF'})
+					fi
+					DE="GNOME"
+				fi
+				if [[ "$each" == "mate-session" ]] || [[ "$each" == "mate-settings-daemon" ]]; then
+					DE="MATE"
+					DEver=$(mate-session --version | awk {'print $NF'})
+				fi
+				if [[ "$each" == "xfce4-session" ]]; then
+					DE="XFCE"
+					DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
+				fi
+				if [[ "$each" == "ksmserver" ]] ; then
+					DE="KDE"
+					DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
+				fi
+				if [[ "$each" == "lxsession" ]]; then
+					DE="LXDE"
+					DEver=$(lxpanel -v)
+				fi
 			fi
 		done
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
