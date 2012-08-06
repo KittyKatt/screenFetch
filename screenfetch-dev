@@ -1048,7 +1048,7 @@ asciiText () {
 		;;
 
 		"BSD")
-			c1="\e[1;37m" # White
+			c1="\e[1;37m" # Red
 			c2="\e[1;31m" # Light Red
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
