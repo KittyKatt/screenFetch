@@ -3,6 +3,10 @@
     changelog
 **** **** **** ****
 
+########## v2.3.9-PIPED ###########
+ - Changed FreeBSD logo from beastie to it's modern character of beastie.
+
+
 ########## v2.3.9 ###########
  - Fixed SolusOS detection.
  - Added MATE detection, theme detection possibly not working yet. Fixed WindowMaker detection.
