@@ -3,7 +3,16 @@
     changelog
 **** **** **** ****
 
-########## v2.3.9-PIPED ###########
+########## v2.4.0 ########## 
+- Added RAMInfo support for FreeBSD
+- Added Uptime support for FreeBSD
+- Added Packages support for FreeBSD
+- Made the code more distro aware
+- Fixed color bug on FreeBSD logo
+- Moved host's priority from 0 to 3
+- Fixed other Typos in the FreeBSD Logo
+
+########## v2.3.9-PIPED ########## 
  - Changed FreeBSD logo from beastie to it's modern character of beastie.
 
 
