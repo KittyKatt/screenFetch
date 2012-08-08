@@ -1759,10 +1759,8 @@ for i in "${display[@]}"; do
 	if [[ $i =~ wm ]]; then
 		 ! [[ $WM  ]] && detectwm; 
 		 ! [[ $Win_theme ]] && detectwmtheme;
-	else
-	
-	  [[ "${display[*]}" =~ "$i" ]] && detect${i}
-
+	else	
+		[[ "${display[*]}" =~ "$i" ]] && detect${i}
 	fi
 done
 
@@ -1777,3 +1775,5 @@ fi
 infoDisplay
 [ "$screenshot" == "1" ] && takeShot
 [ "$exportTheme" == "1" ] && themeExport
+
+exit 0
