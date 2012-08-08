@@ -730,6 +730,8 @@ detectgtk () {
 				fi
 			fi
 
+		;;
+
 		*)	# Lightweight or No DE Found
 			if [ -f $HOME/.gtkrc-2.0 ]; then
 				if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
