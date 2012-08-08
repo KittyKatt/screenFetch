@@ -797,8 +797,6 @@ detectgtk () {
 			fi
 			# Font detection (OS X)
 			if [[ `ps aux` =~ "Finder" ]]; then
-				gtkIcons="default"
-				gtkTheme="not available"
 				gtkFont="not found"
 				if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
 					gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
