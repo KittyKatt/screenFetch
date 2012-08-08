@@ -493,7 +493,7 @@ detectmem () {
             
             # Total Memory
             
-            phys_mem=$(sysctl -ahn hw.physmem)
+            phys_mem=$(sysctl -n hw.physmem)
             size_mem=$phys_mem
             size_chip=1
             guess_chip=`echo "$size_mem / 8 - 1" | bc`
