@@ -449,7 +449,7 @@ detectpkgs () {
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X') 
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
-			if [ $(which ports) ]; then
+			if [ $(which port) ]; then
 				ports_pkgs=$(port installed | grep -n z | tail -1 | grep -Eo \[0-9]\?\[0-9]\?\[0-9]\?\[0-9]\?)
 				if [ -n "$loc_pkgs" ]; then pkgs=$((${loc_pkgs} + ${ports_pkgs}))
 				else pkgs="$ports_pkgs"; fi
