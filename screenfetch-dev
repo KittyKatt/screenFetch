@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 #
 # screenFetch
 #
@@ -28,7 +28,7 @@ scriptVersion="2.4.5"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
-display=( host distro kernel uptime pkgs shell res de wm wmtheme gtk cpu mem )
+display=( distro kernel host uptime pkgs shell res de wm wmtheme gtk cpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
 
@@ -237,29 +237,6 @@ fi
 #########################
 # Begin Detection Phase
 #########################
-		
-
-# Host and User detection - Begin
-detecthost () {
-	myUser=$(echo "$USER")
-	myHost=$(hostname)
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
-}
-
-
-#########################
-# Begin Detection Phase
-#########################
-		
-
-# Host and User detection - Begin
-detecthost () {
-	myUser=$(echo "$USER")
-	# net-tools is becoming deprecated
-	# myHost=$(hostname)
-	myHost=$(cat /proc/sys/kernel/hostname)
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
-}
 
 # Distro Detection - Begin
 detectdistro () {
@@ -403,6 +380,25 @@ detectdistro () {
 }
 # Distro Detection - End
 
+
+# Host and User detection - Begin
+detecthost () {
+    myUser="Unknown"
+    myHost="Unknown"
+    case $distro in
+        'BSD')
+        myUser=$(echo "$USER")
+        myHost=$(hostname);;
+        'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
+        myUser=$(echo "$USER")
+        # net-tools is becoming deprecated
+        # myhost(hostname) is now for BSD only
+        myHost=$(cat /proc/sys/kernel/hostname)
+        ;;
+    esac
+    [[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
+}
+
 # Find Number of Running Processes
 # processnum="$(( $( ps aux | wc -l ) - 1 ))"
 
@@ -416,7 +412,11 @@ detectkernel () {
 
 # Uptime Detection - Begin
 detectuptime () {
-	uptime=`awk -F. '{print $1}' /proc/uptime`
+    uptime=0
+    case $distro in
+        'BSD') uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}') ;;
+        'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware') uptime=$(awk -F. '{print $1 /proc/uptime}') 
+
 	secs=$((${uptime}%60))
 	mins=$((${uptime}/60%60))
 	hours=$((${uptime}/3600%24))
@@ -424,10 +424,12 @@ detectuptime () {
 	uptime="${mins}m"
 	if [ "${hours}" -ne "0" ]; then
 		uptime="${hours}h ${uptime}"
-	fi
+ 	fi
 	if [ "${days}" -ne "0" ]; then
 		uptime="${days}d ${uptime}"
 	fi
+    ;;
+    esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
@@ -443,6 +445,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+        'BSD') pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}') ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
 }
@@ -452,6 +455,12 @@ detectpkgs () {
 
 # CPU Detection - Begin
 detectcpu () {
+
+    case $ distro in 
+        'BSD')
+
+            ;;
+
 	cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //')
 	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
 	# cpu_ghz=$(echo "scale=2; ${cpu_mhz} / 1000" | bc )
@@ -460,20 +469,72 @@ detectcpu () {
 # CPU Detection - End
 
 
+#TODO Needs to rename the variables here, they are awful atm.
 
 # Memory Detection - Begin
+
+# This function is rewritten of the perl script:
+##  freebsd-memory -- List Total System Memory Usage
+##  Copyright (c) 2003-2004 Ralf S. Engelschall <rse@engelschall.com>
+##  http://www.cyberciti.biz/files/scripts/freebsd-memory.pl.txt
+
 detectmem () {
-	total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
-	totalmem=$((${total_mem}/1024))
+    hw_mem=0
+    free_mem=0
+    human=1024
+
+    case $distro in 
+        'BSD')
+            
+            # Total Memory
+            
+            phys_mem=$(sysctl -ahn hw.physmem)
+            size_mem=$phys_mem
+            size_chip=1
+            guess_chip=`echo "$size_mem / 8 - 1" | bc`
+            while [ $guess_chip != 0 ]
+             do
+               guess_chip=`echo "$guess_chip / 2" | bc`
+               size_chip=`echo "$size_chip * 2" | bc`
+             done
+            round_mem=`echo "( $size_mem / $size_chip + 1 ) * $size_chip " | bc`
+                                                                          
+           total_mem=$(($round_mem / ($human * $human) ))
+
+            # Available Memory
+            pagesize=$(sysctl -ahn hw.pagesize)
+
+            inactive_count=$(sysctl -ahn vm.stats.vm.v_inactive_count)
+            inactive_mem=$(($inactive_count * $pagesize))
+            
+            cache_count=$(sysctl -ahn vm.stats.vm.v_cache_count)
+            cache_mem=$(($cache_count * $pagesize))
+        
+            free_count=$(sysctl -ahn vm.stats.vm.v_free_count)
+            free_mem=$(($free_count * $pagesize))
+
+            avail_mem=$(($inactive_mem + $cache_mem + $free_mem))
+
+            # Used Memory
+       
+            used_mem=$(($round_mem - $avail_mem))
+            usedmem=$(($used_mem / ($human * $human) )) 
+
+            ;;
+        'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
+	phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
+	total_mem=$((${phys_mem} / $human))
 	if free | grep -q '/cache'; then
 		used_mem=$(free | awk '/cache:/ { print $3 }')
-		usedmem=$((${used_mem}/1024))
+		usedmem=$((${used_mem} / $human))
 	else
 		free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
-		used_mem=$((${total_mem} - ${free_mem}))
-		usedmem=$((${used_mem}/1024))
+		used_mem=$((${phys_mem} - ${free_mem}))
+		usedmem=$((${used_mem} / $human))
 	fi
-	mem="${usedmem}MB / ${totalmem}MB"
+    ;;
+    esac
+	mem="${usedmem}MB / ${total_mem}MB"
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current RAM usage...found as '$mem'"
 }
 # Memory Detection - End
@@ -1048,29 +1109,29 @@ asciiText () {
 		;;
 
 		"BSD")
-			c1="\e[1;37m" # Red
+			c1="\e[0;31m" # Red
 			c2="\e[1;31m" # Light Red
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="1"
+			startline="0"
 			fulloutput=(
-"          "$c1"\`\`\`                        "$c2"\`  "
-"         "$c1"\` \`.....---..."$c2"....--.\`\`\`   -/          %s"  #user@host
-"         "$c1"+o   .--\`         "$c2"/y:\`      +.        %s"  # OS
-"         "$c1" yo\`:.            "$c2":o      \`+-         %s"  # Kernel
-"           "$c1"y/               "$c2"-/\`   -o/          %s"  # Uptime
-"          "$c1".-                  "$c2"::/sy+:.         %s"  # Packages
-"          "$c1"/                     "$c2"\`--  /         %s"  # Shell
-"         "$c1"\`:                          "$c2":\`        %s"  # Resolution
+"          "$c1"\`\`\`                        "$c2"\`          %s"  # User @ Host      
+"         "$c1"\` \`.....---..."$c2"....--.\`\`\`   -/         %s"  # OS
+"         "$c1"+o   .--\`         "$c2"/y:\`      +.        %s"  # Kernel
+"         "$c1" yo\`:.            "$c2":o      \`+-         %s"  # Uptime
+"           "$c1"y/               "$c2"-/\`   -o/          %s"  # Packages
+"          "$c1".-                  "$c2"::/sy+:.         %s"  # Shell 
+"          "$c1"/                     "$c2"\`--  /         %s"  # Resolution
 "         "$c1"\`:                          "$c2":\`        %s"  # DE
-"          "$c1"/                          "$c2"/         %s"  # WM
-"          "$c1".-                        "$c2"-.         %s"  # WM Theme
-"           "$c1"--                      "$c2"-.          %s"  # GTK2 Theme
-"            "$c1"\`:\`                  "$c2"\`:\`           %s"  # GTK3 Theme
-"              "$c2".--             \`--.             %s"               # Icon Theme
-"                "$c2" .---.....----.                %s"             # Font
-)
-                ;;
-
+"         "$c1"\`:                          "$c2":\`        %s"  # WM
+"          "$c1"/                          "$c2"/         %s"  # WM Theme
+"          "$c1".-                        "$c2"-.         %s"  # GTK2 Theme
+"           "$c1"--                      "$c2"-.          %s"  # GTK3 Theme
+"            "$c1"\`:\`                  "$c2"\`:\`           %s"  # Icon Theme
+"              "$c2".--             \`--.             %s"               # Font
+"                "$c2" .---.....----.                %s"             # CPU 
+"                                               %s"             #RAM
+)                               
+		;;
 
 		"Mandriva"|"Mandrake")
 			c1="\e[1;34m" # Light Blue
@@ -1625,7 +1686,7 @@ for i in "${display[@]}"; do
 		 ! [[ $WM  ]] && detectwm; 
 		 ! [[ $Win_theme ]] && detectwmtheme;
 	else
-	
+
 	  [[ "${display[*]}" =~ "$i" ]] && detect${i}
 
 	fi
