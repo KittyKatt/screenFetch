@@ -191,6 +191,7 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 		V)
 			echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
 			echo "Created by and licensed to Brett Bohnenkamper (kittykatt@silverirc.com)"
+			echo "OS X porting done almost solely by shrx (http://shrx.github.com/)"
 			echo ""
 			echo "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 			exit
