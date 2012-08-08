@@ -205,9 +205,9 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 		# d) overrideDisplay=$OPTARG; continue;;
 		# l) c1="\033[1;30m";;
 		# B) background_detect="1"; continue;;
-		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit;;
-		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit;;
-		*) errorOut "Error"; exit;;
+		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
+		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1;;
+		*) errorOut "Error"; exit 1;;
 	esac
 done
 
@@ -1233,7 +1233,7 @@ asciiText () {
 "$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM   %s")
 		;;
 
-		"Frugalware")
+		"Frugalware")Also
 			c1="\e[1;37m" # White
 			c2="\e[1;36m" # Light Blue
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
