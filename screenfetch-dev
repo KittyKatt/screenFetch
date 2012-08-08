@@ -455,15 +455,20 @@ detectpkgs () {
 
 # CPU Detection - Begin
 detectcpu () {
-
-    case $ distro in 
+   cpu="Unknown"
+   cpu_mhz=0
+   cpu_ghz=0
+    case $distro in 
         'BSD')
-
+           cpu=$(sysctl -n hw.model)
+           cpu_mhz=$(sysctl -n hw.clockrate)
             ;;
-
+        'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
 	cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //')
 	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
 	# cpu_ghz=$(echo "scale=2; ${cpu_mhz} / 1000" | bc )
+    ;;
+    esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
