@@ -268,7 +268,7 @@ detectdistro () {
 		# LSB Release Check
 		if which lsb_release >/dev/null 2>&1; then
 			distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
-			if [[ "$distro_detect" == "archlinux" || "$distro_detect" == "Arch" ]]; then
+			if [[ "$distro_detect" == "archlinux" || "$distro_detect" == "Arch Linux" ]]; then
 				distro="Arch Linux"
 				distro_release=null
 			fi
