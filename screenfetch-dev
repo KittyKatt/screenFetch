@@ -887,8 +887,7 @@ takeShot () {
 
 asciiText () {
 # Distro logos and ASCII outputs
-	[ -n $fake_distro ] && ddistro="$fake_distro" || ddistro="$distro"
-	case $ddistro in
+	case $distro in
 		"Arch Linux - Old")
 			c1="\e[1;37m" # White
 			c2="\e[1;34m" # Light Blue
@@ -1589,9 +1588,9 @@ infoDisplay () {
 			if [[ -n "$fake_distro" ]]; then
 				distro_more="$fake_distro"
 			else
-				distro_more=$(cmd /c wmic os get caption | grep Microsoft | sed 's/[ \t]*$//')
+				distro_more=$(wmic os get caption | grep Microsoft | sed 's/[ \t]*$//')
 			fi
-			sysArch=$(cmd /c wmic os get OSArchitecture | grep ^[0-9] | sed 's/[ \t]*$//')
+			sysArch=$(wmic os get OSArchitecture | grep ^[0-9] | sed 's/[ \t]*$//')
 		else
 			sysArch=`uname -m`
 			if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
@@ -1766,13 +1765,12 @@ for i in "${display[@]}"; do
 	fi
 done
 
-## Overrides
 if [[ -f "$HOME/.screenfetchOR" ]]; then
-	vars=("$(cat $HOME/.screenfetchOR | grep '^.*=.*$')")
-	for v in "${vars[@]}"; do #=$(echo $v | sed -e 's/^.*=//')"
-		varname="$(echo $v | sed -e 's/=.*$//')"
-		eval $varname="\"$(echo $v | sed -e 's/^.*=//')\""
-	done
+    vars=("$(cat $HOME/.screenfetchOR | grep '^.*=.*$')")
+    for v in "${vars[@]}"; do #=$(echo $v | sed -e 's/^.*=//')"
+        varname="$(echo $v | sed -e 's/=.*$//')"
+        eval $varname="\"$(echo $v | sed -e 's/^.*=//')\""
+    done
 fi
 
 infoDisplay
