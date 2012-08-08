@@ -823,10 +823,30 @@ detectgtk () {
 					gtk3Theme=$(awk -F'=' '/gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
 				fi
 			fi
-			# Proper gtk3 Theme detection
-			if [ -x $(which gsettings) ]; then
-				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
-			fi
+            # Proper gtk3 Theme detection 
+            # Does not work with BSD - Remove if statement - This if statement should work for both BSD and Linux - If it doesn't Please contact me!
+	    	if [ -x $(which gsettings) ]; then
+			    	gtk3Theme=$(gsettings list-schemas)
+                    i=0
+                    while [ $gtk3Theme]
+                    do
+                        gtklist[i]=${gtk3Theme}
+                        ((i++))
+                    done
+                if [ -z "$1"]; then
+                    gtk3Theme="Not Found"
+            
+                 else
+                    gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
+                fi
+              for j in ${excluded[@]}
+              do
+                  if [ $j == $1 ]; then
+                      return 1
+                  fi
+              done
+
+		    fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
