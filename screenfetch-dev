@@ -359,7 +359,7 @@ detectdistro () {
 				if [ grep -q "Parabola GNU/Linux-libre" /etc/issue ]; then distro="ParabolaGNU/Linux-libre"; fi
 				if [ grep -i SolusOS /etc/issue >/dev/null 2>&1 ]; then distro="SolusOS"; fi
 			fi
-			if [ -f /usr/bin/sw_vers ] && [ /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null ]; then distro="Mac OS X"; fi
+			if [ -f /usr/bin/sw_vers ] && /usr/bin/sw_vers|grep -i "Mac OS X" >/dev/null; then distro="Mac OS X"; fi
 		fi
 	else
 		declare -l lcase
