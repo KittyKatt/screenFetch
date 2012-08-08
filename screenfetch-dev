@@ -332,11 +332,12 @@ detectdistro () {
 				if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
 			fi
 			if [ -f /etc/debian_version ]; then distro="Debian"; fi
-			if grep -i ubuntu /etc/lsb-release >/dev/null 2>&1; then distro="Ubuntu"; fi
-			if grep -i SolusOS /etc/issue >/dev/null 2>&1; then distro="SolusOS"; fi
-			if grep -i mint /etc/lsb-release >/dev/null 2>&1; then
-				if grep -i debian /etc/lsb-release >/dev/null 2>&1; then distro="LMDE"
-				else distro="Mint"; fi
+			if [ -f /etc/lsb-release ]; then
+				if [ grep -i ubuntu /etc/lsb-release >/dev/null 2>&1 ]; then distro="Ubuntu"; fi
+				if [ grep -i mint /etc/lsb-release >/dev/null 2>&1 ]; then
+					if [ grep -i debian /etc/lsb-release >/dev/null 2>&1 ]; then distro="LMDE"
+					else distro="Mint"; fi
+				fi
 			fi
 			if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
 			if [ -f /etc/chakra-release ]; then distro="Chakra"; fi
@@ -352,9 +353,12 @@ detectdistro () {
 			if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
-			if [ grep -q "LinuxDeepin" /etc/issue ]; then distro="LinuxDeepin"; fi
-			if [ grep -q "SolusOS" /etc/issue ]; then distro="SolusOS"; fi
-			if [ grep -q "Parabola GNU/Linux-libre" /etc/issue ]; then distro="ParabolaGNU/Linux-libre"; fi
+			if [ -f /etc/issue ]; then
+				if [ grep -q "LinuxDeepin" /etc/issue ]; then distro="LinuxDeepin"; fi
+				if [ grep -q "SolusOS" /etc/issue ]; then distro="SolusOS"; fi
+				if [ grep -q "Parabola GNU/Linux-libre" /etc/issue ]; then distro="ParabolaGNU/Linux-libre"; fi
+				if [ grep -i SolusOS /etc/issue >/dev/null 2>&1 ]; then distro="SolusOS"; fi
+			fi
 			if [ -f /usr/bin/sw_vers && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null ]; then distro="Mac OS X"; fi
 		fi
 	else
