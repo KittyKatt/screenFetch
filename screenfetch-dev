@@ -507,15 +507,15 @@ detectmem () {
            total_mem=$(($round_mem / ($human * $human) ))
 
             # Available Memory
-            pagesize=$(sysctl -ahn hw.pagesize)
+            pagesize=$(sysctl -n hw.pagesize)
 
-            inactive_count=$(sysctl -ahn vm.stats.vm.v_inactive_count)
+            inactive_count=$(sysctl -n vm.stats.vm.v_inactive_count)
             inactive_mem=$(($inactive_count * $pagesize))
             
-            cache_count=$(sysctl -ahn vm.stats.vm.v_cache_count)
+            cache_count=$(sysctl -n vm.stats.vm.v_cache_count)
             cache_mem=$(($cache_count * $pagesize))
         
-            free_count=$(sysctl -ahn vm.stats.vm.v_free_count)
+            free_count=$(sysctl -n vm.stats.vm.v_free_count)
             free_mem=$(($free_count * $pagesize))
 
             avail_mem=$(($inactive_mem + $cache_mem + $free_mem))
