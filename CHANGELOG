@@ -3,6 +3,11 @@
     changelog
 **** **** **** ****
 
+########## v2.4.1 ##########
+- Added CPUInfo support for FreeBSD
+- Fixed null value in GTK3 function
+- Fixed couple of OpenBSD errors
+
 ########## v2.4.0 ########## 
 - Added RAMInfo support for FreeBSD
 - Added Uptime support for FreeBSD
