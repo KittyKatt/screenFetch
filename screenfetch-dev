@@ -453,8 +453,8 @@ detectpkgs () {
 
 # CPU Detection - Begin
 detectcpu () {
-	cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //')
-	if [ "$distro" == "Mac OS X" ]; then cpu=$(echo $(sysctl -n machdep.cpu.brand_string)); fi
+	if [ "$distro" == "Mac OS X" ]; then cpu=$(echo $(sysctl -n machdep.cpu.brand_string))
+	else cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //'); fi
 	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
 	# cpu_ghz=$(echo "scale=2; ${cpu_mhz} / 1000" | bc )
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
@@ -636,7 +636,7 @@ detectwmtheme () {
 		'Beryl') Win_theme="Not Present";;
 		'monsterwm') Win_theme="Not Present";;
 		'dminiwm') Win_theme="Not Present";;
-		'Compiz') Win_theme=$(gsettings get org.gnome.desktop.wm.preferences theme | tr -d "'");;
+		'Compiz') Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme | tr -d \"\'\")";;
 		'Finder') Win_theme="not present";;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
@@ -721,6 +721,15 @@ detectgtk () {
 
 		# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
+		'Aqua')
+			# Font detection (OS X)
+			if [[ `ps aux` =~ "Finder" ]]; then
+				gtkFont="not found"
+				if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
+					gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
+				fi
+			fi
+
 		*)	# Lightweight or No DE Found
 			if [ -f $HOME/.gtkrc-2.0 ]; then
 				if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
@@ -773,7 +782,7 @@ detectgtk () {
 			fi
 			# Proper gtk3 Theme detection
 			if [ -x $(which gsettings) ]; then
-				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
+				gtk3Theme"=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
 			fi
 
 			# ROX-Filer icon detect only
@@ -793,13 +802,6 @@ detectgtk () {
 					gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
 				elif [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]; then
 					gtkBackground=$(awk -F"/" '/file=/ {print $NF}' ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg)
-				fi
-			fi
-			# Font detection (OS X)
-			if [[ `ps aux` =~ "Finder" ]]; then
-				gtkFont="not found"
-				if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
-					gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
 				fi
 			fi
 		;;
