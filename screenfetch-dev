@@ -352,10 +352,10 @@ detectdistro () {
 			if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
-			if grep -q "LinuxDeepin" /etc/issue; then distro="LinuxDeepin"; fi
-			if grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
-			if grep -q "Parabola GNU/Linux-libre" /etc/issue; then distro="ParabolaGNU/Linux-libre"; fi
-			if [ -f /usr/bin/sw_vers ] && /usr/bin/sw_vers|grep -i "Mac OS X" >/dev/null; then distro="Mac OS X"; fi
+			if [ grep -q "LinuxDeepin" /etc/issue ]; then distro="LinuxDeepin"; fi
+			if [ grep -q "SolusOS" /etc/issue ]; then distro="SolusOS"; fi
+			if [ grep -q "Parabola GNU/Linux-libre" /etc/issue ]; then distro="ParabolaGNU/Linux-libre"; fi
+			if [ -f /usr/bin/sw_vers && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null ]; then distro="Mac OS X"; fi
 		fi
 	else
 		declare -l lcase
@@ -484,8 +484,8 @@ detectmem () {
 
 # Shell Detection - Begin
 detectshell () {
-	# myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
-	myShell=${SHELL##*/}
+	myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
+	# myShell=${SHELL##*/}
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
 }
 # Shell Detection - End
@@ -1491,7 +1491,7 @@ asciiText () {
 }
 
 infoDisplay () {
-	textcolor="\e[0m"
+	textcolor="\033[0m"
 	[[ "$my_hcolor" ]] && textcolor="${my_hcolor}"
 	#TODO: Centralize colors and use them across the board so we only change them one place.
 	case $distro in
@@ -1514,9 +1514,17 @@ infoDisplay () {
 	#########################
 	if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor$bold@${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "distro" ]]; then
-		sysArch=`uname -m`
-		if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
-		else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
+		if [ "$distro" == "Mac OS X" ]; then
+			sysArch=`str1=$(ioreg -l -p IODeviceTree | grep firmware-abi);echo ${str1: -4: 2}bit`
+			prodVers=`prodVers=$(sw_vers|grep ProductVersion);echo ${prodVers:15}`
+			buildVers=`buildVers=$(sw_vers|grep BuildVersion);echo ${buildVers:14}`
+			if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
+			else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
+		else
+			sysArch=`uname -m`
+			if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
+			else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
+		fi
 		out_array=( "${out_array[@]}" "$mydistro" )
 		((display_index++))
 	fi
@@ -1529,11 +1537,16 @@ infoDisplay () {
 	if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "wmtheme" ]]; then mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "gtk" ]]; then 
-		mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++))
-		mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
-		myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
-		myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
-		# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
+		if [ "$distro" == "Mac OS X" ]; then
+			myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
+			myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
+		else
+			mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++))
+			mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
+			myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
+			myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
+			# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
+		fi
 	fi
 	if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
