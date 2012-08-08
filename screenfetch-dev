@@ -721,17 +721,6 @@ detectgtk () {
 
 		# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
-		'Aqua')
-			# Font detection (OS X)
-			if [[ `ps aux` =~ "Finder" ]]; then
-				gtkFont="not found"
-				if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
-					gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
-				fi
-			fi
-
-		;;
-
 		*)	# Lightweight or No DE Found
 			if [ -f $HOME/.gtkrc-2.0 ]; then
 				if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
@@ -782,21 +771,24 @@ detectgtk () {
 					gtk3Theme=$(awk -F'=' '/gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
 				fi
 			fi
+
 			# Proper gtk3 Theme detection
-			if [ -x $(which gsettings) ]; then
-				gtk3Theme"=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
+			if [ -x $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
+				gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
 			fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
 				gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
 			fi
+
 			# E17 detection
 			if [ $E_ICON_THEME ]; then
 				gtkIcons=${E_ICON_THEME}
 				gtk2Theme="Not available."
 				gtkFont="Not available."
 			fi
+
 			# Background Detection (feh, nitrogen)
 			if [ "$background_detect" == "1" ]; then
 				if [ -a $HOME/.fehbg ]; then
@@ -804,6 +796,14 @@ detectgtk () {
 					gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
 				elif [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg ]; then
 					gtkBackground=$(awk -F"/" '/file=/ {print $NF}' ${XDG_CONFIG_HOME:-${HOME}/.config}/nitrogen/bg-saved.cfg)
+				fi
+			fi
+
+			# Font detection (OS X)
+			if [[ `ps aux` =~ "Finder" ]]; then
+				gtkFont="not found"
+				if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
+					gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
 				fi
 			fi
 		;;
