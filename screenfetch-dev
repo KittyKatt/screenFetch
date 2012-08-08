@@ -1233,7 +1233,7 @@ asciiText () {
 "$c1    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM   %s")
 		;;
 
-		"Frugalware")Also
+		"Frugalware")
 			c1="\e[1;37m" # White
 			c2="\e[1;36m" # Light Blue
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
