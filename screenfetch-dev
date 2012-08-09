@@ -622,7 +622,7 @@ detectwm () {
 				esac
 			fi
 		done
-	fi
+	# fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
