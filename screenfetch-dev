@@ -329,7 +329,7 @@ detectdistro () {
 		fi
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
-			if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
+			# if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
 			if [ -f /etc/os-release ]; then
 				distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
 				if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
@@ -393,7 +393,7 @@ detectdistro () {
 			linuxdeepin) distro="LinuxDeepin" ;;
 			chakra) distro="Chakra" ;;
 			mac*os*x) distro="Mac OS X" ;;
-			cygwin) distro="Cygwin" ;;
+			# cygwin) distro="Cygwin" ;;
 		esac
 	fi	
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
@@ -448,14 +448,17 @@ detectpkgs () {
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X') 
-			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
+            		if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
 			if [ $(which port) ]; then
-				ports_pkgs=$(port installed | grep -n z | tail -1 | grep -Eo \[0-9]\?\[0-9]\?\[0-9]\?\[0-9]\?)
-				if [ -n "$loc_pkgs" ]; then pkgs=$((${loc_pkgs} + ${ports_pkgs}))
-				else pkgs="$ports_pkgs"; fi
+				port_pkgs=$(port installed | grep -n z | tail -1 | grep -Eo \[0-9]\?\[0-9]\?\[0-9]\?\[0-9]\?)
+				pkgs=$((${pkgs} + ${port_pkgs}))
+			fi
+			if [ $(which brew) ]; then
+				brew_pkgs=$(brew list -1 | wc -w)
+				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
 		;;
-		'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
+		# 'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
 }
@@ -515,8 +518,8 @@ detectres () {
 		xResolution=$(echo $res1"x"$res2)
 	elif [[ -n $DISPLAY ]]; then
 		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
-	elif [[ "$distro" == "Cygwin" ]]; then
-		xResolution="$(scrot --resolution)"
+	# elif [[ "$distro" == "Cygwin" ]]; then
+	# 	xResolution="$(scrot --resolution)"
 	else
 		xResolution="No X Server"
 	fi
@@ -557,14 +560,14 @@ detectde () {
 					DEver=$(lxpanel -v)
 				fi
 				if [ "$each" == "Finder" ]; then DE="Aqua"; fi
-				if [  "$DE" == "Not Present" -a "$distro" == "Cygwin" ]; then
-					winver="$(cmd /c wmic os get version | grep -o '^[0-9]')"
-					if [ "$winver" == "6" ]; then
-						DE="Aero"
-					elif [ "$winver" == "5" ]; then
-						DE="Luna"
-					fi
-				fi
+				# if [  "$DE" == "Not Present" -a "$distro" == "Cygwin" ]; then
+				#	winver="$(cmd /c wmic os get version | grep -o '^[0-9]')"
+				#	if [ "$winver" == "6" ]; then
+				#		DE="Aero"
+				#	elif [ "$winver" == "5" ]; then
+				#		DE="Luna"
+				# 	fi
+				# fi
 			fi
 		done
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
@@ -575,9 +578,9 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [ "$distro" == "Cygwin" ]; then
-		WM="Explorer"
-	else
+	# if [ "$distro" == "Cygwin" ]; then
+	# 	WM="Explorer"
+	# else
 		userId="$(id -u ${USER})"
 		for each in $wmnames; do
 			PID="$(pgrep -U ${userId} $each)"
@@ -670,11 +673,11 @@ detectwmtheme () {
 			Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
 		;;
 	esac
-	if [ "$Win_theme" == "Not Found" -a "$distro" == "Cygwin" ]; then # we are in for a long ride.
-		ThemeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
-		ThemeFile="$(cygpath -u $ThemeFile)"
-		Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
-	fi
+	#if [ "$Win_theme" == "Not Found" -a "$distro" == "Cygwin" ]; then # we are in for a long ride.
+	#	ThemeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
+	#	ThemeFile="$(cygpath -u $ThemeFile)"
+	#	Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
+	#fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
@@ -843,11 +846,11 @@ detectgtk () {
 				fi
 			fi
 
-			if [ "$distro" == "Cygwin" -a "$gtkFont" == "Not Found" ]; then
-				if [ -f $HOME/.minttyrc ]; then
-					gtkFont="$(cat $HOME/.minttyrc | grep '^Font=.*' | grep -o '[0-9A-z ]*$')"
-				fi
-			fi
+			# if [ "$distro" == "Cygwin" -a "$gtkFont" == "Not Found" ]; then
+			#	if [ -f $HOME/.minttyrc ]; then
+			#		gtkFont="$(cat $HOME/.minttyrc | grep '^Font=.*' | grep -o '[0-9A-z ]*$')"
+			#	fi
+			# fi
 		;;
 	esac
 	if [[ "$verbosity" -eq "1" ]]; then
@@ -1592,13 +1595,13 @@ infoDisplay () {
 			buildVers=`buildVers=$(sw_vers|grep BuildVersion);echo ${buildVers:14}`
 			if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 			else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
-		elif [[ "$distro" == "Cygwin" ]]; then
-			if [[ -n "$fake_distro" ]]; then
-				distro_more="$fake_distro"
-			else
-				distro_more=$(wmic os get caption | grep Microsoft | sed 's/[ \t]*$//')
-			fi
-			sysArch=$(wmic os get OSArchitecture | grep ^[0-9] | sed 's/[ \t]*$//')
+		#elif [[ "$distro" == "Cygwin" ]]; then
+		#	if [[ -n "$fake_distro" ]]; then
+		#		distro_more="$fake_distro"
+		#	else
+		#		distro_more=$(wmic os get caption | grep Microsoft | sed 's/[ \t]*$//')
+		#	fi
+		#	sysArch=$(wmic os get OSArchitecture | grep ^[0-9] | sed 's/[ \t]*$//')
 		else
 			sysArch=`uname -m`
 			if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
