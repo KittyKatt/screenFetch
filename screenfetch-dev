@@ -797,7 +797,7 @@ detectgtk () {
 				if grep -q icon-theme /etc/gtk-2.0/gtkrc; then
 					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
-				if [ grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! $gtkIcons]; then
+				if [ grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! $gtkIcons ]; then
 					gtkIcons=$(awk -F'"' '/gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 
