@@ -448,13 +448,13 @@ detectpkgs () {
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X') 
-            		if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
+			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
 			if [ $(which port) ]; then
-				port_pkgs=$(port installed | grep -n z | tail -1 | grep -Eo \[0-9]\?\[0-9]\?\[0-9]\?\[0-9]\?)
-				pkgs=$((${pkgs} + ${port_pkgs}))
+				port_pkgs=$(port installed | wc -l)
+				pkgs=$((${pkgs} + (${port_pkgs} -1)))
 			fi
 			if [ $(which brew) ]; then
-				brew_pkgs=$(brew list -1 | wc -w)
+				brew_pkgs=$(brew list -1 | wc -l)
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
 		;;
