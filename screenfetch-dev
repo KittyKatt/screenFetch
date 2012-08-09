@@ -1610,7 +1610,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin") labelcolor="\e[1;32m";;
-		"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin") labelcolor="\e[1;31m";;
+		"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu") labelcolor="\e[1;31m";;
 		"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
