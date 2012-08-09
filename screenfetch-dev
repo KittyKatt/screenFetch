@@ -814,9 +814,9 @@ detectgtk () {
 			fi
 
 			# Proper gtk3 Theme detection
-			if [ $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
-				gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
-			fi
+			#if [ $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
+			#	gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
+			#fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
