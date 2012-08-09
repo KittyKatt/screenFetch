@@ -329,7 +329,9 @@ detectdistro () {
 		fi
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
-			# if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
+			#if [ $(uname -o 2>/dev/null) ]; then
+			#	if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
+			#fi
 			if [ -f /etc/os-release ]; then
 				distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
 				if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
