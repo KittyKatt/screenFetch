@@ -814,7 +814,7 @@ detectgtk () {
 			fi
 
 			# Proper gtk3 Theme detection
-			if [ -x $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
+			if [ $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
 				gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
 			fi
 
