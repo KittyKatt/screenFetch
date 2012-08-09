@@ -357,10 +357,10 @@ detectdistro () {
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if [ -f /etc/issue ]; then
-				if [ grep -q "LinuxDeepin" /etc/issue ]; then distro="LinuxDeepin"; fi
-				if [ grep -q "SolusOS" /etc/issue ]; then distro="SolusOS"; fi
-				if [ grep -q "Parabola GNU/Linux-libre" /etc/issue ]; then distro="ParabolaGNU/Linux-libre"; fi
-				if [ grep -i SolusOS /etc/issue >/dev/null 2>&1 ]; then distro="SolusOS"; fi
+				if [ `grep -q "LinuxDeepin" /etc/issue` ]; then distro="LinuxDeepin"; fi
+				if [ `grep -q "SolusOS" /etc/issue` ]; then distro="SolusOS"; fi
+				if [ `grep -q "Parabola GNU/Linux-libre" /etc/issue` ]; then distro="ParabolaGNU/Linux-libre"; fi
+				if [ `grep -i SolusOS /etc/issue >/dev/null 2>&1` ]; then distro="SolusOS"; fi
 			fi
 			if [ -f /usr/bin/sw_vers ] && /usr/bin/sw_vers|grep -i "Mac OS X" >/dev/null; then distro="Mac OS X"; fi
 		fi
