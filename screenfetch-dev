@@ -24,6 +24,7 @@ scriptVersion="2.4.5"
 ######################
 
 # This setting controls what ASCII logo is displayed. Available: Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, BSD, and None
+# distro="Linux"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
