@@ -339,12 +339,12 @@ detectdistro () {
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
 			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
+			if [ -f /var/run/dmesg.boot ] && awk '/FreeBSD {print $1}/' /var/run/dmesg.boot | sed -n '1,2d'; then distro="BSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
-			if grep -q "LinuxDeepin" /etc/issue; then distro="LinuxDeepin"; fi
-			if grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
-			if grep -q "Parabola GNU/Linux-libre" /etc/issue; then distro="ParabolaGNU/Linux-libre"; fi
+			if [ -f /etc/issue ] && grep -q "LinuxDeepin" /etc/issue; then distro="LinuxDeepin"; fi
+			if [ -f /etc/issue ] && grep -q "SolusOS" /etc/issue; then distro="SolusOS"; fi
+			if [ -f /etc/issue ] &&  grep -q "Parabola GNU/Linux-libre" /etc/issue; then distro="ParabolaGNU/Linux-libre"; fi
 		fi
 	else
 		declare -l lcase
@@ -598,205 +598,205 @@ detectde () {
 					DEver=$(lxpanel -v)
 				fi
 			fi
-		done
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
-}
-### DE Detection - End
+            done
+        [[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
+    }
+    ### DE Detection - End
 
 
-# WM Detection - Begin
-detectwm () {
-WM="Not Found"
-	userId="$(id -u ${USER})"
-	for each in $wmnames; do
-		PID="$(pgrep -U ${userId} $each)"
-		if [ "$PID" ]; then
-			case $each in
-				'fluxbox') WM="FluxBox";;
-				'openbox') WM="OpenBox";;
-				'blackbox') WM="Blackbox";;
-				'xfwm4') WM="Xfwm4";;
-				'metacity') WM="Metacity";;
-				'kwin') WM="KWin";;
-				'icewm') WM="IceWM";;
-				'pekwm') WM="PekWM";;
-				'fvwm') WM="FVWM";;
-				'dwm') WM="DWM";;
-				'awesome') WM="Awesome";;
-				'wmaker') WM="WindowMaker";;
-				'stumpwm') WM="StumpWM";;
-				'xmonad') WM="XMonad";;
-				'musca') WM="Musca";;
-				'i3') WM="i3";;
-				'ratpoison') WM="Ratpoison";;
-				'scrotwm') WM="ScrotWM";;
-				'spectrwm') WM="SpectrWM";;
-				'wmfs') WM="WMFS";;
-				'wmii') WM="wmii";;
-				'subtle') WM="subtle";;
-				'e16') WM="E16";;
-				'enlightenment') WM="E17";;
-				'emerald') WM="Emerald";;
-				'sawfish') WM="Sawfish";;
-				'beryl') WM="Beryl";;
-				'monsterwm') WM="monsterwm";;
-				'dminiwm') WM="dminiwm";;
-				'compiz') WM="Compiz";;
-			esac
-		fi
-	done
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
-}
-# WM Detection - End
+    # WM Detection - Begin
+    detectwm () {
+    WM="Not Found"
+        userId="$(id -u ${USER})"
+        for each in $wmnames; do
+            PID="$(pgrep -U ${userId} $each)"
+            if [ "$PID" ]; then
+                case $each in
+                    'fluxbox') WM="FluxBox";;
+                    'openbox') WM="OpenBox";;
+                    'blackbox') WM="Blackbox";;
+                    'xfwm4') WM="Xfwm4";;
+                    'metacity') WM="Metacity";;
+                    'kwin') WM="KWin";;
+                    'icewm') WM="IceWM";;
+                    'pekwm') WM="PekWM";;
+                    'fvwm') WM="FVWM";;
+                    'dwm') WM="DWM";;
+                    'awesome') WM="Awesome";;
+                    'wmaker') WM="WindowMaker";;
+                    'stumpwm') WM="StumpWM";;
+                    'xmonad') WM="XMonad";;
+                    'musca') WM="Musca";;
+                    'i3') WM="i3";;
+                    'ratpoison') WM="Ratpoison";;
+                    'scrotwm') WM="ScrotWM";;
+                    'spectrwm') WM="SpectrWM";;
+                    'wmfs') WM="WMFS";;
+                    'wmii') WM="wmii";;
+                    'subtle') WM="subtle";;
+                    'e16') WM="E16";;
+                    'enlightenment') WM="E17";;
+                    'emerald') WM="Emerald";;
+                    'sawfish') WM="Sawfish";;
+                    'beryl') WM="Beryl";;
+                    'monsterwm') WM="monsterwm";;
+                    'dminiwm') WM="dminiwm";;
+                    'compiz') WM="Compiz";;
+                esac
+            fi
+        done
+        [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
+    }
+    # WM Detection - End
 
 
-# WM Theme Detection - BEGIN
-detectwmtheme () {
-	Win_theme="Not Found"
-	case $WM in
-		'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
-		'OpenBox') 
-			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then 
-				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
-			elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then 
-				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
-			fi;;
-		'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
-		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
-		'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
-		'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
-		'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
-		'KWin') if [ -f $HOME/.kde/share/config/plasmarc ]; then Win_theme="$(grep -F -A 1 \[Theme\] $HOME/.kde/share/config/plasmarc | awk -F"=" '/^name=/ { getline; print $2 }')"; if [ -z $Win_theme ]; then Win_theme="Air"; fi; else Win_theme="Not Present"; fi;;
-		'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
-		'FVWM') Win_theme="Not Present";;
-		'DWM') Win_theme="Not Present";;
-		'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1)"; fi;;
-		'WindowMaker') Win_theme="Not Present";;
-		'XMonad') Win_theme="Not Present";;
-		'Musca') Win_theme="Not Present";;
-		'i3') Win_theme="Not Present";;
-		'Ratpoison') Win_theme="Not Present";;
-		'ScrotWM') Win_theme="Not Present";;
-		'SpectrWM') Win_theme="Not Present";;
-		'WMFS') Win_theme="Not Present";;
-		'wmii') Win_theme="Not Present";;
-		'subtle') Win_theme="Not Present";;
-		'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
-		#E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
-		#TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
-		'E17') Win_theme=${E_CONF_PROFILE};;
-		'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
-		'Beryl') Win_theme="Not Present";;
-		'monsterwm') Win_theme="Not Present";;
-		'dminiwm') Win_theme="Not Present";;
-		'Compiz') Win_theme=$(gsettings get org.gnome.desktop.wm.preferences theme | tr -d "'");;
-	esac
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
-}
-# WM Theme Detection - END
+    # WM Theme Detection - BEGIN
+    detectwmtheme () {
+        Win_theme="Not Found"
+        case $WM in
+            'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
+            'OpenBox') 
+                if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then 
+                    Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
+                elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then 
+                    Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
+                fi;;
+            'FluxBox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
+            'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
+            'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
+            'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
+            'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
+            'KWin') if [ -f $HOME/.kde/share/config/plasmarc ]; then Win_theme="$(grep -F -A 1 \[Theme\] $HOME/.kde/share/config/plasmarc | awk -F"=" '/^name=/ { getline; print $2 }')"; if [ -z $Win_theme ]; then Win_theme="Air"; fi; else Win_theme="Not Present"; fi;;
+            'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
+            'FVWM') Win_theme="Not Present";;
+            'DWM') Win_theme="Not Present";;
+            'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1)"; fi;;
+            'WindowMaker') Win_theme="Not Present";;
+            'XMonad') Win_theme="Not Present";;
+            'Musca') Win_theme="Not Present";;
+            'i3') Win_theme="Not Present";;
+            'Ratpoison') Win_theme="Not Present";;
+            'ScrotWM') Win_theme="Not Present";;
+            'SpectrWM') Win_theme="Not Present";;
+            'WMFS') Win_theme="Not Present";;
+            'wmii') Win_theme="Not Present";;
+            'subtle') Win_theme="Not Present";;
+            'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
+            #E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
+            #TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
+            'E17') Win_theme=${E_CONF_PROFILE};;
+            'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
+            'Beryl') Win_theme="Not Present";;
+            'monsterwm') Win_theme="Not Present";;
+            'dminiwm') Win_theme="Not Present";;
+            'Compiz') Win_theme=$(gsettings get org.gnome.desktop.wm.preferences theme | tr -d "'");;
+        esac
+        [[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
+    }
+    # WM Theme Detection - END
 
-# GTK Theme\Icon\Font Detection - BEGIN
-detectgtk () {
-	gtk2Theme="Not Found"
-	gtk3Theme="Not Found"
-	gtkIcons="Not Found"
-	gtkFont="Not Found"
-	case $DE in
-		'KDE')	# Desktop Environment found as "KDE"
-			if [ -a $HOME/.kde/share/config/kdeglobals ]; then
-				if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
-					gtk2Theme=$(awk -F"=" '/widgetStyle=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-				elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals; then
-					gtk2Theme=$(awk -F"=" '/colorScheme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-				fi
+    # GTK Theme\Icon\Font Detection - BEGIN
+    detectgtk () {
+        gtk2Theme="Not Found"
+        gtk3Theme="Not Found"
+        gtkIcons="Not Found"
+        gtkFont="Not Found"
+        case $DE in
+            'KDE')	# Desktop Environment found as "KDE"
+                if [ -a $HOME/.kde/share/config/kdeglobals ]; then
+                    if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
+                        gtk2Theme=$(awk -F"=" '/widgetStyle=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+                    elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals; then
+                        gtk2Theme=$(awk -F"=" '/colorScheme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+                    fi
 
-				if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
-					gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-				fi
+                    if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
+                        gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+                    fi
 
-				if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
-					gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-				fi
-			fi
-		;;
-		'GNOME'|'MATE') # Desktop Environment found as "GNOME"
-			if which gconftool-2 >/dev/null 2>&1; then
-				gtk2Theme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
-			fi
+                    if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
+                        gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+                    fi
+                fi
+            ;;
+            'GNOME'|'MATE') # Desktop Environment found as "GNOME"
+                if which gconftool-2 >/dev/null 2>&1; then
+                    gtk2Theme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
+                fi
 
-			if which gconftool-2 >/dev/null 2>&1; then
-				gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
-			fi
+                if which gconftool-2 >/dev/null 2>&1; then
+                    gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
+                fi
 
-			if which gconftool-2 >/dev/null 2>&1; then
-				gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
-			fi
-			if [ "$background_detect" == "1" ]; then
-				if which gconftool-2 >/dev/null 2>&1; then
-					gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
-					gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
-				fi
-			fi
-		;;
-		'XFCE')	# Desktop Environment found as "XFCE"
-			if which xfconf-query >/dev/null 2>&1; then
-				gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName)
-			fi
+                if which gconftool-2 >/dev/null 2>&1; then
+                    gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
+                fi
+                if [ "$background_detect" == "1" ]; then
+                    if which gconftool-2 >/dev/null 2>&1; then
+                        gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
+                        gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
+                    fi
+                fi
+            ;;
+            'XFCE')	# Desktop Environment found as "XFCE"
+                if which xfconf-query >/dev/null 2>&1; then
+                    gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName)
+                fi
 
-			if which xfconf-query >/dev/null 2>&1; then
-				gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
-			fi
+                if which xfconf-query >/dev/null 2>&1; then
+                    gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
+                fi
 
-			if which xfconf-query >/dev/null 2>&1; then
-				gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
-			fi
-		;;
-		'LXDE')
-			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
-				lxdeconf="/lxde/config"
-			else
-				lxdeconf="/lxsession/LXDE/desktop.conf"
-			fi
-			# TODO: Clean me.
-			if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
-			 gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-			fi
+                if which xfconf-query >/dev/null 2>&1; then
+                    gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
+                fi
+            ;;
+            'LXDE')
+                if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
+                    lxdeconf="/lxde/config"
+                else
+                    lxdeconf="/lxsession/LXDE/desktop.conf"
+                fi
+                # TODO: Clean me.
+                if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
+                 gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+                fi
 
-			if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-				gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-			fi
+                if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+                    gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+                fi
 
-			if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
-				gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-			fi	 
-		;;
+                if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+                    gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+                fi	 
+            ;;
 
-		# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
+            # /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
-		*)	# Lightweight or No DE Found
-			if [ -f $HOME/.gtkrc-2.0 ]; then
-				if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
-					gtk2Theme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
-				fi
+            *)	# Lightweight or No DE Found
+                if [ -f $HOME/.gtkrc-2.0 ]; then
+                    if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
+                        gtk2Theme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
+                    fi
 
-				if grep -q icon-theme $HOME/.gtkrc-2.0; then
-					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
-				fi
+                    if grep -q icon-theme $HOME/.gtkrc-2.0; then
+                        gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
+                    fi
 
-				if grep -q font $HOME/.gtkrc-2.0; then
-					gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
-				fi
-			fi
-			# $HOME/.gtkrc.mine theme detect only
-			if [ -f $HOME/.gtkrc.mine ]; then
-				if grep -q "^include" $HOME/.gtkrc.mine; then
-					gtk2Theme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
-				fi
-				if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
-					gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
-				fi
-			fi
-			# /etc/gtk-2.0/gtkrc compatability
+                    if grep -q font $HOME/.gtkrc-2.0; then
+                        gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
+                    fi
+                fi
+                # $HOME/.gtkrc.mine theme detect only
+                if [ -f $HOME/.gtkrc.mine ]; then
+                    if grep -q "^include" $HOME/.gtkrc.mine; then
+                        gtk2Theme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
+                    fi
+                    if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
+                        gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
+                    fi
+                fi
+                # /etc/gtk-2.0/gtkrc compatability
 			if [[ -f /etc/gtk-2.0/gtkrc && ! -f $HOME/.gtkrc-2.0 && ! -f $HOME/.gtkrc.mine ]]; then
 				if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
 					gtk2Theme=$(awk -F'"' '/gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
@@ -1139,7 +1139,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"          "$c1"\`\`\`                        "$c2"\`          %s"  # User @ Host      
+"         "$c1"\`\`\`                        "$c2"\`           %s"  # User @ Host      
 "         "$c1"\` \`.....---..."$c2"....--.\`\`\`   -/         %s"  # OS
 "         "$c1"+o   .--\`         "$c2"/y:\`      +.        %s"  # Kernel
 "         "$c1" yo\`:.            "$c2":o      \`+-         %s"  # Uptime
