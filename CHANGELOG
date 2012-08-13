@@ -3,19 +3,34 @@
     changelog
 **** **** **** ****
 
+########## v2.4.2 ##########
+- Added OpenBSD Logo
+- Fixed Fedora & Red-Hat detection bug
+- Implemented independence between FreeBSD and OpenBSD no more daemon for OpenBSD ;-(
+- Added OpenBSD CPUInfo
+- Fixed OpenBSD sysctl on various FreeBSD sections
+- Fixed OpenBSD ps flags
+- Added & fixed RAMInfo on OpenBSD
+- Fixed typo on Linux CPU proc
+- Added OpenBSD & FreeBSD Resolution detection
+- Probably something else I've forgotten to add...
+
+!!!!! MOST IMPORTANT FIX !!!!!
+- Added dots to the CHANGELOG
+
 ########## v2.4.1 ##########
 - Added CPUInfo support for FreeBSD
-- Fixed null value in GTK3 function
-- Fixed couple of OpenBSD errors
+- Fixed null value in GTK3 function.
+- Fixed couple of OpenBSD errors.
 
 ########## v2.4.0 ########## 
-- Added RAMInfo support for FreeBSD
-- Added Uptime support for FreeBSD
-- Added Packages support for FreeBSD
-- Made the code more distro aware
-- Fixed color bug on FreeBSD logo
-- Moved host's priority from 0 to 3
-- Fixed other Typos in the FreeBSD Logo
+- Added RAMInfo support for FreeBSD.
+- Added Uptime support for FreeBSD.
+- Added Packages support for FreeBSD.
+- Made the code more distro aware.
+- Fixed color bug on FreeBSD logo.
+- Moved host's priority from 0 to 3.
+- Fixed other Typos in the FreeBSD Logo.
 
 ########## v2.3.9-PIPED ########## 
  - Changed FreeBSD logo from beastie to it's modern character of beastie.
