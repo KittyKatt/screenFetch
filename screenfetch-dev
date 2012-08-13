@@ -23,7 +23,7 @@ scriptVersion="2.4.5"
 # Settings for fetcher
 ######################
 
-# This setting controls what ASCII logo is displayed. Available: Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, BSD, and None
+# This setting controls what ASCII logo is displayed. Available: Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, OpenBSD, FreeBSD, and None
 # distro="Linux"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
@@ -145,7 +145,7 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 			echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
 			echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
 			echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
-			echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and BSD"
+			echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, FreeBSD and OpenBSD"
 			echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
 			echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
 			echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
@@ -330,8 +330,8 @@ detectdistro () {
 			fi
 			if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
 			if [ -f /etc/chakra-release ]; then distro="Chakra"; fi
-			if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
-			if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
+			if [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then distro="Fedora"; fi
+			if [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Linux"; fi
 			if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
 			if [ -f /etc/SuSE-release ]; then distro="openSUSE"; fi
 			if [ -f /etc/mageia-release ]; then distro="Mageia"; fi
@@ -339,7 +339,8 @@ detectdistro () {
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
 			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && awk '/FreeBSD {print $1}/' /var/run/dmesg.boot | sed -n '1,2d'; then distro="BSD"; fi
+			if [ -f /var/run/dmesg.boot ] && awk '/FreeBSD/ {print $1}' /var/run/dmesg.boot | sed -n '1,2d'; then distro="FreeBSD"; fi
+      if [ -f /var/run/dmesg.boot ] && awk '/OpenBSD/ {print $1}' /var/run/dmesg.boot | sed -n ''; then distro="OpenBSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if [ -f /etc/issue ] && grep -q "LinuxDeepin" /etc/issue; then distro="LinuxDeepin"; fi
@@ -362,7 +363,8 @@ detectdistro () {
 			opensuse) distro="openSUSE" ;;
 			ubuntu) distro="Ubuntu" ;;
 			debain) distro="Debian" ;;
-			bsd) distro="BSD" ;;
+			freebsd) distro="FreeBSD" ;;
+      openbsd) distro="OpenBSD" ;;
 			red*hat*) distro="Red Hat Linux" ;;
 			crunchbang) distro="CrunchBang" ;;
 			gentoo) distro="Gentoo" ;;
@@ -386,7 +388,7 @@ detecthost () {
     myUser="Unknown"
     myHost="Unknown"
     case $distro in
-        'BSD')
+        'FreeBSD'|'OpenBSD')
         myUser=$(echo "$USER")
         myHost=$(hostname);;
         'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
@@ -414,8 +416,10 @@ detectkernel () {
 detectuptime () {
     uptime=0
     case $distro in
-        'BSD') uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}') ;;
-        'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware') uptime=$(awk -F. '{print $1 /proc/uptime}') 
+         # It seems that if there's only been hours since boot time it will not show the values correctly
+         # This will be pinned to debug section
+        'FreeBSD'|'OpenBSD') uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}') ;;
+        'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware') uptime=$(awk -F. '{print $1}' /proc/uptime) 
 
 	secs=$((${uptime}%60))
 	mins=$((${uptime}/60%60))
@@ -445,7 +449,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
-        'BSD') pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}') ;;
+    'FreeBSD'|'OpenBSD') pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}') ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
 }
@@ -459,9 +463,12 @@ detectcpu () {
    cpu_mhz=0
    cpu_ghz=0
     case $distro in 
-        'BSD')
+        'FreeBSD')
            cpu=$(sysctl -n hw.model)
-           cpu_mhz=$(sysctl -n hw.clockrate)
+         #  cpu_mhz=$(sysctl -n hw.clockrate)
+            ;;
+        'OpenBSD')
+             cpu=$(sysctl -n hw.model | sed 's/@.*//' )
             ;;
         'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
 	cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //')
@@ -489,7 +496,7 @@ detectmem () {
     human=1024
 
     case $distro in 
-        'BSD')
+        'FreeBSD')
             
             # Total Memory
             
@@ -526,6 +533,13 @@ detectmem () {
             usedmem=$(($used_mem / ($human * $human) )) 
 
             ;;
+         'OpenBSD')
+             # Currently this is the solution which doesn't require some heavy hacks
+             # in order to get the memory as accurate as possible
+ 
+             total_mem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
+             usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
+          ;;
         'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
 	phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 	total_mem=$((${phys_mem} / $human))
@@ -556,9 +570,24 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
+
+# This needs to be tested with dual monitors, will do that after I've rebooted OpenBSD.
+ 
+ case $distro in 
+  
+    'FreeBSD'|'OpenBSD')
+    # Needs to be uncomment once testing dual monitors is to be done 
+ # if [[ -n $DISPLAY ]]; then
+     xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg')
+ # fi
+      ;;
+    'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
 	if [[ -n $DISPLAY ]]; then
 		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
-	else
+  fi
+     ;;
+     esac
+	if [ -z $xResolution ]; then
 		xResolution="No X Server"
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current resolution(s)...found as '$xResolution'"
@@ -572,6 +601,19 @@ detectde () {
 		for each in $denames; do
 			if [[ `ps aux` =~ "$each" ]]; then
 				if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
+         case $distro in
+          'OpenBSD' | 'FreeBSD')
+             ps | grep gnome-shell | grep -v grep > /dev/null 2>&1
+           if [[ "$?" -eq "0" ]]; then
+             # FIXME - making a very liberal assumption on this ... 
+             DEver=$(gnome-session-properties --version | awk '{ print $2 }')
+           else
+             DEver=$(gnome-session --version | awk {'print $NF'})
+           fi
+           DE="GNOME"
+           
+            ;;
+           'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
 					ps -ef | grep gnome-shell | grep -v grep > /dev/null 2>&1
 					if [[ "$?" -eq "0" ]]; then
 						# FIXME - making a very liberal assumption on this ... 
@@ -580,7 +622,10 @@ detectde () {
 						DEver=$(gnome-session --version | awk {'print $NF'})
 					fi
 					DE="GNOME"
-				fi
+				
+        ;;
+        esac
+       fi
 				if [[ "$each" == "mate-session" ]] || [[ "$each" == "mate-settings-daemon" ]]; then
 					DE="MATE"
 					DEver=$(mate-session --version | awk {'print $NF'})
@@ -720,19 +765,32 @@ detectde () {
                 fi
             ;;
             'GNOME'|'MATE') # Desktop Environment found as "GNOME"
-                if which gconftool-2 >/dev/null 2>&1; then
-                    gtk2Theme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
-                fi
 
-                if which gconftool-2 >/dev/null 2>&1; then
+             # gconftool-2 is outdated,  gsettings is it's replacement
+                # (Gnome 3.0+)  
+                if which gsettings >/dev/null 2>&1; then
+                   gtk2Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
+                
+                elif which gconftool-2 >/dev/null 2>&1; then
+                    gtk2Theme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme >/dev/null 2>&1)
+                fi
+               
+                if which gsettings >/dev/null 2>&1; then
+                    gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'") 
+                elif which gconftool-2 >/dev/null 2>&1; then
                     gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
-                fi
-
-                if which gconftool-2 >/dev/null 2>&1; then
+                fi                
+                
+                if which gsettings >/dev/null 2>&1; then
+                      gtkFont=$(gsettings get org.gnome.desktop.interface font-name | tr -d "'")
+                elif which gconftool-2 >/dev/null 2>&1; then
                     gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
                 fi
                 if [ "$background_detect" == "1" ]; then
-                    if which gconftool-2 >/dev/null 2>&1; then
+                    # This should be right, otherwise only a manual solution seems to fix this
+                    if which gsettings >/dev/null 2>&1; then
+                        gtk2Theme=$(gsettings get org.gnome.desktop.background picture-uri)
+                    elif which gconftool-2 >/dev/null 2>&1; then
                         gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
                         gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
                     fi
@@ -826,26 +884,7 @@ detectde () {
             # Proper gtk3 Theme detection 
             # Does not work with BSD - Remove if statement - This if statement should work for both BSD and Linux - If it doesn't Please contact me!
 	    	if [ -x $(which gsettings) ]; then
-			    	gtk3Theme=$(gsettings list-schemas)
-                    i=0
-                    while [ $gtk3Theme]
-                    do
-                        gtklist[i]=${gtk3Theme}
-                        ((i++))
-                    done
-                if [ -z "$1"]; then
-                    gtk3Theme="Not Found"
-            
-                 else
-                    gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
-                fi
-              for j in ${excluded[@]}
-              do
-                  if [ $j == $1 ]; then
-                      return 1
-                  fi
-              done
-
+          gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
 		    fi
 
 			# ROX-Filer icon detect only
@@ -1133,7 +1172,7 @@ asciiText () {
 "$c2 :--------------------://")
 		;;
 
-		"BSD")
+		"FreeBSD")
 			c1="\e[0;31m" # Red
 			c2="\e[1;31m" # Light Red
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
@@ -1157,6 +1196,42 @@ asciiText () {
 "                                               %s"             #RAM
 )                               
 		;;
+     
+    "OpenBSD")
+      c1="\e[1;33m" # Light Yellow
+      c2="\e[0;33m" # Bold Yellow
+      c3="\e[1;36m" # Light Cyan
+      c4="\e[1;31m" # Light Red
+      c5="\e[1;37m"
+      c6="\e[1;30m"
+      if [ -n "${my_lcolor}" ]; then c1="$my_lcolor"; c2="${my_color}"; fi
+      startline="5"
+      fulloutput=(
+ "                                       "$c3" _      "
+"                                       "$c3"(_)      "
+""$c1"              |    .                            "
+""$c1"          .   |L  /|   .         "$c3" _        "
+""$c1"      _ . |\ _| \--+._/| .       "$c3"(_)       "
+""$c1"     / ||\| Y J  )   / |/| ./            %s"   # Host
+""$c1"    J  |)'( |        \` F\`.'/       "$c3" _   %s"   # OS
+""$c1"  -<|  F         __     .-<        "$c3"(_)  %s"   # Kernel
+""$c1"    | /       .-'"$c3". "$c1"\`.  /"$c3"-. "$c1"L___         %s" # Uptime
+""$c1"    J \      <    "$c3"\ "$c1" | | "$c6"O"$c3"\\\\"$c1"|.-' "$c3" _      %s" # Package
+""$c1"  _J \  .-    \\\\"$c3"/ "$c6"O "$c3"| "$c1"| \  |"$c1"F    "$c3"(_)     %s" # Shell
+""$c1" '-F  -<_.     \   .-'  \`-' L__         %s"
+""$c1"__J  _   _.     >-'  "$c2")"$c4"._.   "$c1"|-'         %s         "
+""$c1" \`-|.'   /_.          "$c4"\_|  "$c1" F           %s     "
+""$c1"  /.-   .                _.<            %s"
+""$c1" /'    /.'             .'  \`\           %s"       
+""$c1"  /L  /'   |/      _.-'-\               %s "
+""$c1" /'J       ___.---'\|                   %s"
+""$c1"   |\  .--' V  | \`. \`                   %s "
+""$c1"   |/\`. \`-.     \`._)                    %s"
+""$c1"      / .-.\                            %s"
+""$c1"      \ (  \`\                           "
+""$c1"       \`.\                                  "
+)
+      ;;
 
 		"Mandriva"|"Mandrake")
 			c1="\e[1;34m" # Light Blue
