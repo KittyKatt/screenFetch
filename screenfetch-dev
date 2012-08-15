@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 #
 # screenFetch
 #
@@ -339,8 +339,10 @@ detectdistro () {
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
 			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && awk '/FreeBSD/ {print $1}' /var/run/dmesg.boot | sed -n '1,2d'; then distro="FreeBSD"; fi
-      if [ -f /var/run/dmesg.boot ] && awk '/OpenBSD/ {print $1}' /var/run/dmesg.boot | sed -n ''; then distro="OpenBSD"; fi
+			#if [ -f /var/run/dmesg.boot ] && awk '/FreeBSD/ {print $1}' /var/run/dmesg.boot | sed -n '1,2d'; then distro="FreeBSD"; fi
+            if [ -f /var/run/dmesg.boot ] && grep -o "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi			
+			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
+            #if [ -f /var/run/dmesg.boot ] && awk '/OpenBSD/ {print $1}' /var/run/dmesg.boot | sed -n ''; then distro="OpenBSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if [ -f /etc/issue ] && grep -q "LinuxDeepin" /etc/issue; then distro="LinuxDeepin"; fi
@@ -364,7 +366,8 @@ detectdistro () {
 			ubuntu) distro="Ubuntu" ;;
 			debain) distro="Debian" ;;
 			freebsd) distro="FreeBSD" ;;
-      openbsd) distro="OpenBSD" ;;
+			dragonflybsd) distro="DragonFlyBSD" ;;
+            openbsd) distro="OpenBSD" ;;
 			red*hat*) distro="Red Hat Linux" ;;
 			crunchbang) distro="CrunchBang" ;;
 			gentoo) distro="Gentoo" ;;
@@ -388,7 +391,7 @@ detecthost () {
     myUser="Unknown"
     myHost="Unknown"
     case $distro in
-        'FreeBSD'|'OpenBSD')
+        'FreeBSD'|'OpenBSD' | 'DragonFlyBSD')
         myUser=$(echo "$USER")
         myHost=$(hostname);;
         'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
@@ -418,7 +421,7 @@ detectuptime () {
     case $distro in
          # It seems that if there's only been hours since boot time it will not show the values correctly
          # This will be pinned to debug section
-        'FreeBSD'|'OpenBSD') uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}') ;;
+        'FreeBSD'|'OpenBSD'|'DragonFlyBSD') uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}') ;;
         'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware') uptime=$(awk -F. '{print $1}' /proc/uptime) 
 
 	secs=$((${uptime}%60))
@@ -449,7 +452,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
-    'FreeBSD'|'OpenBSD') pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}') ;;
+    'FreeBSD'|'OpenBSD'|'DragonFlyBSD') pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}') ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
 }
@@ -463,7 +466,7 @@ detectcpu () {
    cpu_mhz=0
    cpu_ghz=0
     case $distro in 
-        'FreeBSD')
+        'FreeBSD'|'DragonFlyBSD')
            cpu=$(sysctl -n hw.model)
          #  cpu_mhz=$(sysctl -n hw.clockrate)
             ;;
@@ -496,7 +499,7 @@ detectmem () {
     human=1024
 
     case $distro in 
-        'FreeBSD')
+        'FreeBSD'|'DragonFlyBSD')
             
             # Total Memory
             
@@ -575,7 +578,7 @@ detectres () {
  
  case $distro in 
   
-    'FreeBSD'|'OpenBSD')
+    'FreeBSD'|'OpenBSD'|'DragonFlyBSD')
     # Needs to be uncomment once testing dual monitors is to be done 
  # if [[ -n $DISPLAY ]]; then
      xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg')
@@ -602,7 +605,7 @@ detectde () {
 			if [[ `ps aux` =~ "$each" ]]; then
 				if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
          case $distro in
-          'OpenBSD' | 'FreeBSD')
+          'OpenBSD' | 'FreeBSD'|'DragonFlyBSD')
              ps | grep gnome-shell | grep -v grep > /dev/null 2>&1
            if [[ "$?" -eq "0" ]]; then
              # FIXME - making a very liberal assumption on this ... 
@@ -1196,7 +1199,35 @@ asciiText () {
 "                                               %s"             #RAM
 )                               
 		;;
-     
+       
+	  "DragonFlyBSD")
+	      c1="\e[1;31m" # Red
+		  c2="\e[1;37m" # White
+		  c3="\e[1;33m" # 
+		  c4="\e[0;31m"
+		  startline="0"
+		  fulloutput=(
+"                          "$c1" |                     %s"
+"                         "$c1" .-.                   %s" 
+"                        "$c3" ()"$c1"I"$c3"()                  %s"
+"                   "$c1" \"==.__:-:__.==\"             %s"
+"                   "$c1"\"==.__/~|~\__.==\"            %s"
+"                   "$c1"\"==._(  Y  )_.==\"            %s"
+"        "$c2".-'~~\"\"~=--...,__"$c1"\/|\/"$c2"__,...--=~\"\"~~'-. %s"
+"       "$c2"(               ..="$c1"\\\\="$c1"/"$c2"=..               )%s"
+"        "$c2"\`'-.        ,.-\"\`;"$c1"/=\\\\"$c2" ;\"-.,_        .-'\`%s"
+"           "$c2" \`~\"-=-~\` .-~\` "$c1"|=|"$c2" \`~-. \`~-=-\"~\`     %s"
+"            "$c2"     .-~\`    /"$c1"|=|"$c2"\    \`~-.          %s" 
+"            "$c2"  .~\`       / "$c1"|=|"$c2" \       \`~.       %s"
+"      "$c2"    .-~\`        .'  "$c1"|=|"$c2"  \\\\\`.        \`~-.  %s"
+"      "$c2"  (\`     _,.-=\"\`  "$c1"  |=|"$c2"    \`\"=-.,_     \`) %s" 
+"      "$c2"   \`~\"~\"\`        "$c1"   |=|"$c2"           \`\"~\"~\`  %s"
+"                        "$c1"  /=\                   %s"
+"                        "$c1"  \=/                          %s"
+"                        "$c1"   ^                           %s"
+)
+	          ;;
+	   	
     "OpenBSD")
       c1="\e[1;33m" # Light Yellow
       c2="\e[0;33m" # Bold Yellow
@@ -1609,12 +1640,12 @@ infoDisplay () {
 	case $distro in
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
-		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin") labelcolor="\e[1;32m";;
-		"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
+		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin" | "DragonFlyBSD") labelcolor="\e[1;32m";;
+		"Ubuntu"|"Debian"|"FreeBSD"|"Red Hat Linux"|"Peppermint") labelcolor="\e[1;31m";;
 		"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
-		*) labelcolor="\e[1;33m";;
+		"OpenBSD"|*) labelcolor="\e[1;33m";;
 	esac 
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
 	# Some verbosity stuff

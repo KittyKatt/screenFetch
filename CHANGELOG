@@ -3,16 +3,22 @@
     changelog
 **** **** **** ****
 
+########## v2.4.3 ##########
+- Added DragonFlyBSD support.
+- Added DragonFlyBSD Logo.
+- Made the script more portable between *BSD and Linux.
+
+
 ########## v2.4.2 ##########
-- Added OpenBSD Logo
-- Fixed Fedora & Red-Hat detection bug
-- Implemented independence between FreeBSD and OpenBSD no more daemon for OpenBSD ;-(
-- Added OpenBSD CPUInfo
-- Fixed OpenBSD sysctl on various FreeBSD sections
-- Fixed OpenBSD ps flags
-- Added & fixed RAMInfo on OpenBSD
-- Fixed typo on Linux CPU proc
-- Added OpenBSD & FreeBSD Resolution detection
+- Added OpenBSD Logo.
+- Fixed Fedora & Red-Hat detection bug.
+- Implemented independence between FreeBSD and OpenBSD no more daemon for OpenBSD. ;-(
+- Added OpenBSD CPUInfo.
+- Fixed OpenBSD sysctl on various FreeBSD sections.
+- Fixed OpenBSD ps flags.
+- Added & fixed RAMInfo on OpenBSD.
+- Fixed typo on Linux CPU proc.
+- Added OpenBSD & FreeBSD Resolution detection.
 - Probably something else I've forgotten to add...
 
 !!!!! MOST IMPORTANT FIX !!!!!
