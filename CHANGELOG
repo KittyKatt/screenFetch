@@ -3,6 +3,10 @@
     changelog
 **** **** **** ****
 
+########## v2.4.4 ##########
+- Added NetBSD Logo.
+- Added NetBSD support.
+
 ########## v2.4.3 ##########
 - Added DragonFlyBSD support.
 - Added DragonFlyBSD Logo.
