@@ -364,8 +364,9 @@ detectdistro () {
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
 			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && awk '/FreeBSD/ {print $1}' /var/run/dmesg.boot | sed -n '1,2d'; then distro="FreeBSD"; fi
-			if [ -f /var/run/dmesg.boot ] && awk '/OpenBSD/ {print $1}' /var/run/dmesg.boot | sed -n ''; then distro="OpenBSD"; fi
+			if [ -f /var/run/dmesg.boot ] && grep -o "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi 
+			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
+			if [ -f /var/run/dmesg.boot ] && grep -o "OpenBSD" /var/run/dmesg.boot; then distro="OpenBSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if [ -f /etc/issue ]; then
@@ -394,6 +395,7 @@ detectdistro () {
 			debain) distro="Debian" ;;
 			freebsd) distro="FreeBSD" ;;
 			openbsd) distro="OpenBSD" ;;
+			dragonflybsd) distro="DragonFlyBSD" ;;
 			red*hat*) distro="Red Hat Linux" ;;
 			crunchbang) distro="CrunchBang" ;;
 			gentoo) distro="Gentoo" ;;
@@ -486,6 +488,7 @@ detectpkgs () {
 detectcpu () {
 	if [ "$distro" == "Mac OS X" ]; then cpu=$(echo $(sysctl -n machdep.cpu.brand_string))
 	elif [ "$distro" == "FreeBSD" ]; then cpu=$(sysctl -n hw.model)
+	elif [ "$distro" == "DragonflyBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	else cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //'); fi
 	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
@@ -1228,6 +1231,33 @@ asciiText () {
 )
       ;;
 
+	  "DragonFlyBSD")
+	      c1="\e[1;31m" # Red
+		  c2="\e[1;37m" # White
+		  c3="\e[1;33m" # 
+		  c4="\e[0;31m"
+		  startline="0"
+		  fulloutput=("                     "$c1" |                     %s"
+"                    "$c1" .-.                   %s" 
+"                   "$c3" ()"$c1"I"$c3"()                  %s"
+"              "$c1" \"==.__:-:__.==\"             %s"
+"              "$c1"\"==.__/~|~\__.==\"            %s"
+"              "$c1"\"==._(  Y  )_.==\"            %s"
+"   "$c2".-'~~\"\"~=--...,__"$c1"\/|\/"$c2"__,...--=~\"\"~~'-. %s"
+"  "$c2"(               ..="$c1"\\\\="$c1"/"$c2"=..               )%s"
+"   "$c2"\`'-.        ,.-\"\`;"$c1"/=\\\\"$c2" ;\"-.,_        .-'\`%s"
+"      "$c2" \`~\"-=-~\` .-~\` "$c1"|=|"$c2" \`~-. \`~-=-\"~\`     %s"
+"       "$c2"     .-~\`    /"$c1"|=|"$c2"\    \`~-.          %s" 
+"       "$c2"  .~\`       / "$c1"|=|"$c2" \       \`~.       %s"
+" "$c2"    .-~\`        .'  "$c1"|=|"$c2"  \\\\\`.        \`~-.  %s"
+" "$c2"  (\`     _,.-=\"\`  "$c1"  |=|"$c2"    \`\"=-.,_     \`) %s" 
+" "$c2"   \`~\"~\"\`        "$c1"   |=|"$c2"           \`\"~\"~\`  %s"
+"                   "$c1"  /=\                   %s"
+"                   "$c1"  \=/                          %s"
+"                   "$c1"   ^                           %s"
+)
+	          ;;
+
 		"Mandriva"|"Mandrake")
 			c1="\e[1;34m" # Light Blue
 			c2="\e[1;33m" # Bold Yellow
@@ -1686,8 +1716,8 @@ infoDisplay () {
 	case $distro in
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
-		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin") labelcolor="\e[1;32m";;
-		"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu") labelcolor="\e[1;31m";;
+		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD") labelcolor="\e[1;32m";;
+		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu") labelcolor="\e[1;31m";;
 		"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
