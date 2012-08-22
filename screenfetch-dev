@@ -483,7 +483,7 @@ detectpkgs () {
 # CPU Detection - Begin
 detectcpu () {
 	if [ "$distro" == "Mac OS X" ]; then cpu=$(echo $(sysctl -n machdep.cpu.brand_string))
-	elif [ "$distro" == "BSD" ]; then cpu=null
+	elif [ "$distro" == "BSD" ]; then cpu=$(sysctl -n hw.model); cpu_mhz=$(sysctl -n hw.clockrate)
 	else cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //'); fi
 	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
 	# cpu_ghz=$(echo "scale=2; ${cpu_mhz} / 1000" | bc )
@@ -503,7 +503,7 @@ detectmem () {
 		# usedmem=$(echo "$(sysctl -n hw.usermem)"/1024^2|bc)
 		usedmem=$(echo "$(top -l 1 | awk '/PhysMem/' | grep -o \[0-9]\*M | tail -2 | head -1)B")
 	elif [ "$distro" == "BSD" ]; then
-		phys_mem=$(sysctl -ahn hw.physmem)
+		phys_mem=$(sysctl -n hw.physmem)
 		size_mem=$phys_mem
 		size_chip=1
 		guess_chip=`echo "$size_mem / 8 - 1" | bc`
@@ -513,12 +513,12 @@ detectmem () {
 		done
 		round_mem=`echo "( $size_mem / $size_chip + 1 ) * $size_chip " | bc`                                                          
 		total_mem=$(($round_mem / ($human * $human) ))
-		pagesize=$(sysctl -ahn hw.pagesize)
-		inactive_count=$(sysctl -ahn vm.stats.vm.v_inactive_count)
+		pagesize=$(sysctl -n hw.pagesize)
+		inactive_count=$(sysctl -n vm.stats.vm.v_inactive_count)
 		inactive_mem=$(($inactive_count * $pagesize))
-		cache_count=$(sysctl -ahn vm.stats.vm.v_cache_count)
+		cache_count=$(sysctl -n vm.stats.vm.v_cache_count)
 		cache_mem=$(($cache_count * $pagesize))
-		free_count=$(sysctl -ahn vm.stats.vm.v_free_count)
+		free_count=$(sysctl -n vm.stats.vm.v_free_count)
 		free_mem=$(($free_count * $pagesize))
 		avail_mem=$(($inactive_mem + $cache_mem + $free_mem))
 		used_mem=$(($round_mem - $avail_mem))
