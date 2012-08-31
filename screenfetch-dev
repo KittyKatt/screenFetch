@@ -422,7 +422,7 @@ detectuptime () {
     case $distro in
          # It seems that if there's only been hours since boot time it will not show the values correctly
          # This will be pinned to debug section
-        'FreeBSD'|'OpenBSD'|'DragonFlyBSD'|) uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}') ;;
+        'FreeBSD'|'OpenBSD'|'DragonFlyBSD') uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}') ;;
         'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware'|'NetBSD') uptime=$(awk -F. '{print $1}' /proc/uptime) 
 
 	secs=$((${uptime}%60))
