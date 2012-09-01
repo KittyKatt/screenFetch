@@ -576,13 +576,15 @@ detectshell () {
 detectres () {
 
 # This needs to be tested with dual monitors, will do that after I've rebooted OpenBSD.
- 
+ if which xdpyinfo >/dev/null 2>&1; then
  case $distro in 
   
     'FreeBSD'|'OpenBSD'|'DragonFlyBSD' |'NetBSD')
     # Needs to be uncomment once testing dual monitors is to be done 
  # if [[ -n $DISPLAY ]]; then
-     xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg')
+     if [[  ]]; then
+          xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg')
+     fi
  # fi
       ;;
     'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
@@ -591,10 +593,12 @@ detectres () {
   fi
      ;;
      esac
+ fi
 	if [ -z $xResolution ]; then
 		xResolution="No X Server"
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current resolution(s)...found as '$xResolution'"
+
 }
 # Resolution Detection - End
 
