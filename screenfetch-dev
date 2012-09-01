@@ -582,9 +582,7 @@ detectres () {
     'FreeBSD'|'OpenBSD'|'DragonFlyBSD' |'NetBSD')
     # Needs to be uncomment once testing dual monitors is to be done 
  # if [[ -n $DISPLAY ]]; then
-     if [[  ]]; then
           xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg')
-     fi
  # fi
       ;;
     'Arch Linux'|'Debian'|'Fedora'|'frugalware'|'gentoo'|'slackware')
