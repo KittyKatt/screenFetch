@@ -341,7 +341,7 @@ detectdistro () {
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
 			if [ -f /var/run/dmesg.boot ] && grep -o "NetBSD" /var/run/dmesg.boot; then distro="NetBSD"; fi
 		    if [ -f /var/run/dmesg.boot ] && grep -o "OpenBSD" /var/run/dmesg.boot; then distro="OpenBSD"; fi
-            if [ -f /var/run/dmesg.boot ] && grep -o "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi			
+            if [ -f /var/run/dmesg.boot ] && grep -om 1 "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi			
 			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
