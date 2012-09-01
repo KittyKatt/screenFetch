@@ -339,10 +339,10 @@ detectdistro () {
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
 			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && grep -o "NetBSD" /var/run/dmesg.boot; then distro="NetBSD"; fi
-		    if [ -f /var/run/dmesg.boot ] && grep -o "OpenBSD" /var/run/dmesg.boot; then distro="OpenBSD"; fi
-            if [ -f /var/run/dmesg.boot ] && grep -om 1 "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi			
-			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
+			if [ -f /var/run/dmesg.boot ] && grep -qo "NetBSD" /var/run/dmesg.boot; then distro="NetBSD"; fi
+		    if [ -f /var/run/dmesg.boot ] && grep -qo "OpenBSD" /var/run/dmesg.boot; then distro="OpenBSD"; fi
+            if [ -f /var/run/dmesg.boot ] && grep -qom 1 "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi			
+			if [ -f /var/run/dmesg.boot ] && grep -qom 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if [ -f /etc/issue ] && grep -q "LinuxDeepin" /etc/issue; then distro="LinuxDeepin"; fi
@@ -889,7 +889,7 @@ detectde () {
 			fi
             # Proper gtk3 Theme detection 
             # Does not work with BSD - Remove if statement - This if statement should work for both BSD and Linux - If it doesn't Please contact me!
-	    	if [ -x $(which gsettings) ]; then
+	    	if which gsettings >/dev/null 2>&1; then
           gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
 		    fi
 
