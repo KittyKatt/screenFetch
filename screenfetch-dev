@@ -508,7 +508,7 @@ detectmem () {
 	if [ "$distro" == "Mac OS X" ]; then
 		totalmem=$(echo "$(sysctl -n hw.memsize)"/${human}^2|bc)
 		# usedmem=$(echo "$(sysctl -n hw.usermem)"/1024^2|bc)
-		usedmem=$(echo "$(top -l 1 | awk '/PhysMem/' | grep -o \[0-9]\*M | tail -2 | head -1)B")
+		usedmem=$(echo "$(top -l 1 | awk '/PhysMem/' | grep -o \[0-9]\*'M used' | grep -o \[0-9]\*)")
 	elif [ "$distro" == "FreeBSD" ]; then
 		phys_mem=$(sysctl -n hw.physmem)
 		size_mem=$phys_mem
