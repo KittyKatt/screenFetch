@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # screenFetch
 #
@@ -38,7 +38,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm xmonad musca i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca i3 xmonad ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder"
 
 # Export theme settings
@@ -145,7 +145,7 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 			echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
 			echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
 			echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
-			echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and BSD"
+			echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, OpenBSD"
 			echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
 			echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
 			echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
@@ -242,11 +242,16 @@ fi
 
 # Host and User detection - Begin
 detecthost () {
-	myUser=$(echo "$USER")
-	# net-tools is becoming deprecated
-	# myHost=$(hostname)
-	# myHost=$(cat /proc/sys/kernel/hostname)
-	myHost=$(uname -n)
+	if [[ "$distro" =~ "BSD" ]]; then
+		myUser=$(echo "$USER")
+		myHost=$(hostname)
+	else
+		myUser=$(echo "$USER")
+		# net-tools is becoming deprecated
+		# myHost=$(hostname)
+		# myHost=$(cat /proc/sys/kernel/hostname)
+		myHost=$(uname -n)
+	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
 }
 
@@ -350,16 +355,18 @@ detectdistro () {
 			fi
 			if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
 			if [ -f /etc/chakra-release ]; then distro="Chakra"; fi
-			if [ -f /etc/fedora-release ]; then distro="Fedora"; fi
-			if [ -f /etc/redhat-release ]; then distro="Red Hat Linux"; fi
+			if [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then distro="Fedora"; fi
+			if [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Linux"; fi
 			if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
 			if [ -f /etc/SuSE-release ]; then distro="openSUSE"; fi
 			if [ -f /etc/mageia-release ]; then distro="Mageia"; fi
 			if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
-			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
+			if [ -f /etc/crunchbang-lsb-release ] || [ -f /etc/lsb-release-crunchbang ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && grep -i bsd /var/run/dmesg.boot; then distro="BSD"; fi
+			if [ -f /var/run/dmesg.boot ] && grep -o "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi 
+			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
+			if [ -f /var/run/dmesg.boot ] && grep -o "OpenBSD" /var/run/dmesg.boot; then distro="OpenBSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if [ -f /etc/issue ]; then
@@ -386,7 +393,9 @@ detectdistro () {
 			opensuse) distro="openSUSE" ;;
 			ubuntu) distro="Ubuntu" ;;
 			debain) distro="Debian" ;;
-			bsd) distro="BSD" ;;
+			freebsd) distro="FreeBSD" ;;
+			openbsd) distro="OpenBSD" ;;
+			dragonflybsd) distro="DragonFlyBSD" ;;
 			red*hat*) distro="Red Hat Linux" ;;
 			crunchbang) distro="CrunchBang" ;;
 			gentoo) distro="Gentoo" ;;
@@ -439,6 +448,7 @@ detectuptime () {
 	if [ "${days}" -ne "0" ]; then
 		uptime="${days}d ${uptime}"
 	fi
+	if [[ "$distro" =~ "BSD" ]]; then uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}'); fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
@@ -465,6 +475,7 @@ detectpkgs () {
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
 		;;
+		'FreeBSD'|'OpenBSD') pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}') ;;
 		# 'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
@@ -476,6 +487,9 @@ detectpkgs () {
 # CPU Detection - Begin
 detectcpu () {
 	if [ "$distro" == "Mac OS X" ]; then cpu=$(echo $(sysctl -n machdep.cpu.brand_string))
+	elif [ "$distro" == "FreeBSD" ]; then cpu=$(sysctl -n hw.model)
+	elif [ "$distro" == "DragonflyBSD" ]; then cpu=$(sysctl -n hw.model)
+	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	else cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //'); fi
 	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
 	# cpu_ghz=$(echo "scale=2; ${cpu_mhz} / 1000" | bc )
@@ -487,20 +501,47 @@ detectcpu () {
 
 # Memory Detection - Begin
 detectmem () {
+	hw_mem=0
+	free_mem=0
+	human=1024
 	if [ "$distro" == "Mac OS X" ]; then
-		totalmem=$(echo "$(sysctl -n hw.memsize)"/1024^2|bc)
+		totalmem=$(echo "$(sysctl -n hw.memsize)"/${human}^2|bc)
 		# usedmem=$(echo "$(sysctl -n hw.usermem)"/1024^2|bc)
 		usedmem=$(echo "$(top -l 1 | awk '/PhysMem/' | grep -o \[0-9]\*M | tail -2 | head -1)B")
+	elif [ "$distro" == "FreeBSD" ]; then
+		phys_mem=$(sysctl -n hw.physmem)
+		size_mem=$phys_mem
+		size_chip=1
+		guess_chip=`echo "$size_mem / 8 - 1" | bc`
+		while [ $guess_chip != 0 ]; do
+			guess_chip=`echo "$guess_chip / 2" | bc`
+			size_chip=`echo "$size_chip * 2" | bc`
+		done
+		round_mem=`echo "( $size_mem / $size_chip + 1 ) * $size_chip " | bc`                                                          
+		total_mem=$(($round_mem / ($human * $human) ))
+		pagesize=$(sysctl -n hw.pagesize)
+		inactive_count=$(sysctl -n vm.stats.vm.v_inactive_count)
+		inactive_mem=$(($inactive_count * $pagesize))
+		cache_count=$(sysctl -n vm.stats.vm.v_cache_count)
+		cache_mem=$(($cache_count * $pagesize))
+		free_count=$(sysctl -n vm.stats.vm.v_free_count)
+		free_mem=$(($free_count * $pagesize))
+		avail_mem=$(($inactive_mem + $cache_mem + $free_mem))
+		used_mem=$(($round_mem - $avail_mem))
+		usedmem=$(($used_mem / ($human * $human) )) 
+	elif [ "$distro" == "OpenBSD" ]; then
+		total_mem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
+		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
 	else
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
-		totalmem=$((${total_mem}/1024))
+		totalmem=$((${total_mem}/${human}))
 		if free | grep -q '/cache'; then
 			used_mem=$(free | awk '/cache:/ { print $3 }')
-			usedmem=$((${used_mem}/1024))
+			usedmem=$((${used_mem}/${human}))
 		else
 			free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
 			used_mem=$((${total_mem} - ${free_mem}))
-			usedmem=$((${used_mem}/1024))
+			usedmem=$((${used_mem}/${human}))
 		fi
 	fi
 	mem="${usedmem}MB / ${totalmem}MB"
@@ -520,16 +561,20 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
-	if [[ `ps aux` =~ "Finder" ]]; then
-		res1=$(system_profiler SPDisplaysDataType| awk '/Resolution:/ {print $2}')
-		res2=$(system_profiler SPDisplaysDataType| awk '/Resolution:/ {print $4}')
-		xResolution=$(echo $res1"x"$res2)
-	elif [[ -n $DISPLAY ]]; then
-		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
-	# elif [[ "$distro" == "Cygwin" ]]; then
-	# 	xResolution="$(scrot --resolution)"
+	if [[ "$distro" =~ "BSD" ]]; then
+		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg')
 	else
-		xResolution="No X Server"
+		if [[ `ps aux` =~ "Finder" ]]; then
+			res1=$(system_profiler SPDisplaysDataType| awk '/Resolution:/ {print $2}')
+			res2=$(system_profiler SPDisplaysDataType| awk '/Resolution:/ {print $4}')
+			xResolution=$(echo $res1"x"$res2)
+		elif [[ -n $DISPLAY ]]; then
+			xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
+		# elif [[ "$distro" == "Cygwin" ]]; then
+		# 	xResolution="$(scrot --resolution)"
+		else
+			xResolution="No X Server"
+		fi
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current resolution(s)...found as '$xResolution'"
 }
@@ -715,19 +760,17 @@ detectgtk () {
 			fi
 		;;
 		'GNOME'|'MATE') # Desktop Environment found as "GNOME"
-			if which gconftool-2 >/dev/null 2>&1; then
+			 # (Gnome 3.0+)
+			if which gsettings >/dev/null 2>&1; then
+				gtk2Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
+				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'") 
+				gtkFont=$(gsettings get org.gnome.desktop.interface font-name | tr -d "'")
+				if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
+			elif which gconftool-2 >/dev/null 2>&1; then
 				gtk2Theme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
-			fi
-
-			if which gconftool-2 >/dev/null 2>&1; then
 				gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
-			fi
-
-			if which gconftool-2 >/dev/null 2>&1; then
 				gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
-			fi
-			if [ "$background_detect" == "1" ]; then
-				if which gconftool-2 >/dev/null 2>&1; then
+				if [ "$background_detect" == "1" ]; then
 					gtkBackgroundFull=$(gconftool-2 -g /desktop/gnome/background/picture_filename)
 					gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
 				fi
@@ -823,6 +866,7 @@ detectgtk () {
 			#if [ $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
 			#	gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
 			#fi
+			if [[ -x $(which gsettings) ]]; then gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'"); fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
@@ -1127,7 +1171,7 @@ asciiText () {
 "$c2 :--------------------://")
 		;;
 
-		"BSD")
+		"FreeBSD")
 			c1="\e[1;37m" # Red
 			c2="\e[1;31m" # Light Red
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
@@ -1151,6 +1195,68 @@ asciiText () {
 )
                 ;;
 
+    "OpenBSD")
+      c1="\e[1;33m" # Light Yellow
+      c2="\e[0;33m" # Bold Yellow
+      c3="\e[1;36m" # Light Cyan
+      c4="\e[1;31m" # Light Red
+      c5="\e[1;37m"
+      c6="\e[1;30m"
+      if [ -n "${my_lcolor}" ]; then c1="$my_lcolor"; c2="${my_color}"; fi
+      startline="5"
+      fulloutput=(
+ "                                       "$c3" _      "
+"                                       "$c3"(_)      "
+""$c1"              |    .                            "
+""$c1"          .   |L  /|   .         "$c3" _        "
+""$c1"      _ . |\ _| \--+._/| .       "$c3"(_)       "
+""$c1"     / ||\| Y J  )   / |/| ./            %s"   # Host
+""$c1"    J  |)'( |        \` F\`.'/       "$c3" _   %s"   # OS
+""$c1"  -<|  F         __     .-<        "$c3"(_)  %s"   # Kernel
+""$c1"    | /       .-'"$c3". "$c1"\`.  /"$c3"-. "$c1"L___         %s" # Uptime
+""$c1"    J \      <    "$c3"\ "$c1" | | "$c6"O"$c3"\\\\"$c1"|.-' "$c3" _      %s" # Package
+""$c1"  _J \  .-    \\\\"$c3"/ "$c6"O "$c3"| "$c1"| \  |"$c1"F    "$c3"(_)     %s" # Shell
+""$c1" '-F  -<_.     \   .-'  \`-' L__         %s"
+""$c1"__J  _   _.     >-'  "$c2")"$c4"._.   "$c1"|-'         %s         "
+""$c1" \`-|.'   /_.          "$c4"\_|  "$c1" F           %s     "
+""$c1"  /.-   .                _.<            %s"
+""$c1" /'    /.'             .'  \`\           %s"       
+""$c1"  /L  /'   |/      _.-'-\               %s "
+""$c1" /'J       ___.---'\|                   %s"
+""$c1"   |\  .--' V  | \`. \`                   %s "
+""$c1"   |/\`. \`-.     \`._)                    %s"
+""$c1"      / .-.\                            %s"
+""$c1"      \ (  \`\                           "
+""$c1"       \`.\                                  "
+)
+      ;;
+
+	  "DragonFlyBSD")
+	      c1="\e[1;31m" # Red
+		  c2="\e[1;37m" # White
+		  c3="\e[1;33m" # 
+		  c4="\e[0;31m"
+		  startline="0"
+		  fulloutput=("                     "$c1" |                     %s"
+"                    "$c1" .-.                   %s" 
+"                   "$c3" ()"$c1"I"$c3"()                  %s"
+"              "$c1" \"==.__:-:__.==\"             %s"
+"              "$c1"\"==.__/~|~\__.==\"            %s"
+"              "$c1"\"==._(  Y  )_.==\"            %s"
+"   "$c2".-'~~\"\"~=--...,__"$c1"\/|\/"$c2"__,...--=~\"\"~~'-. %s"
+"  "$c2"(               ..="$c1"\\\\="$c1"/"$c2"=..               )%s"
+"   "$c2"\`'-.        ,.-\"\`;"$c1"/=\\\\"$c2" ;\"-.,_        .-'\`%s"
+"      "$c2" \`~\"-=-~\` .-~\` "$c1"|=|"$c2" \`~-. \`~-=-\"~\`     %s"
+"       "$c2"     .-~\`    /"$c1"|=|"$c2"\    \`~-.          %s" 
+"       "$c2"  .~\`       / "$c1"|=|"$c2" \       \`~.       %s"
+" "$c2"    .-~\`        .'  "$c1"|=|"$c2"  \\\\\`.        \`~-.  %s"
+" "$c2"  (\`     _,.-=\"\`  "$c1"  |=|"$c2"    \`\"=-.,_     \`) %s" 
+" "$c2"   \`~\"~\"\`        "$c1"   |=|"$c2"           \`\"~\"~\`  %s"
+"                   "$c1"  /=\                   %s"
+"                   "$c1"  \=/                          %s"
+"                   "$c1"   ^                           %s"
+)
+	          ;;
 
 		"Mandriva"|"Mandrake")
 			c1="\e[1;34m" # Light Blue
@@ -1610,8 +1716,8 @@ infoDisplay () {
 	case $distro in
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
-		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin") labelcolor="\e[1;32m";;
-		"Ubuntu"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu") labelcolor="\e[1;31m";;
+		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD") labelcolor="\e[1;32m";;
+		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu") labelcolor="\e[1;31m";;
 		"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
