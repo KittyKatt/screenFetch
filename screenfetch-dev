@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/usr/bin/env bash
+=======
+﻿#!/usr/bin/env bash
+>>>>>>> spaghetti2514/master
 #
 # screenFetch
 #
@@ -272,6 +276,7 @@ detectdistro () {
 				distro_codename=null
 				distro_release=null
 			fi
+			if [ "$distro_detect" == "Trisquel" ]; then distro="Trisquel"; fi
 			if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
 				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
 					distro="LMDE"
@@ -460,7 +465,7 @@ detectpkgs () {
 	case $distro in
 		'Arch Linux'|'ParabolaGNU/Linux-libre'|'Chakra') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin') pkgs=$(dpkg --get-selections | wc -l) ;;
+		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Trisquel') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
@@ -507,7 +512,11 @@ detectmem () {
 	if [ "$distro" == "Mac OS X" ]; then
 		totalmem=$(echo "$(sysctl -n hw.memsize)"/${human}^2|bc)
 		# usedmem=$(echo "$(sysctl -n hw.usermem)"/1024^2|bc)
+<<<<<<< HEAD
 		usedmem=$(echo "$(top -l 1 | awk '/PhysMem/' | grep -o \[0-9]\*M | tail -2 | head -1)B")
+=======
+		usedmem=$(echo "$(top -l 1 | awk '/PhysMem/' | grep -o \[0-9]\*'M used' | grep -o \[0-9]\*)")
+>>>>>>> spaghetti2514/master
 	elif [ "$distro" == "FreeBSD" ]; then
 		phys_mem=$(sysctl -n hw.physmem)
 		size_mem=$phys_mem
@@ -792,6 +801,8 @@ detectgtk () {
 		'LXDE')
 			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
 				lxdeconf="/lxde/config"
+			elif [ $distro == "Trisquel" ]; then
+				lxdeconf=""
 			else
 				lxdeconf="/lxsession/LXDE/desktop.conf"
 			fi
@@ -1650,6 +1661,31 @@ asciiText () {
 "${c4}                 \"VEzjt:;;z>*\`       %s")
 		;;
 
+	"Trisquel")
+		c1="\e[1;34m" # Light Blue
+		c2="\e[1;36m" # Blue
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="1"
+			fulloutput=(
+"${c1}                          ▄▄▄▄▄▄     "
+"${c1}                       ▄█████████▄    %s"
+"${c1}       ▄▄▄▄▄▄         ████▀   ▀████   %s"
+"${c1}    ▄██████████▄     ████▀   ▄▄ ▀███  %s"
+"${c1}  ▄███▀▀   ▀▀████     ███▄   ▄█   ███ %s"
+"${c1} ▄███   ▄▄▄   ████▄    ▀██████   ▄███ %s"
+"${c1} ███   █▀▀██▄  █████▄     ▀▀   ▄████  %s"
+"${c1} ▀███      ███  ███████▄▄  ▄▄██████   %s"
+"${c1}  ▀███▄   ▄███  █████████████${c2}████▀    %s"
+"${c1}   ▀█████████    ███████${c2}███▀▀▀        %s"
+"${c1}     ▀▀███▀▀     ██${c2}████▀▀             %s"
+"${c2}                ██████▀   ▄▄▄▄        %s"
+"${c2}               █████▀   ████████      %s"
+"${c2}               █████   ███▀  ▀███     %s"
+"${c2}                ████▄   ██▄▄▄  ███    %s"
+"${c2}                 █████▄   ▀▀  ▄██     %s"
+"${c2}                   ██████▄▄▄████      %s"
+"${c2}                      ▀▀█████▀▀      ")
+		;;
 
 		*)
 			c1="\e[1;37m" # White
@@ -1721,7 +1757,7 @@ infoDisplay () {
 		"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
-		"Mac OS X") labelcolor="\033[1;34m";;
+		"Mac OS X"|"Trisquel") labelcolor="\033[1;34m";;
 		*) labelcolor="\e[1;33m";;
 	esac 
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
