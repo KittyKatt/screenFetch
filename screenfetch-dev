@@ -266,7 +266,13 @@ detectdistro () {
 				distro="Arch Linux"
 				distro_release=null
 			fi
-			if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
+			if [ "$distro_detect" == "Debian" ]; then 
+				if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
+					distro="CrunchBang"
+				else
+					distro="Debian"
+				fi
+			fi
 			if [ "$distro_detect" == "SolusOS" ]; then
 				distro="SolusOS"
 				distro_codename=null
