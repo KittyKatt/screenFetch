@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 #
 # screenFetch
 #
@@ -363,7 +363,7 @@ detectdistro () {
 			if [ -f /etc/mageia-release ]; then distro="Mageia"; fi
 			if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
-			if [ -f /etc/crunchbang-lsb-release ] || [ -f /etc/lsb-release-crunchbang ]; then distro="CrunchBang"; fi
+			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
 			if [ -f /var/run/dmesg.boot ] && grep -o "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi 
 			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
@@ -869,7 +869,7 @@ detectgtk () {
 			#if [ $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
 			#	gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
 			#fi
-			if [[ -x $(which gsettings) ]]; then gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'"); fi
+			if [ -x $(which gsettings) ]; then gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'"); fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
