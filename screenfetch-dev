@@ -38,7 +38,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca i3 xmonad ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder"
+wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca i3 xmonad ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder"
 
 # Export theme settings
@@ -671,6 +671,7 @@ detectwm () {
 					'dminiwm') WM="dminiwm";;
 					'compiz') WM="Compiz";;
 					'Finder') WM="Quartz Compositor";;
+                    'herbstluftwm') WM="herbstluftwm";;
 				esac
 			fi
 		done
