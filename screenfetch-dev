@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.5.0"
+scriptVersion="2.5.3"
 
 ######################
 # Settings for fetcher
@@ -334,6 +334,9 @@ detectdistro () {
 				distro="Fuduntu"
 				distro_codname=null
 			fi
+			if [ "$distro_detect" == "ManjaroLinux" ]; then
+				distro="Manjaro"
+			fi
 			if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
 			if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
 		fi
@@ -410,6 +413,7 @@ detectdistro () {
 			chakra) distro="Chakra" ;;
 			mac*os*x) distro="Mac OS X" ;;
 			fuduntu) distro="Fuduntu" ;;
+			manjaro) distro="Manjaro" ;;
 			# cygwin) distro="Cygwin" ;;
 		esac
 	fi	
@@ -1680,6 +1684,30 @@ asciiText () {
 "${c2}                      ▀▀█████▀▀      ")
 		;;
 
+	"Manjaro")
+		c1="\e[1;32m" # Green
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(
+"${c1} |;pwoadvmapwalsd;|  |;aodfpas;|     %s"
+"${c1} |;aowofjaodwkfmd;|  |;soalssf;|    %s"
+"${c1} |;aowofjaowdjfod;|  |;oemsfol;|    %s"
+"${c1} |;woambowpkfmaod;|  |;amzpdbm;|    %s"
+"${c1} |;wofd;|            |;wzofwdb;|    %s"
+"${c1} |;cobd;|  |;sofd;|  |;aomwamf;|    %s"
+"${c1} |;pqod;|  |;vmos;|  |;woafjso;|    %s"
+"${c1}           |;amow;|  |;boixeui;|    %s"
+"${c1} |;wmap;|  |;boxe;|  |;qpwovcs;|    %s"
+"${c1} |;xpop;|  |;owjb;|  |;zoagfos;|    %s"
+"${c1} |;wzpe;|  |;bovo;|  |;wcmgoww;|    %s"
+"${c1} |;zoeo;|  |;nowi;|  |;fgowoad;|    %s"
+"${c1} |;tioe;|  |;qyio;|  |;zpoicob;|    %s"
+"${c1} |;roti;|  |;eooa;|  |;cdofjdd;|    %s"
+"${c1} |;paqo;|  |;cbox;|  |;aodcmda;|    %s"
+"${c1} |;topd;|  |;htyo;|  |;yoievoi;|    %s"
+"${c1} |;ewnb;|  |;ghot;|  |;coasobv;|")
+		;;
+
 		*)
 			c1="\e[1;37m" # White
 			c2="\e[1;30m" # Light Gray
@@ -1747,7 +1775,7 @@ infoDisplay () {
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD") labelcolor="\e[1;32m";;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu") labelcolor="\e[1;31m";;
-		"CrunchBang"|"SolusOS"|"Viperr") labelcolor="\e[1;30m";;
+		"CrunchBang"|"SolusOS"|"Viperr"|"Manjaro") labelcolor="\e[1;30m";;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
 		"Mac OS X"|"Trisquel") labelcolor="\033[1;34m";;
