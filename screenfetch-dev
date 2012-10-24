@@ -603,30 +603,70 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
+
+		# This has been severely updated. Stolen a lot of the implemenation from inxi. I'm leaving the old case version commented in the case statement.
+
+		if [[ -n $( type -p xprop ) ]];then
+			xprop_root="$( xprop -root 2>/dev/null )"
+		fi
+
+		if [[ -n $xprop_root && -n $( grep -is '^_MUFFIN' <<< "$xprop_root" ) ]]; then
+			DE="Cinnamon"
+		elif [[ -n $xprop_root && -n $( grep -is '^_MARCO' <<< "$xprop_root" ) ]];then
+			DE="Mate"
+			DEver=$(mate-session --version | awk {'print $NF'})
+		elif [[ -n $GNOME_DESKTOP_SESSION_ID ]]; then
+			DE="Gnome"
+			if [[ "$?" -eq "0" ]]; then
+				# FIXME - making a very liberal assumption on this ... 
+				DEver=$(gnome-session-properties --version | awk '{ print $2 }')
+			else
+				DEver=$(gnome-session --version | awk {'print $NF'})
+			fi
+		elif [[ $KDE_SESSION_VERSION == '5' ]]; then
+			DE="KDE"
+			DEver_data=$( kded5 --version 2>/dev/null )
+			DEver=$( grep -si '^KDE Development Platform:' <<< "$version_data" | gawk '{print $4}' )
+		elif [[ $KDE_SESSION_VERSION == '4' ]]; then
+			DE="KDE"
+			DEver_data=$( kded4 --version 2>/dev/null )
+			DEver=$( grep -si '^KDE Development Platform:' <<< "$version_data" | gawk '{print $4}' )
+		elif [[ $KDE_FULL_SESSION == 'true' ]]; then
+			DE="KDE"
+			DEver_data=$( kded --version 2>/dev/null )
+			DEver=$( grep -si '^KDE:' <<< "$version_data" | gawk '{print $2}' )
+		elif [[ -n $( grep -Eis '\"xfce4\"' <<< "$xprop_root" ) ]];then
+			DE="XFCE"
+			DEver="4"
+		elif [[ -n $( grep -is '\"xfce5\"' <<< "$xprop_root" ) ]];then
+			DE="XFCE"
+			DEver="5"
+		fi
+
 		for each in $denames; do
 			if [[ `ps aux` =~ "$each" ]]; then
-				if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
-					ps -ef | grep gnome-shell | grep -v grep > /dev/null 2>&1
-					if [[ "$?" -eq "0" ]]; then
-						# FIXME - making a very liberal assumption on this ... 
-						DEver=$(gnome-session-properties --version | awk '{ print $2 }')
-					else
-						DEver=$(gnome-session --version | awk {'print $NF'})
-					fi
-					DE="GNOME"
-				fi
-				if [[ "$each" == "mate-session" ]] || [[ "$each" == "mate-settings-daemon" ]]; then
-					DE="MATE"
-					DEver=$(mate-session --version | awk {'print $NF'})
-				fi
-				if [[ "$each" == "xfce4-session" ]]; then
-					DE="XFCE"
-					DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
-				fi
-				if [[ "$each" == "ksmserver" ]] ; then
-					DE="KDE"
-					DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
-				fi
+				#if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
+				#	ps -ef | grep gnome-shell | grep -v grep > /dev/null 2>&1
+				#	if [[ "$?" -eq "0" ]]; then
+				#		# FIXME - making a very liberal assumption on this ... 
+				#		DEver=$(gnome-session-properties --version | awk '{ print $2 }')
+				#	else
+				#		DEver=$(gnome-session --version | awk {'print $NF'})
+				#	fi
+				#	DE="GNOME"
+				#fi
+				#if [[ "$each" == "mate-session" ]] || [[ "$each" == "mate-settings-daemon" ]]; then
+				#	DE="MATE"
+				#	DEver=$(mate-session --version | awk {'print $NF'})
+				#fi
+				#if [[ "$each" == "xfce4-session" ]]; then
+				#	DE="XFCE"
+				#	DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
+				#fi
+				#if [[ "$each" == "ksmserver" ]] ; then
+				#	DE="KDE"
+				#	DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
+				#fi
 				if [[ "$each" == "lxsession" ]]; then
 					DE="LXDE"
 					DEver=$(lxpanel -v)
