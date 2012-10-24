@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.5.3"
+scriptVersion="2.5.5"
 
 ######################
 # Settings for fetcher
@@ -368,9 +368,10 @@ detectdistro () {
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
 			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && grep -o "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi 
+			if [ -f /var/run/dmesg.boot ] && grep -om 1 "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi 
 			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
 			if [ -f /var/run/dmesg.boot ] && grep -o "OpenBSD" /var/run/dmesg.boot; then distro="OpenBSD"; fi
+			if [ -f /var/run/dmesg.boot ] && grep -o "NetBSD" /var/run/dmesg.boot; then distro="NetBSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if [ -f /etc/issue ]; then
@@ -400,6 +401,7 @@ detectdistro () {
 			freebsd) distro="FreeBSD" ;;
 			openbsd) distro="OpenBSD" ;;
 			dragonflybsd) distro="DragonFlyBSD" ;;
+			netbsd) distro="NetBSD" ;;
 			red*hat*) distro="Red Hat Linux" ;;
 			crunchbang) distro="CrunchBang" ;;
 			gentoo) distro="Gentoo" ;;
@@ -454,6 +456,7 @@ detectuptime () {
 		uptime="${days}d ${uptime}"
 	fi
 	if [[ "$distro" =~ "BSD" ]]; then uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}'); fi
+	if [[ "$distro" =~ "NetBSD" ]]; then uptime=$(awk -F. '{print $1}' /proc/uptime); fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
@@ -537,6 +540,17 @@ detectmem () {
 	elif [ "$distro" == "OpenBSD" ]; then
 		total_mem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
 		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
+	elif [ "$distro" == "NetBSD" ]; then
+		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
+		total_mem=$((${phys_mem} / $human))
+		if grep -q 'Cached' /proc/meminfo; then 
+			cache=$(awk '/Cached/ {print $2}' /proc/meminfo)
+			usedmem=$((${cache} / $human))
+		else
+			free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
+			used_mem=$((${phys_mem} - ${free_mem}))
+			usedmem=$((${used_mem} / $human))
+		fi
 	else
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${total_mem}/${human}))
@@ -567,7 +581,7 @@ detectshell () {
 # Resolution Detection - Begin
 detectres () {
 	if [[ "$distro" =~ "BSD" ]]; then
-		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg')
+		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
 	else
 		if [[ `ps aux` =~ "Finder" ]]; then
 			res1=$(system_profiler SPDisplaysDataType| awk '/Resolution:/ {print $2}')
@@ -1266,6 +1280,34 @@ asciiText () {
 )
 	          ;;
 
+	"NetBSD")
+		c1="\e[1;31m" # Light Red
+		c2="\e[1;37m" # White
+		startline="2"
+		fulloutput=(
+"                                  "$c1"__,gnnnOCCCCCOObaau,_         "
+"   "$c2"_._                    "$c1"__,gnnCCCCCCCCOPF\"''                 "
+"  "$c2"(N\\\\\\\\"$c1"XCbngg,._____.,gnnndCCCCCCCCCCCCF\"___,,,,___           %s"
+"   "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCOOOOPYvv.     %s"
+"    "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCPF\"''               %s"
+"     "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCCCCCCOF\"'                     %s"
+"      "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCOF\"'                         %s"
+"       "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCPF\"'                             %s"
+"        "$c2"\\\\N\\\\\\\\"$c1"\"PCOCCCOCCFP\"\"                                  %s" 
+"         "$c2"\\\\N\                                                %s"
+"          "$c2"\\\\N\                                               %s"
+"           "$c2"\\\\N\                                              %s"
+"            "$c2"\\\\NN\                                            %s"
+"             "$c2"\\\\NN\                                           %s"
+"              "$c2"\\\\NNA.                                         %s"
+"               "$c2"\\\\NNA,                                        %s"
+"                "$c2"\\\\NNN,                                       %s"
+"                 "$c2"\\\\NNN\                                      %s"
+"                  "$c2"\\\\NNN\ "
+"                   "$c2"\\\\NNNA"
+	)
+	;;
+
 		"Mandriva"|"Mandrake")
 			c1="\e[1;34m" # Light Blue
 			c2="\e[1;33m" # Bold Yellow
@@ -1774,7 +1816,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD") labelcolor="\e[1;32m";;
-		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu") labelcolor="\e[1;31m";;
+		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD") labelcolor="\e[1;31m";;
 		"CrunchBang"|"SolusOS"|"Viperr"|"Manjaro") labelcolor="\e[1;30m";;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
