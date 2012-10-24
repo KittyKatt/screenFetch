@@ -729,7 +729,8 @@ detectwm () {
 					'dminiwm') WM="dminiwm";;
 					'compiz') WM="Compiz";;
 					'Finder') WM="Quartz Compositor";;
-                    'herbstluftwm') WM="herbstluftwm";;
+                 			'herbstluftwm') WM="herbstluftwm";;
+					'cinnamon') WM="Cinnamon";;
 				esac
 			fi
 		done
@@ -785,6 +786,9 @@ detectwmtheme () {
 			ThemeFile="$(cygpath -u $ThemeFile)"
 			Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
 		;;
+		'Cinnamon')
+			Win_theme="$(gsettings get org.cinnamon.theme name)"
+		;;
 	esac
 	#if [ "$Win_theme" == "Not Found" -a "$distro" == "Cygwin" ]; then # we are in for a long ride.
 	#	ThemeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
@@ -817,6 +821,12 @@ detectgtk () {
 				if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
 					gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
 				fi
+			fi
+		;;
+		'Cinnamon')
+			if which gsettings >/dev/null 2>&1; then
+				gtk2Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
+				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
 			fi
 		;;
 		'GNOME'|'MATE') # Desktop Environment found as "GNOME"
@@ -1906,7 +1916,7 @@ infoDisplay () {
 			myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 			myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 		else
-			mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++))
+			if [ "$gtk2Theme" != "Not Found" ]; then mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++)); fi
 			mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
 			myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 			myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
