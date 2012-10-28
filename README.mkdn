@@ -18,6 +18,10 @@ How do I get screenFetch? (Arch Linux)
 
 1. Install `screenfetch-git` or 'screenfetch' from the AUR. That's it!
 
+How do I get screenFetch? (Mageia)
+
+1. Install screenfetch from the official repositories with urpmi or rpmdrake.
+   e.g. # urpmi screenfetch
 
 How do I get screenFetch? (Others)
 ---------------------
