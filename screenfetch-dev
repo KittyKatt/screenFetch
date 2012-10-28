@@ -441,6 +441,8 @@ detectuptime () {
 		boot=`sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1`
 		now=`date +%s`
 		uptime=$(($now-$boot))
+	elif [ "$distro" == "FreeBSD" ]; then
+		uptime=`sysctl -n kern.boottime | awk -F' ' '{print $4}' | tr -d ","`
 	else
 		uptime=`awk -F. '{print $1}' /proc/uptime`
 	fi
@@ -863,6 +865,8 @@ detectgtk () {
 			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
 				lxdeconf="/lxde/config"
 			elif [ $distro == "Trisquel" ]; then
+				lxdeconf=""
+			elif [ "$distro" == "FreeBSD" ]; then
 				lxdeconf=""
 			else
 				lxdeconf="/lxsession/LXDE/desktop.conf"
