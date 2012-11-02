@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.5.3"
+scriptVersion="2.5.5"
 
 ######################
 # Settings for fetcher
@@ -368,9 +368,10 @@ detectdistro () {
 			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
 			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
 			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && grep -o "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi 
+			if [ -f /var/run/dmesg.boot ] && grep -om 1 "FreeBSD" /var/run/dmesg.boot; then distro="FreeBSD"; fi 
 			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot; then distro="DragonFlyBSD"; fi
 			if [ -f /var/run/dmesg.boot ] && grep -o "OpenBSD" /var/run/dmesg.boot; then distro="OpenBSD"; fi
+			if [ -f /var/run/dmesg.boot ] && grep -o "NetBSD" /var/run/dmesg.boot; then distro="NetBSD"; fi
 			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
 			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
 			if [ -f /etc/issue ]; then
@@ -400,6 +401,7 @@ detectdistro () {
 			freebsd) distro="FreeBSD" ;;
 			openbsd) distro="OpenBSD" ;;
 			dragonflybsd) distro="DragonFlyBSD" ;;
+			netbsd) distro="NetBSD" ;;
 			red*hat*) distro="Red Hat Linux" ;;
 			crunchbang) distro="CrunchBang" ;;
 			gentoo) distro="Gentoo" ;;
@@ -439,6 +441,8 @@ detectuptime () {
 		boot=`sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1`
 		now=`date +%s`
 		uptime=$(($now-$boot))
+	elif [ "$distro" == "FreeBSD" ]; then
+		uptime=`sysctl -n kern.boottime | awk -F' ' '{print $4}' | tr -d ","`
 	else
 		uptime=`awk -F. '{print $1}' /proc/uptime`
 	fi
@@ -454,6 +458,7 @@ detectuptime () {
 		uptime="${days}d ${uptime}"
 	fi
 	if [[ "$distro" =~ "BSD" ]]; then uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}'); fi
+	if [[ "$distro" =~ "NetBSD" ]]; then uptime=$(awk -F. '{print $1}' /proc/uptime); fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
 }
 # Uptime Detection - End
@@ -537,6 +542,17 @@ detectmem () {
 	elif [ "$distro" == "OpenBSD" ]; then
 		total_mem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
 		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
+	elif [ "$distro" == "NetBSD" ]; then
+		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
+		total_mem=$((${phys_mem} / $human))
+		if grep -q 'Cached' /proc/meminfo; then 
+			cache=$(awk '/Cached/ {print $2}' /proc/meminfo)
+			usedmem=$((${cache} / $human))
+		else
+			free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
+			used_mem=$((${phys_mem} - ${free_mem}))
+			usedmem=$((${used_mem} / $human))
+		fi
 	else
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${total_mem}/${human}))
@@ -567,7 +583,7 @@ detectshell () {
 # Resolution Detection - Begin
 detectres () {
 	if [[ "$distro" =~ "BSD" ]]; then
-		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg')
+		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
 	else
 		if [[ `ps aux` =~ "Finder" ]]; then
 			res1=$(system_profiler SPDisplaysDataType| awk '/Resolution:/ {print $2}')
@@ -589,30 +605,70 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
+
+		# This has been severely updated. Stolen a lot of the implemenation from inxi. I'm leaving the old case version commented in the case statement.
+
+		if [[ -n $( type -p xprop ) ]];then
+			xprop_root="$( xprop -root 2>/dev/null )"
+		fi
+
+		if [[ -n $xprop_root && -n $( grep -is '^_MUFFIN' <<< "$xprop_root" ) ]]; then
+			DE="Cinnamon"
+		elif [[ -n $xprop_root && -n $( grep -is '^_MARCO' <<< "$xprop_root" ) ]];then
+			DE="Mate"
+			DEver=$(mate-session --version | awk {'print $NF'})
+		elif [[ -n $GNOME_DESKTOP_SESSION_ID ]]; then
+			DE="Gnome"
+			if [[ "$?" -eq "0" ]]; then
+				# FIXME - making a very liberal assumption on this ... 
+				DEver=$(gnome-session-properties --version | awk '{ print $2 }')
+			else
+				DEver=$(gnome-session --version | awk {'print $NF'})
+			fi
+		elif [[ $KDE_SESSION_VERSION == '5' ]]; then
+			DE="KDE"
+			DEver_data=$( kded5 --version 2>/dev/null )
+			DEver=$( grep -si '^KDE Development Platform:' <<< "$version_data" | gawk '{print $4}' )
+		elif [[ $KDE_SESSION_VERSION == '4' ]]; then
+			DE="KDE"
+			DEver_data=$( kded4 --version 2>/dev/null )
+			DEver=$( grep -si '^KDE Development Platform:' <<< "$version_data" | gawk '{print $4}' )
+		elif [[ $KDE_FULL_SESSION == 'true' ]]; then
+			DE="KDE"
+			DEver_data=$( kded --version 2>/dev/null )
+			DEver=$( grep -si '^KDE:' <<< "$version_data" | gawk '{print $2}' )
+		elif [[ -n $( grep -Eis '\"xfce4\"' <<< "$xprop_root" ) ]];then
+			DE="XFCE"
+			DEver="4"
+		elif [[ -n $( grep -is '\"xfce5\"' <<< "$xprop_root" ) ]];then
+			DE="XFCE"
+			DEver="5"
+		fi
+
 		for each in $denames; do
 			if [[ `ps aux` =~ "$each" ]]; then
-				if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
-					ps -ef | grep gnome-shell | grep -v grep > /dev/null 2>&1
-					if [[ "$?" -eq "0" ]]; then
-						# FIXME - making a very liberal assumption on this ... 
-						DEver=$(gnome-session-properties --version | awk '{ print $2 }')
-					else
-						DEver=$(gnome-session --version | awk {'print $NF'})
-					fi
-					DE="GNOME"
-				fi
-				if [[ "$each" == "mate-session" ]] || [[ "$each" == "mate-settings-daemon" ]]; then
-					DE="MATE"
-					DEver=$(mate-session --version | awk {'print $NF'})
-				fi
-				if [[ "$each" == "xfce4-session" ]]; then
-					DE="XFCE"
-					DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
-				fi
-				if [[ "$each" == "ksmserver" ]] ; then
-					DE="KDE"
-					DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
-				fi
+				#if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
+				#	ps -ef | grep gnome-shell | grep -v grep > /dev/null 2>&1
+				#	if [[ "$?" -eq "0" ]]; then
+				#		# FIXME - making a very liberal assumption on this ... 
+				#		DEver=$(gnome-session-properties --version | awk '{ print $2 }')
+				#	else
+				#		DEver=$(gnome-session --version | awk {'print $NF'})
+				#	fi
+				#	DE="GNOME"
+				#fi
+				#if [[ "$each" == "mate-session" ]] || [[ "$each" == "mate-settings-daemon" ]]; then
+				#	DE="MATE"
+				#	DEver=$(mate-session --version | awk {'print $NF'})
+				#fi
+				#if [[ "$each" == "xfce4-session" ]]; then
+				#	DE="XFCE"
+				#	DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
+				#fi
+				#if [[ "$each" == "ksmserver" ]] ; then
+				#	DE="KDE"
+				#	DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
+				#fi
 				if [[ "$each" == "lxsession" ]]; then
 					DE="LXDE"
 					DEver=$(lxpanel -v)
@@ -675,7 +731,8 @@ detectwm () {
 					'dminiwm') WM="dminiwm";;
 					'compiz') WM="Compiz";;
 					'Finder') WM="Quartz Compositor";;
-                    'herbstluftwm') WM="herbstluftwm";;
+                 			'herbstluftwm') WM="herbstluftwm";;
+					'cinnamon') WM="Cinnamon";;
 				esac
 			fi
 		done
@@ -731,6 +788,9 @@ detectwmtheme () {
 			ThemeFile="$(cygpath -u $ThemeFile)"
 			Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
 		;;
+		'Cinnamon')
+			Win_theme="$(gsettings get org.cinnamon.theme name)"
+		;;
 	esac
 	#if [ "$Win_theme" == "Not Found" -a "$distro" == "Cygwin" ]; then # we are in for a long ride.
 	#	ThemeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
@@ -763,6 +823,12 @@ detectgtk () {
 				if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
 					gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
 				fi
+			fi
+		;;
+		'Cinnamon')
+			if which gsettings >/dev/null 2>&1; then
+				gtk2Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
+				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
 			fi
 		;;
 		'GNOME'|'MATE') # Desktop Environment found as "GNOME"
@@ -799,6 +865,8 @@ detectgtk () {
 			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
 				lxdeconf="/lxde/config"
 			elif [ $distro == "Trisquel" ]; then
+				lxdeconf=""
+			elif [ "$distro" == "FreeBSD" ]; then
 				lxdeconf=""
 			else
 				lxdeconf="/lxsession/LXDE/desktop.conf"
@@ -1265,6 +1333,34 @@ asciiText () {
 "                   "$c1"   ^                           %s"
 )
 	          ;;
+
+	"NetBSD")
+		c1="\e[1;31m" # Light Red
+		c2="\e[1;37m" # White
+		startline="2"
+		fulloutput=(
+"                                  "$c1"__,gnnnOCCCCCOObaau,_         "
+"   "$c2"_._                    "$c1"__,gnnCCCCCCCCOPF\"''                 "
+"  "$c2"(N\\\\\\\\"$c1"XCbngg,._____.,gnnndCCCCCCCCCCCCF\"___,,,,___           %s"
+"   "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCOOOOPYvv.     %s"
+"    "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCPF\"''               %s"
+"     "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCCCCCCOF\"'                     %s"
+"      "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCOF\"'                         %s"
+"       "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCPF\"'                             %s"
+"        "$c2"\\\\N\\\\\\\\"$c1"\"PCOCCCOCCFP\"\"                                  %s" 
+"         "$c2"\\\\N\                                                %s"
+"          "$c2"\\\\N\                                               %s"
+"           "$c2"\\\\N\                                              %s"
+"            "$c2"\\\\NN\                                            %s"
+"             "$c2"\\\\NN\                                           %s"
+"              "$c2"\\\\NNA.                                         %s"
+"               "$c2"\\\\NNA,                                        %s"
+"                "$c2"\\\\NNN,                                       %s"
+"                 "$c2"\\\\NNN\                                      %s"
+"                  "$c2"\\\\NNN\ "
+"                   "$c2"\\\\NNNA"
+	)
+	;;
 
 		"Mandriva"|"Mandrake")
 			c1="\e[1;34m" # Light Blue
@@ -1774,7 +1870,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD") labelcolor="\e[1;32m";;
-		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu") labelcolor="\e[1;31m";;
+		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD") labelcolor="\e[1;31m";;
 		"CrunchBang"|"SolusOS"|"Viperr"|"Manjaro") labelcolor="\e[1;30m";;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
@@ -1824,7 +1920,7 @@ infoDisplay () {
 			myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 			myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 		else
-			mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++))
+			if [ "$gtk2Theme" != "Not Found" ]; then mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++)); fi
 			mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
 			myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 			myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
