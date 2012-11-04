@@ -260,11 +260,11 @@ detectdistro () {
 	if [[ -z $distro ]]; then
 		distro="Unknown"
 		# LSB Release Check
-		if which lsb_release >/dev/null 2>&1; then
-			distro_detect=$(lsb_release -i | sed -e 's/Distributor ID://' -e 's/\t//g')
+		if type -p lsb_release >/dev/null 2>&1; then
+			read distro_detect distro_release distro_codename <<< $(lsb_release -sirc)
 			if [[ "$distro_detect" == "archlinux" || "$distro_detect" == "Arch Linux" ]]; then
 				distro="Arch Linux"
-				distro_release=null
+				distro_release="n/a"
 			fi
 			if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
 			if [ "$distro_detect" == "SolusOS" ]; then
@@ -337,18 +337,21 @@ detectdistro () {
 			if [ "$distro_detect" == "ManjaroLinux" ]; then
 				distro="Manjaro"
 			fi
-			if [[ $(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_release ]]; then distro_release=$(lsb_release -r | sed -e 's/Release://' -e 's/\t//g') && distro_more="$distro $distro_release"; fi
-			if [[ $(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') != "n/a" ]] && [[ ! $distro_codename ]]; then distro_codename=$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g') && distro_more="$distro $distro_codename"; fi
+        		if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro $distro_release"; fi
+	        	if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro $distro_codename"; fi
 		fi
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
 			#if [ $(uname -o 2>/dev/null) ]; then
 			#	if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
 			#fi
-			if [ -f /etc/os-release ]; then
-				distrib_id=$(awk -F'=' '/^ID/{print $2}' /etc/os-release 2>/dev/null)
-				if [ "$distrib_id" == "frugalware" ]; then distro="Frugalware"; fi
+        	        distrib_id=$(</etc/os-release)
+			for l in $(echo $distrib_id); do
+			if [[ ${l} =~ ^ID= ]]; then
+					distrib_id=${l//*=}
+					break 1
 			fi
+			done
 			if [ -f /etc/debian_version ]; then distro="Debian"; fi
 			if [ -f /etc/lsb-release ]; then
 				if [ grep -i ubuntu /etc/lsb-release >/dev/null 2>&1 ]; then distro="Ubuntu"; fi
@@ -444,7 +447,8 @@ detectuptime () {
 	elif [ "$distro" == "FreeBSD" ]; then
 		uptime=`sysctl -n kern.boottime | awk -F' ' '{print $4}' | tr -d ","`
 	else
-		uptime=`awk -F. '{print $1}' /proc/uptime`
+		uptime=$(</proc/uptime)
+		uptime=${uptime//.*}
 	fi
 	secs=$((${uptime}%60))
 	mins=$((${uptime}/60%60))
@@ -500,7 +504,7 @@ detectcpu () {
 	elif [ "$distro" == "FreeBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "DragonflyBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
-	else cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //'); fi
+	else cpu=$(awk 'BEGIN{FS=":"} /model name/ { gsub(/  +/," ",$2); gsub(/^ /,"",$2); gsub(/\(R\)|\(TM\)/,"",$2); print $2; exit }' /proc/cpuinfo); fi
 	# cpu_mhz=$(awk -F':' '/cpu MHz/{ print $2 }' /proc/cpuinfo | head -n 1)
 	# cpu_ghz=$(echo "scale=2; ${cpu_mhz} / 1000" | bc )
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
@@ -586,9 +590,7 @@ detectres () {
 		xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
 	else
 		if [[ `ps aux` =~ "Finder" ]]; then
-			res1=$(system_profiler SPDisplaysDataType| awk '/Resolution:/ {print $2}')
-			res2=$(system_profiler SPDisplaysDataType| awk '/Resolution:/ {print $4}')
-			xResolution=$(echo $res1"x"$res2)
+			xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4}')
 		elif [[ -n $DISPLAY ]]; then
 			xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
 		# elif [[ "$distro" == "Cygwin" ]]; then
@@ -628,15 +630,15 @@ detectde () {
 		elif [[ $KDE_SESSION_VERSION == '5' ]]; then
 			DE="KDE"
 			DEver_data=$( kded5 --version 2>/dev/null )
-			DEver=$( grep -si '^KDE Development Platform:' <<< "$version_data" | gawk '{print $4}' )
+			DEver=$( grep -si '^KDE Development Platform:' <<< "$DEver_data" | awk '{print $4}' )
 		elif [[ $KDE_SESSION_VERSION == '4' ]]; then
 			DE="KDE"
 			DEver_data=$( kded4 --version 2>/dev/null )
-			DEver=$( grep -si '^KDE Development Platform:' <<< "$version_data" | gawk '{print $4}' )
+			DEver=$( grep -si '^KDE Development Platform:' <<< "$DEver_data" | awk '{print $4}' )
 		elif [[ $KDE_FULL_SESSION == 'true' ]]; then
 			DE="KDE"
 			DEver_data=$( kded --version 2>/dev/null )
-			DEver=$( grep -si '^KDE:' <<< "$version_data" | gawk '{print $2}' )
+			DEver=$( grep -si '^KDE:' <<< "$DEver_data" | gawk '{print $2}' )
 		elif [[ -n $( grep -Eis '\"xfce4\"' <<< "$xprop_root" ) ]];then
 			DE="XFCE"
 			DEver="4"
@@ -645,45 +647,49 @@ detectde () {
 			DEver="5"
 		fi
 
-		for each in $denames; do
-			if [[ `ps aux` =~ "$each" ]]; then
-				#if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
-				#	ps -ef | grep gnome-shell | grep -v grep > /dev/null 2>&1
-				#	if [[ "$?" -eq "0" ]]; then
-				#		# FIXME - making a very liberal assumption on this ... 
-				#		DEver=$(gnome-session-properties --version | awk '{ print $2 }')
-				#	else
-				#		DEver=$(gnome-session --version | awk {'print $NF'})
-				#	fi
-				#	DE="GNOME"
-				#fi
-				#if [[ "$each" == "mate-session" ]] || [[ "$each" == "mate-settings-daemon" ]]; then
-				#	DE="MATE"
-				#	DEver=$(mate-session --version | awk {'print $NF'})
-				#fi
-				#if [[ "$each" == "xfce4-session" ]]; then
-				#	DE="XFCE"
-				#	DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
-				#fi
-				#if [[ "$each" == "ksmserver" ]] ; then
-				#	DE="KDE"
-				#	DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
-				#fi
-				if [[ "$each" == "lxsession" ]]; then
-					DE="LXDE"
-					DEver=$(lxpanel -v)
+		if [[ -z ${DE} ]]; then
+			proc_list=$(ps aux 2>/dev/null)
+			for each in $denames; do
+				if [[ $(echo "$proc_list") =~ "$each" ]]; then
+					#if [[ "$each" == "gnome-session" ]] || [[ "$each" == "gnome-settings-daemon" ]]; then
+					#	ps -ef | grep gnome-shell | grep -v grep > /dev/null 2>&1
+					#	if [[ "$?" -eq "0" ]]; then
+					#		# FIXME - making a very liberal assumption on this ... 
+					#		DEver=$(gnome-session-properties --version | awk '{ print $2 }')
+					#	else
+					#		DEver=$(gnome-session --version | awk {'print $NF'})
+					#	fi
+					#	DE="GNOME"
+					#fi
+					#if [[ "$each" == "mate-session" ]] || [[ "$each" == "mate-settings-daemon" ]]; then
+					#	DE="MATE"
+					#	DEver=$(mate-session --version | awk {'print $NF'})
+					#fi
+					#if [[ "$each" == "xfce4-session" ]]; then
+					#	DE="XFCE"
+					#	DEver=$(xfce4-settings-manager --version | grep -m 1 "" | awk {'print $2'})
+					#fi
+					#if [[ "$each" == "ksmserver" ]] ; then
+					#	DE="KDE"
+					#	DEver=$(kwin --version | awk '/^Qt/ {data="Qt v" $2};/^KDE/ {data=$2 " (" data ")"};END{print data}')
+					#fi
+					if [[ "$each" == "lxsession" ]]; then
+						DE="LXDE"
+						DEver=$(lxpanel -v)
+						break 1
+					fi
+					if [ "$each" == "Finder" ]; then DE="Aqua"; break 1; fi
+					# if [  "$DE" == "Not Present" -a "$distro" == "Cygwin" ]; then
+					#	winver="$(cmd /c wmic os get version | grep -o '^[0-9]')"
+					#	if [ "$winver" == "6" ]; then
+					#		DE="Aero"
+					#	elif [ "$winver" == "5" ]; then
+					#		DE="Luna"
+					# 	fi
+					# fi
 				fi
-				if [ "$each" == "Finder" ]; then DE="Aqua"; fi
-				# if [  "$DE" == "Not Present" -a "$distro" == "Cygwin" ]; then
-				#	winver="$(cmd /c wmic os get version | grep -o '^[0-9]')"
-				#	if [ "$winver" == "6" ]; then
-				#		DE="Aero"
-				#	elif [ "$winver" == "5" ]; then
-				#		DE="Luna"
-				# 	fi
-				# fi
-			fi
-		done
+			done
+		fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
 }
 ### DE Detection - End
