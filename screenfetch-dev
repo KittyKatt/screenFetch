@@ -528,7 +528,7 @@ detectmem () {
 			size_chip=`echo "$size_chip * 2" | bc`
 		done
 		round_mem=`echo "( $size_mem / $size_chip + 1 ) * $size_chip " | bc`                                                          
-		total_mem=$(($round_mem / ($human * $human) ))
+		totalmem=$(($round_mem / ($human * $human) ))
 		pagesize=$(sysctl -n hw.pagesize)
 		inactive_count=$(sysctl -n vm.stats.vm.v_inactive_count)
 		inactive_mem=$(($inactive_count * $pagesize))
@@ -540,11 +540,11 @@ detectmem () {
 		used_mem=$(($round_mem - $avail_mem))
 		usedmem=$(($used_mem / ($human * $human) )) 
 	elif [ "$distro" == "OpenBSD" ]; then
-		total_mem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
+		totalmem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
 		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
-		total_mem=$((${phys_mem} / $human))
+		totalmem=$((${phys_mem} / $human))
 		if grep -q 'Cached' /proc/meminfo; then 
 			cache=$(awk '/Cached/ {print $2}' /proc/meminfo)
 			usedmem=$((${cache} / $human))
@@ -1268,6 +1268,7 @@ asciiText () {
 "     "$c1"\`:\`                  "$c2"\`:\`        %s"  # GTK3 Theme
 "       "$c2".--             \`--.          %s"               # Icon Theme
 "         "$c2" .---.....----.             %s"             # Font
+"                                     %s"             # RAM
 )
                 ;;
 
@@ -1945,7 +1946,7 @@ infoDisplay () {
 		echo -e "$myicons"
 		echo -e "$myfont"
 		echo -e "$mycpu"
-		echo -e "$myram"
+		echo -e "$mymem"
 	fi
 }
 
