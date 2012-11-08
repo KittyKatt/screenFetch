@@ -922,14 +922,14 @@ detectgtk () {
 				if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
 					gtk2Theme=$(awk -F'"' '/gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
-				if [ grep -q gtk-fallback-theme-name /etc/gtk-2.0/gtkrc  && ! $gtk2Theme ]; then
+				if grep -q gtk-fallback-theme-name /etc/gtk-2.0/gtkrc  && ! [ "x$gtk2Theme" = "x" ]; then
 					gtk2Theme=$(awk -F'"' '/gtk-fallback-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 
 				if grep -q icon-theme /etc/gtk-2.0/gtkrc; then
 					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
-				if [ grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! $gtkIcons ]; then
+				if  grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! [ "x$gtkIcons" = "x" ]; then
 					gtkIcons=$(awk -F'"' '/gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 
