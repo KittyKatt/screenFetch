@@ -266,6 +266,7 @@ detectdistro () {
 				distro="Arch Linux"
 				distro_release="n/a"
 			fi
+			if [ "$distro_detect" == "CentOS" ]; then distro="Red Hat Linux"; fi
 			if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
 			if [ "$distro_detect" == "SolusOS" ]; then
 				distro="SolusOS"
@@ -921,14 +922,14 @@ detectgtk () {
 				if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
 					gtk2Theme=$(awk -F'"' '/gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
-				if [ grep -q gtk-fallback-theme-name /etc/gtk-2.0/gtkrc  && ! $gtk2Theme ]; then
+				if grep -q gtk-fallback-theme-name /etc/gtk-2.0/gtkrc  && ! [ "x$gtk2Theme" = "x" ]; then
 					gtk2Theme=$(awk -F'"' '/gtk-fallback-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 
 				if grep -q icon-theme /etc/gtk-2.0/gtkrc; then
 					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
-				if [ grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! $gtkIcons ]; then
+				if  grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! [ "x$gtkIcons" = "x" ]; then
 					gtkIcons=$(awk -F'"' '/gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 
@@ -948,7 +949,8 @@ detectgtk () {
 			#if [ $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
 			#	gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
 			#fi
-			if [ -x $(which gsettings) ]; then gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'"); fi
+			which gsettings &> /dev/null
+			if [ $? -eq 0 ]; then gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'"); fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
