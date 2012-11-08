@@ -266,6 +266,7 @@ detectdistro () {
 				distro="Arch Linux"
 				distro_release="n/a"
 			fi
+			if [ "$distro_detect" == "CentOS" ]; then distro="Red Hat Linux"; fi
 			if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
 			if [ "$distro_detect" == "SolusOS" ]; then
 				distro="SolusOS"
