@@ -346,13 +346,18 @@ detectdistro () {
 			#if [ $(uname -o 2>/dev/null) ]; then
 			#	if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
 			#fi
-        	        distrib_id=$(</etc/os-release)
-			for l in $(echo $distrib_id); do
-			if [[ ${l} =~ ^ID= ]]; then
-					distrib_id=${l//*=}
-					break 1
-			fi
-			done
+      if [ -f /etc/os-release ]; then
+        distrib_id=$(</etc/os-release);
+        for l in $(echo $distrib_id); do
+        if [[ ${l} =~ ^ID= ]]; then
+            distrib_id=${l//*=}
+            break 1
+        fi
+        done
+      else
+        distrib_id="unknown"
+      fi
+
 			if [ -f /etc/debian_version ]; then distro="Debian"; fi
 			if [ -f /etc/lsb-release ]; then
 				if [ grep -i ubuntu /etc/lsb-release >/dev/null 2>&1 ]; then distro="Ubuntu"; fi
