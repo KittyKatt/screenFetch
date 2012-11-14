@@ -242,16 +242,8 @@ fi
 
 # Host and User detection - Begin
 detecthost () {
-	if [[ "$distro" =~ "BSD" ]]; then
-		myUser=$(echo "$USER")
-		myHost=$(hostname)
-	else
-		myUser=$(echo "$USER")
-		# net-tools is becoming deprecated
-		# myHost=$(hostname)
-		# myHost=$(cat /proc/sys/kernel/hostname)
-		myHost=$(uname -n)
-	fi
+	myUser=${USER}
+	myHost=${HOSTNAME}
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
 }
 
@@ -583,7 +575,13 @@ detectmem () {
 
 # Shell Detection - Begin
 detectshell () {
-	myShell=$(echo $SHELL | awk -F"/" '{print $NF}')
+	if [[ ${OSTYPE} == "linux-gnu" ]]; then
+		myShell=$(ps -p $(ps -p $PPID -o pid --no-heading) -o cmd --no-heading)
+		myShell=${myShell/-}
+	else
+		myShell=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
+		myShell=${myShell/-}
+	fi
 	# myShell=${SHELL##*/}
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
 }
@@ -707,9 +705,15 @@ detectwm () {
 	# if [ "$distro" == "Cygwin" ]; then
 	# 	WM="Explorer"
 	# else
-		userId="$(id -u ${USER})"
+	if type -p xprop >/dev/null 2>&1; then
+		WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
+		WM=${WM//* }
+		WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
+		WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
+	fi
+	if [[ ${WM} == "Not Found" ]]; then
 		for each in $wmnames; do
-			PID="$(pgrep -U ${userId} $each)"
+			PID="$(pgrep -U ${UID}z $each)"
 			if [ "$PID" ]; then
 				case $each in
 					'fluxbox') WM="FluxBox";;
@@ -748,7 +752,7 @@ detectwm () {
 				esac
 			fi
 		done
-	# fi
+	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
