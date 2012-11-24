@@ -254,7 +254,7 @@ detectdistro () {
 		# LSB Release Check
 		if type -p lsb_release >/dev/null 2>&1; then
 			read distro_detect distro_release distro_codename <<< $(lsb_release -sirc)
-			if [[ "$distro_detect" == "archlinux" || "$distro_detect" == "Arch Linux" ]]; then
+			if [[ "$distro_detect" == "arch" || "$distro_detect" == "arch" || "$distro_detect" == "Arch Linux" ]]; then
 				distro="Arch Linux"
 				distro_release="n/a"
 			fi
@@ -430,7 +430,7 @@ detectdistro () {
 # Kernel Version Detection - Begin
 detectkernel () {
 	kernelArch=`uname -m`
-	kernel=`echo $kernelArch $(uname -sr)`
+	kernel=`echo $kernelArch $(uname -r)`
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding kernel version...found as '$kernel'"
 }
 # Kernel Version Detection - End
@@ -753,6 +753,43 @@ detectwm () {
 			fi
 		done
 	fi
+	declare -l lcase
+	lcase=$WM
+	case $lcase in
+		'fluxbox') WM="FluxBox";;
+		'openbox') WM="OpenBox";;
+		'blackbox') WM="Blackbox";;
+		'xfwm4') WM="Xfwm4";;
+		'metacity') WM="Metacity";;
+		'kwin') WM="KWin";;
+		'icewm') WM="IceWM";;
+		'pekwm') WM="PekWM";;
+		'fvwm') WM="FVWM";;
+		'dwm') WM="DWM";;
+		'awesome') WM="Awesome";;
+		'wmaker') WM="WindowMaker";;
+		'stumpwm') WM="StumpWM";;
+		'xmonad') WM="XMonad";;
+		'musca') WM="Musca";;
+		'i3') WM="i3";;
+		'ratpoison') WM="Ratpoison";;
+		'scrotwm') WM="ScrotWM";;
+		'spectrwm') WM="SpectrWM";;
+		'wmfs') WM="WMFS";;
+		'wmii') WM="wmii";;
+		'subtle') WM="subtle";;
+		'e16') WM="E16";;
+		'enlightenment') WM="E17";;
+		'emerald') WM="Emerald";;
+		'sawfish') WM="Sawfish";;
+		'beryl') WM="Beryl";;
+		'monsterwm') WM="monsterwm";;
+		'dminiwm') WM="dminiwm";;
+		'compiz') WM="Compiz";;
+		'Finder') WM="Quartz Compositor";;
+		'herbstluftwm') WM="herbstluftwm";;
+		'cinnamon') WM="Cinnamon";;
+	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
