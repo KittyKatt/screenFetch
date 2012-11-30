@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.5.6"
+scriptVersion="2.7.5"
 
 ######################
 # Settings for fetcher
@@ -955,7 +955,7 @@ detectwmtheme () {
 		'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
 		'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
 		'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
-		'KWin') if [ -f $HOME/.kde/share/config/plasmarc ]; then Win_theme="$(grep -F -A 1 \[Theme\] $HOME/.kde/share/config/plasmarc | awk -F"=" '/^name=/ { getline; print $2 }')"; if [ -z $Win_theme ]; then Win_theme="Air"; fi; else Win_theme="Not Present"; fi;;
+		'KWin') if [ -f $HOME/.kde/share/config/kdeglobals ]; then Win_theme="$(grep '^widgetStyle' $HOME/.kde/share/config/kdeglobals | awk -F'=' '{print $2}')"; fi;;
 		'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
 		'FVWM') Win_theme="Not Present";;
 		'DWM') Win_theme="Not Present";;
