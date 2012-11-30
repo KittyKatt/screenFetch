@@ -1005,37 +1005,71 @@ detectgtk () {
 	gtkIcons="Not Found"
 	gtkFont="Not Found"
 	case $DE in
-		'KDE')	# Desktop Environment found as "KDE"
-			if [ -a $HOME/.kde/share/config/kdeglobals ]; then
-				if grep -q "widgetStyle=" $HOME/.kde/share/config/kdeglobals; then
-					gtk2Theme=$(awk -F"=" '/widgetStyle=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
-				elif grep -q "colorScheme=" $HOME/.kde/share/config/kdeglobals; then
-					gtk2Theme=$(awk -F"=" '/colorScheme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+		'KDE'*) # Desktop Environment found as "KDE"
+			if type - p kde4-config >/dev/null 2>&1; then
+				KDE_CONFIG_DIR=$(kde4-config --localprefix)
+				if [[ -d ${KDE_CONFIG_DIR} ]]; then
+					if [[ -f "${KDE_CONFIG_DIR}/share/config/kdeglobals" ]]; then
+						KDE_CONFIG_FILE="${KDE_CONFIG_DIR}/share/config/kdeglobals"
+					fi
+				fi
+			elif type -p kde5-config >/dev/null 2>&1; then
+				KDE_CONFIG_DIR=$(kde5-config --localprefix)
+				if [[ -d ${KDE_CONFIG_DIR} ]]; then
+					if [[ -f "${KDE_CONFIG_DIR}/share/config/kdeglobals" ]]; then
+						KDE_CONFIG_FILE="${KDE_CONFIG_DIR}/share/config/kdeglobals"
+					fi
+				fi
+			elif type -p kde-config >/dev/null 2>&1; then
+				KDE_CONFIG_DIR=$(kde-config --localprefix)
+				if [[ -d ${KDE_CONFIG_DIR} ]]; then
+					if [[ -f "${KDE_CONFIG_DIR}/share/config/kdeglobals" ]]; then
+						KDE_CONFIG_FILE="${KDE_CONFIG_DIR}/share/config/kdeglobals"
+					fi
+				fi
+			fi
+			
+			if [[ -n ${KDE_CONFIG_FILE} ]]; then
+				### GRB changing to support ${KDE_CONFIG_FILE}.
+				if grep -q "widgetStyle=" "${KDE_CONFIG_FILE}"; then
+					gtk2Theme=$(awk -F"=" '/widgetStyle=/ {print $2}' "${KDE_CONFIG_FILE}")
+				elif grep -q "colorScheme=" "${KDE_CONFIG_FILE}"; then
+					gtk2Theme=$(awk -F"=" '/colorScheme=/ {print $2}' "${KDE_CONFIG_FILE}")
 				fi
 
-				if grep -q "Theme=" $HOME/.kde/share/config/kdeglobals; then
-					gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+				if grep -q "Theme=" "${KDE_CONFIG_FILE}"; then
+					gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' "${KDE_CONFIG_FILE}")
 				fi
 
-				if grep -q "Font=" $HOME/.kde/share/config/kdeglobals; then
-					gtkFont=$(awk -F"=" '/font=/ {print $2}' $HOME/.kde/share/config/kdeglobals)
+				if grep -q "Font=" "${KDE_CONFIG_FILE}"; then
+					gtkFont=$(awk -F"=" '/font=/ {print $2}' "${KDE_CONFIG_FILE}")
 				fi
 			fi
 		;;
-		'Cinnamon')
-			if which gsettings >/dev/null 2>&1; then
-				gtk2Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
-				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
-			fi
-		;;
-		'GNOME'|'MATE') # Desktop Environment found as "GNOME"
-			 # (Gnome 3.0+)
-			if which gsettings >/dev/null 2>&1; then
-				gtk2Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'")
-				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'") 
-				gtkFont=$(gsettings get org.gnome.desktop.interface font-name | tr -d "'")
+		'Cinnamon'*) # Desktop Environment found as "Cinnamon"
+			if type -p gsettings >/dev/null 2>&1; then
+				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
+				gtk3Theme=${gtk3Theme//"'"}
+				gtk2Theme=${gtk3Theme}
+
+				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme) 
+				gtkIcons=${gtkIcons//"'"}
+				gtkFont=$(gsettings get org.gnome.desktop.interface font-name)
+				gtkFont=${gtkFont//"'"}
 				if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
-			elif which gconftool-2 >/dev/null 2>&1; then
+			fi
+		;;
+		'GNOME'*|'MATE'*|'Gnome'*) # Desktop Environment found as "GNOME"
+			if type -p gsettings >/dev/null 2>&1; then
+				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
+				gtk3Theme=${gtk3Theme//"'"}
+				gtk2Theme=${gtk3Theme}
+				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme) 
+				gtkIcons=${gtkIcons//"'"}
+				gtkFont=$(gsettings get org.gnome.desktop.interface font-name)
+				gtkFont=${gtkFont//"'"}
+				if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
+			elif type -p gconftool-2 >/dev/null 2>&1; then
 				gtk2Theme=$(gconftool-2 -g /desktop/gnome/interface/gtk_theme)
 				gtkIcons=$(gconftool-2 -g /desktop/gnome/interface/icon_theme)
 				gtkFont=$(gconftool-2 -g /desktop/gnome/interface/font_name)
@@ -1045,20 +1079,20 @@ detectgtk () {
 				fi
 			fi
 		;;
-		'XFCE')	# Desktop Environment found as "XFCE"
-			if which xfconf-query >/dev/null 2>&1; then
+		'XFCE'*) # Desktop Environment found as "XFCE"
+			if type -p xfconf-query >/dev/null 2>&1; then
 				gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName)
 			fi
 
-			if which xfconf-query >/dev/null 2>&1; then
+			if type -p xfconf-query >/dev/null 2>&1; then
 				gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
 			fi
 
-			if which xfconf-query >/dev/null 2>&1; then
+			if type -p xfconf-query >/dev/null 2>&1; then
 				gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
 			fi
 		;;
-		'LXDE')
+		'LXDE'*)
 			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
 				lxdeconf="/lxde/config"
 			elif [ $distro == "Trisquel" ]; then
@@ -1139,8 +1173,10 @@ detectgtk () {
 			#if [ $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
 			#	gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
 			#fi
-			which gsettings &> /dev/null
-			if [ $? -eq 0 ]; then gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d "'"); fi
+			if type -p gsettings >/dev/null 2>&1; then
+				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
+				gtk3Theme=${gtk3Theme//"'"}
+			fi
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
@@ -1165,10 +1201,12 @@ detectgtk () {
 			fi
 
 			# Font detection (OS X)
-			if [[ `ps aux` =~ "Finder" ]]; then
-				gtkFont="not found"
-				if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
-					gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
+			if [[ ${distro} == "Mac OS X" ]]; then
+				if pgrep -U ${UID} Finder >/dev/null 2>&1; then
+					gtkFont="not found"
+					if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
+						gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
+					fi
 				fi
 			fi
 
