@@ -17,7 +17,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.5.5"
+scriptVersion="2.5.6"
 
 ######################
 # Settings for fetcher
@@ -60,11 +60,11 @@ shotfile=$(echo "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
 
-function verboseOut () {
+function verboseOut {
 	echo -e "\033[1;31m:: \033[0m$1"
 }
 
-function errorOut () {
+function errorOut {
 	echo -e "\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m$1"
 }
 
@@ -253,135 +253,231 @@ detectdistro () {
 		distro="Unknown"
 		# LSB Release Check
 		if type -p lsb_release >/dev/null 2>&1; then
-			read distro_detect distro_release distro_codename <<< $(lsb_release -sirc)
-			if [[ "$distro_detect" == "arch" || "$distro_detect" == "arch" || "$distro_detect" == "Arch Linux" ]]; then
+			# read distro_detect distro_release distro_codename <<< $(lsb_release -sirc)
+			distro_detect=( $(lsb_release -sirc) )
+			if [[ ${#distro_detect[@]} -eq 3 ]]; then
+				distro_codename=${distro_detect[2]}
+				distro_release=${distro_detect[1]}
+				distro_detect=${distro_detect[0]}
+			else
+				for ((i=0; i<${#distro_detect[@]}; i++)); do
+					if [[ ${distro_detect[$i]} =~ ^[[:digit:]]+((.[[:digit:]]+|[[:digit:]]+|)+)$ ]]; then
+						distro_release=${distro_detect[$i]}
+						distro_codename=${distro_detect[@]:$(($i+1)):${#distro_detect[@]}+1}
+						distro_detect=${distro_detect[@]:0:${i}}
+						break 1
+					fi
+				done
+			fi
+
+			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" ]]; then
 				distro="Arch Linux"
 				distro_release="n/a"
-			fi
-			if [ "$distro_detect" == "CentOS" ]; then distro="Red Hat Linux"; fi
-			if [ "$distro_detect" == "Debian" ]; then distro="Debian"; fi
-			if [ "$distro_detect" == "SolusOS" ]; then
+			elif [[ "${distro_detect}" == "CentOS" ]]; then
+				distro="Red Hat Linux"
+			elif [[ "${distro_detect}" == "Debian" ]]; then
+				distro="Debian"
+			elif [[ "${distro_detect}" == "SolusOS" ]]; then
 				distro="SolusOS"
 				distro_codename=null
 				distro_release=null
-			fi
-			if [ "$distro_detect" == "Trisquel" ]; then distro="Trisquel"; fi
-			if [ "$distro_detect" == "LinuxMint" ]; then distro="Mint"
-				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "debian" ]; then
+			elif [[ "${distro_detect}" == "Trisquel" ]]; then
+				distro="Trisquel"
+			elif [[ "${distro_detect}" == "LinuxMint" ]]; then
+				distro="Mint"
+				if [[ "${distro_codename}" == "debian" ]]; then
 					distro="LMDE"
 					distro_codename=null
 					distro_release=null
 				fi
-			fi
-			if [ "$distro_detect" == "Mageia" ]; then distro="Mageia"; fi
-			if [ "$distro_detect" == "MandrivaLinux" ]; then distro="Mandriva"
-				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "turtle" ]; then
-					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
+			elif [[ "${distro_detect}" == "Mageia" ]]; then
+				distro="Mageia"
+			elif [[ "$distro_detect" == "MandrivaLinux" ]]; then
+				distro="Mandriva"
+				if [[ "${distro_codename}" == "turtle" ]]; then
+					distro="Mandriva-${distro_release}"
+					distro_codename=null
+				elif [[ "${distro_codename}" == "Henry_Farman" ]]; then
+					distro="Mandriva-${distro_release}"
+					distro_codename=null
+				elif [[ "${distro_codename}" == "Farman" ]]; then
+					distro="Mandriva-${distro_release}"
+					distro_codename=null
+				elif [[ "${distro_codename}" == "Adelie" ]]; then
+					distro="Mandriva-${distro_release}"
+					distro_codename=null
+				elif [[ "${distro_codename}" == "pauillac" ]]; then
+					distro="Mandriva-${distro_release}"
 					distro_codename=null
 				fi
-				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Henry_Farman" ]; then
-					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-					distro_codename=null
-				fi
-				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Farman" ]; then
-					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-					distro_codename=null
-				fi
-				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "Adelie" ]; then
-					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-					distro_codename=null
-				fi
-				if [ "$(lsb_release -c | sed -e 's/Codename://' -e 's/\t//g')" == "pauillac" ]; then
-					distro="Mandriva"-lsb_release | sed -e 's/Release://' -e 's/\t//g'
-					distro_codename=null
-				fi
-			fi
-			if [ "$distro_detect" == "Fedora" ]; then distro="Fedora"; fi
-			if [ "$distro_detect" == "Gentoo" ]; then distro="Gentoo"; fi
-			if [ "$distro_detect" == "CrunchBang" ]; then distro="CrunchBang"; fi
-			if [ "$distro_detect" == "Ubuntu" ]; then distro="Ubuntu"; fi
-			if [ "$distro_detect" == "frugalware" ]; then
+			elif [[ "${distro_detect}" == "Fedora" ]]; then
+				distro="Fedora"
+			elif [[ "${distro_detect}" == "Gentoo" ]]; then
+				distro="Gentoo"
+			elif [[ "${distro_detect}" == "CrunchBang" ]]; then
+				distro="CrunchBang"
+			elif [[ "${distro_detect}" == "Ubuntu" ]]; then
+				distro="Ubuntu"
+			elif [[ "${distro_detect}" == "frugalware" ]]; then
 				distro="Frugalware"
 				distro_codename=null
 				distro_release=null
-			fi
-			if [ "$distro_detect" == "Peppermint" ]; then
+			elif [[ "${distro_detect}" == "Peppermint" ]]; then
 				distro="Peppermint"
 				distro_codename=null
-			fi
-			if [ "$distro_detect" == "Viperr" ]; then
+			elif [[ "${distro_detect}" == "Viperr" ]]; then
 				distro="Viperr"
 				distro_codename=null
-			fi
-			if [ "$distro_detect" == "SUSE LINUX" ]; then distro="openSUSE"; fi
-			if [ "$distro_detect" == "ParabolaGNU/Linux-libre" ]; then distro="ParabolaGNU/Linux-libre"; fi
-			if [ "$distro_detect" == "LinuxDeepin" ]; then
+			elif [[ "${distro_detect}" == "SUSE LINUX" ]]; then
+				distro="openSUSE"
+			elif [[ "${distro_detect}" == "ParabolaGNU/Linux-libre" ]]; then
+				distro="ParabolaGNU/Linux-libre"
+			elif [[ "${distro_detect}" == "LinuxDeepin" ]]; then
 				distro="LinuxDeepin"
 				distro_codename=null
-			fi
-			if [ "$distro_detect" == "Chakra" ]; then
+			elif [[ "${distro_detect}" == "Chakra" ]]; then
 				distro="Chakra"
 				distro_release=null
-			fi
-			if [ "$distro_detect" == "Fuduntu" ]; then
+			elif [[ "${distro_detect}" == "Fuduntu" ]]; then
 				distro="Fuduntu"
-				distro_codname=null
-			fi
-			if [ "$distro_detect" == "ManjaroLinux" ]; then
+				distro_codename=null
+			elif [[ "${distro_detect}" == "ManjaroLinux" ]]; then
 				distro="Manjaro"
 			fi
-        		if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro $distro_release"; fi
-	        	if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro $distro_codename"; fi
+			if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro_release"; fi
+			if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro_more $distro_codename"; fi
+			if [[ -n ${distro_more} ]]; then
+				distro_more="${distro} ${distro_more}"
+			fi
 		fi
+
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
 			#if [ $(uname -o 2>/dev/null) ]; then
 			#	if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
 			#fi
-      if [ -f /etc/os-release ]; then
-        distrib_id=$(</etc/os-release);
-        for l in $(echo $distrib_id); do
-        if [[ ${l} =~ ^ID= ]]; then
-            distrib_id=${l//*=}
-            break 1
-        fi
-        done
-      else
-        distrib_id="unknown"
-      fi
-
-			if [ -f /etc/debian_version ]; then distro="Debian"; fi
-			if [ -f /etc/lsb-release ]; then
-				if [ grep -i ubuntu /etc/lsb-release >/dev/null 2>&1 ]; then distro="Ubuntu"; fi
-				if [ grep -i mint /etc/lsb-release >/dev/null 2>&1 ]; then
-					if [ grep -i debian /etc/lsb-release >/dev/null 2>&1 ]; then distro="LMDE"
-					else distro="Mint"; fi
+			if [ -f /etc/os-release ]; then
+				distrib_id=$(</etc/os-release);
+				for l in $(echo $distrib_id); do
+					if [[ ${l} =~ ^ID= ]]; then
+						distrib_id=${l//*=}
+						break 1
+					fi
+				done
+				if [[ -n ${distrib_id} ]]; then
+					if [[ -n ${BASH_VERSINFO} && ${BASH_VERSINFO} -ge 4 ]]; then
+						distrib_id=$(for i in ${distrib_id}; do echo -n "${i^} "; done)
+						distro=${distrib_id}
+						unset distrib_id 
+					else
+					distrib_id=$(for i in ${distrib_id}; do FIRST_LETTER=$(echo -n "${i:0:1}" | tr "[:lower:]" "[:upper:]"); echo -n "${FIRST_LETTER}${i:1} "; done)
+						distro=${distrib_id}
+						unset distrib_id
+					fi
 				fi
 			fi
-			if [ -f /etc/arch-release ]; then distro="Arch Linux"; fi
-			if [ -f /etc/chakra-release ]; then distro="Chakra"; fi
-			if [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then distro="Fedora"; fi
-			if [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Linux"; fi
-			if [ -f /etc/slackware-version ]; then distro="Slackware"; fi
-			if [ -f /etc/SuSE-release ]; then distro="openSUSE"; fi
-			if [ -f /etc/mageia-release ]; then distro="Mageia"; fi
-			if [ -f /etc/mandrake-release ]; then distro="Mandrake"; fi
-			if [ -f /etc/mandriva-release ]; then distro="Mandriva"; fi
-			if [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"; fi
-			if [ -f /etc/gentoo-release ]; then distro="Gentoo"; fi
-			if [ -f /var/run/dmesg.boot ] && grep -om 1 "FreeBSD" /var/run/dmesg.boot 1>/dev/null; then distro="FreeBSD"; fi 
-			if [ -f /var/run/dmesg.boot ] && grep -om 1 "DragonFly" /var/run/dmesg.boot 1>/dev/null; then distro="DragonFlyBSD"; fi
-			if [ -f /var/run/dmesg.boot ] && grep -o "OpenBSD" /var/run/dmesg.boot 1>/dev/null; then distro="OpenBSD"; fi
-			if [ -f /var/run/dmesg.boot ] && grep -o "NetBSD" /var/run/dmesg.boot 1>/dev/null; then distro="NetBSD"; fi
-			if [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"; fi
-			if [ -f /etc/frugalware-release ]; then distro="Frugalware"; fi
-			if [ -f /etc/issue ]; then
-				if [ `grep -q "LinuxDeepin" /etc/issue` ]; then distro="LinuxDeepin"; fi
-				if [ `grep -q "SolusOS" /etc/issue` ]; then distro="SolusOS"; fi
-				if [ `grep -q "Parabola GNU/Linux-libre" /etc/issue` ]; then distro="ParabolaGNU/Linux-libre"; fi
-				if [ `grep -i SolusOS /etc/issue >/dev/null 2>&1` ]; then distro="SolusOS"; fi
+
+			if [[ "${distro}" == "Unknown" ]]; then
+				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+					if [ -f /etc/lsb-release ]; then
+						LSB_RELEASE=$(</etc/lsb-release)
+						distro=$(echo ${LSB_RELEASE} | awk 'BEGIN {
+							distro = "Unknown"
+						}
+						{
+							if ($0 ~ /[Uu][Bb][Uu][Nn][Tt][Uu]/) {
+								distro = "Ubuntu"
+								exit
+							}
+							else if ($0 ~ /[Mm][Ii][Nn][Tt]/ && $0 ~ /[Dd][Ee][Bb][Ii][Aa][Nn]/) {
+								distro = "LMDE"
+								exit
+							}
+							else if ($0 ~ /[Mm][Ii][Nn][Tt]/) {
+								distro = "Mint"
+								exit
+							}
+						} END {
+							print distro
+						}')
+					fi
+				fi
 			fi
-			if [ -f /usr/bin/sw_vers ] && /usr/bin/sw_vers|grep -i "Mac OS X" >/dev/null; then distro="Mac OS X"; fi
+
+			if [[ "${distro}" == "Unknown" ]]; then
+				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+					if [ -f /etc/arch-release ]; then distro="Arch Linux"
+					elif [ -f /etc/chakra-release ]; then distro="Chakra"
+					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
+					elif [ -f /etc/debian_version ]; then distro="Debian"
+					elif [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then
+						distro="Fedora"
+					elif [ -f /etc/frugalware-release ]; then distro="Frugalware"
+					elif [ -f /etc/gentoo-release ]; then distro="Gentoo"
+					elif [ -f /etc/mageia-release ]; then distro="Mageia"
+					elif [ -f /etc/mandrake-release ]; then distro="Mandrake"
+					elif [ -f /etc/mandriva-release ]; then distro="Mandriva"
+					elif [ -f /etc/SuSE-release ]; then distro="openSUSE"
+					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then
+						distro="Red Hat Linux"
+					elif [ -f /etc/slackware-version ]; then distro="Slackware"
+					elif [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"
+				fi
+			else
+				if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null; then
+						distro="Mac OS X"
+					elif [[ -f /var/run/dmesg.boot ]]; then
+						distro=$(awk 'BEGIN {
+							distro = "Unknown"
+						}
+						{
+							if ($0 ~ /DragonFly/) {
+								distro = "DragonFlyBSD"
+								exit
+							}
+							else if ($0 ~ /FreeBSD/) {
+								distro = "FreeBSD"
+								exit
+							}
+							else if ($0 ~ /NetBSD/) {
+								distro = "NetBSD"
+								exit
+							}
+							else if ($0 ~ /OpenBSD/) {
+								distro = "OpenBSD"
+								exit
+							}
+						} END {
+							print distro
+						}' /var/run/dmesg.boot)
+					fi
+				fi
+			fi
+			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+				if [[ -f /etc/issue ]]; then
+					distro=$(awk 'BEGIN {
+						distro = "Unknown"
+					}
+					{
+						if ($0 ~ /"LinuxDeepin"/) {
+							distro = "LinuxDeepin"
+							exit
+						}
+						else if ($0 ~ /"Parabola GNU\/Linux-libre"/) {
+							distro = "ParabolaGNU/Linux-libre"
+							exit
+						}
+						else if ($0 ~ /"SolusOS"/) {
+							distro = "SolusOS"
+							exit
+						}
+					} END {
+						print distro
+					}' /etc/issue)
+				fi
+			fi
+
+
 		fi
 	else
 		declare -l lcase
@@ -705,91 +801,100 @@ detectwm () {
 	# if [ "$distro" == "Cygwin" ]; then
 	# 	WM="Explorer"
 	# else
-	if type -p xprop >/dev/null 2>&1; then
-		WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
-		WM=${WM//* }
-		WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
-		WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
+	if [[ -n ${DISPLAY} ]]; then
+		if type -p xprop >/dev/null 2>&1; then
+			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
+			WM=${WM//* }
+			WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
+			WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
+		fi
+
+		if [[ ${WM} == "Not Found" ]]; then
+			for each in $wmnames; do
+				PID="$(pgrep -U ${UID} $each)"
+				if [ "$PID" ]; then
+					case $each in
+						'fluxbox') WM="FluxBox";;
+						'openbox') WM="OpenBox";;
+						'blackbox') WM="Blackbox";;
+						'xfwm4') WM="Xfwm4";;
+						'metacity') WM="Metacity";;
+						'kwin') WM="KWin";;
+						'icewm') WM="IceWM";;
+						'pekwm') WM="PekWM";;
+						'fvwm') WM="FVWM";;
+						'dwm') WM="DWM";;
+						'awesome') WM="Awesome";;
+						'wmaker') WM="WindowMaker";;
+						'stumpwm') WM="StumpWM";;
+						'xmonad') WM="XMonad";;
+						'musca') WM="Musca";;
+						'i3') WM="i3";;
+						'ratpoison') WM="Ratpoison";;
+						'scrotwm') WM="ScrotWM";;
+						'spectrwm') WM="SpectrWM";;
+						'wmfs') WM="WMFS";;
+						'wmii') WM="wmii";;
+						'subtle') WM="subtle";;
+						'e16') WM="E16";;
+						'enlightenment') WM="E17";;
+						'emerald') WM="Emerald";;
+						'sawfish') WM="Sawfish";;
+						'beryl') WM="Beryl";;
+						'monsterwm') WM="monsterwm";;
+						'dminiwm') WM="dminiwm";;
+						'compiz') WM="Compiz";;
+						'herbstluftwm') WM="herbstluftwm";;
+						'cinnamon') WM="Cinnamon";;
+					esac
+				fi
+
+				if [[ ${WM} != "Not Found" ]]; then
+					break 1
+				fi
+			done
+		else
+			case ${WM} in
+				'fluxbox') WM="FluxBox";;
+				'openbox') WM="OpenBox";;
+				'blackbox') WM="Blackbox";;
+				'xfwm4') WM="Xfwm4";;
+				'metacity') WM="Metacity";;
+				'kwin') WM="KWin";;
+				'icewm') WM="IceWM";;
+				'pekwm') WM="PekWM";;
+				'fvwm') WM="FVWM";;
+				'dwm') WM="DWM";;
+				'awesome') WM="Awesome";;
+				'wmaker') WM="WindowMaker";;
+				'stumpwm') WM="StumpWM";;
+				'xmonad') WM="XMonad";;
+				'musca') WM="Musca";;
+				'i3') WM="i3";;
+				'ratpoison') WM="Ratpoison";;
+				'scrotwm') WM="ScrotWM";;
+				'spectrwm') WM="SpectrWM";;
+				'wmfs') WM="WMFS";;
+				'wmii') WM="wmii";;
+				'subtle') WM="subtle";;
+				'e16') WM="E16";;
+				'enlightenment') WM="E17";;
+				'emerald') WM="Emerald";;
+				'sawfish') WM="Sawfish";;
+				'beryl') WM="Beryl";;
+				'monsterwm') WM="monsterwm";;
+				'dminiwm') WM="dminiwm";;
+				'compiz') WM="Compiz";;
+				'herbstluftwm') WM="herbstluftwm";;
+				'cinnamon') WM="Cinnamon";;
+			esac
+
+		fi
+	elif [[ -z ${DISPLAY} && ${distro} == "Mac OS X" ]]; then
+		if pgrep -U ${UID} Finder >/dev/null 2>&1; then
+			WM="Quartz Compositor"
+		fi
 	fi
-	if [[ ${WM} == "Not Found" ]]; then
-		for each in $wmnames; do
-			PID="$(pgrep -U ${UID}z $each)"
-			if [ "$PID" ]; then
-				case $each in
-					'fluxbox') WM="FluxBox";;
-					'openbox') WM="OpenBox";;
-					'blackbox') WM="Blackbox";;
-					'xfwm4') WM="Xfwm4";;
-					'metacity') WM="Metacity";;
-					'kwin') WM="KWin";;
-					'icewm') WM="IceWM";;
-					'pekwm') WM="PekWM";;
-					'fvwm') WM="FVWM";;
-					'dwm') WM="DWM";;
-					'awesome') WM="Awesome";;
-					'wmaker') WM="WindowMaker";;
-					'stumpwm') WM="StumpWM";;
-					'xmonad') WM="XMonad";;
-					'musca') WM="Musca";;
-					'i3') WM="i3";;
-					'ratpoison') WM="Ratpoison";;
-					'scrotwm') WM="ScrotWM";;
-					'spectrwm') WM="SpectrWM";;
-					'wmfs') WM="WMFS";;
-					'wmii') WM="wmii";;
-					'subtle') WM="subtle";;
-					'e16') WM="E16";;
-					'enlightenment') WM="E17";;
-					'emerald') WM="Emerald";;
-					'sawfish') WM="Sawfish";;
-					'beryl') WM="Beryl";;
-					'monsterwm') WM="monsterwm";;
-					'dminiwm') WM="dminiwm";;
-					'compiz') WM="Compiz";;
-					'Finder') WM="Quartz Compositor";;
-                 			'herbstluftwm') WM="herbstluftwm";;
-					'cinnamon') WM="Cinnamon";;
-				esac
-			fi
-		done
-	fi
-	declare -l lcase
-	lcase=$WM
-	case $lcase in
-		'fluxbox') WM="FluxBox";;
-		'openbox') WM="OpenBox";;
-		'blackbox') WM="Blackbox";;
-		'xfwm4') WM="Xfwm4";;
-		'metacity') WM="Metacity";;
-		'kwin') WM="KWin";;
-		'icewm') WM="IceWM";;
-		'pekwm') WM="PekWM";;
-		'fvwm') WM="FVWM";;
-		'dwm') WM="DWM";;
-		'awesome') WM="Awesome";;
-		'wmaker') WM="WindowMaker";;
-		'stumpwm') WM="StumpWM";;
-		'xmonad') WM="XMonad";;
-		'musca') WM="Musca";;
-		'i3') WM="i3";;
-		'ratpoison') WM="Ratpoison";;
-		'scrotwm') WM="ScrotWM";;
-		'spectrwm') WM="SpectrWM";;
-		'wmfs') WM="WMFS";;
-		'wmii') WM="wmii";;
-		'subtle') WM="subtle";;
-		'e16') WM="E16";;
-		'enlightenment') WM="E17";;
-		'emerald') WM="Emerald";;
-		'sawfish') WM="Sawfish";;
-		'beryl') WM="Beryl";;
-		'monsterwm') WM="monsterwm";;
-		'dminiwm') WM="dminiwm";;
-		'compiz') WM="Compiz";;
-		'Finder') WM="Quartz Compositor";;
-		'herbstluftwm') WM="herbstluftwm";;
-		'cinnamon') WM="Cinnamon";;
-	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
