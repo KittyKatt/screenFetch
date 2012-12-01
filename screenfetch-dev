@@ -772,6 +772,26 @@ detectde () {
 			fi
 		fi
 
+		if [[ ${DE} == "Not Present" ]]; then
+			if [[ -n ${GNOME_DESKTOP_SESSION_ID} ]]; then
+				DE="Gnome"
+			elif [[ -n ${MATE_DESKTOP_SESSION_ID} ]]; then
+				DE="MATE"
+			elif [[ -n ${KDE_SESSION_VERSION} ]]; then
+				if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
+					DE="KDE5"
+				elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
+					DE="KDE4"
+				fi
+			elif [[ -n ${KDE_FULL_SESSION} ]]; then
+				if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
+					DE="KDE"
+					DEver_data=$( kded --version 2>/dev/null )
+					DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
+				fi
+			fi
+		fi
+
 		if [[ ${DE} != "Not Present" ]]; then
 			if [[ ${DE} == "Cinnamon" ]]; then
 				if type -p >/dev/null 2>&1; then
