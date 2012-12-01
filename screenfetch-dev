@@ -499,7 +499,7 @@ detectdistro () {
 			lmde) distro="LMDE" ;;
 			opensuse) distro="openSUSE" ;;
 			ubuntu) distro="Ubuntu" ;;
-			debain) distro="Debian" ;;
+			debian) distro="Debian" ;;
 			freebsd) distro="FreeBSD" ;;
 			openbsd) distro="OpenBSD" ;;
 			dragonflybsd) distro="DragonFlyBSD" ;;
