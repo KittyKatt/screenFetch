@@ -1045,6 +1045,19 @@ detectgtk () {
 					gtkFont=$(awk -F"=" '/font=/ {print $2}' "${KDE_CONFIG_FILE}")
 				fi
 			fi
+
+			if [[ -f $HOME/.gtkrc-2.0 ]]; then
+				gtk2Theme=$(grep '^gtk-theme-name' $HOME/.gtkrc-2.0 | awk -F'=' '{print $2}')
+				gtk2Theme=${gtk2Theme//\"/}
+				gtkIcons=$(grep '^gtk-icon-theme-name' $HOME/.gtkrc-2.0 | awk -F'=' '{print $2}')
+				gtkIcons=${gtkIcons//\"/}
+				gtkFont=$(grep 'font_name' $HOME/.gtkrc-2.0 | awk -F'=' '{print $2}')
+				gtkFont=${gtkFont//\"/}
+			fi
+
+			if [[ -f $HOME/.config/gtk-3.0/settings.ini ]]; then
+				gtk3Theme=$(grep '^gtk-theme-name=' $HOME/.config/gtk-3.0/settings.ini | awk -F'=' '{print $2}')
+			fi
 		;;
 		'Cinnamon'*) # Desktop Environment found as "Cinnamon"
 			if type -p gsettings >/dev/null 2>&1; then
