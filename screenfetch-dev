@@ -772,22 +772,34 @@ detectde () {
 			fi
 		fi
 
-		if [[ ${DE} == "Not Present" ]]; then
-			if [[ -n ${GNOME_DESKTOP_SESSION_ID} ]]; then
-				DE="Gnome"
-			elif [[ -n ${MATE_DESKTOP_SESSION_ID} ]]; then
-				DE="MATE"
-			elif [[ -n ${KDE_SESSION_VERSION} ]]; then
-				if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
-					DE="KDE5"
-				elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
-					DE="KDE4"
+		if [[ ${DE} != "Not Present" ]]; then
+			if [[ ${DE} == "Cinnamon" ]]; then
+				if type -p >/dev/null 2>&1; then
+					DEver=$(cinnamon --version)
+					DE="${DE} ${DEver//* }"
 				fi
-			elif [[ -n ${KDE_FULL_SESSION} ]]; then
-				if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
-					DE="KDE"
-					DEver_data=$( kded --version 2>/dev/null )
-					DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
+			elif [[ ${DE} == "Gnome" || ${DE} == "GNOME" ]]; then
+				if type -p gnome-session-properties >/dev/null 2>&1; then
+					DEver=$(gnome-session-properties --version)
+					DE="${DE} ${DEver//* }"
+				elif type -p gnome-session >/dev/null 2>&1; then
+					DEver=$(gnome-session --version)
+					DE="${DE} ${DEver//* }"
+				fi			
+			elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
+				if type -p kded${DE#KDE} >/dev/null 2>&1; then
+					DEver=$(kded${DE#KDE} --version)
+					for l in $(echo "${DEver// /_}"); do
+						if [[ ${l//:*} == "KDE_Development_Platform" ]]; then 
+							DEver=${l//*:_}
+							DE="KDE ${DEver//_*}"
+						fi;
+					done
+				fi
+			elif [[ ${DE} == "MATE" ]]; then
+				if type -p mate-session >/dev/null 2>&1; then
+					DEver=$(mate-session --version)
+					DE="${DE} ${DEver//* }"
 				fi
 			fi
 		fi
