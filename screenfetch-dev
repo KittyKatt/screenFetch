@@ -499,7 +499,7 @@ detectdistro () {
 			lmde) distro="LMDE" ;;
 			opensuse) distro="openSUSE" ;;
 			ubuntu) distro="Ubuntu" ;;
-			debian) distro="Debian" ;;
+			debain) distro="Debian" ;;
 			freebsd) distro="FreeBSD" ;;
 			openbsd) distro="OpenBSD" ;;
 			dragonflybsd) distro="DragonFlyBSD" ;;
@@ -2044,23 +2044,23 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1} ██████████████████  ████████    %s"
-"${c1} ██████████████████  ████████    %s"
-"${c1} ██████████████████  ████████    %s"
-"${c1} ██████████████████  ████████    %s"
-"${c1} ████████            ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1}           ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████    %s"
-"${c1} ████████  ████████  ████████")
+"${c1} |;pwoadvmapwalsd;|  |;aodfpas;|     %s"
+"${c1} |;aowofjaodwkfmd;|  |;soalssf;|    %s"
+"${c1} |;aowofjaowdjfod;|  |;oemsfol;|    %s"
+"${c1} |;woambowpkfmaod;|  |;amzpdbm;|    %s"
+"${c1} |;wofd;|            |;wzofwdb;|    %s"
+"${c1} |;cobd;|  |;sofd;|  |;aomwamf;|    %s"
+"${c1} |;pqod;|  |;vmos;|  |;woafjso;|    %s"
+"${c1}           |;amow;|  |;boixeui;|    %s"
+"${c1} |;wmap;|  |;boxe;|  |;qpwovcs;|    %s"
+"${c1} |;xpop;|  |;owjb;|  |;zoagfos;|    %s"
+"${c1} |;wzpe;|  |;bovo;|  |;wcmgoww;|    %s"
+"${c1} |;zoeo;|  |;nowi;|  |;fgowoad;|    %s"
+"${c1} |;tioe;|  |;qyio;|  |;zpoicob;|    %s"
+"${c1} |;roti;|  |;eooa;|  |;cdofjdd;|    %s"
+"${c1} |;paqo;|  |;cbox;|  |;aodcmda;|    %s"
+"${c1} |;topd;|  |;htyo;|  |;yoievoi;|    %s"
+"${c1} |;ewnb;|  |;ghot;|  |;coasobv;|")
 		;;
 
 		*)
@@ -2092,16 +2092,22 @@ asciiText () {
 	if [ "$truncateSet" == "Yes" ]; then
 		n=${#fulloutput[*]}
 		for ((i=0;i<n;i++)); do
+			my_out=$(printf "${fulloutput[i]}$c0\n" "${out_array}")
+			my_out_full=$(echo "$my_out" | cat -v)
 			targetPercent=100
 			termWidth=$(tput cols)
 			# stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\x1b\[[0-9];[0-9]*m\?//g')
-			stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\\e\[[0-9];[0-9]*m//g' -e 's/\\e\[[0-9]*m//g')
+			stringReal=$(echo "${my_out_full}" | sed -e 's/\^\[\[[0-9];[0-9]*m//g;s/\^\[\[[0-9]*m//g')
 			stringLength=${#stringReal}
 			targetLength="$((termWidth*targetPercent/100))"
-			if [ "$stringLength" -le "$targetLength" ]; then
-				echo -e "${fulloutput[i]}"$c0
-			elif [ "$stringLength" -gt "$targetLength" ]; then
-			 	echo "${fulloutput[i]:0:$targetLength}..."$c0
+			if [ "$stringLength" -le "$termWidth" ]; then
+				echo -e "${my_out}"$c0
+			elif [ "$stringLength" -gt "$termWidth" ]; then
+			 	echo -e "${my_out:0:${termWidth}}..."$c0
+			fi
+			if [[ "$i" -ge "$startline" ]]; then
+				unset out_array[0]
+				out_array=( "${out_array[@]}" )
 			fi
 			# Debugging widths
 			# echo "Term Width: $termWidth"
