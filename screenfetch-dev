@@ -2044,23 +2044,23 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1} |;pwoadvmapwalsd;|  |;aodfpas;|     %s"
-"${c1} |;aowofjaodwkfmd;|  |;soalssf;|    %s"
-"${c1} |;aowofjaowdjfod;|  |;oemsfol;|    %s"
-"${c1} |;woambowpkfmaod;|  |;amzpdbm;|    %s"
-"${c1} |;wofd;|            |;wzofwdb;|    %s"
-"${c1} |;cobd;|  |;sofd;|  |;aomwamf;|    %s"
-"${c1} |;pqod;|  |;vmos;|  |;woafjso;|    %s"
-"${c1}           |;amow;|  |;boixeui;|    %s"
-"${c1} |;wmap;|  |;boxe;|  |;qpwovcs;|    %s"
-"${c1} |;xpop;|  |;owjb;|  |;zoagfos;|    %s"
-"${c1} |;wzpe;|  |;bovo;|  |;wcmgoww;|    %s"
-"${c1} |;zoeo;|  |;nowi;|  |;fgowoad;|    %s"
-"${c1} |;tioe;|  |;qyio;|  |;zpoicob;|    %s"
-"${c1} |;roti;|  |;eooa;|  |;cdofjdd;|    %s"
-"${c1} |;paqo;|  |;cbox;|  |;aodcmda;|    %s"
-"${c1} |;topd;|  |;htyo;|  |;yoievoi;|    %s"
-"${c1} |;ewnb;|  |;ghot;|  |;coasobv;|")
+"${c1} ██████████████████  ████████    %s"
+"${c1} ██████████████████  ████████    %s"
+"${c1} ██████████████████  ████████    %s"
+"${c1} ██████████████████  ████████    %s"
+"${c1} ████████            ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1}           ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████    %s"
+"${c1} ████████  ████████  ████████")
 		;;
 
 		*)
