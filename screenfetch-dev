@@ -2177,7 +2177,12 @@ infoDisplay () {
 	if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "de" ]]; then myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++)); fi
 	if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
-	if [[ "${display[@]}" =~ "wmtheme" ]]; then mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
+	if [[ "${display[@]}" =~ "wmtheme" ]]; then
+			if [[ "${Win_theme}" == "Not Present" ]]; then
+				continue
+			else
+				mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
+			fi
 	if [[ "${display[@]}" =~ "gtk" ]]; then 
 		if [ "$distro" == "Mac OS X" ]; then
 			myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
