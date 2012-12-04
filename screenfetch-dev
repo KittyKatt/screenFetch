@@ -375,7 +375,7 @@ detectdistro () {
 						distro=${distrib_id}
 						unset distrib_id 
 					else
-					distrib_id=$(for i in ${distrib_id}; do FIRST_LETTER=$(echo -n "${i:0:1}" | tr "[:lower:]" "[:upper:]"); echo -n "${FIRST_LETTER}${i:1} "; done)
+						distrib_id=$(for i in ${distrib_id}; do FIRST_LETTER=$(echo -n "${i:0:1}" | tr "[:lower:]" "[:upper:]"); echo -n "${FIRST_LETTER}${i:1} "; done)
 						distro=${distrib_id}
 						unset distrib_id
 					fi
@@ -415,16 +415,14 @@ detectdistro () {
 					elif [ -f /etc/chakra-release ]; then distro="Chakra"
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
 					elif [ -f /etc/debian_version ]; then distro="Debian"
-					elif [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then
-						distro="Fedora"
+					elif [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then distro="Fedora"
 					elif [ -f /etc/frugalware-release ]; then distro="Frugalware"
 					elif [ -f /etc/gentoo-release ]; then distro="Gentoo"
 					elif [ -f /etc/mageia-release ]; then distro="Mageia"
 					elif [ -f /etc/mandrake-release ]; then distro="Mandrake"
 					elif [ -f /etc/mandriva-release ]; then distro="Mandriva"
 					elif [ -f /etc/SuSE-release ]; then distro="openSUSE"
-					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then
-						distro="Red Hat Linux"
+					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Linux"
 					elif [ -f /etc/slackware-version ]; then distro="Slackware"
 					elif [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"
 				fi
