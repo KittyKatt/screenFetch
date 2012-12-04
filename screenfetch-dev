@@ -955,6 +955,14 @@ detectwmtheme () {
 		'Beryl') Win_theme="Not Present";;
 		'Cinnamon') Win_theme="$(gsettings get org.cinnamon.theme name)";;
 		'Compiz') Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme | tr -d \"\'\")";;
+                'Compiz')
+			if type -p gsettings >/dev/null 2>&1; then
+				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
+				Win_theme=${Win_theme//"'"}
+			elif type -p gconftool-2 >/dev/null 2>&1; then
+				Win_theme=$(gconftool-2 -g /apps/metacity/general/theme)
+			fi
+		;;
 		'dminiwm') Win_theme="Not Present";;
 		'DWM') Win_theme="Not Present";;
 		'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
