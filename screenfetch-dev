@@ -755,7 +755,7 @@ detectshell () {
 			shell_version_data=$( detectshell_ver "$shell_type" "^tcsh" "2" )
 			;;
 		zsh)
-			shell_version=$( detectshell_ver "$shell_type" "^zsh" "2" )
+			shell_version_data=$( detectshell_ver "$shell_type" "^zsh" "2" )
 			;;
 	esac
 
