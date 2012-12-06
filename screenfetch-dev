@@ -701,15 +701,69 @@ detectmem () {
 
 
 # Shell Detection - Begin
-detectshell () {
-	if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
-		myShell=$(ps -p $(ps -p $PPID -o pid --no-heading) -o cmd --no-heading)
-		myShell=${myShell/-}
-	else
-		myShell=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
-		myShell=${myShell/-}
+detectshell_ver () {
+	local version_data='' version='' get_version='--version' 
+	
+	case $1 in
+		# ksh sends version to sdterr. Weeeeeeird.
+		ksh)
+			version_data="$( $1 $get_version 2>&1 )"
+			;;
+		*)
+			version_data="$( $1 $get_version 2>/dev/null )"
+			;;
+	esac
+	
+	if [[ -n $version_data ]];then
+		version=$( gawk '
+		BEGIN {
+			IGNORECASE=1
+		}
+		/'$2'/ {
+			gsub(/(,|v|V)/, "",$'$3') 
+			print $'$3'
+			exit # quit after first match prints
+		}' <<< "$version_data" )
 	fi
-	myShell=${myShell//*\/}
+	echo "$version"
+}
+detectshell () {
+
+	if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+		shell_type=$(ps -p $(ps -p $PPID -o pid --no-heading) -o cmd --no-heading)\
+		shell_type=${shell_type/-}
+	else
+		shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
+		shell_type=${shell_type/-}
+	fi
+	
+	case $shell_type in
+		bash)
+			shell_version=$( detectshell_ver "$shell_type" "^GNU[[:space:]]bash,[[:space:]]version" "4" | sed -E 's/(\(.*|-release|-version)//' )
+			;;
+		# csh/dash use dpkg package version data, debian/buntu only
+		csh)
+			shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
+			;;
+		dash)
+			shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
+			;;
+		ksh)
+			shell_version_data=$( detectshell_ver "$shell_type" "version" "5" )
+			;;
+		tcsh)
+			shell_version_data=$( detectshell_ver "$shell_type" "^tcsh" "2" )
+			;;
+		zsh)
+			shell_version=$( detectshell_ver "$shell_type" "^zsh" "2" )
+			;;
+	esac
+
+	if [[ -n $shell_version ]];then
+		shell_type="$shell_type $shell_version"
+	fi
+
+	myShell=${shell_type//*\/}
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
 }
 # Shell Detection - End
