@@ -291,11 +291,11 @@ detectdistro () {
 				distro="Chakra"
 				distro_release=null
 			elif [[ "${distro_detect}" == "Debian" ]]; then
-					if [[ /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
-							distro="CrunchBang"
-					else
-				distro="Debian"
-			fi
+				if [[ /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
+					distro="CrunchBang"
+				else
+					distro="Debian"
+				fi
 			elif [[ "${distro_detect}" == "Fedora" ]]; then
 				distro="Fedora"
 			elif [[ "${distro_detect}" == "frugalware" ]]; then
@@ -741,9 +741,8 @@ detectshell () {
 	
 	case $shell_type in
 		bash)
-			shell_version=$( detectshell_ver "$shell_type" "^GNU[[:space:]]bash,[[:space:]]version" "4" | sed -E 's/(\(.*|-release|-version)//' )
+			shell_version=$( detectshell_ver "$shell_type" "^GNU[[:space:]]bash,[[:space:]]version" "4" | sed -r 's/(\(.*|-release|-version)//' )
 			;;
-		# csh/dash use dpkg package version data, debian/buntu only
 		csh)
 			shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
 			;;
