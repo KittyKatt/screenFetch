@@ -290,10 +290,12 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
 				distro="Chakra"
 				distro_release=null
-			elif [[ "${distro_detect}" == "CrunchBang" ]]; then
-				distro="CrunchBang"
 			elif [[ "${distro_detect}" == "Debian" ]]; then
+					if [[ /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
+							distro="CrunchBang"
+					else
 				distro="Debian"
+			fi
 			elif [[ "${distro_detect}" == "Fedora" ]]; then
 				distro="Fedora"
 			elif [[ "${distro_detect}" == "frugalware" ]]; then
