@@ -291,7 +291,7 @@ detectdistro () {
 				distro="Chakra"
 				distro_release=null
 			elif [[ "${distro_detect}" == "Debian" ]]; then
-				if [[ /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
+				if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
 					distro="CrunchBang"
 				else
 					distro="Debian"
