@@ -346,7 +346,7 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Peppermint" ]]; then
 				distro="Peppermint"
 				distro_codename=null
-			elif [[ "${distro_detect}" == "CentOS" ]]; then
+			elif [[ "${distro_detect}" == "CentOS" || "${distro_detect}" =~ "RedHatEnterprise" ]]; then
 				distro="Red Hat Linux"
 			elif [[ "${distro_detect}" == "SolusOS" ]]; then
 				distro="SolusOS"
