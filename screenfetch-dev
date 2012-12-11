@@ -1193,15 +1193,15 @@ detectgtk () {
 				lxdeconf="/lxsession/LXDE/desktop.conf"
 			fi
 			# TODO: Clean me.
-			if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then 
+			if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then 
 			 gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi
 
-			if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+			if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
 				gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi
 
-			if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf; then
+			if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
 				gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi	 
 		;;
