@@ -181,9 +181,9 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 			echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
 			echo -e "		      to export all of your theme settings and archive them"
 			echo -e "		      up for uploading."
-			echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
-			echo -e "		      all white text into dark gray text (in ascii logos and"
-			echo -e "		      in information output)."
+			#echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
+			#echo -e "		      all white text into dark gray text (in ascii logos and"
+			#echo -e "		      in information output)."
 			echo -e "   ${bold}-S 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
 			echo -e "		      the script to execute. Surrounding quotes are required."
 			echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
@@ -893,8 +893,6 @@ detectde () {
 					DEver=$(lxpanel -v)
 					DE="${DE} $DEver"
 				fi
-			elif pgrep -U ${UID} razor-session >/dev/null 2>&1; then
-				DE="RazorQt"
 			fi
 		fi
 	else
