@@ -791,9 +791,7 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
-
-		# This has been severely updated. Stolen a lot of the implemenation from inxi. I'm leaving the old case version commented in the case statement.
-	if [[ -n ${DISPLAY} ]]; then
+	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
 		if type -p xprop >/dev/null 2>&1;then
 			xprop_root="$(xprop -root 2>/dev/null)"
 			if [[ -n ${xprop_root} ]]; then
@@ -895,8 +893,10 @@ detectde () {
 				fi
 			fi
 		fi
-	else
-		if [[ "${distro}" == "Mac OS X" ]] && pgrep -U ${UID} Finder >/dev/null 2>&1; then
+	elif [[ "${distro}" == "Mac OS X" ]]; then
+		if pgrep -U ${UID} Finder >/dev/null 2>&1; then
+			DE="Aqua"
+		elif ps U ${USER} | grep Finder | grep -v grep >/dev/null 2>&1; then
 			DE="Aqua"
 		fi
 	fi
@@ -910,8 +910,8 @@ detectwm () {
 	WM="Not Found"
 	# if [ "$distro" == "Cygwin" ]; then
 	# 	WM="Explorer"
-	# else
-	if [[ -n ${DISPLAY} ]]; then
+	# else	
+	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
 		if type -p xprop >/dev/null 2>&1; then
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
 			WM=${WM//* }
@@ -1000,8 +1000,10 @@ detectwm () {
 			esac
 
 		fi
-	elif [[ -z ${DISPLAY} && ${distro} == "Mac OS X" ]]; then
+	elif [[ ${distro} == "Mac OS X" ]]; then
 		if pgrep -U ${UID} Finder >/dev/null 2>&1; then
+			WM="Quartz Compositor"
+		elif ps U ${USER} | grep Finder | grep -v grep >/dev/null 2>&1; then
 			WM="Quartz Compositor"
 		fi
 	fi
