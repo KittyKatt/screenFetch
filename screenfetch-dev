@@ -181,9 +181,9 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 			echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
 			echo -e "		      to export all of your theme settings and archive them"
 			echo -e "		      up for uploading."
-			#echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
-			#echo -e "		      all white text into dark gray text (in ascii logos and"
-			#echo -e "		      in information output)."
+			echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
+			echo -e "		      all white text into dark gray text (in ascii logos and"
+			echo -e "		      in information output)."
 			echo -e "   ${bold}-S 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
 			echo -e "		      the script to execute. Surrounding quotes are required."
 			echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
@@ -212,7 +212,7 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 		# c) my_color=$(echo "$OPTARG" | awk -F',' '{ print $1 }'); my_bgcolor=$(echo "$OPTARG" | awk -F',' '{ print $2 }'); continue;;
 		c) detectColors "$OPTARGS"; continue;;
 		# d) overrideDisplay=$OPTARG; continue;;
-		# l) c1="\033[1;30m";;
+		l) colors_light="1";;
 		# B) background_detect="1"; continue;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1;;
@@ -1502,7 +1502,6 @@ asciiText () {
 
 		"CrunchBang")
 			c1="\e[1;37m" # White
-			c2="\e[1;30m" # Dark Gray
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("$c1                 ___       ___     _"
@@ -1926,7 +1925,8 @@ asciiText () {
 
 		"Viperr")
 			c1="\e[1;37m" # White
-			c2="\e[1;30m" # Dark Gray
+			if [[ -n "$colors_light" ]]; then c2="\e[1;37m" # White
+			else c2="\e[1;30m"; fi # Dark Gray
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=("${c1}    wwzapd         dlzazw       %s"
@@ -2000,7 +2000,8 @@ asciiText () {
 
 
 		"Fuduntu")
-			c1="\033[1;30m" # Dark Gray
+			if [[ -n "$colors_light" ]]; then c1="\e[1;37m" # White
+			else c1="\e[1;30m"; fi # Dark Gray
 			c2="\033[1;33m" # Bold Yellow
 			c3="\033[1;31m" # Light Red
 			c4="\033[1;37m" # White
@@ -2202,9 +2203,12 @@ infoDisplay () {
 	case $distro in
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
-		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD") labelcolor="\e[1;32m";;
+		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro") labelcolor="\e[1;32m";;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD") labelcolor="\e[1;31m";;
-		"CrunchBang"|"SolusOS"|"Viperr"|"Manjaro") labelcolor="\e[1;30m";;
+		"CrunchBang"|"SolusOS"|"Viperr")
+			if [[ -n "$colors_light" ]]; then labelcolor="\e[1;37m"
+			else labelcolor="\e[1;30m"; fi
+		;;
 		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
 		"Mac OS X"|"Trisquel") labelcolor="\033[1;34m";;
