@@ -596,11 +596,11 @@ detectpkgs () {
 		'Mac OS X') 
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
 			if [ $(which port) ]; then
-				port_pkgs=$(port installed | wc -l)
+				port_pkgs=$(port installed 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + (${port_pkgs} -1)))
 			fi
 			if [ $(which brew) ]; then
-				brew_pkgs=$(brew list -1 | wc -l)
+				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
 		;;
@@ -728,40 +728,46 @@ detectshell_ver () {
 		}' <<< "$version_data" )
 	fi
 	echo "$version"
+	echo "$version" > /tmp/rawr
 }
 detectshell () {
 
 	if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
 		shell_type=$(ps -p $(ps -p $PPID -o pid --no-heading) -o cmd --no-heading)
 		shell_type=${shell_type/-}
+	elif [[ "${distro}" == "Mac OS X" ]]; then
+		shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
+		shell_type=${shell_type/-}		
 	else
 		shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
 		shell_type=${shell_type/-}
 	fi
 	
-	case $shell_type in
-		bash)
-			shell_version=$( detectshell_ver "$shell_type" "^GNU[[:space:]]bash,[[:space:]]version" "4" | sed -r 's/(\(.*|-release|-version)//' )
-			;;
-		csh)
-			shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
-			;;
-		dash)
-			shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
-			;;
-		ksh)
-			shell_version_data=$( detectshell_ver "$shell_type" "version" "5" )
-			;;
-		tcsh)
-			shell_version_data=$( detectshell_ver "$shell_type" "^tcsh" "2" )
-			;;
-		zsh)
-			shell_version_data=$( detectshell_ver "$shell_type" "^zsh" "2" )
-			;;
-	esac
+	if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+		case $shell_type in
+			bash)
+				shell_version=$( detectshell_ver "$shell_type" "^GNU[[:space:]]bash,[[:space:]]version" "4" | sed -r 's/(\(.*|-release|-version)//' )
+				;;
+			csh)
+				shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
+				;;
+			dash)
+				shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
+				;;
+			ksh)
+				shell_version_data=$( detectshell_ver "$shell_type" "version" "5" )
+				;;
+			tcsh)
+				shell_version_data=$( detectshell_ver "$shell_type" "^tcsh" "2" )
+				;;
+			zsh)
+				shell_version_data=$( detectshell_ver "$shell_type" "^zsh" "2" )
+				;;
+		esac
 
-	if [[ -n $shell_version ]];then
-		shell_type="$shell_type $shell_version"
+		if [[ -n $shell_version_data ]];then
+			shell_type="$shell_type $shell_version_data"
+		fi
 	fi
 
 	myShell=${shell_type//*\/}
