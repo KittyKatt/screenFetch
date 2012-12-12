@@ -383,11 +383,11 @@ detectdistro () {
 				if [[ -n ${distrib_id} ]]; then
 					if [[ -n ${BASH_VERSINFO} && ${BASH_VERSINFO} -ge 4 ]]; then
 						distrib_id=$(for i in ${distrib_id}; do echo -n "${i^} "; done)
-						distro=${distrib_id}
+						distro=$(echo "${distrib_id}" | sed 's/ $//')
 						unset distrib_id 
 					else
 						distrib_id=$(for i in ${distrib_id}; do FIRST_LETTER=$(echo -n "${i:0:1}" | tr "[:lower:]" "[:upper:]"); echo -n "${FIRST_LETTER}${i:1} "; done)
-						distro=${distrib_id}
+						distro=$(echo "${distrib_id}" | sed 's/ $//')
 						unset distrib_id
 					fi
 				fi
