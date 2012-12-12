@@ -383,11 +383,11 @@ detectdistro () {
 				if [[ -n ${distrib_id} ]]; then
 					if [[ -n ${BASH_VERSINFO} && ${BASH_VERSINFO} -ge 4 ]]; then
 						distrib_id=$(for i in ${distrib_id}; do echo -n "${i^} "; done)
-						distro=$(echo "${distrib_id}" | sed 's/ $//')
+						distro=${distrib_id% }
 						unset distrib_id 
 					else
 						distrib_id=$(for i in ${distrib_id}; do FIRST_LETTER=$(echo -n "${i:0:1}" | tr "[:lower:]" "[:upper:]"); echo -n "${FIRST_LETTER}${i:1} "; done)
-						distro=$(echo "${distrib_id}" | sed 's/ $//')
+						distro=${distrib_id% }
 						unset distrib_id
 					fi
 				fi
@@ -635,8 +635,29 @@ detectmem () {
 	human=1024
 	if [ "$distro" == "Mac OS X" ]; then
 		totalmem=$(echo "$(sysctl -n hw.memsize)"/${human}^2|bc)
-		# usedmem=$(echo "$(sysctl -n hw.usermem)"/1024^2|bc)
-		usedmem=$(echo "$(top -l 1 | awk '/PhysMem/' | grep -o \[0-9]\*'M used' | grep -o \[0-9]\*)")
+ 		usedmem=$(top -l 1 | awk '{
+ 			if ($0 ~ /PhysMem/) {
+ 				for (x=1; x<=NF; x++) {
+ 					if ($x ~ /wired/) {
+ 						wired = $(x-1)
+ 						gsub(/[^0-9]/,"",wired)
+ 					}
+ 
+ 					if ($x ~ /^active/) {
+ 						active = $(x-1)
+ 						gsub(/[^0-9]/,"",active)
+ 					}
+ 
+ 					if ($x ~ /inactive/) {
+ 						inactive = $(x-1)
+ 						gsub(/[^0-9]/,"",inactive)
+ 					}
+ 				}
+ 				usedmem = wired + active + inactive
+ 				print usedmem
+ 				exit
+ 			}
+ 		}')
 	elif [ "$distro" == "FreeBSD" ]; then
 		phys_mem=$(sysctl -n hw.physmem)
 		size_mem=$phys_mem
@@ -717,18 +738,20 @@ detectshell_ver () {
 	esac
 	
 	if [[ -n $version_data ]];then
-		version=$( gawk '
+		version=$(awk '
 		BEGIN {
 			IGNORECASE=1
 		}
 		/'$2'/ {
-			gsub(/(,|v|V)/, "",$'$3') 
+			gsub(/(,|v|V)/, "",$'$3')
+			if ($2 ~ /[Bb][Aa][Ss][Hh]/) {
+				gsub(/\(.*|-release|-version\)/,"",$4)
+			}
 			print $'$3'
 			exit # quit after first match prints
-		}' <<< "$version_data" )
+		}' <<< "$version_data")
 	fi
 	echo "$version"
-	echo "$version" > /tmp/rawr
 }
 detectshell () {
 
@@ -737,37 +760,36 @@ detectshell () {
 		shell_type=${shell_type/-}
 	elif [[ "${distro}" == "Mac OS X" ]]; then
 		shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
-		shell_type=${shell_type/-}		
+		shell_type=${shell_type/-}
 	else
 		shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
 		shell_type=${shell_type/-}
 	fi
-	
-	if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
-		case $shell_type in
-			bash)
-				shell_version=$( detectshell_ver "$shell_type" "^GNU[[:space:]]bash,[[:space:]]version" "4" | sed -r 's/(\(.*|-release|-version)//' )
-				;;
-			csh)
-				shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
-				;;
-			dash)
-				shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
-				;;
-			ksh)
-				shell_version_data=$( detectshell_ver "$shell_type" "version" "5" )
-				;;
-			tcsh)
-				shell_version_data=$( detectshell_ver "$shell_type" "^tcsh" "2" )
-				;;
-			zsh)
-				shell_version_data=$( detectshell_ver "$shell_type" "^zsh" "2" )
-				;;
-		esac
 
-		if [[ -n $shell_version_data ]];then
-			shell_type="$shell_type $shell_version_data"
-		fi
+	case $shell_type in
+		bash)
+
+			shell_version_data=$( detectshell_ver "$shell_type" "^GNU.bash,.version" "4" )
+			;;
+		csh)
+			shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
+			;;
+		dash)
+			shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
+			;;
+		ksh)
+			shell_version_data=$( detectshell_ver "$shell_type" "version" "5" )
+			;;
+		tcsh)
+			shell_version_data=$( detectshell_ver "$shell_type" "^tcsh" "2" )
+			;;
+		zsh)
+			shell_version_data=$( detectshell_ver "$shell_type" "^zsh" "2" )
+			;;
+	esac
+
+	if [[ -n $shell_version_data ]];then
+		shell_type="$shell_type $shell_version_data"
 	fi
 
 	myShell=${shell_type//*\/}
@@ -778,13 +800,13 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
-	if [[ -n ${DISPLAY} ]]; then
+	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
 		if [[ "$distro" =~ "BSD" ]]; then
 			xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
 		else
 			xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
 		fi
-	elif [[ ${distro} == "Mac OS X" ]] && pgrep -U ${UID} Finder >/dev/null 2>&1; then
+	elif [[ ${distro} == "Mac OS X" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4}')
 	else
 		xResolution="No X Server"
@@ -900,9 +922,7 @@ detectde () {
 			fi
 		fi
 	elif [[ "${distro}" == "Mac OS X" ]]; then
-		if pgrep -U ${UID} Finder >/dev/null 2>&1; then
-			DE="Aqua"
-		elif ps U ${USER} | grep Finder | grep -v grep >/dev/null 2>&1; then
+		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
 			DE="Aqua"
 		fi
 	fi
@@ -1004,12 +1024,9 @@ detectwm () {
 				'xfwm4') WM="Xfwm4";;
 				'xmonad') WM="XMonad";;
 			esac
-
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
-		if pgrep -U ${UID} Finder >/dev/null 2>&1; then
-			WM="Quartz Compositor"
-		elif ps U ${USER} | grep Finder | grep -v grep >/dev/null 2>&1; then
+		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
 			WM="Quartz Compositor"
 		fi
 	fi
@@ -1026,7 +1043,7 @@ detectwmtheme () {
 		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'Cinnamon') Win_theme="$(gsettings get org.cinnamon.theme name)";;
-                'Compiz')
+		'Compiz')
 			if type -p gsettings >/dev/null 2>&1; then
 				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
 				Win_theme=${Win_theme//"'"}
@@ -1300,8 +1317,8 @@ detectgtk () {
 
 			# Font detection (OS X)
 			if [[ ${distro} == "Mac OS X" ]]; then
-				if pgrep -U ${UID} Finder >/dev/null 2>&1; then
-					gtkFont="not found"
+				if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
+					gtkFont="Not Found"
 					if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
 						gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
 					fi
