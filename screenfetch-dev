@@ -2182,34 +2182,62 @@ asciiText () {
   		;;
 	esac
 
+
 	# Truncate lines based on terminal width.
 	if [ "$truncateSet" == "Yes" ]; then
-		n=${#fulloutput[*]}
-		for ((i=0;i<n;i++)); do
+		for ((i=0; i<${#fulloutput[@]}; i++)); do
 			my_out=$(printf "${fulloutput[i]}$c0\n" "${out_array}")
 			my_out_full=$(echo "$my_out" | cat -v)
-			targetPercent=100
 			termWidth=$(tput cols)
-			# stringReal=$(echo "${fulloutput[i]}" | sed -e 's/\x1b\[[0-9];[0-9]*m\?//g')
-			stringReal=$(echo "${my_out_full}" | sed -e 's/\^\[\[[0-9];[0-9]*m//g;s/\^\[\[[0-9]*m//g')
-			stringLength=${#stringReal}
-			targetLength="$((termWidth*targetPercent/100))"
-			if [ "$stringLength" -le "$termWidth" ]; then
-				echo -e "${my_out}"$c0
-			elif [ "$stringLength" -gt "$termWidth" ]; then
-			 	echo -e "${my_out:0:${termWidth}}..."$c0
+			SHOPT_EXTGLOB_STATE=$(shopt -p extglob)
+			read SHOPT_CMD SHOPT_STATE SHOPT_OPT <<< ${SHOPT_EXTGLOB_STATE}
+			if [[ ${SHOPT_STATE} == "-u" ]]; then
+				shopt -s extglob
 			fi
+
+			stringReal="${my_out_full//\^\[\[@([0-9]|[0-9];[0-9][0-9])m}"
+
+			if [[ ${SHOPT_STATE} == "-u" ]]; then
+				shopt -u extglob
+			fi
+
+			if [[ "${#stringReal}" -le "${termWidth}" ]]; then
+				echo -e "${my_out}"$c0
+			elif [[ "${#stringReal}" -gt "${termWidth}" ]]; then
+				((NORMAL_CHAR_COUNT=0))
+				for ((j=0; j<=${#my_out_full}; j++)); do
+					if [[ "${my_out_full:${j}:3}" == '^[[' ]]; then
+						if [[ "${my_out_full:${j}:5}" =~ ^\^\[\[[[:digit:]]m$ ]]; then
+							if [[ ${j} -eq 0 ]]; then
+								j=$((${j} + 5))
+							else
+								j=$((${j} + 4))
+							fi
+						elif [[ "${my_out_full:${j}:8}" =~ ^\^\[\[[[:digit:]]\;[[:digit:]][[:digit:]]m ]]; then
+							if [[ ${j} -eq 0 ]]; then
+								j=$((${j} + 8))
+							else
+								j=$((${j} + 7))
+							fi
+						fi
+					else
+						((NORMAL_CHAR_COUNT++))
+						if [[ ${NORMAL_CHAR_COUNT} -ge ${termWidth} ]]; then
+							echo -e "${my_out:0:$((${j} - 5))}"$c0
+							break 1
+						fi
+					fi
+				done
+			fi
+
 			if [[ "$i" -ge "$startline" ]]; then
 				unset out_array[0]
 				out_array=( "${out_array[@]}" )
 			fi
-			# Debugging widths
-			# echo "Term Width: $termWidth"
-			# echo "String Length: $stringLength"
 		done
 	else
-		n=${#fulloutput[*]}
-		for ((i=0;i<n;i++)); do
+		#n=${#fulloutput[*]}
+		for ((i=0; i<${#fulloutput[*]}; i++)); do
 			# echo "${out_array[@]}"
 			printf "${fulloutput[i]}$c0\n" "${out_array}"
 			if [[ "$i" -ge "$startline" ]]; then
