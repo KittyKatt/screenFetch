@@ -595,11 +595,13 @@ detectpkgs () {
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X') 
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
-			if [ $(which port) ]; then
+
+			if type -p port >/dev/null 2>&1; then
 				port_pkgs=$(port installed 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + (${port_pkgs} -1)))
 			fi
-			if [ $(which brew) ]; then
+
+			if type -p port >/dev/null 2>&1; then
 				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
@@ -823,7 +825,6 @@ detectde () {
 		if type -p xprop >/dev/null 2>&1;then
 			xprop_root="$(xprop -root 2>/dev/null)"
 			if [[ -n ${xprop_root} ]]; then
-				### GRB _DT_SAVE_MODE will match on most versions of Xfce4.
 				DE=$(echo "${xprop_root}" | awk 'BEGIN {
 					de = "Not Present"
 				}
@@ -1043,7 +1044,7 @@ detectwmtheme () {
 		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'Cinnamon') Win_theme="$(gsettings get org.cinnamon.theme name)";;
-		'Compiz')
+		'Compiz'|'Marco'|'Mutter'*)
 			if type -p gsettings >/dev/null 2>&1; then
 				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
 				Win_theme=${Win_theme//"'"}
@@ -1132,7 +1133,6 @@ detectgtk () {
 			fi
 			
 			if [[ -n ${KDE_CONFIG_FILE} ]]; then
-				### GRB changing to support ${KDE_CONFIG_FILE}.
 				if grep -q "widgetStyle=" "${KDE_CONFIG_FILE}"; then
 					gtk2Theme=$(awk -F"=" '/widgetStyle=/ {print $2}' "${KDE_CONFIG_FILE}")
 				elif grep -q "colorScheme=" "${KDE_CONFIG_FILE}"; then
