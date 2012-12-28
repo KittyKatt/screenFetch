@@ -391,6 +391,9 @@ detectdistro () {
 						unset distrib_id
 					fi
 				fi
+				
+				# Arch Quick fix
+				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 			fi
 
 			if [[ "${distro}" == "Unknown" ]]; then
@@ -499,7 +502,7 @@ detectdistro () {
 		case $lcase in
 			arch*linux*old) distro="Arch Linux - Old" ;;
 			arch*linux) distro="Arch Linux" ;;
-			arch) distro="Arch Linux" ;;
+			arch) distro="Arch Linux";;
 			fedora) distro="Fedora" ;;
 			mageia) distro="Mageia" ;;
 			mandriva) distro="Mandriva" ;;
