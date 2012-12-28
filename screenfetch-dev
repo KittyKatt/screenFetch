@@ -499,6 +499,7 @@ detectdistro () {
 		case $lcase in
 			arch*linux*old) distro="Arch Linux - Old" ;;
 			arch*linux) distro="Arch Linux" ;;
+			arch) distro="Arch Linux" ;;
 			fedora) distro="Fedora" ;;
 			mageia) distro="Mageia" ;;
 			mandriva) distro="Mandriva" ;;
@@ -1401,7 +1402,7 @@ asciiText () {
 "$c1  \`0F'                    '!         %s")
 		;;
 
-		"Arch Linux"|"Arch")
+		"Arch Linux")
 			c1="\e[1;36m" # Light
 			c2="\e[0;36m" # Dark
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
