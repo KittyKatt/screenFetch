@@ -926,6 +926,8 @@ detectde () {
 					DEver=$(lxpanel -v)
 					DE="${DE} $DEver"
 				fi
+			elif pgrep -U ${UID} razor-session >/dev/null 2>&1; then
+				DE="RazorQt"
 			fi
 		fi
 	elif [[ "${distro}" == "Mac OS X" ]]; then
