@@ -26,7 +26,7 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
-scriptVersion="2.7.5"
+scriptVersion="2.7.7"
 
 ######################
 # Settings for fetcher
@@ -767,6 +767,9 @@ detectshell () {
 		shell_type=$(ps -p $(ps -p $PPID -o pid --no-heading) -o cmd --no-heading)
 		shell_type=${shell_type/-}
 	elif [[ "${distro}" == "Mac OS X" ]]; then
+		shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
+		shell_type=${shell_type/-}
+	elif [[ "${distro}" == "FreeBSD" ]]; then
 		shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
 		shell_type=${shell_type/-}
 	else
