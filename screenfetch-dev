@@ -949,9 +949,13 @@ detectwm () {
 	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
 		if type -p xprop >/dev/null 2>&1; then
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
-			WM=${WM//* }
-			WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
-			WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
+			if [[ "$WM" =~ "not found" ]]; then
+				WM="Not Found"
+			else
+				WM=${WM//* }
+				WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
+				WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
+			fi
 		fi
 
 		if [[ ${WM} == "Not Found" ]]; then
