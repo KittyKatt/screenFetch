@@ -766,20 +766,23 @@ detectshell () {
 	if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
 		shell_type=$(ps -p $(ps -p $PPID -o pid --no-heading) -o cmd --no-heading)
 		shell_type=${shell_type/-}
+		shell_type=${shell_type//*\/}
 	elif [[ "${distro}" == "Mac OS X" ]]; then
 		shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
 		shell_type=${shell_type/-}
+		shell_type=${shell_type//*\/}
 	elif [[ "${distro}" == "FreeBSD" ]]; then
 		shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
 		shell_type=${shell_type/-}
+		shell_type=${shell_type//*\/}
 	else
 		shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
 		shell_type=${shell_type/-}
+		shell_type=${shell_type//*\/}
 	fi
 
 	case $shell_type in
 		bash)
-
 			shell_version_data=$( detectshell_ver "$shell_type" "^GNU.bash,.version" "4" )
 			;;
 		csh)
@@ -803,7 +806,7 @@ detectshell () {
 		shell_type="$shell_type $shell_version_data"
 	fi
 
-	myShell=${shell_type//*\/}
+	myShell=${shell_type}
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
 }
 # Shell Detection - End
@@ -873,6 +876,15 @@ detectde () {
 		if [[ ${DE} == "Not Present" ]]; then
 			if [[ -n ${GNOME_DESKTOP_SESSION_ID} ]]; then
 				DE="Gnome"
+				if type -p xprop >/dev/null 2>&1; then
+					if xprop -name "unity-launcher" >/dev/null 2>&1; then
+						DE="Unity"
+					elif xprop -name "launcher" >/dev/null 2>&1 &&
+						xprop -name "panel" >/dev/null 2>&1; then
+
+						DE="Unity"
+					fi
+				fi
 			elif [[ -n ${MATE_DESKTOP_SESSION_ID} ]]; then
 				DE="MATE"
 			elif [[ -n ${KDE_SESSION_VERSION} ]]; then
@@ -1189,7 +1201,7 @@ detectgtk () {
 				if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
 			fi
 		;;
-		'GNOME'*|'MATE'*|'Gnome'*) # Desktop Environment found as "GNOME"
+		'GNOME'*|'MATE'*|'Gnome'*|'Unity'*) # Desktop Environment found as "GNOME"
 			if type -p gsettings >/dev/null 2>&1; then
 				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
 				gtk3Theme=${gtk3Theme//"'"}
