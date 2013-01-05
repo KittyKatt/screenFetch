@@ -1316,7 +1316,7 @@ detectgtk () {
 			#	gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
 			#fi
 			if type -p gsettings >/dev/null 2>&1; then
-				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
+				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null)
 				gtk3Theme=${gtk3Theme//"'"}
 			fi
 
