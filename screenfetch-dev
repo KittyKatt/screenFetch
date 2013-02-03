@@ -992,7 +992,7 @@ detectwm () {
 						'fluxbox') WM="FluxBox";;
 						'fvwm') WM="FVWM";;
 						'herbstluftwm') WM="herbstluftwm";;
-						'i3') WM="i3";;
+						'^i3') WM="i3";;
 						'icewm') WM="IceWM";;
 						'kwin') WM="KWin";;
 						'metacity') WM="Metacity";;
@@ -1010,7 +1010,7 @@ detectwm () {
 						'wmfs') WM="WMFS";;
 						'wmii') WM="wmii";;
 						'xfwm4') WM="Xfwm4";;
-						'xmonad') WM="XMonad";;
+						'^xmonad') WM="XMonad";;
 					esac
 				fi
 
@@ -1033,7 +1033,7 @@ detectwm () {
 				'fluxbox') WM="FluxBox";;
 				'fvwm') WM="FVWM";;
 				'herbstluftwm') WM="herbstluftwm";;
-				'i3') WM="i3";;
+				'^i3') WM="i3";;
 				'icewm') WM="IceWM";;
 				'kwin') WM="KWin";;
 				'metacity') WM="Metacity";;
@@ -1051,7 +1051,7 @@ detectwm () {
 				'wmfs') WM="WMFS";;
 				'wmii') WM="wmii";;
 				'xfwm4') WM="Xfwm4";;
-				'xmonad') WM="XMonad";;
+				'^xmonad') WM="XMonad";;
 			esac
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
