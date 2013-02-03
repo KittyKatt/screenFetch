@@ -1372,6 +1372,8 @@ detectgtk () {
 
 # Android-specific detections
 detectdroid () {
+	distro_ver=$(getprop ro.build.version.release)
+
 	hostname=$(getprop net.hostname)
 
 	_device=$(getprop ro.product.device)
@@ -2340,7 +2342,7 @@ infoDisplay () {
 	#########################
 	if [[ "${distro}" == "Android" ]]; then
 		myhostname=$(echo -e "${labelcolor}${hostname}"); out_array=( "${out_array[@]}" "$myhostname" )
-		mydistro=$(echo -e "$labelcolor OS:$textcolor $distro"); out_array=( "${out_array[@]}" "$mydistro" )
+		mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $distro_ver"); out_array=( "${out_array[@]}" "$mydistro" )
 		mydevice=$(echo -e "$labelcolor Device:$textcolor $device"); out_array=( "${out_array[@]}" "$mydevice" )
 		myrom=$(echo -e "$labelcolor ROM:$textcolor $rom"); out_array=( "${out_array[@]}" "$myrom" )
 		mybaseband=$(echo -e "$labelcolor Baseband:$textcolor $baseband"); out_array=( "${out_array[@]}" "$mybaseband" )
