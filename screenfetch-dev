@@ -1380,7 +1380,12 @@ detectdroid () {
 	_model=$(getprop ro.product.model)
 	device="${_model} (${_device})"
 
-	rom=$(getprop ro.build.display.id)
+	if [[ $(getprop ro.build.host) == "cyanogenmod" ]]; then
+		rom=$(getprop ro.cm.version)
+	else
+		rom=$(getprop ro.build.display.id)
+	fi
+
 	baseband=$(getprop ro.baseband)
 
 	cpu=$(grep '^Processor' /proc/cpuinfo)
