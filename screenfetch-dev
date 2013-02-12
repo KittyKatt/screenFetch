@@ -297,6 +297,10 @@ detectdistro () {
 				else
 					distro="Debian"
 				fi
+			elif [[ "${distro_detect}" == "elementary" ]]; then
+				distro="ElementaryOS"
+				distro_release=null
+				distro_codename=null
 			elif [[ "${distro_detect}" == "Fedora" ]]; then
 				distro="Fedora"
 			elif [[ "${distro_detect}" == "frugalware" ]]; then
@@ -504,6 +508,7 @@ detectdistro () {
 			arch*linux*old) distro="Arch Linux - Old" ;;
 			arch*linux) distro="Arch Linux" ;;
 			arch) distro="Arch Linux";;
+			elementary) distro="Elementary OS";;
 			fedora) distro="Fedora" ;;
 			mageia) distro="Mageia" ;;
 			mandriva) distro="Mandriva" ;;
@@ -2207,6 +2212,35 @@ asciiText () {
 "${c1} ████████  ████████  ████████")
 		;;
 
+
+
+
+	"Elementary OS")
+		c1="\033[1;37m" # White
+		if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+		startline="1"
+		fulloutput=(
+""
+"${c1}           \$?77777\$\$\$IO           %s"
+"${c1}        \$III777ZZZZ\$\$\$ZZ\$8       %s"
+"${c1}      ZI777           OZZZ\$      %s"
+"${c1}     Z777             O7ZZO8     %s"
+"${c1}    Z777            O\$ZZZ8       %s"
+"${c1}    I\$\$           O\$ZZZD         %s"
+"${c1}   0\$\$O         O\$\$ZZ            %s"
+"${c1}   0\$\$O       8\$\$\$\$              %s"
+"${c1}   0\$\$O     8\$\$\$\$                %s"
+"${c1}    \$ZZ   O\$\$ZZ           D      %s"
+"${c1}     ZZZ8ZZZZ             O88    %s"
+"${c1}     DZZZZ8             D888     %s"
+"${c1}       ZZZZDMMMMMMMMMMDO888      %s"
+"${c1}         ZOOOOOOOOOOOO888        %s"
+"${c1}           N8OOOOOOO8D           %s"
+"                                 %s"
+"")
+		;;
+
+
 	"Android")
 		c1="\e[1;37m" # White
 		c2="\e[1;32m" # Bold Green
@@ -2329,7 +2363,7 @@ infoDisplay () {
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Android") labelcolor="\e[1;32m";;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD") labelcolor="\e[1;31m";;
-		"CrunchBang"|"SolusOS"|"Viperr")
+		"CrunchBang"|"SolusOS"|"Viperr"|"Elementary OS")
 			if [[ -n "$colors_light" ]]; then labelcolor="\e[1;37m"
 			else labelcolor="\e[1;30m"; fi
 		;;
