@@ -1115,7 +1115,7 @@ detectwmtheme () {
 		;;
 		'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
 		'Ratpoison') Win_theme="Not Present";;
-		'Sawfish') Win_theme="$(awk -F")" '/\(custom-set-typed-variable/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
+		'Sawfish') Win_theme="$(awk -F")" '/\(quote default-frame-style/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
 		'ScrotWM') Win_theme="Not Present";;
 		'SpectrWM') Win_theme="Not Present";;
 		'subtle') Win_theme="Not Present";;
