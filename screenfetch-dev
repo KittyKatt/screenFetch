@@ -1015,7 +1015,7 @@ detectwm () {
 						'wmfs') WM="WMFS";;
 						'wmii') WM="wmii";;
 						'xfwm4') WM="Xfwm4";;
-						'^xmonad') WM="XMonad";;
+						'xmonad') WM="XMonad";;
 					esac
 				fi
 
