@@ -7,17 +7,17 @@
 
 # Copyright (c) 2010-2012 Brett Bohnenkamper < kittykatt AT kittykatt DOT us >
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-# and associated documentation files (the "Software"), to deal in the Software without restriction, 
-# including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+# and associated documentation files (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
 # subject to the following conditions:
 
 # The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
-# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
-# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
@@ -389,14 +389,14 @@ detectdistro () {
 					if [[ -n ${BASH_VERSINFO} && ${BASH_VERSINFO} -ge 4 ]]; then
 						distrib_id=$(for i in ${distrib_id}; do echo -n "${i^} "; done)
 						distro=${distrib_id% }
-						unset distrib_id 
+						unset distrib_id
 					else
 						distrib_id=$(for i in ${distrib_id}; do FIRST_LETTER=$(echo -n "${i:0:1}" | tr "[:lower:]" "[:upper:]"); echo -n "${FIRST_LETTER}${i:1} "; done)
 						distro=${distrib_id% }
 						unset distrib_id
 					fi
 				fi
-				
+
 				# Arch Quick fix
 				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 			fi
@@ -539,7 +539,7 @@ detectdistro () {
 			manjaro) distro="Manjaro" ;;
 			# cygwin) distro="Cygwin" ;;
 		esac
-	fi	
+	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
@@ -605,7 +605,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
-		'Mac OS X') 
+		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
 
 			if type -p port >/dev/null 2>&1; then
@@ -656,12 +656,12 @@ detectmem () {
  						wired = $(x-1)
  						gsub(/[^0-9]/,"",wired)
  					}
- 
+
  					if ($x ~ /^active/) {
  						active = $(x-1)
  						gsub(/[^0-9]/,"",active)
  					}
- 
+
  					if ($x ~ /inactive/) {
  						inactive = $(x-1)
  						gsub(/[^0-9]/,"",inactive)
@@ -692,14 +692,14 @@ detectmem () {
 		free_mem=$(($free_count * $pagesize))
 		avail_mem=$(($inactive_mem + $cache_mem + $free_mem))
 		used_mem=$(($round_mem - $avail_mem))
-		usedmem=$(($used_mem / ($human * $human) )) 
+		usedmem=$(($used_mem / ($human * $human) ))
 	elif [ "$distro" == "OpenBSD" ]; then
 		totalmem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
 		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${phys_mem} / $human))
-		if grep -q 'Cached' /proc/meminfo; then 
+		if grep -q 'Cached' /proc/meminfo; then
 			cache=$(awk '/Cached/ {print $2}' /proc/meminfo)
 			usedmem=$((${cache} / $human))
 		else
@@ -739,8 +739,8 @@ detectmem () {
 
 # Shell Detection - Begin
 detectshell_ver () {
-	local version_data='' version='' get_version='--version' 
-	
+	local version_data='' version='' get_version='--version'
+
 	case $1 in
 		# ksh sends version to sdterr. Weeeeeeird.
 		ksh)
@@ -750,7 +750,7 @@ detectshell_ver () {
 			version_data="$( $1 $get_version 2>/dev/null )"
 			;;
 	esac
-	
+
 	if [[ -n $version_data ]];then
 		version=$(awk '
 		BEGIN {
@@ -921,12 +921,12 @@ detectde () {
 				elif type -p gnome-session >/dev/null 2>&1; then
 					DEver=$(gnome-session --version)
 					DE="${DE} ${DEver//* }"
-				fi			
+				fi
 			elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
 				if type -p kded${DE#KDE} >/dev/null 2>&1; then
 					DEver=$(kded${DE#KDE} --version)
 					for l in $(echo "${DEver// /_}"); do
-						if [[ ${l//:*} == "KDE_Development_Platform" ]]; then 
+						if [[ ${l//:*} == "KDE_Development_Platform" ]]; then
 							DEver=${l//*:_}
 							DE="KDE ${DEver//_*}"
 						fi;
@@ -966,7 +966,7 @@ detectwm () {
 	WM="Not Found"
 	# if [ "$distro" == "Cygwin" ]; then
 	# 	WM="Explorer"
-	# else	
+	# else
 	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
 		if type -p xprop >/dev/null 2>&1; then
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
@@ -1106,11 +1106,11 @@ detectwmtheme () {
 		'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
 		'monsterwm') Win_theme="Not Present";;
 		'Musca') Win_theme="Not Present";;
-		'OpenBox') 
-			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then 
-				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)"; 
-			elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then 
-				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)"; 
+		'OpenBox')
+			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then
+				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)";
+			elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then
+				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)";
 			fi
 		;;
 		'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
@@ -1164,7 +1164,7 @@ detectgtk () {
 					fi
 				fi
 			fi
-			
+
 			if [[ -n ${KDE_CONFIG_FILE} ]]; then
 				if grep -q "widgetStyle=" "${KDE_CONFIG_FILE}"; then
 					gtk2Theme=$(awk -F"=" '/widgetStyle=/ {print $2}' "${KDE_CONFIG_FILE}")
@@ -1200,7 +1200,7 @@ detectgtk () {
 				gtk3Theme=${gtk3Theme//"'"}
 				gtk2Theme=${gtk3Theme}
 
-				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme) 
+				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme)
 				gtkIcons=${gtkIcons//"'"}
 				gtkFont=$(gsettings get org.gnome.desktop.interface font-name)
 				gtkFont=${gtkFont//"'"}
@@ -1212,7 +1212,7 @@ detectgtk () {
 				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
 				gtk3Theme=${gtk3Theme//"'"}
 				gtk2Theme=${gtk3Theme}
-				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme) 
+				gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme)
 				gtkIcons=${gtkIcons//"'"}
 				gtkFont=$(gsettings get org.gnome.desktop.interface font-name)
 				gtkFont=${gtkFont//"'"}
@@ -1251,7 +1251,7 @@ detectgtk () {
 				lxdeconf="/lxsession/LXDE/desktop.conf"
 			fi
 			# TODO: Clean me.
-			if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then 
+			if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
 			 gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi
 
@@ -1261,14 +1261,14 @@ detectgtk () {
 
 			if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
 				gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-			fi	 
+			fi
 		;;
 
 		# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
 		*)	# Lightweight or No DE Found
 			if [ -f $HOME/.gtkrc-2.0 ]; then
-				if grep -q gtk-theme $HOME/.gtkrc-2.0; then 
+				if grep -q gtk-theme $HOME/.gtkrc-2.0; then
 					gtk2Theme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 
@@ -1702,7 +1702,7 @@ asciiText () {
 ""$c1"__J  _   _.     >-'  "$c2")"$c4"._.   "$c1"|-'         %s         "
 ""$c1" \`-|.'   /_.          "$c4"\_|  "$c1" F           %s     "
 ""$c1"  /.-   .                _.<            %s"
-""$c1" /'    /.'             .'  \`\           %s"       
+""$c1" /'    /.'             .'  \`\           %s"
 ""$c1"  /L  /'   |/      _.-'-\               %s "
 ""$c1" /'J       ___.---'\|                   %s"
 ""$c1"   |\  .--' V  | \`. \`                   %s "
@@ -1716,11 +1716,11 @@ asciiText () {
 	  "DragonFlyBSD")
 	      c1="\e[1;31m" # Red
 		  c2="\e[1;37m" # White
-		  c3="\e[1;33m" # 
+		  c3="\e[1;33m" #
 		  c4="\e[0;31m"
 		  startline="0"
 		  fulloutput=("                     "$c1" |                     %s"
-"                    "$c1" .-.                   %s" 
+"                    "$c1" .-.                   %s"
 "                   "$c3" ()"$c1"I"$c3"()                  %s"
 "              "$c1" \"==.__:-:__.==\"             %s"
 "              "$c1"\"==.__/~|~\__.==\"            %s"
@@ -1729,10 +1729,10 @@ asciiText () {
 "  "$c2"(               ..="$c1"\\\\="$c1"/"$c2"=..               )%s"
 "   "$c2"\`'-.        ,.-\"\`;"$c1"/=\\\\"$c2" ;\"-.,_        .-'\`%s"
 "      "$c2" \`~\"-=-~\` .-~\` "$c1"|=|"$c2" \`~-. \`~-=-\"~\`     %s"
-"       "$c2"     .-~\`    /"$c1"|=|"$c2"\    \`~-.          %s" 
+"       "$c2"     .-~\`    /"$c1"|=|"$c2"\    \`~-.          %s"
 "       "$c2"  .~\`       / "$c1"|=|"$c2" \       \`~.       %s"
 " "$c2"    .-~\`        .'  "$c1"|=|"$c2"  \\\\\`.        \`~-.  %s"
-" "$c2"  (\`     _,.-=\"\`  "$c1"  |=|"$c2"    \`\"=-.,_     \`) %s" 
+" "$c2"  (\`     _,.-=\"\`  "$c1"  |=|"$c2"    \`\"=-.,_     \`) %s"
 " "$c2"   \`~\"~\"\`        "$c1"   |=|"$c2"           \`\"~\"~\`  %s"
 "                   "$c1"  /=\                   %s"
 "                   "$c1"  \=/                          %s"
@@ -1753,7 +1753,7 @@ asciiText () {
 "     "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCCCCCCOF\"'                     %s"
 "      "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCOF\"'                         %s"
 "       "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCPF\"'                             %s"
-"        "$c2"\\\\N\\\\\\\\"$c1"\"PCOCCCOCCFP\"\"                                  %s" 
+"        "$c2"\\\\N\\\\\\\\"$c1"\"PCOCCCOCCFP\"\"                                  %s"
 "         "$c2"\\\\N\                                                %s"
 "          "$c2"\\\\N\                                               %s"
 "           "$c2"\\\\N\                                              %s"
@@ -1910,7 +1910,7 @@ asciiText () {
 "${c1}     MMMMMMM"${c2}"ZZZZZZZ"${c1}"MMMM"${c2}"ZZZZZZZZZ.      %s"
 "${c1}    MMMMMMMMM"${c2}"ZZZZZZ"${c1}"MMM"${c2}"ZZZZZZZZZZZI     %s"
 "${c1}   MMMMMMMMMMM"${c2}"ZZZZZZ"${c1}"MM"${c2}"ZZZZZZZZZZ"${c1}"MMM    %s"
-"${c2}   .ZZZ"${c1}"MMMMMMMMMM"${c2}"IZZ"${c1}"MM"${c2}"ZZZZZ"${c1}"MMMMMMMMM   %s"    
+"${c2}   .ZZZ"${c1}"MMMMMMMMMM"${c2}"IZZ"${c1}"MM"${c2}"ZZZZZ"${c1}"MMMMMMMMM   %s"
 "${c2}   ZZZZZZZ"${c1}"MMMMMMMM"${c2}"ZZ"${c1}"M"${c2}"ZZZZ"${c1}"MMMMMMMMMMM   %s"
 "${c2}   ZZZZZZZZZZZZZZZZ"${c1}"M"${c2}"Z"${c1}"MMMMMMMMMMMMMMM   %s"
 "${c2}   .ZZZZZZZZZZZZZ"${c1}"MMM"${c2}"Z"${c1}"M"${c2}"ZZZZZZZZZZ"${c1}"MMMM   %s"
@@ -2371,7 +2371,7 @@ infoDisplay () {
 		"Slackware") labelcolor="\e[1;34m";;
 		"Mac OS X"|"Trisquel") labelcolor="\033[1;34m";;
 		*) labelcolor="\e[1;33m";;
-	esac 
+	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
 	# Some verbosity stuff
 	[[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
@@ -2422,11 +2422,11 @@ infoDisplay () {
 			if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "wmtheme" ]]; then
 					if [[ "${Win_theme}" == "Not Present" ]]; then
-						continue
+						:
 					else
 						mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
 					fi
-			if [[ "${display[@]}" =~ "gtk" ]]; then 
+			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [ "$distro" == "Mac OS X" ]; then
 					myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 					myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
@@ -2445,7 +2445,7 @@ infoDisplay () {
 	if [[ "$display_type" == "ASCII" ]]; then
 		asciiText
 	else
-		echo -e "$mydistro" 
+		echo -e "$mydistro"
 		if [[ "${distro}" == "Android" ]]; then
 			echo -e "$mydevice"
 			echo -e "$myrom"
@@ -2595,9 +2595,9 @@ fi
 for i in "${display[@]}"; do
 
 	if [[ $i =~ wm ]]; then
-		 ! [[ $WM  ]] && detectwm; 
+		 ! [[ $WM  ]] && detectwm;
 		 ! [[ $Win_theme ]] && detectwmtheme;
-	else	
+	else
 		[[ "${display[*]}" =~ "$i" ]] && detect${i}
 	fi
 done
