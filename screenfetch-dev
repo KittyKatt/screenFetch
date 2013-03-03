@@ -972,6 +972,8 @@ detectwm () {
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
 			if [[ "$WM" =~ "not found" ]]; then
 				WM="Not Found"
+			elif [[ "$WM" =~ "invalid window id format" ]]; then
+				WM="Not Found"
 			else
 				WM=${WM//* }
 				WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
