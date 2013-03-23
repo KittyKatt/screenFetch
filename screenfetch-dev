@@ -344,7 +344,7 @@ detectdistro () {
 					distro_codename=null
 					distro_release=null
 				fi
-			elif [[ "${distro_detect}" == "SUSE LINUX" ]]; then
+			elif [[ "${distro_detect}" == "SUSE LINUX" || "${distro_detect}" =~ "openSUSE" ]]; then
 				distro="openSUSE"
 			elif [[ "${distro_detect}" == "ParabolaGNU/Linux-libre" ]]; then
 				distro="ParabolaGNU/Linux-libre"
