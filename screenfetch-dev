@@ -1942,29 +1942,30 @@ asciiText () {
 
 
 		"Mageia")
-			c1="\e[1;34m" # Light Blue
-			c2="\e[0;36m" # Light Cyan
+		#	c1="\e[1;34m" # Light Blue
+			c1="\e[1;37m" # White
+		 	c2="\e[0;36m" # Light Cyan
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
-			fulloutput=("$c2             .''   "
-"$c2              '.     ..           %s"
-"$c2                    .,,.         %s"
-"$c2                 ,;;.            %s"
-"$c2                 ... ...         %s"
-"$c2              ',,'  .:::.        %s"
-"$c1            .$c2,:c,$c1    .. .        %s"
+			fulloutput=("$c2               .°°."
+"$c2                °°   .°°.         %s"
+"$c2                .°°°. °°         %s"
+"$c2                .   .            %s"
+"$c2                 °°° .°°°.       %s"
+"$c2             .°°°.   '___'       %s"
+"$c1            .${c2}'___'     $c1   .      %s"
 "$c1          :dkxc;'.  ..,cxkd;     %s"
-"$c1        .dkkxxkkkkkkkkkkxxkkd.   %s"
-"$c1       .dkko. ';cloolc;. .dkkd   %s"
-"$c1       ckkx.              .xkk;  %s"
-"$c1       xOO:                cOOd  %s"
-"$c1       xOO:                lOOd  %s"
-"$c1       lOOx.              .kOO:  %s"
-"$c1       .k00d.            .x00x   %s"
-"$c1        .k00O;          ;k00O.   %s"
-"$c1         .lO0KOdc;,,;cdO0KOc.    %s"
-"$c1            ;d0KKKKKKKK0d;         "
-"$c1               .,;::;,.            ")
+"$c1        .dkk. kkkkkkkkkk .kkd.   %s"
+"$c1       .dkk.  ';cloolc;.  .kkd   %s"
+"$c1       ckk.                .kk;  %s"
+"$c1       xO:                  cOd  %s"
+"$c1       xO:                  lOd  %s"
+"$c1       lOO.                .OO:  %s"
+"$c1       .k00.              .00x   %s"
+"$c1        .k00;            ;00O.   %s"
+"$c1         .lO0Kc;,,,,,,;c0KOc.    %s"
+"$c1            ;d00KKKKKK00d;         "
+"$c1               .,KKKK,.            ")
 		;;
 
 
