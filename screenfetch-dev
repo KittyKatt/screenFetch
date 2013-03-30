@@ -938,6 +938,13 @@ detectde () {
 					DE="${DE} ${DEver//* }"
 				fi
 			fi
+
+			elif [[ ${DE} == "Unity" ]]; then
+				if type -p unity >/dev/null 2>&1; then
+					DEver=$(unity --version)
+					DE="${DE} ${DEver//* }"
+				fi
+			fi
 		fi
 
 		if [[ "${DE}" == "Not Present" ]]; then
@@ -1079,7 +1086,7 @@ detectwmtheme () {
 		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'Cinnamon') Win_theme="$(gsettings get org.cinnamon.theme name)";;
-		'Compiz'|'Marco'|'Mutter'*)
+		'Compiz'|'Marco'|'Mutter'*|'GNOME Shell')
 			if type -p gsettings >/dev/null 2>&1; then
 				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
 				Win_theme=${Win_theme//"'"}
@@ -1099,7 +1106,7 @@ detectwmtheme () {
 			ThemeFile="$(cygpath -u $ThemeFile)"
 			Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
 		;;
-		'Finder') Win_theme="not present";;
+		'Finder') Win_theme="Not Present";;
 		'FluxBox'|'Fluxbox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
 		'FVWM') Win_theme="Not Present";;
 		'i3') Win_theme="Not Present";;
