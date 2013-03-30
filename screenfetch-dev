@@ -1111,7 +1111,46 @@ detectwmtheme () {
 		'FVWM') Win_theme="Not Present";;
 		'i3') Win_theme="Not Present";;
 		'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
-		'KWin') if [ -f $HOME/.kde/share/config/kdeglobals ]; then Win_theme="$(grep '^widgetStyle' $HOME/.kde/share/config/kdeglobals | awk -F'=' '{print $2}')"; fi;;
+		'KWin'*)
+			if [[ -z $KDE_CONFIG_DIR ]]; then
+				if type -p kde5-config >/dev/null 2>&1; then
+					KDE_CONFIG_DIR=$(kde5-config --localprefix)
+				elif type -p kde4-config >/dev/null 2>&1; then
+					KDE_CONFIG_DIR=$(kde4-config --localprefix)
+				elif type -p kde-config >/dev/null 2>&1; then
+					KDE_CONFIG_DIR=$(kde-config --localprefix)
+				fi
+			fi
+
+			if [[ -n $KDE_CONFIG_DIR ]]; then
+				### GRB This seems to work on Debian Wheezy (and probably some others).
+				Win_theme=$(awk '/PluginLib=kwin3_/{gsub(/PluginLib=kwin3_/,"",$0); print $0; exit}' $KDE_CONFIG_DIR/share/config/kwinrc)
+				if [[ -z $Win_theme ]]; then
+					if [[ -f $KDE_CONFIG_DIR/share/config/kdebugrc ]]; then
+						### This works on openSUSE 12.2 running KDE 4.10.x.  I'm pretty sure this is because I haven't changed
+						### from using the default Oxygen decoration for KWin.
+						Win_theme=$(awk '/(decoration)/ {gsub(/\[/,"",$1); print $1; exit}' $KDE_CONFIG_DIR/share/config/kdebugrc)
+						if [[ -z $Win_theme ]]; then
+							Win_theme="Not Found"
+						fi
+					else
+						Win_theme="Not Found"
+					fi
+				fi
+
+				if [[ $Win_theme != 'Not Found' ]]; then
+					if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
+						if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
+							Win_theme=${Win_theme^}
+						else
+							Win_theme="$(tr '[:lower:]' '[:upper:]' <<< ${Win_theme:0:1})${Win_theme:1}"
+						fi
+					else
+						Win_theme="$(tr '[:lower:]' '[:upper:]' <<< ${Win_theme:0:1})${Win_theme:1}"
+					fi
+				fi
+			fi
+		;;
 		'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
 		'monsterwm') Win_theme="Not Present";;
 		'Musca') Win_theme="Not Present";;
