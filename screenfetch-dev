@@ -1324,10 +1324,7 @@ detectgtk () {
 					gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 			fi
-			# $H        # Cygwin Check
-		if [ "$distro" == "Unknown" ]; then
-            distro_detect=$(uname -o)
-            if [ "$distro_detect" == "Cygwin" ]; then distro="Cygwin"; fiOME/.gtkrc.mine theme detect only
+			# $HOME/.gtkrc.mine theme detect only
 			if [ -f $HOME/.gtkrc.mine ]; then
 				if grep -q "^include" $HOME/.gtkrc.mine; then
 					gtk2Theme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
