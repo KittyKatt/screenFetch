@@ -827,7 +827,7 @@ detectres () {
 			xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
-		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4}')
+		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
 	else
 		xResolution="No X Server"
 	fi
