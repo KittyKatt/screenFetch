@@ -498,6 +498,22 @@ detectdistro () {
 					}' /etc/issue)
 				fi
 			fi
+			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+				if [[ -f /etc/system-release ]]; then
+					distro=$(awk 'BEGIN {
+						distro = "Unknown"
+					}
+					{
+						if ($0 ~ /"Scientific\ Linux"/) {
+							distro = "Scientific Linux"
+							exit
+						}
+					} END {
+						print distro
+					}' /etc/system-release)
+				fi
+			fi
+
 
 
 		fi
@@ -2307,6 +2323,34 @@ asciiText () {
 "${c2}        uu    uu")
 		;;
 
+		"Scientific Linux")
+			c1="\033[1;34m" 
+			c2="\033[1;31m" 
+			c3="\033[1;37m" 
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="2"
+			fulloutput=("${c1}                  =/;;/-"
+"${c1}                 +:    //"
+"${c1}                /;      /;                   %s"
+"${c1}               -X        H.                 %s"
+"${c1} .//;;;:;;-,   X=        :+   .-;:=;:;#;.   %s"
+"${c1} M-       ,=;;;#:,      ,:#;;:=,       ,@   %s"
+"${c1} :#           :#.=/++++/=.$=           #=   %s"
+"${c1}  ,#;         #/:+/;,,/++:+/         ;+.    %s"
+"${c1}    ,+/.    ,;@+,        ,#H;,    ,/+,      %s"
+"${c1}       ;+;;/= @.  ${c2}.H${c3}#${c2}#X   ${c1}-X :///+;         %s"
+"${c1}       ;+=;;;.@,  ${c3}.X${c2}M${c3}@$.  ${c1}=X.//;=#/.        %s"
+"${c1}    ,;:      :@#=        =\$H:     .+#-      %s"
+"${c1}  ,#=         #;-///==///-//         =#,    %s"
+"${c1} ;+           :#-;;;:;;;;-X-           +:   %s"
+"${c1} @-      .-;;;;M-        =M/;;;-.      -X   %s"
+"${c1}  :;;::;;-.    #-        :+    ,-;;-;:==    %s"
+"${c1}               ,X        H.                 %s"
+"${c1}                ;/      #=                  %s"
+"${c1}                 //    +;"
+"${c1}                  '////'")
+		;;
+
 		*)
 			c1="\e[1;37m" # White
 			c2="\e[1;30m" # Light Gray
@@ -2407,7 +2451,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Android") labelcolor="\e[1;32m";;
-		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD") labelcolor="\e[1;31m";;
+		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux") labelcolor="\e[1;31m";;
 		"CrunchBang"|"SolusOS"|"Viperr"|"Elementary OS")
 			if [[ -n "$colors_light" ]]; then labelcolor="\e[1;37m"
 			else labelcolor="\e[1;30m"; fi
