@@ -1407,7 +1407,7 @@ detectdroid () {
 takeShot () {
 	if [[ -z $screenCommand ]]; then
 		if [[ "$hostshot" == "1" ]]; then
-			if [ "$distro" == "Mac OS X" ]; then screencapture -x -T 3 "${shotfile}"
+			if [ "$distro" == "Mac OS X" ]; then screencapture -x -T 3 "${shotfile} 2>dev/null"
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
