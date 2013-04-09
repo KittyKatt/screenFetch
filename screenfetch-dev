@@ -1333,7 +1333,7 @@ detectgtk () {
 				fi
 
 				if grep -q icon-theme $HOME/.gtkrc-2.0; then
-					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
+					gtkIcons=$(awk -F'"' '/gtk-icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 
 				if grep -q font $HOME/.gtkrc-2.0; then
