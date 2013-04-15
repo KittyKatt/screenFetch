@@ -862,7 +862,11 @@ detectde () {
 				DE=$(echo "${xprop_root}" | awk 'BEGIN {
 					de = "Not Present"
 				}
-				{
+				{'E17'|'Enlightenment') if [ "$(which eet 2>/dev/null)" ]; then
+        econfig="$(eet -d $HOME/.e/e/config/standard/e.cfg config | awk '/value \"file\" string.*.edj/{ print $4 }')"
+        econfigend="${econfig##*/}"
+        Win_theme=${econfigend%.*}
+        fi;;
 					if ($1 ~ /^_DT_SAVE_MODE/) {
 						de = $NF
 						gsub(/\"/,"",de)
@@ -1482,7 +1486,7 @@ takeShot () {
 				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
 			fi
 		else
-			if [ "$distro" == "Mac OS X" ]; then screencapture -xT 3 "${shotfile}"
+			if [ "$distro" == "Mac OS X" ]; then screencapture -x -T 3 "${shotfile} 2>dev/null"
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
