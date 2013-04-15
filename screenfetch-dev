@@ -2198,7 +2198,7 @@ asciiText () {
 "${c6}      \`:+oo+/:-..-:/+o+/-      %s\n")
 		;;
 
-        "Cygwin")
+        "Windows")
             c1="\e[1;31m" # Red
             c2="\e[1;32m" # Green
             c3="\e[1;36m" # Blue
