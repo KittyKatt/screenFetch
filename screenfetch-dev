@@ -5,7 +5,7 @@
 # Script to fetch system and theme settings for screenshots in most mainstream
 # Linux distributions.
 
-# Copyright (c) 2010-2012 Brett Bohnenkamper < kittykatt AT kittykatt DOT us >
+# Copyright (c) 2010-2012 Brett Bohnenkamper < kittykatt AT archlinux DOT us >
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 # and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -2360,6 +2360,34 @@ asciiText () {
 "${c1}                ;/      #=                  %s"
 "${c1}                 //    +;"
 "${c1}                  '////'")
+		;;
+
+		"BackTrack Linux")
+			c1="\033[1;37m" # White
+			c2="\033[1;31m" # Light Red
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="2"
+			fulloutput=("${c1}................."
+"${c1}               ..,;:ccc,."
+"${c1}             ......''';lxO."
+"${c1}........''''..........,:ld;"
+"${c1}              .';;;:::;,,.x,"
+"${c1}         ..'''.            0Xxoc:,.  ..."
+"${c1}     ....                ,ONkc;,;cokOdc',."
+"${c1}    .                   OMo           ':"${c2}"dd"${c1}"o."
+"${c1}                       dMc               :OO;"
+"${c1}                       0M.                 .:o."
+"${c1}                       ;Wd"
+"${c1}                        ;XO,"
+"${c1}                          ,d0Odlc;,.."
+"${c1}                              ..',;:cdOOd::,."
+"${c1}                                       .:d;.':;."
+"${c1}                                          'd,  .'"
+"${c1}                                            ;l   .."
+"${c1}                                             .o"
+"${c1}                                               c"
+"${c1}                                               .'"
+"${c1}                                                .")
 		;;
 
 		*)
