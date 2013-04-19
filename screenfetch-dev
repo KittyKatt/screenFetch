@@ -583,7 +583,7 @@ detectuptime () {
 		boot=`sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1`
 		now=`date +%s`
 		uptime=$(($now-$boot))
-	elif [ "$distro" == "FreeBSD" ]; then
+	elif [[ "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" ]]; then
 		uptime=`sysctl -n kern.boottime | awk -F' ' '{print $4}' | tr -d ","`
 		now=`date +%s`
 		uptime=$(($now-$uptime))
