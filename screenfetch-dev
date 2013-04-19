@@ -797,7 +797,7 @@ detectshell () {
 		shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
 		shell_type=${shell_type/-}
 		shell_type=${shell_type//*\/}
-	elif [[ "${distro}" == "FreeBSD" ]]; then
+	elif [[ "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" ]]; then
 		shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
 		shell_type=${shell_type/-}
 		shell_type=${shell_type//*\/}
