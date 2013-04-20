@@ -2567,8 +2567,8 @@ infoDisplay () {
 							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 						fi
 					fi
-					if [ "$gtkFonts" != "Not Found" ]; then
-						if [ -n "$gtkFonts" ]; then 
+					if [ "$gtkFont" != "Not Found" ]; then
+						if [ -n "$gtkFont" ]; then 
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 						fi
 					fi
