@@ -2562,11 +2562,11 @@ infoDisplay () {
 					fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [ "$distro" == "Mac OS X" ]; then
-					if [ "$gtkIcons" != "Not Found" || -n "$gtkIcons" ]; then myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++)); fi
-					if [ "$gtkFont" != "Not Found" || -n "$gtkFont" ]; then myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++)); fi
+					if [ "$gtkIcons" != "Not Found" || ! -z "$gtkIcons" ]; then myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++)); fi
+					if [ "$gtkFont" != "Not Found" || ! -z "$gtkFont" ]; then myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++)); fi
 				else
-					if [ "$gtk2Theme" != "Not Found" || -n "$gtk2Theme" ]; then mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++)); fi
-					if [ "$gtk3Theme" != "Not Found" || -n "$gtk3Theme" ]; then mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++)); fi
+					if [ "$gtk2Theme" != "Not Found" || ! -z "$gtk2Theme" ]; then mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++)); fi
+					if [ "$gtk3Theme" != "Not Found" || ! -z "$gtk3Theme" ]; then mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++)); fi
 					myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 					myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 					# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
