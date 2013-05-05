@@ -139,67 +139,74 @@ detectColors() {
 }
 
 
+displayHelp() {
+	echo -e "${underline}Usage${c0}:"
+	echo -e "  screenFetch [OPTIONAL FLAGS]"
+	echo ""
+	echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
+	echo ""
+	echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
+	echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
+	echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
+	echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, OpenBSD"
+	echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
+	echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
+	echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
+	echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
+	echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, SpectrWM,"
+	echo -e "			      subtle, Emerald, E17 and Beryl."
+	echo ""
+	echo -e "${underline}Options${c0}:"
+	echo -e "   ${bold}-v${c0}                 Verbose output."
+	echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
+	echo -e "		      command line. Must be in the following format..."
+	echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
+	#echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
+	#echo -e "		      on the command line. Format must be as follows:"
+	#echo -e "		      'OPTION OPTION OPTION OPTION'. Valid options are"
+	#echo -e "		      host, distro, Kernel, Uptime, Shell, Resolution, DE, WM,"
+	#echo -e "		      Win_theme, Theme, Icons, Font, ASCII, Background."
+	echo -e "   ${bold}-n${c0}                 Do no display ASCII distribution logo."
+	echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
+	echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
+	echo -e "		      to take a screenshot. Use the -m flag if you would like"
+	echo -e "		      to move it to a new location afterwards."
+	#echo -e "   ${bold}-B${c0}                 Enable background detection."
+	echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
+	echo -e "		      to export all of your theme settings and archive them"
+	echo -e "		      up for uploading."
+	#echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
+	#echo -e "		      all white text into dark gray text (in ascii logos and"
+	#echo -e "		      in information output)."
+	echo -e "   ${bold}-c string${c0}          You may change the outputted colors with -c. The format is"
+	echo -e "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the"
+	echo -e "                      ASCII logo colors and the label colors. The second argument"
+	echo -e "                      controls the colors of the information found. One argument may be"
+	echo -e "                      used without the other."
+	echo -e "   ${bold}-S 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
+	echo -e "		      the script to execute. Surrounding quotes are required."
+	echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
+	echo -e "		      to use. Surrounding quotes are required."
+	echo -e "   ${bold}-A 'DISTRO'${c0}        Here you can specify the distribution art that you want"
+	echo -e "		      displayed. This is for when you want your distro"
+	echo -e "                      detected but want to display a different logo."
+	echo -e "   ${bold}-V${c0}                 Display current script version."
+	echo -e "   ${bold}-h${c0}                 Display this help."
+	exit 0
+}
+
 #####################
 # Begin Flags Phase
 #####################
 
+case $1 in
+	--help) displayHelp;;
+esac
+		
+
 while getopts ":hsmevVntlS:A:D:o:Bc:" flags; do
 	case $flags in
-		h)
-			echo -e "${underline}Usage${c0}:"
-			echo -e "  screenFetch [OPTIONAL FLAGS]"
-			echo ""
-			echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
-			echo ""
-			echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
-			echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
-			echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
-			echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, OpenBSD"
-			echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
-			echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
-			echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
-			echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
-			echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, SpectrWM,"
-			echo -e "			      subtle, Emerald, E17 and Beryl."
-			echo ""
-			echo -e "${underline}Options${c0}:"
-			echo -e "   ${bold}-v${c0}                 Verbose output."
-			echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
-			echo -e "		      command line. Must be in the following format..."
-			echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
-			#echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
-			#echo -e "		      on the command line. Format must be as follows:"
-			#echo -e "		      'OPTION OPTION OPTION OPTION'. Valid options are"
-			#echo -e "		      host, distro, Kernel, Uptime, Shell, Resolution, DE, WM,"
-			#echo -e "		      Win_theme, Theme, Icons, Font, ASCII, Background."
-			echo -e "   ${bold}-n${c0}                 Do no display ASCII distribution logo."
-			echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
-			echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
-			echo -e "		      to take a screenshot. Use the -m flag if you would like"
-			echo -e "		      to move it to a new location afterwards."
-			#echo -e "   ${bold}-B${c0}                 Enable background detection."
-			echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
-			echo -e "		      to export all of your theme settings and archive them"
-			echo -e "		      up for uploading."
-			#echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
-			#echo -e "		      all white text into dark gray text (in ascii logos and"
-			#echo -e "		      in information output)."
-			echo -e "   ${bold}-c string${c0}          You may change the outputted colors with -c. The format is"
-			echo -e "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the"
-			echo -e "                      ASCII logo colors and the label colors. The second argument"
-			echo -e "                      controls the colors of the information found. One argument may be"
-			echo -e "                      used without the other."
-			echo -e "   ${bold}-S 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
-			echo -e "		      the script to execute. Surrounding quotes are required."
-			echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
-			echo -e "		      to use. Surrounding quotes are required."
-			echo -e "   ${bold}-A 'DISTRO'${c0}        Here you can specify the distribution art that you want"
-			echo -e "		      displayed. This is for when you want your distro"
-			echo -e "                      detected but want to display a different logo."
-			echo -e "   ${bold}-V${c0}                 Display current script version."
-			echo -e "   ${bold}-h${c0}                 Display this help."
-			exit
-		;;
+		h) displayHelp;;
 		s) screenshot=1; continue;;
 		S) screenCommand=$OPTARG; continue;;
 		m) hostshot=1; continue;;
