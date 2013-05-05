@@ -143,7 +143,7 @@ detectColors() {
 # Begin Flags Phase
 #####################
 
-while getopts ":hsmevVntlS:D:o:Bc:" flags; do
+while getopts ":hsmevVntlS:A:D:o:Bc:" flags; do
 	case $flags in
 		h)
 			echo -e "${underline}Usage${c0}:"
@@ -185,13 +185,17 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 			#echo -e "		      all white text into dark gray text (in ascii logos and"
 			#echo -e "		      in information output)."
 			echo -e "   ${bold}-c string${c0}          You may change the outputted colors with -c. The format is"
-			echo -e "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the ASCII"
-			echo -e "                      logo colors and the label colors. The second argument controls the colors"
-			echo -e "                      of the information found. One argument may be used without the other."
+			echo -e "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the"
+			echo -e "                      ASCII logo colors and the label colors. The second argument"
+			echo -e "                      controls the colors of the information found. One argument may be"
+			echo -e "                      used without the other."
 			echo -e "   ${bold}-S 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
 			echo -e "		      the script to execute. Surrounding quotes are required."
 			echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
 			echo -e "		      to use. Surrounding quotes are required."
+			echo -e "   ${bold}-A 'DISTRO'${c0}        Here you can specify the distribution art that you want"
+			echo -e "		      displayed. This is for when you want your distro"
+			echo -e "                      detected but want to display a different logo."
 			echo -e "   ${bold}-V${c0}                 Display current script version."
 			echo -e "   ${bold}-h${c0}                 Display this help."
 			exit
@@ -210,6 +214,7 @@ while getopts ":hsmevVntlS:D:o:Bc:" flags; do
 			exit
 		;;
 		D) distro=$OPTARG; continue;;
+		A) asc_distro=$OPTARG; continue;;
 		t) truncateSet="Yes";;
 		n) display_type="Text";;
 		o) overrideOpts=$OPTARG; continue;;
@@ -1520,7 +1525,9 @@ takeShot () {
 
 asciiText () {
 # Distro logos and ASCII outputs
-	case $distro in
+	if [[ "$asc_distro" ]]; then myascii="${asc_distro}"
+	else myascii="${distro}"; fi
+	case ${myascii} in
 		"Arch Linux - Old")
 			c1="\e[1;37m" # White
 			c2="\e[1;34m" # Light Blue
@@ -2503,7 +2510,9 @@ infoDisplay () {
 	textcolor="\033[0m"
 	[[ "$my_hcolor" ]] && textcolor="${my_hcolor}"
 	#TODO: Centralize colors and use them across the board so we only change them one place.
-	case $distro in
+	myascii="${distro}"
+	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
+	case ${myascii} in
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Android") labelcolor="\e[1;32m";;
