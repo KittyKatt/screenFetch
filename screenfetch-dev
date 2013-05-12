@@ -2605,7 +2605,7 @@ infoDisplay () {
 		*) labelcolor="\e[1;33m";;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
-	[[ "$no_color" == "1" ]] && labelcolor=""; bold=""; c0=""; textcolor=""
+	if [[ "$no_color" == "1" ]]; then labelcolor=""; bold=""; c0=""; textcolor=""; fi
 	# Some verbosity stuff
 	[[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
 	[[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
