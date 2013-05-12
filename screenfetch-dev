@@ -2635,7 +2635,9 @@ infoDisplay () {
 	if [[ "$display_type" == "ASCII" ]]; then
 		asciiText
 	else
-		echo -e "$mydistro"
+		if [[ "${display[@]}" =~ "host" ]]; then echo -e " $myinfo"; fi
+		if [[ "${display[@]}" =~ "distro" ]]; then echo -e "$mydistro"; fi
+		if [[ "${display[@]}" =~ "kernel" ]]; then echo -e "$mykernel"; fi
 		if [[ "${distro}" == "Android" ]]; then
 			echo -e "$mydevice"
 			echo -e "$myrom"
@@ -2645,16 +2647,27 @@ infoDisplay () {
 			echo -e "$mycpu"
 			echo -e "$mymem"
 		else
-			echo -e "$myres"
-			echo -e "$myde"
-			echo -e "$mywm"
-			echo -e "$mywmtheme"
-			echo -e "$mygtk2"
-			echo -e "$mygtk3"
-			echo -e "$myicons"
-			echo -e "$myfont"
-			echo -e "$mycpu"
-			echo -e "$mymem"
+			if [[ "${display[@]}" =~ "uptime" ]]; then echo -e "$myuptime"; fi
+			if [[ "${display[@]}" =~ "pkgs" ]]; then echo -e "$myuptime"; fi
+			if [[ "${display[@]}" =~ "shell" ]]; then echo -e "$myshell"; fi
+			if [[ "${display[@]}" =~ "res" ]]; then echo -e "$myres"; fi
+			if [[ "${display[@]}" =~ "de" ]]; then
+				if [[ "${DE}" != "Not Present" ]]; then echo -e "$myde"; fi
+			fi
+			if [[ "${display[@]}" =~ "wm" ]]; then
+				echo -e "$mywm"
+				if [[ "${Win_theme}" != "Not Present" ]]; then
+					echo -e "$mywmtheme"
+				fi
+			fi
+			if [[ "${display[@]}" =~ "gtk" ]]; then
+				echo -e "$mygtk2"
+				echo -e "$mygtk3"
+				echo -e "$myicons"
+				echo -e "$myfont"
+			fi
+			if [[ "${display[@]}" =~ "cpu" ]]; then echo -e "$mycpu"; fi
+			if [[ "${display[@]}" =~ "mem" ]]; then echo -e "$mymem"; fi
 		fi
 	fi
 }
