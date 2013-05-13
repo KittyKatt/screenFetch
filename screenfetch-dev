@@ -377,8 +377,6 @@ detectdistro () {
 				distro_release=null
 			elif [[ "${distro_detect}" == "SolusOS" ]]; then
 				distro="SolusOS"
-				distro_codename=null
-				distro_release=null
 			elif [[ "${distro_detect}" == "Trisquel" ]]; then
 				distro="Trisquel"
 			elif [[ "${distro_detect}" == "Ubuntu" ]]; then
