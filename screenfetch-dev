@@ -36,7 +36,7 @@ scriptVersion="2.8.1"
 # distro="Linux"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
-#display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
+#display="host distro kernel uptime shell res de wm wmtheme gtk icons font background gpu"
 display=( host distro kernel uptime pkgs shell res de wm wmtheme gtk cpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
@@ -688,6 +688,38 @@ detectcpu () {
 }
 # CPU Detection - End
 
+
+# GPU Detection - Begin (EXPERIMENTAL!)
+detectgpu () {
+    if [ -f /usr/bin/lspci ];then
+        gpu_info=$(lspci | grep VGA)
+        gpu=$(echo "$gpu_info" | sed 's/\[/\n/;s/\]/\n/' | head -4 | tail -1)
+
+    elif [ -f /usr/bin/glxinfo ];then
+        gpu_info=$(glxinfo)
+        gpu=$(echo "$gpu_info" | grep "OpenGL renderer string")
+        gpu=$(echo "$gpu" | sed 's/: /\n/;s/\//\n/' | tail -2 | head -1)
+        gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
+    fi
+    if [ -n "$gpu" ];then
+        if [ $(echo "$gpu_info" | grep -i nvidia | wc -l) -gt 0 ];then
+            gpu_info="NVidia "
+        elif [ $(echo "$gpu_info" | grep -i intel | wc -l) -gt 0 ];then
+            gpu_info="Intel "
+        elif [ $(echo "$gpu_info" | grep -i amd | wc -l) -gt 0 ];then
+            gpu_info="AMD "
+        elif [ $(echo "$gpu_info" | grep -i ati | wc -l) -gt 0 ];then
+            gpu_info="ATI "
+        else
+            gpu_info=""
+        fi
+        gpu="$gpu_info""$gpu"
+    else
+        gpu="No idea, Sorry :("
+    fi
+    [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current GPU...found as '$gpu'"
+}
+# GPU Detection - End 
 
 
 # Memory Detection - Begin
@@ -1586,7 +1618,7 @@ asciiText () {
 "${c2}     /ossssssss/        +ssssooo/-    %s"
 "${c2}   \`/ossssso+/:-        -:/+osssso+-  %s"
 "${c2}  \`+sso+:-\`                 \`.-/+oso: %s"
-"${c2} \`++:.                           \`-/+/"
+"${c2} \`++:.                           \`-/+/  %s"
 "${c2} .\`                                 \`/")
 		;;
 
@@ -2648,6 +2680,7 @@ infoDisplay () {
 		mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" )
 		myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime"); out_array=( "${out_array[@]}" "$myuptime" )
 		mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" )
+		mygpu=$(echo -e "$labelcolor GPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mygpu" )
 		mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" )
 	else
 		if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
@@ -2728,6 +2761,7 @@ infoDisplay () {
 			fi
 		fi
 		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
+		if [[ "${display[@]}" =~ "gpu" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
 	fi
 	if [[ "$display_type" == "ASCII" ]]; then
@@ -2765,6 +2799,7 @@ infoDisplay () {
 				echo -e "$myfont"
 			fi
 			if [[ "${display[@]}" =~ "cpu" ]]; then echo -e "$mycpu"; fi
+			if [[ "${display[@]}" =~ "gpu" ]]; then echo -e "$mygpu"; fi
 			if [[ "${display[@]}" =~ "mem" ]]; then echo -e "$mymem"; fi
 		fi
 	fi
