@@ -373,8 +373,6 @@ detectdistro () {
 				distro="Red Hat Linux"
 			elif [[ "${distro_detect}" == "Sabayon" ]]; then
 				distro="Sabayon"
-				distro_codename=null
-				distro_release=null
 			elif [[ "${distro_detect}" == "SolusOS" ]]; then
 				distro="SolusOS"
 			elif [[ "${distro_detect}" == "Trisquel" ]]; then
