@@ -371,6 +371,10 @@ detectdistro () {
 				distro_codename=null
 			elif [[ "${distro_detect}" == "CentOS" || "${distro_detect}" =~ "RedHatEnterprise" ]]; then
 				distro="Red Hat Linux"
+			elif [[ "${distro_detect}" == "Sabayon" ]]; then
+				distro="Sabayon"
+				distro_codename=null
+				distro_release=null
 			elif [[ "${distro_detect}" == "SolusOS" ]]; then
 				distro="SolusOS"
 				distro_codename=null
@@ -462,9 +466,9 @@ detectdistro () {
 					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Linux"
 					elif [ -f /etc/slackware-version ]; then distro="Slackware"
 					elif [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"
-				fi
-			else
-				if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null; then
+					elif [ -f /etc/sabayon-edition ]; then distro="Sabayon"; fi
+				else
+					if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null; then
 						distro="Mac OS X"
 					elif [[ -f /var/run/dmesg.boot ]]; then
 						distro=$(awk 'BEGIN {
@@ -637,7 +641,7 @@ detectpkgs () {
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Trisquel') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
-		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
+		'Gentoo'|'Sabayon') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
@@ -2490,6 +2494,33 @@ asciiText () {
 "${c1}                                                .")
 		;;
 
+                "Sabayon")
+                        if [[ "$no_color" != "1" ]]; then
+                                c1="\033[1;37m" # White
+				c2="\033[1;34m" # Blue
+                        fi
+                        if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+                        startline="1"
+                        fulloutput=("${c2}            ..........."
+"${c2}         ..             ..             %s"
+"${c2}      ..                   ..         %s"
+"${c2}    ..           ${c1}o           ${c2}..       %s"
+"${c2}  ..            ${c1}:W'            ${c2}..     %s"
+"${c2} ..             ${c1}.d.             ${c2}..    %s"
+"${c2}:.             ${c1}.KNO              ${c2}.:   %s"
+"${c2}:.             ${c1}cNNN.             ${c2}.:   %s"
+"${c2}:              ${c1}dXXX,              ${c2}:   %s"
+"${c2}:   ${c1}.          dXXX,       .cd,   ${c2}:   %s"
+"${c2}:   ${c1}'kc ..     dKKK.    ,ll;:'    ${c2}:   %s"
+"${c2}:     ${c1}.xkkxc;..dkkkc',cxkkl       ${c2}:   %s"
+"${c2}:.     ${c1}.,cdddddddddddddo:.       ${c2}.:   %s"
+"${c2} ..         ${c1}:lllllll:           ${c2}..    %s"
+"${c2}   ..         ${c1}',,,,,          ${c2}..      %s"
+"${c2}     ..                     ..        %s"
+"${c2}        ..               ..           %s"
+"${c2}          ...............")
+                ;;
+
 		*)
 			if [[ "$no_color" != "1" ]]; then
 				c1="\e[1;37m" # White
@@ -2591,7 +2622,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
+		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Android") labelcolor="\e[1;32m";;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux") labelcolor="\e[1;31m";;
