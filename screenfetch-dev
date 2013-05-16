@@ -695,7 +695,7 @@ detectcpu () {
 # GPU Detection - Begin (EXPERIMENTAL!)
 detectgpu () {
 	if type -p lspci >/dev/null 2>&1; then
-		gpu_info=$(lspci | grep VGA | grep -oE '\[.*\]' | sed -rawr 's/\[//;s/\]//')
+		gpu_info=$(lspci | grep VGA | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
 		gpu=$(echo "${gpu_info}" | sed -n '1h;2,$H;${g;s/\n/, /g;p}' )
 	elif [[ $(type -p glxinfo >/dev/null 2>&1) && ! $gpu ]]; then
 		gpu_info=$(glxinfo)
