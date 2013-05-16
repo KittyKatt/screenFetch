@@ -312,6 +312,8 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Debian" ]]; then
 				if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
 					distro="CrunchBang"
+					distro_release=$(awk -F'=' '/^DISTRIB_RELEASE=/ {print $2}' /etc/lsb-release-crunchbang)
+					distro_codename=$(awk -F'=' '/^DISTRIB_DESCRIPTION=/ {print $2}' /etc/lsb-release-crunchbang)
 				else
 					distro="Debian"
 				fi
