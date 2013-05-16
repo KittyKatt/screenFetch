@@ -22,7 +22,7 @@
 
 # Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
 # appreciated by emailing me or by stopping by http://github.com/KittyKatt/screenFetch . You
-# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6667/screenFetch
+# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6667/meowz
 # to put forth suggestions/ideas. Thank you.
 #
 
@@ -36,7 +36,7 @@ scriptVersion="2.8.1"
 # distro="Linux"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
-#display="host distro kernel uptime shell res de wm wmtheme gtk icons font background gpu"
+#display="host distro kernel uptime shell res de wm wmtheme gtk icons font background"
 display=( host distro kernel uptime pkgs shell res de wm wmtheme gtk cpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
@@ -312,6 +312,8 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Debian" ]]; then
 				if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
 					distro="CrunchBang"
+					distro_release=$(awk -F'=' '/^DISTRIB_RELEASE=/ {print $2}' /etc/lsb-release-crunchbang)
+					distro_codename=$(awk -F'=' '/^DISTRIB_DESCRIPTION=/ {print $2}' /etc/lsb-release-crunchbang)
 				else
 					distro="Debian"
 				fi
@@ -371,10 +373,10 @@ detectdistro () {
 				distro_codename=null
 			elif [[ "${distro_detect}" == "CentOS" || "${distro_detect}" =~ "RedHatEnterprise" ]]; then
 				distro="Red Hat Linux"
-			elif [[ "${distro_detect}" == "Sabayon" ]]; then
-				distro="Sabayon"
 			elif [[ "${distro_detect}" == "SolusOS" ]]; then
 				distro="SolusOS"
+				distro_codename=null
+				distro_release=null
 			elif [[ "${distro_detect}" == "Trisquel" ]]; then
 				distro="Trisquel"
 			elif [[ "${distro_detect}" == "Ubuntu" ]]; then
@@ -462,9 +464,9 @@ detectdistro () {
 					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Linux"
 					elif [ -f /etc/slackware-version ]; then distro="Slackware"
 					elif [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"
-					elif [ -f /etc/sabayon-edition ]; then distro="Sabayon"; fi
-				else
-					if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null; then
+				fi
+			else
+				if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null; then
 						distro="Mac OS X"
 					elif [[ -f /var/run/dmesg.boot ]]; then
 						distro=$(awk 'BEGIN {
@@ -637,7 +639,7 @@ detectpkgs () {
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Trisquel') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
-		'Gentoo'|'Sabayon') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
+		'Gentoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
@@ -688,38 +690,6 @@ detectcpu () {
 }
 # CPU Detection - End
 
-
-# GPU Detection - Begin (EXPERIMENTAL!)
-detectgpu () {
-    if [ -f /usr/bin/lspci ];then
-        gpu_info=$(lspci | grep VGA)
-        gpu=$(echo "$gpu_info" | sed 's/\[/\n/;s/\]/\n/' | head -4 | tail -1)
-
-    elif [ -f /usr/bin/glxinfo ];then
-        gpu_info=$(glxinfo)
-        gpu=$(echo "$gpu_info" | grep "OpenGL renderer string")
-        gpu=$(echo "$gpu" | sed 's/: /\n/;s/\//\n/' | tail -2 | head -1)
-        gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
-    fi
-    if [ -n "$gpu" ];then
-        if [ $(echo "$gpu_info" | grep -i nvidia | wc -l) -gt 0 ];then
-            gpu_info="NVidia "
-        elif [ $(echo "$gpu_info" | grep -i intel | wc -l) -gt 0 ];then
-            gpu_info="Intel "
-        elif [ $(echo "$gpu_info" | grep -i amd | wc -l) -gt 0 ];then
-            gpu_info="AMD "
-        elif [ $(echo "$gpu_info" | grep -i ati | wc -l) -gt 0 ];then
-            gpu_info="ATI "
-        else
-            gpu_info=""
-        fi
-        gpu="$gpu_info""$gpu"
-    else
-        gpu="No idea, Sorry :("
-    fi
-    [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current GPU...found as '$gpu'"
-}
-# GPU Detection - End 
 
 
 # Memory Detection - Begin
@@ -1618,7 +1588,7 @@ asciiText () {
 "${c2}     /ossssssss/        +ssssooo/-    %s"
 "${c2}   \`/ossssso+/:-        -:/+osssso+-  %s"
 "${c2}  \`+sso+:-\`                 \`.-/+oso: %s"
-"${c2} \`++:.                           \`-/+/  %s"
+"${c2} \`++:.                           \`-/+/"
 "${c2} .\`                                 \`/")
 		;;
 
@@ -2340,7 +2310,7 @@ asciiText () {
 "${c1}       :tt:::tt333EE3                %s"
 "${c1}       Et:::ztt33EEEL${c2} @Ee.,      .., %s"
 "${c1}      ;tt:::tt333EE7${c2} ;EEEEEEttttt33# %s"
-"${c1}     :Et:::zt333EEQ.${c2} \$EEEEEttttt33QL %s"
+"${c1}     :Et:::zt333EEQ.${c2} \$EEEEEt/home/kittykatt/Pictures/Screenshots/screenshot-2013-05-15_22-36-02.pngtttt33QL %s"
 "${c1}     it::::tt333EEF${c2} @EEEEEEttttt33F  %s"
 "${c1}    ;3=*^\`\`\`\"*4EEV${c2} :EEEEEEttttt33@.  %s"
 "${c3}    ,.=::::!t=., ${c1}\`${c2} @EEEEEEtttz33QF   %s"
@@ -2522,33 +2492,6 @@ asciiText () {
 "${c1}                                                .")
 		;;
 
-                "Sabayon")
-                        if [[ "$no_color" != "1" ]]; then
-                                c1="\033[1;37m" # White
-				c2="\033[1;34m" # Blue
-                        fi
-                        if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
-                        startline="1"
-                        fulloutput=("${c2}            ..........."
-"${c2}         ..             ..             %s"
-"${c2}      ..                   ..         %s"
-"${c2}    ..           ${c1}o           ${c2}..       %s"
-"${c2}  ..            ${c1}:W'            ${c2}..     %s"
-"${c2} ..             ${c1}.d.             ${c2}..    %s"
-"${c2}:.             ${c1}.KNO              ${c2}.:   %s"
-"${c2}:.             ${c1}cNNN.             ${c2}.:   %s"
-"${c2}:              ${c1}dXXX,              ${c2}:   %s"
-"${c2}:   ${c1}.          dXXX,       .cd,   ${c2}:   %s"
-"${c2}:   ${c1}'kc ..     dKKK.    ,ll;:'    ${c2}:   %s"
-"${c2}:     ${c1}.xkkxc;..dkkkc',cxkkl       ${c2}:   %s"
-"${c2}:.     ${c1}.,cdddddddddddddo:.       ${c2}.:   %s"
-"${c2} ..         ${c1}:lllllll:           ${c2}..    %s"
-"${c2}   ..         ${c1}',,,,,          ${c2}..      %s"
-"${c2}     ..                     ..        %s"
-"${c2}        ..               ..           %s"
-"${c2}          ...............")
-                ;;
-
 		*)
 			if [[ "$no_color" != "1" ]]; then
 				c1="\e[1;37m" # White
@@ -2650,7 +2593,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon") labelcolor="\e[1;34m";;
+		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra") labelcolor="\e[1;34m";;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor="\e[1;36m";;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Android") labelcolor="\e[1;32m";;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux") labelcolor="\e[1;31m";;
@@ -2680,7 +2623,6 @@ infoDisplay () {
 		mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" )
 		myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime"); out_array=( "${out_array[@]}" "$myuptime" )
 		mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" )
-		mygpu=$(echo -e "$labelcolor GPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mygpu" )
 		mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" )
 	else
 		if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
@@ -2761,7 +2703,6 @@ infoDisplay () {
 			fi
 		fi
 		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
-		if [[ "${display[@]}" =~ "gpu" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
 	fi
 	if [[ "$display_type" == "ASCII" ]]; then
@@ -2799,7 +2740,6 @@ infoDisplay () {
 				echo -e "$myfont"
 			fi
 			if [[ "${display[@]}" =~ "cpu" ]]; then echo -e "$mycpu"; fi
-			if [[ "${display[@]}" =~ "gpu" ]]; then echo -e "$mygpu"; fi
 			if [[ "${display[@]}" =~ "mem" ]]; then echo -e "$mymem"; fi
 		fi
 	fi
