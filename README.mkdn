@@ -63,5 +63,5 @@ Contact Me
 ------------------------
 If you would like to suggest something new, inform me of an issue in the
 script, become part of the project, or talk to me about anything else,
-you can either email me at `kittykattATarchlinuxDOTus` or you can connect
-to my IRC server on SilverIRC at irc://kittykatt.silverirc.com/screenFetch
+you can either email me at `kittykattATkittykattDOTus` or you can connect
+to my IRC server on SilverIRC at irc://kittykatt.silverirc.com/me0wz
