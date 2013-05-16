@@ -37,7 +37,7 @@ scriptVersion="2.8.1"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="host distro kernel uptime shell res de wm wmtheme gtk icons font background gpu"
-display=( host distro kernel uptime pkgs shell res de wm wmtheme gtk cpu mem )
+display=( host distro kernel uptime pkgs shell res de wm wmtheme gtk cpu gpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
 
@@ -205,7 +205,7 @@ case $1 in
 esac
 		
 
-while getopts ":hsmevVnNtlS:A:D:o:Bc:" flags; do
+while getopts ":hsmevVEnNtlS:A:D:o:Bc:" flags; do
 	case $flags in
 		h) displayHelp;;
 		s) screenshot=1; continue;;
@@ -221,6 +221,7 @@ while getopts ":hsmevVnNtlS:A:D:o:Bc:" flags; do
 			echo "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 			exit
 		;;
+		E) errorSuppress="1";;
 		D) distro=$OPTARG; continue;;
 		A) asc_distro=$OPTARG; continue;;
 		t) truncateSet="Yes";;
@@ -694,7 +695,7 @@ detectcpu () {
 # GPU Detection - Begin (EXPERIMENTAL!)
 detectgpu () {
 	if type -p lspci >/dev/null 2>&1; then
-		gpu_info=$(lspci | grep VGA | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
+		gpu_info=$(lspci | grep VGA | grep -oE '\[.*\]' | sed -rawr 's/\[//;s/\]//')
 		gpu=$(echo "${gpu_info}" | sed -n '1h;2,$H;${g;s/\n/, /g;p}' )
 	elif [[ $(type -p glxinfo >/dev/null 2>&1) && ! $gpu ]]; then
 		gpu_info=$(glxinfo)
@@ -2937,7 +2938,10 @@ for i in "${display[@]}"; do
 		 ! [[ $WM  ]] && detectwm;
 		 ! [[ $Win_theme ]] && detectwmtheme;
 	else
-		[[ "${display[*]}" =~ "$i" ]] && detect${i}
+		if [[ "${display[*]}" =~ "$i" ]]; then 
+			if [[ "$errorSuppress" == "1" ]]; then detect${i} >/dev/null 2>&1
+			else detect${i}; fi
+		fi
 	fi
 done
 
