@@ -37,7 +37,7 @@ scriptVersion="2.8.1"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="host distro kernel uptime shell res de wm wmtheme gtk icons font background gpu"
-display=( host distro kernel uptime pkgs shell res de wm wmtheme gtk cpu mem )
+display=( host distro kernel uptime pkgs shell res de wm wmtheme gtk cpu gpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
 
@@ -693,35 +693,36 @@ detectcpu () {
 
 # GPU Detection - Begin (EXPERIMENTAL!)
 detectgpu () {
-    if [ -f /usr/bin/lspci ];then
-        gpu_info=$(lspci | grep VGA)
-        gpu=$(echo "$gpu_info" | sed 's/\[/\n/;s/\]/\n/' | head -4 | tail -1)
+	if type -p lspci >/dev/null 2>&1; then
+		gpu_info=$(lspci | grep VGA | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
+		gpu=$(echo "${gpu_info}" | sed -n '1h;2,$H;${g;s/\n/, /g;p}' )
+	elif [[ $(type -p glxinfo >/dev/null 2>&1) && ! $gpu ]]; then
+		gpu_info=$(glxinfo)
+		gpu=$(echo "$gpu_info" | grep "OpenGL renderer string")
+		gpu=$(echo "$gpu" | sed 's/: /\n/;s/\//\n/' | tail -2 | head -1)
+		gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
+	fi
 
-    elif [ -f /usr/bin/glxinfo ];then
-        gpu_info=$(glxinfo)
-        gpu=$(echo "$gpu_info" | grep "OpenGL renderer string")
-        gpu=$(echo "$gpu" | sed 's/: /\n/;s/\//\n/' | tail -2 | head -1)
-        gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
-    fi
-    if [ -n "$gpu" ];then
-        if [ $(echo "$gpu_info" | grep -i nvidia | wc -l) -gt 0 ];then
-            gpu_info="NVidia "
-        elif [ $(echo "$gpu_info" | grep -i intel | wc -l) -gt 0 ];then
-            gpu_info="Intel "
-        elif [ $(echo "$gpu_info" | grep -i amd | wc -l) -gt 0 ];then
-            gpu_info="AMD "
-        elif [ $(echo "$gpu_info" | grep -i ati | wc -l) -gt 0 ];then
-            gpu_info="ATI "
-        else
-            gpu_info=""
-        fi
-        gpu="$gpu_info""$gpu"
-    else
-        gpu="No idea, Sorry :("
-    fi
-    [[ "$verbosity" -eq "1" ]] && verboseOut "Finding current GPU...found as '$gpu'"
+	if [ -n "$gpu" ];then
+		if [ $(echo "$gpu_info" | grep -i nvidia | wc -l) -gt 0 ];then
+			gpu_info="NVidia "
+		elif [ $(echo "$gpu_info" | grep -i intel | wc -l) -gt 0 ];then
+			gpu_info="Intel "
+		elif [ $(echo "$gpu_info" | grep -i amd | wc -l) -gt 0 ];then
+			gpu_info="AMD "
+		elif [ $(echo "$gpu_info" | grep -i ati | wc -l) -gt 0 ];then
+			gpu_info="ATI "
+		else
+			gpu_info=""
+		fi
+		gpu="$gpu_info""$gpu"
+	else
+		gpu="Not Found"
+	fi
+
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current GPU...found as '$gpu'"
 }
-# GPU Detection - End 
+# GPU Detection - End
 
 
 # Memory Detection - Begin
