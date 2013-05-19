@@ -1,11 +1,9 @@
-screenFetch - The Bash Screenshot Information Tool
-===============
+# screenFetch - The Bash Screenshot Information Tool
 
-What is screenFetch?
----------------------
+## What is screenFetch?
 
-screenFetch is a "Bash Screenshot Information Tool". This handy Bash 
-script can be used to generate one of those nifty terminal theme 
+screenFetch is a "Bash Screenshot Information Tool". This handy Bash
+script can be used to generate one of those nifty terminal theme
 information + ASCII distribution logos you see in everyone's screenshots
 nowadays. It will auto-detect your distribution and display an ASCII
 version of that distribution's logo and some valuable information to the
@@ -13,34 +11,32 @@ right. There are options to specify no ascii art, colors, taking a
 screenshot upon displaying info, and even customizing the screenshot
 command! This script is very easy to add to and can easily be extended.
 
+## How do I get screenFetch?
 
-How do I get screenFetch?
----------------------
-Arch Linux
-============
+### Arch Linux
+
 1. Install `screenfetch-git` or `screenfetch` from the AUR. That's it!
 
-Mageia
-===========
+### Mageia
+
 1. Install screenfetch from the official repositories with urpmi or rpmdrake.
    e.g. # urpmi screenfetch
 
-Gentoo
-===========
+### Gentoo
+
 1. Emerge screenfetch from portage using `emerge screenfetch`
 
-Others
-===========
+### Others
+
 1. Download the latest source. Found at http://git.silverirc.com/cgit.cgi/screenfetch-dev.git/plain/screenfetch-dev
 2. In a terminal, make the file executable by doing the following: `chmod +x /path/to/screenfetch/screenfetch-dev`
 3. Then, either keep it there, or move it to somewhere in your $PATH to make it available without having to use the full path to the script.
 
 
-Running screenfetch
-------------------------
+## Running screenfetch
 
 To run screenFetch, open a terminal of some sort and type in the command `screenFetch`
-or wherever you saved the script to. This will generate an ascii logo with the 
+or wherever you saved the script to. This will generate an ascii logo with the
 information printed to the side of the logo. There are some options that may be
 specifiedon the command line, and those are shown below or by executing `screenFetch -h`:
 
@@ -48,7 +44,7 @@ specifiedon the command line, and those are shown below or by executing `screenF
         -n              Do no display ASCII distribution logo.
         -s              Using this flag tells the script that you want it to
                         take a screenshot.
-        -l              Specify that you have a light background. This 
+        -l              Specify that you have a light background. This
                         turns all white text into dark gray text (in ascii
                         logos and in information output).
         -c 'COMMAND'    Here you can specify a custom screenshot command for
@@ -59,8 +55,8 @@ specifiedon the command line, and those are shown below or by executing `screenF
         -h              Display this help.
 
 
-Contact Me
-------------------------
+## Contact Me
+
 If you would like to suggest something new, inform me of an issue in the
 script, become part of the project, or talk to me about anything else,
 you can either email me at `kittykattATkittykattDOTus` or you can connect
