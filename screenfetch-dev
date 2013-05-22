@@ -396,7 +396,7 @@ detectdistro () {
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
 			if [ $(uname -o 2>/dev/null) ]; then
-				if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
+				if [ `uname -o` == "Cygwin" ]; then distro="Cygwin"; fake_distro="${distro}"; fi
 			fi
 			if [ -f /etc/os-release ]; then
 				distrib_id=$(</etc/os-release);
@@ -923,6 +923,10 @@ detectres () {
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
+	elif [[ "${distro}" == "Cygwin" ]]; then
+		width=$(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr -d '\r\n ')
+		height=$(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr -d '\r\n ')
+		xResolution="${width}x${height}"
 	else
 		xResolution="No X Server"
 	fi
