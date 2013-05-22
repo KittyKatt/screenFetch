@@ -1062,6 +1062,11 @@ detectde () {
 		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
 			DE="Aqua"
 		fi
+        elif [[ "${distro}" == "Cygwin" ]]; then
+                winver=`wmic os get version | grep -o '^[0-9]'`
+                if [ "$winver" == "7" ]; then DE='Aero'
+                elif [ "$winver" == "6" ]; then DE='Aero'
+                else DE='Luna'; fi
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
 }
@@ -1171,11 +1176,12 @@ detectwm () {
 		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
 			WM="Quartz Compositor"
 		fi
-	elif [[ "${distro}" == "Cygwin" ]]; then
-		winver=`wmic os get version | grep -o '^[0-9]'`
-		if [ "$winver" == "7" ]; then DE='Aero'
-		elif [ "$winver" == "6" ]; then DE='Aero'
-		else DE='Luna'; fi
+        elif [[ "${distro}" == "Cygwin" ]]; then
+		bugn=`tasklist | grep -o 'bugn' | tr -d '\r \n'`
+		wind=`tasklist | grep -o 'Windawesome' | tr -d '\r \n'`
+		if [ "$bugn" = "bugn" ]; then wm="bug.n"
+		elif [ "$wind" = "Windawesome" ]; then wm="Windawesome"
+		else wm="DWM"; fi
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
 }
