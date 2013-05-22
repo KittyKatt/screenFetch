@@ -909,7 +909,7 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
-	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
+	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
 		if [[ "$distro" =~ "BSD" ]]; then
 			xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
 		else
@@ -928,7 +928,7 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
-	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
+	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
 		if type -p xprop >/dev/null 2>&1;then
 			xprop_root="$(xprop -root 2>/dev/null)"
 			if [[ -n ${xprop_root} ]]; then
@@ -1059,8 +1059,8 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [ "$distro" == "Cygwin" ]; then WM="Explorer"; fi
-	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
+	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+		if [ "$distro" == "Cygwin" ]; then WM="Explorer"; fi
 		if type -p xprop >/dev/null 2>&1; then
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
 			if [[ "$WM" =~ "not found" ]]; then
@@ -1572,6 +1572,7 @@ takeShot () {
 
 asciiText () {
 # Distro logos and ASCII outputs
+	if [[ "$fake_distro" ]]; then distro="${fake_distro}"; fi
 	if [[ "$asc_distro" ]]; then myascii="${asc_distro}"
 	else myascii="${distro}"; fi
 	case ${myascii} in
@@ -2698,12 +2699,8 @@ infoDisplay () {
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
 			elif [[ "$distro" == "Cygwin" ]]; then
-				if [[ -n "$fake_distro" ]]; then
-					distro_more="$fake_distro"
-				else
-					distro_more=$(wmic os get caption | grep Microsoft | sed 's/[ \t]*$//')
-				fi
-				sysArch=$(wmic os get OSArchitecture | grep ^[0-9] | sed 's/[ \t]*$//')
+				distro=$(wmic os get name | head -2 | tail -1)
+				distro=$(expr match "$os" '\(Microsoft Windows [A-Za-z0-9]\+\)')
 			else
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
