@@ -1218,11 +1218,6 @@ detectwmtheme () {
 		#TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
 		'E17') Win_theme=${E_CONF_PROFILE};;
 		'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
-		'Explorer')
-			ThemeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
-			ThemeFile="$(cygpath -u $ThemeFile)"
-			Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
-		;;
 		'Finder') Win_theme="Not Present";;
 		'FluxBox'|'Fluxbox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
 		'FVWM') Win_theme="Not Present";;
@@ -1287,11 +1282,12 @@ detectwmtheme () {
 		'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
 		'XMonad') Win_theme="Not Present";;
 	esac
-	if [ "$Win_theme" == "Not Found" -a "$distro" == "Cygwin" ]; then # we are in for a long ride.
-		ThemeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
-		ThemeFile="$(cygpath -u $ThemeFile)"
-		Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
+
+	if [[ "${distro}" == "Cygwin" ]]; then
+		themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
+		Win_theme=$(echo $themeFile | awk -F"\\" '{print $NF}' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')
 	fi
+
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
