@@ -875,6 +875,8 @@ detectshell () {
 			shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
 			shell_type=${shell_type/-}
 			shell_type=${shell_type//*\/}
+		elif [[ "${distro}" == "Cygwin" ]]; then
+			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		else
 			shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
 			shell_type=${shell_type/-}
