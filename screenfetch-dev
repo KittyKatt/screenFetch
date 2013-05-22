@@ -1265,11 +1265,11 @@ detectwmtheme () {
 		'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
 		'XMonad') Win_theme="Not Present";;
 	esac
-	#if [ "$Win_theme" == "Not Found" -a "$distro" == "Cygwin" ]; then # we are in for a long ride.
-	#	ThemeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
-	#	ThemeFile="$(cygpath -u $ThemeFile)"
-	#	Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
-	#fi
+	if [ "$Win_theme" == "Not Found" -a "$distro" == "Cygwin" ]; then # we are in for a long ride.
+		ThemeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
+		ThemeFile="$(cygpath -u $ThemeFile)"
+		Win_theme="$(cat $ThemeFile | grep '^Path=.*$' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')"
+	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
@@ -1498,11 +1498,11 @@ detectgtk () {
 				fi
 			fi
 
-			# if [ "$distro" == "Cygwin" -a "$gtkFont" == "Not Found" ]; then
-			#	if [ -f $HOME/.minttyrc ]; then
-			#		gtkFont="$(cat $HOME/.minttyrc | grep '^Font=.*' | grep -o '[0-9A-z ]*$')"
-			#	fi
-			# fi
+			if [ "$distro" == "Cygwin" -a "$gtkFont" == "Not Found" ]; then
+				if [ -f $HOME/.minttyrc ]; then
+					gtkFont="$(cat $HOME/.minttyrc | grep '^Font=.*' | grep -o '[0-9A-z ]*$')"
+				fi
+			fi
 		;;
 	esac
 	if [[ "$verbosity" -eq "1" ]]; then
@@ -2697,13 +2697,13 @@ infoDisplay () {
 				buildVers=`buildVers=$(sw_vers|grep BuildVersion);echo ${buildVers:14}`
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
-			#elif [[ "$distro" == "Cygwin" ]]; then
-			#	if [[ -n "$fake_distro" ]]; then
-			#		distro_more="$fake_distro"
-			#	else
-			#		distro_more=$(wmic os get caption | grep Microsoft | sed 's/[ \t]*$//')
-			#	fi
-			#	sysArch=$(wmic os get OSArchitecture | grep ^[0-9] | sed 's/[ \t]*$//')
+			elif [[ "$distro" == "Cygwin" ]]; then
+				if [[ -n "$fake_distro" ]]; then
+					distro_more="$fake_distro"
+				else
+					distro_more=$(wmic os get caption | grep Microsoft | sed 's/[ \t]*$//')
+				fi
+				sysArch=$(wmic os get OSArchitecture | grep ^[0-9] | sed 's/[ \t]*$//')
 			else
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
