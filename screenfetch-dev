@@ -760,6 +760,12 @@ detectmem () {
  				exit
  			}
  		}')
+	elif [ "$distro" == "Cygwin" ]; then
+		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
+		totalmem=$((${total_mem}/1024))
+		free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
+		used_mem=$((${total_mem} - ${free_mem}))
+		usedmem=$((${used_mem}/1024))
 	elif [ "$distro" == "FreeBSD" ]; then
 		phys_mem=$(sysctl -n hw.physmem)
 		size_mem=$phys_mem
