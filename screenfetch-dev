@@ -574,7 +574,7 @@ detectdistro () {
 			mac*os*x) distro="Mac OS X" ;;
 			fuduntu) distro="Fuduntu" ;;
 			manjaro) distro="Manjaro" ;;
-			# cygwin) distro="Cygwin" ;;
+			cygwin) distro="Cygwin" ;;
 		esac
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
@@ -656,7 +656,7 @@ detectpkgs () {
 			fi
 		;;
 		'FreeBSD'|'OpenBSD') pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}') ;;
-		# 'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
+		'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
 }
@@ -1059,9 +1059,7 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	# if [ "$distro" == "Cygwin" ]; then
-	# 	WM="Explorer"
-	# else
+	if [ "$distro" == "Cygwin" ]; then WM="Explorer"; fi
 	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" ]]; then
 		if type -p xprop >/dev/null 2>&1; then
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
