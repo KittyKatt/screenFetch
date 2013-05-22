@@ -1177,11 +1177,11 @@ detectwm () {
 			WM="Quartz Compositor"
 		fi
 	elif [[ "${distro}" == "Cygwin" ]]; then
-		bugn=`tasklist | grep -o 'bugn' | tr -d '\r \n'`
-		wind=`tasklist | grep -o 'Windawesome' | tr -d '\r \n'`
-		if [ "$bugn" = "bugn" ]; then wm="bug.n"
-		elif [ "$wind" = "Windawesome" ]; then wm="Windawesome"
-		else wm="DWM"; fi
+		bugn=$(tasklist | grep -o 'bugn' | tr -d '\r \n')
+		wind=$(tasklist | grep -o 'Windawesome' | tr -d '\r \n')
+		if [ "$bugn" = "bugn" ]; then WM="bug.n"
+		elif [ "$wind" = "Windawesome" ]; then WM="Windawesome"
+		else WM="DWM"; fi
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
 }
