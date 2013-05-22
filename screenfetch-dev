@@ -2334,7 +2334,7 @@ asciiText () {
 "${c6}      \`:+oo+/:-..-:/+o+/-      %s\n")
 		;;
 
-		"Windows")
+		"Windows"|"Cygwin")
 			if [[ "$no_color" != "1" ]]; then
 				c1="\e[1;31m" # Red
 				c2="\e[1;32m" # Green
