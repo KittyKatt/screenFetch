@@ -395,9 +395,9 @@ detectdistro () {
 
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
-			#if [ $(uname -o 2>/dev/null) ]; then
-			#	if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
-			#fi
+			if [ $(uname -o 2>/dev/null) ]; then
+				if [ `uname -o` == "Cygwin" ]; then fake_distro="$distro"; distro="Cygwin"; fi
+			fi
 			if [ -f /etc/os-release ]; then
 				distrib_id=$(</etc/os-release);
 				for l in $(echo $distrib_id); do
