@@ -1410,7 +1410,7 @@ detectgtk () {
 			fi
 			# TODO: Clean me.
 			if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
-			 gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+				gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
 			fi
 
 			if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
@@ -1427,15 +1427,15 @@ detectgtk () {
 		*)	# Lightweight or No DE Found
 			if [ -f $HOME/.gtkrc-2.0 ]; then
 				if grep -q gtk-theme $HOME/.gtkrc-2.0; then
-					gtk2Theme=$(awk -F'"' '/gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
+					gtk2Theme=$(awk -F'"' '/^gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 
 				if grep -q icon-theme $HOME/.gtkrc-2.0; then
-					gtkIcons=$(awk -F'"' '/gtk-icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
+					gtkIcons=$(awk -F'"' '/^gtk-icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 
 				if grep -q font $HOME/.gtkrc-2.0; then
-					gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
+					gtkFont=$(awk -F'"' '/^gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
 				fi
 			fi
 			# $HOME/.gtkrc.mine theme detect only
@@ -1444,34 +1444,34 @@ detectgtk () {
 					gtk2Theme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
 				fi
 				if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
-					gtkIcons=$(grep 'gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
+					gtkIcons=$(grep '^gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
 				fi
 			fi
 			# /etc/gtk-2.0/gtkrc compatability
 			if [[ -f /etc/gtk-2.0/gtkrc && ! -f $HOME/.gtkrc-2.0 && ! -f $HOME/.gtkrc.mine ]]; then
 				if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
-					gtk2Theme=$(awk -F'"' '/gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
+					gtk2Theme=$(awk -F'"' '/^gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 				if grep -q gtk-fallback-theme-name /etc/gtk-2.0/gtkrc  && ! [ "x$gtk2Theme" = "x" ]; then
-					gtk2Theme=$(awk -F'"' '/gtk-fallback-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
+					gtk2Theme=$(awk -F'"' '/^gtk-fallback-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 
 				if grep -q icon-theme /etc/gtk-2.0/gtkrc; then
-					gtkIcons=$(awk -F'"' '/icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
+					gtkIcons=$(awk -F'"' '/^icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 				if  grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! [ "x$gtkIcons" = "x" ]; then
-					gtkIcons=$(awk -F'"' '/gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
+					gtkIcons=$(awk -F'"' '/^gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 
 				if grep -q font /etc/gtk-2.0/gtkrc; then
-					gtkFont=$(awk -F'"' '/gtk-font-name/ {print $2}' /etc/gtk-2.0/gtkrc)
+					gtkFont=$(awk -F'"' '/^gtk-font-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 				fi
 			fi
 
 			# EXPERIMENTAL gtk3 Theme detection
 			if [ -f $HOME/.config/gtk-3.0/settings.ini ]; then
 				if grep -q gtk-theme-name $HOME/.config/gtk-3.0/settings.ini; then
-					gtk3Theme=$(awk -F'=' '/gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
+					gtk3Theme=$(awk -F'=' '/^gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
 				fi
 			fi
 
@@ -1486,7 +1486,7 @@ detectgtk () {
 
 			# ROX-Filer icon detect only
 			if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
-				gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
+				gtkIcons=$(awk -F'[>,<]' '/^icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
 			fi
 
 			# E17 detection
