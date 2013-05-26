@@ -1196,7 +1196,7 @@ detectwmtheme () {
 		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'Cinnamon') Win_theme="$(gsettings get org.cinnamon.theme name)";;
-		'Compiz'|'Marco'|'Mutter'*|'GNOME Shell')
+		'Compiz'|'Mutter'*|'GNOME Shell')
 			if type -p gsettings >/dev/null 2>&1; then
 				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
 				Win_theme=${Win_theme//"'"}
@@ -1259,6 +1259,10 @@ detectwmtheme () {
 					fi
 				fi
 			fi
+		;;
+		'Marco')
+			Win_theme="$(gsettings get org.mate.Marco.general theme)"
+			Win_theme=${Win_theme//"'"}
 		;;
 		'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
 		'monsterwm') Win_theme="Not Present";;
@@ -1365,7 +1369,7 @@ detectgtk () {
 				if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
 			fi
 		;;
-		'GNOME'*|'MATE'*|'Gnome'*|'Unity'*) # Desktop Environment found as "GNOME"
+		'GNOME'*|'Gnome'*|'Unity'*) # Desktop Environment found as "GNOME"
 			if type -p gsettings >/dev/null 2>&1; then
 				gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
 				gtk3Theme=${gtk3Theme//"'"}
@@ -1384,6 +1388,17 @@ detectgtk () {
 					gtkBackground=$(echo "$gtkBackgroundFull" | awk -F"/" '{print $NF}')
 				fi
 			fi
+		;;
+		'MATE'*) # MATE desktop environment
+			#if type -p gsettings >/dev/null 2&>1; then
+			gtk3Theme=$(gsettings get org.mate.interface gtk-theme)
+			# gtk3Theme=${gtk3Theme//"'"}
+			gtk2Theme=${gtk3Theme}
+			gtkIcons=$(gsettings get org.mate.interface icon-theme)
+			gtkIcons=${gtkIcons//"'"}
+			gtkFont=$(gsettings get org.mate.interface font-name)
+			gtkFont=${gtkFont//"'"}
+			#fi
 		;;
 		'XFCE'*) # Desktop Environment found as "XFCE"
 			if type -p xfconf-query >/dev/null 2>&1; then
