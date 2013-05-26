@@ -96,18 +96,18 @@ display_index=0
 ####################
 
 detectColors() {
-	my_lcolor=$(echo -n "$OPTARG" 2>/dev/null | awk -F',' '{ print $1 }')
+	my_lcolor=$(echo -n "$OPTARG" 2>/dev/null | grep -Eo '[0-9]*,' | sed 's/,$//')
 	case $my_lcolor in
-		0)  export my_lcolor='\033[30m';;
-		1)  export my_lcolor='\033[31m';;
-		2)  export my_lcolor='\033[32m';;
-		3)  export my_lcolor='\033[33m';;
-		4)  export my_lcolor='\033[34m';;
-		5)  export my_lcolor='\033[35m';;
-		6)  export my_lcolor='\033[36m';;
-		7)  export my_lcolor='\033[37m';;
-		8)  export my_lcolor='\033[1;30m';;
-		9)  export my_lcolor='\033[1;31m';;
+		0|00)  export my_lcolor='\033[30m';;
+		1|01)  export my_lcolor='\033[31m';;
+		2|02)  export my_lcolor='\033[32m';;
+		3|03)  export my_lcolor='\033[33m';;
+		4|04)  export my_lcolor='\033[34m';;
+		5|05)  export my_lcolor='\033[35m';;
+		6|06)  export my_lcolor='\033[36m';;
+		7|07)  export my_lcolor='\033[37m';;
+		8|08)  export my_lcolor='\033[1;30m';;
+		9|09)  export my_lcolor='\033[1;31m';;
 		10) export my_lcolor='\033[1;32m';;
 		11) export my_lcolor='\033[1;33m';;
 		12) export my_lcolor='\033[1;34m';;
@@ -116,18 +116,18 @@ detectColors() {
 		15) export my_lcolor='\033[1;37m';;
 		*) unset my_lcolor; continue ;;
 	esac
-	my_hcolor=$(echo -n "$OPTARG" 2>/dev/null | awk -F',' '{ print $2 }')
+	my_hcolor=$(echo -n "$OPTARG" 2>/dev/null | grep -Eo ',[0-9]*' | sed 's/^,//')
 	case $my_hcolor in
-		0)  export my_hcolor='\033[30m';;
-		1)  export my_hcolor='\033[31m';;
-		2)  export my_hcolor='\033[32m';;
-		3)  export my_hcolor='\033[33m';;
-		4)  export my_hcolor='\033[34m';;
-		5)  export my_hcolor='\033[35m';;
-		6)  export my_hcolor='\033[36m';;
-		7)  export my_hcolor='\033[37m';;
-		8)  export my_hcolor='\033[1;30m';;
-		9)  export my_hcolor='\033[1;31m';;
+		0|00)  export my_hcolor='\033[30m';;
+		1|01)  export my_hcolor='\033[31m';;
+		2|02)  export my_hcolor='\033[32m';;
+		3|03)  export my_hcolor='\033[33m';;
+		4|04)  export my_hcolor='\033[34m';;
+		5|05)  export my_hcolor='\033[35m';;
+		6|06)  export my_hcolor='\033[36m';;
+		7|07)  export my_hcolor='\033[37m';;
+		8|08)  export my_hcolor='\033[1;30m';;
+		9|09)  export my_hcolor='\033[1;31m';;
 		10) export my_hcolor='\033[1;32m';;
 		11) export my_hcolor='\033[1;33m';;
 		12) export my_hcolor='\033[1;34m';;
