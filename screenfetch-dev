@@ -230,7 +230,7 @@ while getopts ":hsmevVEnNtlS:A:D:o:Bc:" flags; do
 		# c) my_color=$(echo "$OPTARG" | awk -F',' '{ print $1 }'); my_bgcolor=$(echo "$OPTARG" | awk -F',' '{ print $2 }'); continue;;
 		c) detectColors "$OPTARGS"; continue;;
 		# d) overrideDisplay=$OPTARG; continue;;
-		l) colors_light="1";;
+		# l) colors_light="1";;
 		# B) background_detect="1"; continue;;
 		N) no_color='1';;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
