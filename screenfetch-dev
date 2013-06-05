@@ -671,21 +671,23 @@ detectcpu () {
 	elif [ "$distro" == "FreeBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "DragonflyBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
-	else cpu=$(awk 'BEGIN{FS=":"} /model name/ { gsub(/  +/," ",$2); gsub(/^ /,"",$2); gsub(/\(R\)|\(TM\)|\(tm\)| Processor/,"",$2); print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1); fi
-	loc="/sys/devices/system/cpu/cpu0/cpufreq"
-	if [ -f $loc/bios_limit ];then
-		cpu_mhz=$(cat $loc/bios_limit | awk '{print $1/1000}')
-	elif [ -f $loc/scaling_max_freq ];then
-		cpu_mhz=$(cat $loc/scaling_max_freq | awk '{print $1/1000}')
 	else
-		cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2) }' /proc/cpuinfo | head -n 1)
-	fi
-	if [ -n "$cpu_mhz" ];then
-		if [ $cpu_mhz -gt 999 ];then
-			cpu_ghz=$(echo $cpu_mhz | awk '{print $1/1000}')
-			cpu="$cpu @ ${cpu_ghz}GHz"
+		cpu=$(awk 'BEGIN{FS=":"} /model name/ { gsub(/  +/," ",$2); gsub(/^ /,"",$2); gsub(/\(R\)|\(TM\)|\(tm\)| Processor/,"",$2); print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
+		loc="/sys/devices/system/cpu/cpu0/cpufreq"
+		if [ -f $loc/bios_limit ];then
+			cpu_mhz=$(cat $loc/bios_limit | awk '{print $1/1000}')
+		elif [ -f $loc/scaling_max_freq ];then
+			cpu_mhz=$(cat $loc/scaling_max_freq | awk '{print $1/1000}')
 		else
-			cpu="$cpu @ ${cpu_mhz}MHz"
+			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2) }' /proc/cpuinfo | head -n 1)
+		fi
+		if [ -n "$cpu_mhz" ];then
+			if [ $cpu_mhz -gt 999 ];then
+				cpu_ghz=$(echo $cpu_mhz | awk '{print $1/1000}')
+				cpu="$cpu @ ${cpu_ghz}GHz"
+			else
+				cpu="$cpu @ ${cpu_mhz}MHz"
+			fi
 		fi
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
