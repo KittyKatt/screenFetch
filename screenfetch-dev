@@ -1111,7 +1111,6 @@ detectwm () {
 						'fluxbox') WM="FluxBox";;
 						'fvwm') WM="FVWM";;
 						'herbstluftwm') WM="herbstluftwm";;
-						'^i3') WM="i3";;
 						'icewm') WM="IceWM";;
 						'kwin') WM="KWin";;
 						'metacity') WM="Metacity";;
@@ -1130,6 +1129,7 @@ detectwm () {
 						'wmii') WM="wmii";;
 						'xfwm4') WM="Xfwm4";;
 						'xmonad') WM="XMonad";;
+						'i3') WM="i3";;
 					esac
 				fi
 
