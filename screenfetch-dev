@@ -96,46 +96,55 @@ display_index=0
 ####################
 
 detectColors() {
-	my_lcolor=$(echo -n "$OPTARG" 2>/dev/null | grep -Eo '[0-9]*,' | sed 's/,$//')
-	case $my_lcolor in
-		0|00)  export my_lcolor='\033[30m';;
-		1|01)  export my_lcolor='\033[31m';;
-		2|02)  export my_lcolor='\033[32m';;
-		3|03)  export my_lcolor='\033[33m';;
-		4|04)  export my_lcolor='\033[34m';;
-		5|05)  export my_lcolor='\033[35m';;
-		6|06)  export my_lcolor='\033[36m';;
-		7|07)  export my_lcolor='\033[37m';;
-		8|08)  export my_lcolor='\033[1;30m';;
-		9|09)  export my_lcolor='\033[1;31m';;
-		10) export my_lcolor='\033[1;32m';;
-		11) export my_lcolor='\033[1;33m';;
-		12) export my_lcolor='\033[1;34m';;
-		13) export my_lcolor='\033[1;35m';;
-		14) export my_lcolor='\033[1;36m';;
-		15) export my_lcolor='\033[1;37m';;
-		*) unset my_lcolor; continue ;;
-	esac
-	my_hcolor=$(echo -n "$OPTARG" 2>/dev/null | grep -Eo ',[0-9]*' | sed 's/^,//')
-	case $my_hcolor in
-		0|00)  export my_hcolor='\033[30m';;
-		1|01)  export my_hcolor='\033[31m';;
-		2|02)  export my_hcolor='\033[32m';;
-		3|03)  export my_hcolor='\033[33m';;
-		4|04)  export my_hcolor='\033[34m';;
-		5|05)  export my_hcolor='\033[35m';;
-		6|06)  export my_hcolor='\033[36m';;
-		7|07)  export my_hcolor='\033[37m';;
-		8|08)  export my_hcolor='\033[1;30m';;
-		9|09)  export my_hcolor='\033[1;31m';;
-		10) export my_hcolor='\033[1;32m';;
-		11) export my_hcolor='\033[1;33m';;
-		12) export my_hcolor='\033[1;34m';;
-		13) export my_hcolor='\033[1;35m';;
-		14) export my_hcolor='\033[1;36m';;
-		15) export my_hcolor='\033[1;37m';;
-		*) unset my_hcolor; continue ;;
-	esac
+	my_colors=$(echo "$OPTARG" | sed 's/^,/na,/;s/,$/,na/;s/,/ /')
+	my_lcolor=$(echo "$my_colors" | awk -F' ' '{print $1}')
+	if [[ "$my_lcolor" != "na" ]]; then
+		case $my_lcolor in
+			0|00)  export my_lcolor='\033[30m';;
+			1|01)  export my_lcolor='\033[31m';;
+			2|02)  export my_lcolor='\033[32m';;
+			3|03)  export my_lcolor='\033[33m';;
+			4|04)  export my_lcolor='\033[34m';;
+			5|05)  export my_lcolor='\033[35m';;
+			6|06)  export my_lcolor='\033[36m';;
+			7|07)  export my_lcolor='\033[37m';;
+			8|08)  export my_lcolor='\033[1;30m';;
+			9|09)  export my_lcolor='\033[1;31m';;
+			10) export my_lcolor='\033[1;32m';;
+			11) export my_lcolor='\033[1;33m';;
+			12) export my_lcolor='\033[1;34m';;
+			13) export my_lcolor='\033[1;35m';;
+			14) export my_lcolor='\033[1;36m';;
+			15) export my_lcolor='\033[1;37m';;
+			*) unset my_lcolor; continue ;;
+		esac
+	else
+		unset my_lcolor
+	fi
+	my_hcolor=$(echo "$my_colors" | awk -F' ' '{print $2}')
+	if [[ "$my_hcolor" != "na" ]]; then
+		case $my_hcolor in
+			0|00)  export my_hcolor='\033[30m';;
+			1|01)  export my_hcolor='\033[31m';;
+			2|02)  export my_hcolor='\033[32m';;
+			3|03)  export my_hcolor='\033[33m';;
+			4|04)  export my_hcolor='\033[34m';;
+			5|05)  export my_hcolor='\033[35m';;
+			6|06)  export my_hcolor='\033[36m';;
+			7|07)  export my_hcolor='\033[37m';;
+			8|08)  export my_hcolor='\033[1;30m';;
+			9|09)  export my_hcolor='\033[1;31m';;
+			10) export my_hcolor='\033[1;32m';;
+			11) export my_hcolor='\033[1;33m';;
+			12) export my_hcolor='\033[1;34m';;
+			13) export my_hcolor='\033[1;35m';;
+			14) export my_hcolor='\033[1;36m';;
+			15) export my_hcolor='\033[1;37m';;
+			*) unset my_hcolor; continue ;;
+		esac
+	else
+		unset my_hcolor
+	fi
 }
 
 
