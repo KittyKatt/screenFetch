@@ -332,7 +332,11 @@ detectdistro () {
 				distro="Fuduntu"
 				distro_codename=null
 			elif [[ "${distro_detect}" == "Gentoo" ]]; then
-				distro="Gentoo"
+				if [[ "$(lsb_release -sd)" =~ "Funtoo" ]]; then
+					distro="Funtoo"
+				else
+					distro="Gentoo"
+				fi
 			elif [[ "${distro_detect}" == "LinuxDeepin" ]]; then
 				distro="LinuxDeepin"
 				distro_codename=null
@@ -563,6 +567,7 @@ detectdistro () {
 			red*hat*) distro="Red Hat Linux" ;;
 			crunchbang) distro="CrunchBang" ;;
 			gentoo) distro="Gentoo" ;;
+			funtoo) distro="Funtoo" ;;
 			slackware) distro="Slackware" ;;
 			frugalware) distro="Frugalware" ;;
 			peppermint) distro="Peppermint" ;;
@@ -641,7 +646,7 @@ detectpkgs () {
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Trisquel') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
-		'Gentoo'|'Sabayon') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
+		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
@@ -1798,7 +1803,7 @@ asciiText () {
 "$c2                                     %s")
 		;;
 
-		"Gentoo")
+		"Gentoo"|"Funtoo")
 			if [[ "$no_color" != "1" ]]; then
 				c1="\e[1;37m" # White
 				c2="\e[1;35m" # Light Purple
@@ -1823,6 +1828,33 @@ asciiText () {
 "$c2/h"$c1"MMNNNNNNNNMNdhs++/"$c2"-\`               %s"
 "$c2\`/"$c1"ohdmmddhys+++/:"$c2".\`                  %s"
 "$c2  \`-//////:--.")
+		;;
+
+
+		"Funtoo-text")
+			if [[ "$no_color" != "1" ]]; then
+				c1="\e[1;37m" # White
+				c2="\e[1;35m" # Light Purple
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("                                                     %s"
+"                                                    %s"
+"                                                    %s"
+"${c1}     _______               ____                     %s"
+"${c1}    /MMMMMMM/             /MMMM| _____  _____       %s"
+"${c1} __/M${c2}.MMM.${c1}M/_____________|M${c2}.M${c1}MM|/MMMMM\/MMMMM\      %s"
+"${c1}|MMMM${c2}MM'${c1}MMMMMMMMMMMMMMMMMMM${c2}MM${c1}MMMM${c2}.MMMM..MMMM.${c1}MM\    %s"
+"${c1}|MM${c2}MMMMMMM${c1}/m${c2}MMMMMMMMMMMMMMMMMMMMMM${c1}MMMM${c2}MM${c1}MMMM${c2}MM${c1}MM|   %s"
+"${c1}|MMMM${c2}MM${c1}MMM${c2}MM${c1}MM${c2}MM${c1}MM${c2}MM${c1}MMMMM${c2}\MMM${c1}MMM${c2}MM${c1}MMMM${c2}MM${c1}MMMM${c2}MM${c1}MM|   %s"
+"${c1}  |MM${c2}MM${c1}MMM${c2}MM${c1}MM${c2}MM${c1}MM${c2}MM${c1}MM${c2}MM${c1}MM${c2}MMM${c1}MMMM${c2}'MMMM''MMMM'${c1}MM/    %s"
+"${c1}  |MM${c2}MM${c1}MMM${c2}MM${c1}MM${c2}MM${c1}MM${c2}MM${c1}MM${c2}MM${c1}MM${c2}MMM${c1}MMM\MMMMM/\MMMMM/      %s"
+"${c1}  |MM${c2}MM${c1}MMM${c2}MM${c1}MMMMMM${c2}MM${c1}MM${c2}MM${c1}MM${c2}MMMMM'${c1}M|                  %s"
+"${c1}  |MM${c2}MM${c1}MMM${c2}MMMMMMMMMMMMMMMMM MM'${c1}M/                   %s"
+"${c1}  |MMMMMMMMMMMMMMMMMMMMMMMMMMMM/                    %s"
+"                                                    %s"
+"                                                    %s"
+"                                                    %s")
 		;;
 
 		"Fedora")
@@ -2701,7 +2733,7 @@ infoDisplay () {
 			if [[ -n "$colors_light" ]]; then labelcolor="\e[1;37m"
 			else labelcolor="\e[1;30m"; fi
 		;;
-		"Gentoo"|"ParabolaGNU/Linux-libre") labelcolor="\e[1;35m";;
+		"Gentoo"|"ParabolaGNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor="\e[1;35m";;
 		"Slackware") labelcolor="\e[1;34m";;
 		"Mac OS X"|"Trisquel") labelcolor="\033[1;34m";;
 		*) labelcolor="\e[1;33m";;
