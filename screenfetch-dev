@@ -597,7 +597,7 @@ detectdistro () {
 detecthost () {
 	myUser=${USER}
 	myHost=${HOSTNAME}
-	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/local/}; fi
+	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local/}; fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
 }
 
