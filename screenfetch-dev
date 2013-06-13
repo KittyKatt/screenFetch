@@ -282,14 +282,6 @@ fi
 # Begin Detection Phase
 #########################
 
-
-# Host and User detection - Begin
-detecthost () {
-	myUser=${USER}
-	myHost=${HOSTNAME}
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
-}
-
 # Distro Detection - Begin
 detectdistro () {
 	if [[ -z $distro ]]; then
@@ -600,6 +592,14 @@ detectdistro () {
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
+
+# Host and User detection - Begin
+detecthost () {
+	myUser=${USER}
+	myHost=${HOSTNAME}
+	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/local/}; fi
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
+}
 
 # Find Number of Running Processes
 # processnum="$(( $( ps aux | wc -l ) - 1 ))"
@@ -2533,7 +2533,7 @@ asciiText () {
 
 		"Android")
 			if [[ "$no_color" != "1" ]]; then
-				c1="\e[1;37m" # White
+				c1="\screens.kittykatt.use[1;37m" # White
 				c2="\e[1;32m" # Bold Green
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
