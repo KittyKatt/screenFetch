@@ -221,7 +221,7 @@ case $1 in
 esac
 		
 
-while getopts ":hsmevVEnNtlS:A:D:o:Bc:" flags; do
+while getopts ":hsmevVEnNtlS:A:D:o:Bc:d:" flags; do
 	case $flags in
 		h) displayHelp; exit 0;;
 		s) screenshot=1; continue;;
@@ -248,6 +248,7 @@ while getopts ":hsmevVEnNtlS:A:D:o:Bc:" flags; do
 		# d) overrideDisplay=$OPTARG; continue;;
 		# l) colors_light="1";;
 		# B) background_detect="1"; continue;;
+		d) overrideDisplay=$OPTARG; continue;;
 		N) no_color='1';;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1;;
@@ -273,10 +274,6 @@ if [[ "$overrideOpts" ]]; then
 	done
 	IFS="$OLD_IFS"
 fi
-#if [[ "$overrideDisplay" ]]; then
-#	[[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
-#	display="$overrideDisplay"
-#fi
 
 
 #########################
@@ -3023,12 +3020,14 @@ themeExport () {
 ##################
 
 if [[ -f "$HOME/.screenfetchOR" ]]; then
-    #vars=("$(cat $HOME/.screenfetchOR | grep '^.*=.*$')")
-    #for v in "${vars[@]}"; do #=$(echo $v | sed -e 's/^.*=//')"
-    #    varname="$(echo $v | sed -e 's/=.*$//')"
-    #    eval $varname="\"$(echo $v | sed -e 's/^.*=//')\""
-    #done
     source $HOME/.screenfetchOR
+fi
+
+
+if [[ "$overrideDisplay" ]]; then
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
+	overrideDisplay=${overrideDisplay//,/ }
+	display=( $overrideDisplay )
 fi
 
 # Check for android
