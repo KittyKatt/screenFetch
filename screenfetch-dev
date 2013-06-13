@@ -1160,10 +1160,12 @@ detectwm () {
 				fi
 			done
 		else
-			case ${WM} in
+			declare -l lcase
+			lcase=${WM}
+			case ${lcase} in
 				'awesome') WM="Awesome";;
-				'blackbox') WM="Blackbox";;
 				'beryl') WM="Beryl";;
+				'blackbox') WM="Blackbox";;
 				'cinnamon') WM="Cinnamon";;
 				'compiz') WM="Compiz";;
 				'dminiwm') WM="dminiwm";;
@@ -1174,7 +1176,6 @@ detectwm () {
 				'fluxbox') WM="FluxBox";;
 				'fvwm') WM="FVWM";;
 				'herbstluftwm') WM="herbstluftwm";;
-				'^i3') WM="i3";;
 				'icewm') WM="IceWM";;
 				'kwin') WM="KWin";;
 				'metacity') WM="Metacity";;
@@ -1183,16 +1184,17 @@ detectwm () {
 				'openbox') WM="OpenBox";;
 				'pekwm') WM="PekWM";;
 				'ratpoison') WM="Ratpoison";;
+				'sawfish') WM="Sawfish";;
 				'scrotwm') WM="ScrotWM";;
 				'spectrwm') WM="SpectrWM";;
-				'sawfish') WM="Sawfish";;
 				'stumpwm') WM="StumpWM";;
 				'subtle') WM="subtle";;
 				'wmaker') WM="WindowMaker";;
 				'wmfs') WM="WMFS";;
 				'wmii') WM="wmii";;
 				'xfwm4') WM="Xfwm4";;
-				'^xmonad') WM="XMonad";;
+				'xmonad') WM="XMonad";;
+				'i3') WM="i3";;
 			esac
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
@@ -1611,7 +1613,7 @@ takeShot () {
 				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
 			fi
 		else
-			if [ "$distro" == "Mac OS X" ]; then screencapture -x -T 3 "${shotfile} 2>dev/null"
+			if [ "$distro" == "Mac OS X" ]; then screencapture -x -T 3 "${shotfile}" &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
@@ -3015,10 +3017,18 @@ themeExport () {
 	rm -rf /tmp/screenfetch-export/
 }
 
-
 ##################
 # Let's Do This!
 ##################
+
+if [[ -f "$HOME/.screenfetchOR" ]]; then
+    #vars=("$(cat $HOME/.screenfetchOR | grep '^.*=.*$')")
+    #for v in "${vars[@]}"; do #=$(echo $v | sed -e 's/^.*=//')"
+    #    varname="$(echo $v | sed -e 's/=.*$//')"
+    #    eval $varname="\"$(echo $v | sed -e 's/^.*=//')\""
+    #done
+    source $HOME/.screenfetchOR
+fi
 
 # Check for android
 if type -p getprop >/dev/null 2>&1; then
@@ -3032,7 +3042,6 @@ if type -p getprop >/dev/null 2>&1; then
 fi
 
 for i in "${display[@]}"; do
-
 	if [[ $i =~ wm ]]; then
 		 ! [[ $WM  ]] && detectwm;
 		 ! [[ $Win_theme ]] && detectwmtheme;
@@ -3043,14 +3052,6 @@ for i in "${display[@]}"; do
 		fi
 	fi
 done
-
-if [[ -f "$HOME/.screenfetchOR" ]]; then
-    vars=("$(cat $HOME/.screenfetchOR | grep '^.*=.*$')")
-    for v in "${vars[@]}"; do #=$(echo $v | sed -e 's/^.*=//')"
-        varname="$(echo $v | sed -e 's/=.*$//')"
-        eval $varname="\"$(echo $v | sed -e 's/^.*=//')\""
-    done
-fi
 
 infoDisplay
 [ "$screenshot" == "1" ] && takeShot
