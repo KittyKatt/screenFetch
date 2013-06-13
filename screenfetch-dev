@@ -694,12 +694,13 @@ detectcpu () {
 		if [ -z "$cpu" ]; then 
 			cpu=$(awk 'BEGIN{FS=":"} /^cpu/ { gsub(/  +/," ",$2); print $2; exit}' /proc/cpuinfo | sed 's/, altivec supported//;s/^ //')
 			if [[ $cpu =~ ^(PPC)*9.+ ]]; then
-				model="IBM PowerPC G5"
+				model="IBM PowerPC G5 "
 			elif [[ $cpu =~ ^74.+ ]]; then
-				model="Motorola PowerPC G4"
+				model="Motorola PowerPC G4 "
 			else
-				model="IBM PowerPC G3"
+				model="IBM PowerPC G3 "
 			fi
+			cpu="${model}${cpu}"
 		fi
 		loc="/sys/devices/system/cpu/cpu0/cpufreq"
 		if [ -f $loc/bios_limit ];then
