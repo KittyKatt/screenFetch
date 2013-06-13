@@ -691,6 +691,16 @@ detectcpu () {
 	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	else
 		cpu=$(awk 'BEGIN{FS=":"} /model name/ { gsub(/  +/," ",$2); gsub(/^ /,"",$2); gsub(/\(R\)|\(TM\)|\(tm\)| Processor/,"",$2); print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
+		if [ -z "$cpu" ]; then 
+			cpu=$(awk 'BEGIN{FS=":"} /^cpu/ { gsub(/  +/," ",$2); print $2; exit}' /proc/cpuinfo | sed 's/, altivec supported//')
+			if [[ $cpu =~ ^(PPC)*9.+ ]]; then
+				model="IBM PowerPC G5"
+			elif [[ $cpu =~ ^74.+ ]]; then
+				model="Motorola PowerPC G4"
+			else
+				model="IBM PowerPC G3"
+			fi
+		fi
 		loc="/sys/devices/system/cpu/cpu0/cpufreq"
 		if [ -f $loc/bios_limit ];then
 			cpu_mhz=$(cat $loc/bios_limit | awk '{print $1/1000}')
