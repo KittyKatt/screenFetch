@@ -206,6 +206,7 @@ displayHelp() {
 	echo -e "   ${bold}-A 'DISTRO'${c0}        Here you can specify the distribution art that you want"
 	echo -e "		      displayed. This is for when you want your distro"
 	echo -e "                      detected but want to display a different logo."
+	echo -e "   ${bold}-E${c0}                 Suppress output of errors."
 	echo -e "   ${bold}-V${c0}                 Display current script version."
 	echo -e "   ${bold}-h${c0}                 Display this help."
 	exit 0
@@ -216,13 +217,13 @@ displayHelp() {
 #####################
 
 case $1 in
-	--help) displayHelp;;
+	--help) displayHelp; exit 0;;
 esac
 		
 
 while getopts ":hsmevVEnNtlS:A:D:o:Bc:" flags; do
 	case $flags in
-		h) displayHelp;;
+		h) displayHelp; exit 0;;
 		s) screenshot=1; continue;;
 		S) screenCommand=$OPTARG; continue;;
 		m) hostshot=1; continue;;
