@@ -99,49 +99,55 @@ detectColors() {
 	my_colors=$(echo "$OPTARG" | sed 's/^,/na,/;s/,$/,na/;s/,/ /')
 	my_lcolor=$(echo "$my_colors" | awk -F' ' '{print $1}')
 	if [[ "$my_lcolor" != "na" ]]; then
-		case $my_lcolor in
-			0|00)  export my_lcolor='\033[30m';;
-			1|01)  export my_lcolor='\033[31m';;
-			2|02)  export my_lcolor='\033[32m';;
-			3|03)  export my_lcolor='\033[33m';;
-			4|04)  export my_lcolor='\033[34m';;
-			5|05)  export my_lcolor='\033[35m';;
-			6|06)  export my_lcolor='\033[36m';;
-			7|07)  export my_lcolor='\033[37m';;
-			8|08)  export my_lcolor='\033[1;30m';;
-			9|09)  export my_lcolor='\033[1;31m';;
-			10) export my_lcolor='\033[1;32m';;
-			11) export my_lcolor='\033[1;33m';;
-			12) export my_lcolor='\033[1;34m';;
-			13) export my_lcolor='\033[1;35m';;
-			14) export my_lcolor='\033[1;36m';;
-			15) export my_lcolor='\033[1;37m';;
-			*) unset my_lcolor; continue ;;
-		esac
+		if [[ $(tput colors) -eq "256" ]]; then my_lcolor="\033[38;5;${my_lcolor}m"
+		else
+			case $my_lcolor in
+				0|00)  export my_lcolor='\033[30m';;
+				1|01)  export my_lcolor='\033[31m';;
+				2|02)  export my_lcolor='\033[32m';;
+				3|03)  export my_lcolor='\033[33m';;
+				4|04)  export my_lcolor='\033[34m';;
+				5|05)  export my_lcolor='\033[35m';;
+				6|06)  export my_lcolor='\033[36m';;
+				7|07)  export my_lcolor='\033[37m';;
+				8|08)  export my_lcolor='\033[1;30m';;
+				9|09)  export my_lcolor='\033[1;31m';;
+				10) export my_lcolor='\033[1;32m';;
+				11) export my_lcolor='\033[1;33m';;
+				12) export my_lcolor='\033[1;34m';;
+				13) export my_lcolor='\033[1;35m';;
+				14) export my_lcolor='\033[1;36m';;
+				15) export my_lcolor='\033[1;37m';;
+				*) unset my_lcolor; continue ;;
+			esac
+		fi
 	else
 		unset my_lcolor
 	fi
 	my_hcolor=$(echo "$my_colors" | awk -F' ' '{print $2}')
 	if [[ "$my_hcolor" != "na" ]]; then
-		case $my_hcolor in
-			0|00)  export my_hcolor='\033[30m';;
-			1|01)  export my_hcolor='\033[31m';;
-			2|02)  export my_hcolor='\033[32m';;
-			3|03)  export my_hcolor='\033[33m';;
-			4|04)  export my_hcolor='\033[34m';;
-			5|05)  export my_hcolor='\033[35m';;
-			6|06)  export my_hcolor='\033[36m';;
-			7|07)  export my_hcolor='\033[37m';;
-			8|08)  export my_hcolor='\033[1;30m';;
-			9|09)  export my_hcolor='\033[1;31m';;
-			10) export my_hcolor='\033[1;32m';;
-			11) export my_hcolor='\033[1;33m';;
-			12) export my_hcolor='\033[1;34m';;
-			13) export my_hcolor='\033[1;35m';;
-			14) export my_hcolor='\033[1;36m';;
-			15) export my_hcolor='\033[1;37m';;
-			*) unset my_hcolor; continue ;;
-		esac
+		if [[ $(tput colors) -eq "256" ]]; then my_hcolor="\033[38;5;${my_hcolor}m"
+		else
+			case $my_hcolor in
+				0|00)  export my_hcolor='\033[30m';;
+				1|01)  export my_hcolor='\033[31m';;
+				2|02)  export my_hcolor='\033[32m';;
+				3|03)  export my_hcolor='\033[33m';;
+				4|04)  export my_hcolor='\033[34m';;
+				5|05)  export my_hcolor='\033[35m';;
+				6|06)  export my_hcolor='\033[36m';;
+				7|07)  export my_hcolor='\033[37m';;
+				8|08)  export my_hcolor='\033[1;30m';;
+				9|09)  export my_hcolor='\033[1;31m';;
+				10) export my_hcolor='\033[1;32m';;
+				11) export my_hcolor='\033[1;33m';;
+				12) export my_hcolor='\033[1;34m';;
+				13) export my_hcolor='\033[1;35m';;
+				14) export my_hcolor='\033[1;36m';;
+				15) export my_hcolor='\033[1;37m';;
+				*) unset my_hcolor; continue ;;
+			esac
+		fi
 	else
 		unset my_hcolor
 	fi
@@ -1919,19 +1925,19 @@ asciiText () {
 )
                 ;;
 
+
 		"OpenBSD")
 			if [[ "$no_color" != "1" ]]; then
 				c1="\e[1;33m" # Light Yellow
 				c2="\e[0;33m" # Bold Yellow
 				c3="\e[1;36m" # Light Cyan
 				c4="\e[1;31m" # Light Red
-				c5="\e[1;37m"
-				c6="\e[1;30m"
+				c5="\e[1;30m"
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="$my_lcolor"; c2="${my_color}"; fi
 			startline="5"
 			fulloutput=(
- "                                       "$c3" _      "
+"                                       "$c3" _      "
 "                                       "$c3"(_)      "
 ""$c1"              |    .                            "
 ""$c1"          .   |L  /|   .         "$c3" _        "
@@ -1940,8 +1946,8 @@ asciiText () {
 ""$c1"    J  |)'( |        \` F\`.'/       "$c3" _   %s"   # OS
 ""$c1"  -<|  F         __     .-<        "$c3"(_)  %s"   # Kernel
 ""$c1"    | /       .-'"$c3". "$c1"\`.  /"$c3"-. "$c1"L___         %s" # Uptime
-""$c1"    J \      <    "$c3"\ "$c1" | | "$c6"O"$c3"\\\\"$c1"|.-' "$c3" _      %s" # Package
-""$c1"  _J \  .-    \\\\"$c3"/ "$c6"O "$c3"| "$c1"| \  |"$c1"F    "$c3"(_)     %s" # Shell
+""$c1"    J \      <    "$c3"\ "$c1" | | "$c5"O"$c3"\\\\"$c1"|.-' "$c3" _      %s" # Package
+""$c1"  _J \  .-    \\\\"$c3"/ "$c5"O "$c3"| "$c1"| \  |"$c1"F    "$c3"(_)     %s" # Shell
 ""$c1" '-F  -<_.     \   .-'  \`-' L__         %s"
 ""$c1"__J  _   _.     >-'  "$c2")"$c4"._.   "$c1"|-'         %s         "
 ""$c1" \`-|.'   /_.          "$c4"\_|  "$c1" F           %s     "
