@@ -544,7 +544,7 @@ detectdistro () {
 						distro = "Unknown"
 					}
 					{
-						if ($0 ~ "Scientific Linux") {
+						if ($0 ~ /"Scientific\ Linux"/) {
 							distro = "Scientific Linux"
 							exit
 						}
@@ -662,7 +662,7 @@ detectpkgs () {
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Trisquel') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
-		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Scientific Linux'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'openSUSE'|'Red Hat Linux'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
 
@@ -1603,7 +1603,7 @@ detectdroid () {
 takeShot () {
 	if [[ -z $screenCommand ]]; then
 		if [[ "$hostshot" == "1" ]]; then
-			if [ "$distro" == "Mac OS X" ]; then screencapture -x -T 3 ${serverdir}${shotfile} &> /dev/null
+			if [ "$distro" == "Mac OS X" ]; then printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x "${shotfile}" &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
@@ -1613,7 +1613,7 @@ takeShot () {
 				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
 			fi
 		else
-			if [ "$distro" == "Mac OS X" ]; then screencapture -x -T 3 "${shotfile}" &> /dev/null
+			if [ "$distro" == "Mac OS X" ]; then printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x "${shotfile}" &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
