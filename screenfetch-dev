@@ -738,6 +738,9 @@ detectgpu () {
 		gpu="${gpu:1}"
 		gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
 	fi
+	if [[ "${distro}" == "Mac OS X" ]]; then
+		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}')
+	fi
 
 	if [ -n "$gpu" ];then
 		if [ $(echo "$gpu_info" | grep -i nvidia | wc -l) -gt 0 ];then
