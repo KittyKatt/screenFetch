@@ -744,18 +744,18 @@ detectgpu () {
 
 	if [ -n "$gpu" ];then
 		if [ $(echo "$gpu_info" | grep -i nvidia | wc -l) -gt 0 ];then
-			gpu_info="NVidia"
+			gpu_info="NVidia "
 		elif [ $(echo "$gpu_info" | grep -i intel | wc -l) -gt 0 ];then
-			gpu_info="Intel"
+			gpu_info="Intel "
 		elif [ $(echo "$gpu_info" | grep -i amd | wc -l) -gt 0 ];then
-			gpu_info="AMD"
+			gpu_info="AMD "
 		elif [ $(echo "$gpu_info" | grep -i ati | wc -l) -gt 0 ];then
-			gpu_info="ATI"
+			gpu_info="ATI "
 		else
 			gpu_info=$(echo "$gpu_info" | cut -d ':' -f2)
-			gpu_info=${gpu_info:1}
+			gpu_info="${gpu_info:1} "
 		fi
-		gpu="$gpu_info $gpu"
+		gpu="${gpu_info}${gpu}"
 	else
 		gpu="Not Found"
 	fi
