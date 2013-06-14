@@ -1111,9 +1111,9 @@ detectwm () {
 	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
 		if type -p xprop >/dev/null 2>&1; then
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
-			if [[ "$WM" =~ "not found" ]]; then
+			if [[ "$WM" =~ '[Nn]ot found' ]]; then
 				WM="Not Found"
-			elif [[ "$WM" =~ "invalid window id format" ]]; then
+			elif [[ "$WM" =~ '[Ii]nvalid window id format' ]]; then
 				WM="Not Found"
 			elif [[ "$WM" =~ "no such" ]]; then
 				WM="Not Found"
