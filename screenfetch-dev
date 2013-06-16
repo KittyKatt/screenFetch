@@ -2905,7 +2905,7 @@ infoDisplay () {
 			echo -e "$mymem"
 		else
 			if [[ "${display[@]}" =~ "uptime" ]]; then echo -e "$myuptime"; fi
-			if [[ "${display[@]}" =~ "pkgs" ]]; then echo -e "$myuptime"; fi
+			if [[ "${display[@]}" =~ "pkgs" ]]; then echo -e "$mypkgs"; fi
 			if [[ "${display[@]}" =~ "shell" ]]; then echo -e "$myshell"; fi
 			if [[ "${display[@]}" =~ "res" ]]; then echo -e "$myres"; fi
 			if [[ "${display[@]}" =~ "de" ]]; then
