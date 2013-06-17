@@ -690,7 +690,7 @@ detectcpu () {
 	elif [ "$distro" == "DragonflyBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	else
-		cpu=$(awk 'BEGIN{FS=":"} /model name/ { gsub(/  +/," ",$2); gsub(/^ /,"",$2); gsub(/\(R\)|\(TM\)|\(tm\)| Processor/,"",$2); print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
+		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
 		if [ -z "$cpu" ]; then 
 			cpu=$(awk 'BEGIN{FS=":"} /^cpu/ { gsub(/  +/," ",$2); print $2; exit}' /proc/cpuinfo | sed 's/, altivec supported//;s/^ //')
 			if [[ $cpu =~ ^(PPC)*9.+ ]]; then
@@ -719,6 +719,7 @@ detectcpu () {
 			fi
 		fi
 	fi
+	cpu=$(echo "${cpu}" | sed 's/(\([Tt][Mm]\))//g;s/(\([Rr]\))//g;s/^ //g;s/  //g')
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
@@ -2835,7 +2836,8 @@ infoDisplay () {
 					fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [ "$distro" == "Mac OS X" ]; then
-					if [ "$gtkIcons" != "Not Found" ]; then
+					if [ "$gtkIcons" != "N                 │01:33:13    @KittyKatt | lolwut                                                                                                                                                    │      
+ot Found" ]; then
 						if [ -n "$gtkIcons" ]; then 
 							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 						fi
