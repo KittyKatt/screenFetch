@@ -674,7 +674,13 @@ detectpkgs () {
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
 		;;
-		'FreeBSD'|'OpenBSD') pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}') ;;
+		'FreeBSD'|'OpenBSD') 
+			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
+			if type -p portmaster >/dev/null 2>&1; then
+				ports=$(portmaster -l | grep -Eo '[0-9]+ total installed' | sed 's/ total installed//')
+				pkgs=$((${pkgs} + ${ports}))
+			fi
+		;;
 		'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
