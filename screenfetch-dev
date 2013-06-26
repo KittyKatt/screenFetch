@@ -966,6 +966,9 @@ detectres () {
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
+		if [[ "$(echo $xResolution | wc -l)" -ge 1 ]]; then
+			xResolution=$(echo $xResolution | tr "\\n" "," | sed 's/\(.*\),/\1/')
+		fi
 	elif [[ "${distro}" == "Cygwin" ]]; then
 		width=$(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr -d '\r\n ')
 		height=$(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr -d '\r\n ')
