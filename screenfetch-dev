@@ -50,10 +50,6 @@ display_type="ASCII"
 wmnames="fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca i3 xmonad ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm"
 denames="gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder"
 
-# Export theme settings
-# screenFetch has the capability (on some WM's and GTK) to export your GTK and WM settings to an archive. Specify Yes if you want this and No if you do not.
-exportTheme=
-
 # Screenshot Settings
 # This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
 screenshot=
@@ -176,24 +172,17 @@ displayHelp() {
 	echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
 	echo -e "		      command line. Must be in the following format..."
 	echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
-	echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
-	echo -e "		      on the command line. Format must be as follows:"
-	echo -e "		      OPTION,OPTION,OPTION,OPTION. Valid options are"
-	echo -e "		      host, distro, kernel, uptime, pkgs, shell, res, de, wm,"
-	echo -e "		      wmtheme, gtk, cpu, gpu, mem."
+	#echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
+	#echo -e "		      on the command line. Format must be as follows:"
+	#echo -e "		      OPTION,OPTION,OPTION,OPTION. Valid options are"
+	#echo -e "		      host, distro, kernel, uptime, pkgs, shell, res, de, wm,"
+	#echo -e "		      wmtheme, gtk, cpu, gpu, mem."
 	echo -e "   ${bold}-n${c0}                 Do not display ASCII distribution logo."
 	echo -e "   ${bold}-N${c0}                 Strip all color from output."
 	echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
 	echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
 	echo -e "		      to take a screenshot. Use the -m flag if you would like"
 	echo -e "		      to move it to a new location afterwards."
-	#echo -e "   ${bold}-B${c0}                 Enable background detection."
-	echo -e "   ${bold}-e${c0}                 When this flag is specified, screenFetch will attempt"
-	echo -e "		      to export all of your theme settings and archive them"
-	echo -e "		      up for uploading."
-	#echo -e "   ${bold}-l${c0}                 Specify that you have a light background. This turns"
-	#echo -e "		      all white text into dark gray text (in ascii logos and"
-	#echo -e "		      in information output)."
 	echo -e "   ${bold}-c string${c0}          You may change the outputted colors with -c. The format is"
 	echo -e "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the"
 	echo -e "                      ASCII logo colors and the label colors. The second argument"
@@ -227,7 +216,6 @@ while getopts ":hsmevVEnNtlS:A:D:o:Bc:d:" flags; do
 		s) screenshot=1; continue;;
 		S) screenCommand=$OPTARG; continue;;
 		m) hostshot=1; continue;;
-		e) exportTheme=1; continue;;
 		v) verbosity=1; continue;;
 		V)
 			echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
@@ -243,11 +231,8 @@ while getopts ":hsmevVEnNtlS:A:D:o:Bc:d:" flags; do
 		t) truncateSet="Yes";;
 		n) display_type="Text";;
 		o) overrideOpts=$OPTARG; continue;;
-		# c) my_color=$(echo "$OPTARG" | awk -F',' '{ print $1 }'); my_bgcolor=$(echo "$OPTARG" | awk -F',' '{ print $2 }'); continue;;
 		c) detectColors "$OPTARGS"; continue;;
 		# d) overrideDisplay=$OPTARG; continue;;
-		# l) colors_light="1";;
-		# B) background_detect="1"; continue;;
 		d) overrideDisplay=$OPTARG; continue;;
 		N) no_color='1';;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
@@ -966,9 +951,6 @@ detectres () {
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
-		if [[ "$(echo $xResolution | wc -l)" -ge 1 ]]; then
-			xResolution=$(echo $xResolution | tr "\\n" "," | sed 's/\(.*\),/\1/')
-		fi
 	elif [[ "${distro}" == "Cygwin" ]]; then
 		width=$(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr -d '\r\n ')
 		height=$(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr -d '\r\n ')
@@ -2938,113 +2920,6 @@ ot Found" ]; then
 			if [[ "${display[@]}" =~ "mem" ]]; then echo -e "$mymem"; fi
 		fi
 	fi
-}
-
-########
-# Theme Exporting (Experimental!)
-########
-themeExport () {
-	WM=$(echo "$mywm" | awk '{print $NF}')
-	if [[ ! -d /tmp/screenfetch-export ]]; then mkdir -p "/tmp/screenfetch-export/Icons" & mkdir -p "/tmp/screenfetch-export/GTK-Theme" & mkdir -p "/tmp/screenfetch-export/WM-${WM}" ; fi
-	if [[ "$WM" ]]; then
-		if [[ "$WM" =~ "Openbox" ]]; then
-			if [[ "$Win_theme" != "Not Found" ]]; then
-				if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-					cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				fi
-			fi
-		elif [[ "$WM" =~ "Fluxbox" ]]; then
-			if [[ "$Win_theme" != "Not Found" ]]; then
-				if [[ -d "$HOME/.fluxbox/styles/$Win_theme" ]]; then
-					cp -r "$HOME/.fluxbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				fi
-			fi
-		elif [[ "$WM" =~ "Blackbox" ]]; then
-			if [[ "$Win_theme" != "Not Found" ]]; then
-				if [[ -d "$HOME/.blackbox/styles/$Win_theme" ]]; then
-					cp -r "$HOME/.blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				elif [[ -d "/usr/share/blackbox/styles/$Win_theme" ]]; then
-					cp -r "/usr/share/blackbox/styles/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				fi
-			fi
-		elif [[ "$WM" =~ "PekWM" ]]; then
-			if [[ "$Win_theme" != "Not Found" ]]; then
-				if [[ -d "$HOME/.pekwm/themes/$Win_theme" ]]; then
-					cp -r "$HOME/.pekwm/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				fi
-			fi
-		elif [[ "$WM" =~ "Metacity" ]]; then
-			if [[ "$Win_theme" != "Not Found" ]]; then
-				if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-					cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
-					cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				fi
-			fi
-		elif [[ "$WM" =~ "Xfwm4" ]]; then
-			if [[ "$Win_theme" != "Not Found" ]]; then
-				WM_theme=$(echo "$Win_theme" | awk '{print $NF}')
-				if [[ -d "$HOME/.themes/$Win_theme" ]]; then
-					cp -r "$HOME/.themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				elif [[ -d "/usr/share/themes/$Win_theme" ]]; then
-					cp -r "/usr/share/themes/$Win_theme" "/tmp/screenfetch-export/WM-${WM}/$Win_theme" &>/dev/null
-					[[ "$verbosity" -eq "1" ]] && verboseOut "Found WM theme folder. Transferring to /tmp/screenfetch-export/..."
-				fi
-			fi
-		fi
-	fi
-	if [[ "$gtkBackgroundFull" ]]; then
-		cp "$gtkBackgroundFull" /tmp/screenfetch-export/
-		[[ "$verbosity" -eq "1" ]] && verboseOut "Found BG file. Transferring to /tmp/screenfetch-export/..."
-	fi
-	if [[ "$mygtk" ]]; then
-		GTK_theme=$(echo "$mygtk" | awk '{print $NF}')
-		if [ -d "/usr/share/themes/$GTK_theme" ]; then
-			cp -r "/usr/share/themes/$GTK_theme" "/tmp/screenfetch-export/GTK/Theme/$GTK_theme" &>/dev/null
-			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK theme folder. Transferring to /tmp/screenfetch-export/..."
-		fi
-	fi
-	if [[ "$myicons" ]]; then
-		GTK_icons=$(echo "$myicons" | awk '{print $NF}')
-		if [ -d "/usr/share/icons/$GTK_icons" ]; then
-			cp -r "/usr/share/icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
-			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
-		fi
-		if [ -d "$HOME/.icons/$GTK_icons" ]; then
-			cp -r "$HOME/.icons/$GTK_icons" "/tmp/screenfetch-export/GTK/Icons/$GTK_icons" &>/dev/null
-			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK icons theme folder. Transferring to /tmp/screenfetch-export/..."
-		fi
-	fi
-	if [[ "$myfont" ]]; then
-		GTK_font=$(echo "$myfont" | awk '{print $NF}')
-		if [ -d "/usr/share/fonts/$GTK_font" ]; then
-			cp -r "/usr/share/fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
-			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
-		elif [ -d "$HOME/.fonts/$GTK_font" ]; then
-			cp -r "$HOME/.fonts/$GTK_font" "/tmp/screenfetch-export/GTK/$GTK_font" &>/dev/null
-			[[ "$verbosity" -eq "1" ]] && verboseOut "Found GTK font. Transferring to /tmp/screenfetch-export/..."
-		fi
-	fi
-	if [ "$screenshot" == "1" ]; then
-		if [ -f "${shotfile}" ]; then
-			cp "${shotfile}" "/tmp/screenfetch-export/"
-			[[ "$verbosity" -eq "1" ]] && verboseOut "Found screenshot. Transferring to /tmp/screenfetch-export/..."
-		fi
-	fi
-	cd /tmp/screenfetch-export/
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Creating screenfetch-export.tar.gz archive in /tmp/screenfetch-export/...."
-	tar -czf screenfetch-export.tar.gz ../screenfetch-export &>/dev/null
-	mv /tmp/screenfetch-export/screenfetch-export.tar.gz $HOME/
-	echo -e "${bold}==>${c0} Archive created in /tmp/ and moved to $HOME. Removing /tmp/screenfetch-export/..."
-	rm -rf /tmp/screenfetch-export/
 }
 
 ##################
