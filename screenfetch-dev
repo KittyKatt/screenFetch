@@ -60,7 +60,7 @@ baseurl="http://www.example.com"
 serveraddr="www.example.com"
 scptimeout="20"
 serverdir="/path/to/directory"
-shotfile=$(echo "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
+shotfile=$(printf "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
@@ -92,8 +92,8 @@ display_index=0
 ####################
 
 detectColors() {
-	my_colors=$(echo "$OPTARG" | sed 's/^,/na,/;s/,$/,na/;s/,/ /')
-	my_lcolor=$(echo "$my_colors" | awk -F' ' '{print $1}')
+	my_colors=$(printf "$OPTARG" | sed 's/^,/na,/;s/,$/,na/;s/,/ /')
+	my_lcolor=$(printf "$my_colors" | awk -F' ' '{print $1}')
 	if [[ "$my_lcolor" != "na" ]]; then
 		if [[ $(tput colors) -eq "256" ]]; then my_lcolor="\033[38;5;${my_lcolor}m"
 		else
@@ -120,7 +120,7 @@ detectColors() {
 	else
 		unset my_lcolor
 	fi
-	my_hcolor=$(echo "$my_colors" | awk -F' ' '{print $2}')
+	my_hcolor=$(printf "$my_colors" | awk -F' ' '{print $2}')
 	if [[ "$my_hcolor" != "na" ]]; then
 		if [[ $(tput colors) -eq "256" ]]; then my_hcolor="\033[38;5;${my_hcolor}m"
 		else
@@ -151,54 +151,50 @@ detectColors() {
 
 
 displayHelp() {
-	echo -e "${underline}Usage${c0}:"
-	echo -e "  screenFetch [OPTIONAL FLAGS]"
-	echo ""
-	echo "screenFetch - a CLI Bash script to show system/theme info in screenshots."
-	echo ""
-	echo -e "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,"
-	echo -e "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,"
-	echo -e "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,"
-	echo -e "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, OpenBSD"
-	echo -e "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present"
-	echo -e "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,"
-	echo -e "			      Metacity, StumpWM, KWin, IceWM, FVWM,"
-	echo -e "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,"
-	echo -e "			      Ratpoison, wmii, WMFS, ScrotWM, SpectrWM,"
-	echo -e "			      subtle, Emerald, E17 and Beryl."
-	echo ""
-	echo -e "${underline}Options${c0}:"
-	echo -e "   ${bold}-v${c0}                 Verbose output."
-	echo -e "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
-	echo -e "		      command line. Must be in the following format..."
-	echo -e "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'"
+	printf "${underline}Usage${c0}:\n"
+	printf "  screenFetch [OPTIONAL FLAGS]\n\n"
+	printf "screenFetch - a CLI Bash script to show system/theme info in screenshots.\n\n"
+	printf "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,\n"
+	printf "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,\n"
+	printf "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,\n"
+	printf "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, OpenBSD\n"
+	printf "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present\n"
+	printf "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,\n"
+	printf "			      Metacity, StumpWM, KWin, IceWM, FVWM,\n"
+	printf "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,\n"
+	printf "			      Ratpoison, wmii, WMFS, ScrotWM, SpectrWM,\n"
+	printf "			      subtle, Emerald, E17 and Beryl.\n\n"
+	printf "${underline}Options${c0}:\n"
+	printf "   ${bold}-v${c0}                 Verbose output.\n"
+	printf "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the\n"
+	printf "		      command line. Must be in the following format...\n"
+	printf "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'\n"
 	#echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
 	#echo -e "		      on the command line. Format must be as follows:"
 	#echo -e "		      OPTION,OPTION,OPTION,OPTION. Valid options are"
 	#echo -e "		      host, distro, kernel, uptime, pkgs, shell, res, de, wm,"
 	#echo -e "		      wmtheme, gtk, cpu, gpu, mem."
-	echo -e "   ${bold}-n${c0}                 Do not display ASCII distribution logo."
-	echo -e "   ${bold}-N${c0}                 Strip all color from output."
-	echo -e "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!)."
-	echo -e "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it"
-	echo -e "		      to take a screenshot. Use the -m flag if you would like"
-	echo -e "		      to move it to a new location afterwards."
-	echo -e "   ${bold}-c string${c0}          You may change the outputted colors with -c. The format is"
-	echo -e "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the"
-	echo -e "                      ASCII logo colors and the label colors. The second argument"
-	echo -e "                      controls the colors of the information found. One argument may be"
-	echo -e "                      used without the other."
-	echo -e "   ${bold}-S 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
-	echo -e "		      the script to execute. Surrounding quotes are required."
-	echo -e "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"
-	echo -e "		      to use. Surrounding quotes are required."
-	echo -e "   ${bold}-A 'DISTRO'${c0}        Here you can specify the distribution art that you want"
-	echo -e "		      displayed. This is for when you want your distro"
-	echo -e "                      detected but want to display a different logo."
-	echo -e "   ${bold}-E${c0}                 Suppress output of errors."
-	echo -e "   ${bold}-V${c0}                 Display current script version."
-	echo -e "   ${bold}-h${c0}                 Display this help."
-	exit 0
+	printf "   ${bold}-n${c0}                 Do not display ASCII distribution logo.\n"
+	printf "   ${bold}-N${c0}                 Strip all color from output.\n"
+	printf "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!).\n"
+	printf "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it\n"
+	printf "		      to take a screenshot. Use the -m flag if you would like\n"
+	printf "		      to move it to a new location afterwards.\n"
+	printf "   ${bold}-c string${c0}          You may change the outputted colors with -c. The format is\n"
+	printf "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the\n"
+	printf "                      ASCII logo colors and the label colors. The second argument\n"
+	printf "                      controls the colors of the information found. One argument may be\n"
+	printf "                      used without the other.\n"
+	printf "   ${bold}-S 'COMMAND'${c0}       Here you can specify a custom screenshot command for\n"
+	printf "		      the script to execute. Surrounding quotes are required.\n"
+	printf "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script\n"
+	printf "		      to use. Surrounding quotes are required.\n"
+	printf "   ${bold}-A 'DISTRO'${c0}        Here you can specify the distribution art that you want\n"
+	printf "		      displayed. This is for when you want your distro\n"
+	printf "                      detected but want to display a different logo.\n"
+	printf "   ${bold}-E${c0}                 Suppress output of errors.\n"
+	printf "   ${bold}-V${c0}                 Display current script version.\n"
+	printf "   ${bold}-h${c0}                 Display this help.\n"
 }
 
 #####################
@@ -218,12 +214,11 @@ while getopts ":hsmevVEnNtlS:A:D:o:Bc:d:" flags; do
 		m) hostshot=1; continue;;
 		v) verbosity=1; continue;;
 		V)
-			echo -e $underline"screenFetch"$c0" - Version $scriptVersion"
-			echo "Created by and licensed to Brett Bohnenkamper (kittykatt@kittykatt.us)"
-			echo "OS X porting done almost solely by shrx (http://shrx.github.com/) and Hu6."
-			echo ""
-			echo "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-			exit
+			printf $underline"screenFetch"$c0" - Version $scriptVersion\n"
+			printf "Created by and licensed to Brett Bohnenkamper (kittykatt@kittykatt.us)\n"
+			printf "OS X porting done almost solely by shrx (http://shrx.github.com/) and Hu6.\n\n"
+			printf "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+			exit 0
 		;;
 		E) errorSuppress="1";;
 		D) distro=$OPTARG; continue;;
