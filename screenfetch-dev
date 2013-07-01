@@ -754,16 +754,18 @@ detectgpu () {
 # Disk Usage Detection - Begin
 detectdisk () {
 	diskusage="Unknown"
-	if type -p df >/dev/null 2>&1; then
-		if [[ "${distro}" =~ "(Free|Net|Open|DragonFly)BSD" ]]; then
-			totaldisk=$(df -h -c | tail -1)
-		else
-			totaldisk=$(df -h --total | tail -1)
+	if [[ "${distro}" != "Mac OS X" ]]; then
+		if type -p df >/dev/null 2>&1; then
+			if [[ "${distro}" =~ "(Free|Net|Open|DragonFly)BSD" ]]; then
+				totaldisk=$(df -h -c | tail -1)
+			else
+				totaldisk=$(df -h --total | tail -1)
+			fi
+			disktotal=$(awk '{print $2}' <<< "${totaldisk}")
+			diskused=$(awk '{print $3}' <<< "${totaldisk}")
+			diskusedper=$(awk '{print $5}' <<< "${totaldisk}")
+			diskusage="${diskused} / ${disktotal} (${diskusedper})"
 		fi
-		disktotal=$(awk '{print $2}' <<< "${totaldisk}")
-		diskused=$(awk '{print $3}' <<< "${totaldisk}")
-		diskusedper=$(awk '{print $5}' <<< "${totaldisk}")
-		diskusage="${diskused} / ${disktotal} (${diskusedper})"
 	fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current GPU...found as '$gpu'"
 }	
@@ -2909,7 +2911,7 @@ infoDisplay () {
 				fi
 			fi
 		fi
-		if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
+		[[ "${distro}" != "Mac OS X" || "${fake_distro}" != "Cygwin" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "gpu" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
