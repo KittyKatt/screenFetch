@@ -1224,7 +1224,7 @@ detectwm () {
 				'i3') WM="i3";;
 			esac
 		fi
-	elif [[ ${distro} == "Mac OS X" ]]; then
+	elif [[ ${distro} == "Mac OS X" && "${WM}" == "Not Found" ]]; then
 		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
 			WM="Quartz Compositor"
 		fi
