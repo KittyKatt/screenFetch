@@ -1184,10 +1184,10 @@ detectwm () {
 				if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
 					WM=${WM,,}
 				else
-					WM="$(tr '[:lower:]' '[:upper:]' <<< ${WM})"
+					WM="$(tr '[:upper:]' '[:lower:]' <<< ${WM})"
 				fi
 			else
-				WM="$(tr '[:lower:]' '[:upper:]' <<< ${WM})"
+				WM="$(tr '[:upper:]' '[:lower:]' <<< ${WM})"
 			fi
 			case ${WM} in
 				'awesome') WM="Awesome";;
@@ -1221,7 +1221,7 @@ detectwm () {
 				'wmii') WM="wmii";;
 				'xfwm4') WM="Xfwm4";;
 				'xmonad') WM="XMonad";;
-				'[iI]3') WM="i3";;
+				'i3') WM="i3";;
 			esac
 		fi
 	elif [[ ${distro} == "Mac OS X" && "${WM}" == "Not Found" ]]; then
