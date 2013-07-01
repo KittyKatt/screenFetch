@@ -303,8 +303,8 @@ detectdistro () {
 				else
 					distro="Debian"
 				fi
-			elif [[ "${distro_detect}" == "elementary" ]]; then
-				distro="ElementaryOS"
+			elif [[ "${distro_detect}" == "elementary" || "${distro_detect}" == "elementary OS" ]]; then
+				distro="Elementary OS"
 				distro_release=null
 				distro_codename=null
 			elif [[ "${distro_detect}" == "Fedora" ]]; then
