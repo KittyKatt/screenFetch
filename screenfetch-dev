@@ -1118,7 +1118,7 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+	if [[ -n ${DISPLAY} && ${distro} != "Cygwin" ]]; then
 		if type -p xprop >/dev/null 2>&1; then
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
 			if [[ "$WM" =~ '[Nn]ot found' ]]; then
