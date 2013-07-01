@@ -1221,7 +1221,7 @@ detectwm () {
 				'wmii') WM="wmii";;
 				'xfwm4') WM="Xfwm4";;
 				'xmonad') WM="XMonad";;
-				'i3') WM="i3";;
+				'[iI]3') WM="i3";;
 			esac
 		fi
 	elif [[ ${distro} == "Mac OS X" && "${WM}" == "Not Found" ]]; then
