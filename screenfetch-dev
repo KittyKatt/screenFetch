@@ -1119,7 +1119,9 @@ detectwm () {
 	if [[ -n ${DISPLAY} && ${distro} != "Cygwin" ]]; then
 		if type -p xprop >/dev/null 2>&1; then
 			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
-			if [[ "$WM" =~ '[Nn]ot found' ]]; then
+			if [[ "$WM" =~ 'not found' ]]; then
+				WM="Not Found"
+			elif [[ "$WM" =~ 'Not found' ]]; then
 				WM="Not Found"
 			elif [[ "$WM" =~ '[Ii]nvalid window id format' ]]; then
 				WM="Not Found"
