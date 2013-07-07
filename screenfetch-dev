@@ -754,11 +754,11 @@ detectdisk () {
 	diskusage="Unknown"
 	if type -p df >/dev/null 2>&1; then
 		if [[ "${distro}" =~ (Free|Net|Open|DragonFly)BSD ]]; then
-			totaldisk=$(df -h -c | tail -1)
+			totaldisk=$(df -h -c 2>/dev/null | tail -1)
 		elif [[ "${distro}" == "Mac OS X" ]]; then
-			totaldisk=$(df -H / | tail -1)
+			totaldisk=$(df -H / 2>/dev/null | tail -1)
 		else
-			totaldisk=$(df -h --total | tail -1)
+			totaldisk=$(df -h --total 2>/dev/null | tail -1)
 		fi
 		disktotal=$(awk '{print $2}' <<< "${totaldisk}")
 		diskused=$(awk '{print $3}' <<< "${totaldisk}")
