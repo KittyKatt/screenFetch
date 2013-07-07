@@ -2989,7 +2989,7 @@ for i in "${display[@]}"; do
 		 ! [[ $Win_theme ]] && detectwmtheme;
 	else
 		if [[ "${display[*]}" =~ "$i" ]]; then 
-			if [[ "$errorSuppress" == "1" ]]; then detect${i} >/dev/null 2>&1
+			if [[ "$errorSuppress" == "1" ]]; then detect${i} 2>/dev/null
 			else detect${i}; fi
 		fi
 	fi
