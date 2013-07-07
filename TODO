@@ -3,13 +3,17 @@
 This small list will be the central place where I will list ideas and 
 things I want to happen with screenFetch.
 
-~ WM's that still need to be supported:
-   - ?
+Obvious Things:
 
-~ Would like to add more distributions. If anyone has any distributions that they would 
-   like to add to screenfetch, let me know.
+	1) Add any and all suggested WMs.
+	2) More distros! Suggest them and I'll add them. Or I'll add them as I find them.
 
-~ Test GTK3 detection across the board. And new desktop environment detection.
+Other Things:
+
+	1) Better GTK3 detection. Fix for gsettings stuff.
+	2) Better -c. Support setting of all available colors in an ascii logo.
+	3) Centralized color setting. c{1,2,3,etc} and lablecolors all set in one place.
+	4) Better disk detection. Fix problems with it.
 
 That's about it for now. If you can help with any of these, please 
 please PLEASE let me know by emailing me at kittykatt@kittykatt.us or by 
