@@ -37,7 +37,7 @@ scriptVersion="3.0.5"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="host distro kernel uptime shell res de wm wmtheme gtk icons font background gpu"
-display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk disk cpu mem )
+display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk disk cpu gpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
 
@@ -749,16 +749,16 @@ detectgpu () {
 		gpu_info=$(lspci | grep VGA)
 		gpu=$(echo "$gpu_info" | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
 		gpu=$(echo "${gpu}" | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
-	fi
-	if [[ -n "$(type -p glxinfo)" && -z "$gpu" ]]; then
+	elif [[ -n "$(type -p glxinfo)" && -z "$gpu" ]]; then
 		gpu_info=$(glxinfo 2>/dev/null)
 		gpu=$(echo "$gpu_info" | grep "OpenGL renderer string")
 		gpu=$(echo "$gpu" | cut -d ':' -f2)
 		gpu="${gpu:1}"
 		gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
-	fi
-	if [[ "${distro}" == "Mac OS X" ]]; then
+	elif [[ "${distro}" == "Mac OS X" ]]; then
 		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}')
+	elif [[ "${distro}" == "Cygwin" ]]; then
+		gpu=$(wmic path Win32_VideoController get caption)
 	fi
 
 	if [ -n "$gpu" ];then
