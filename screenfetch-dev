@@ -65,6 +65,18 @@ shotfile=$(printf "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
 
+#############################################
+#### CODE No need to edit past here CODE ####
+#############################################
+
+#########################################
+# Static Variables and Common Functions #
+#########################################
+c0="\033[0m" # Reset Text
+bold="\033[1m" # Bold Text
+underline="\033[4m" # Underline Text
+display_index=0
+
 function verboseOut {
 	printf "\033[1;31m:: \033[0m$1\n"
 }
@@ -72,19 +84,6 @@ function verboseOut {
 function errorOut {
 	printf "\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m$1\n"
 }
-
-#############################################
-#### CODE No need to edit past here CODE ####
-#############################################
-
-####################
-# Static Variables
-####################
-c0="\033[0m" # Reset Text
-bold="\033[1m" # Bold Text
-underline="\033[4m" # Underline Text
-display_index=0
-
 
 
 ####################
