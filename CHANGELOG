@@ -3,6 +3,176 @@
     changelog
 **** **** **** ****
 
+v3.0.5
+	- OS X GPU detection added.
+	- Fix for -n.
+	- FreeBSD portmaster support for pkg detection.
+	- Switching to printf in various places. Part of a big printf move.
+	- Removal of -e and theme exporting.
+	- detectdisk added.
+	- Fix for WM detection in OS X.
+
+
+v3.0.0
+	- Colors bugfixes/changes.
+	- -l disabled FOREVER.
+	- Various *BSD bugfixes.
+	- Funtoo detection added.
+	- -c now allows 256 colors.
+	- Fix Scientific Linux detection.
+	- Moving of functions for cleanup.
+	- Added -d back in for now.
+	- OS X bugfixes.
+	- WM non-case-sensitive now.
+	- ppc cpu detection fixes.
+
+
+v2.9.0
+	- Started work on re-adding Cygwin detection.
+	- Cleaning up above.
+	- Cygwin logo fixed.
+	- Many Cygwin bugfixes/additions.
+
+
+v2.8.4
+	- GTK detection bugfixes.
+	- Cygwin logo changed.
+	- E17 detection added.
+	- Updated --help.
+	- BackTrack Linux detection added.
+	- OpenBSD shell detection fix.
+	- *BSD bugfixes.
+	- Fixes for cpu speed detection.
+	- Changed Android logo.
+	- Changed CrunchBang logo.
+	- Added -N to strip all colors.
+	- Actually added --help. -h still works.
+	- Sabayon Linux detection added.
+	- GPU detection added (Very Experimental!!!)
+	- Many tweaks on above.
+	- Adding -E to suppress all errors (STDERR).
+
+
+v2.8.1
+	- *BSD shell detection fix.
+	- Unity detection added.
+	- Experimental Android support.
+	- Various WM/DE bugfixes.
+	- Closing up outstanding issues/pulls.
+	- If "Not Found", continue. Do Not Display.
+	- Scientific Linux detection added.
+	- Manjaro logo changed.
+
+
+v2.7.7
+	- KWin detection fixes.
+	- KDE detection fixes.
+	- Manjaro Linux ASCII changed.
+	- Attempts at automated truncating.
+	- Organization of WM names in functions.
+	- Compiz detection fixes.
+	- CrunchBang Waldorf detection fix.
+	- Shell version detection. Also, SHELL DETECTION.
+	- Formatting fixes.
+	- Basic razorqt detection.
+	- Fixing RHEL detection.
+	- No displaying of X-dependent info if X isn't found to be running.
+	- Remove -l flag.
+	- Lotsa OS X detection bugfixes.
+	- FluxBox detection fix.
+	- FreeBSD uptime bugfix.
+
+
+v2.7.5
+	- Adding Cinnamon detection.
+	- Updated README for how to.
+	- *BSD memory detection bugfixes.
+	- Other miscellanious *BSD bugfixes.
+	- Optimizations and code cleanup.
+	- README changes.
+	- gsettings detection fix.
+	- RHEL detection fix.
+	- /etc/os-release detection fix.
+	- BASH optimizations.
+	- Huge detectdistro overhaul.
+	- More tweaks on above.
+	- detectgtk optimization/cleanup/fixes.
+
+
+v2.5.5
+	- herbstluftwm detection.
+	- Added Manjaro Linux detection.
+	- NetBSD detection and fixes.
+	- Cleanup and fixes for DE detection.
+
+
+v2.5.3 (lots of stuff)
+	- GTK3 bugfixes.
+	- Fuduntu detection added.
+	- OS X memory bugfixes.
+	- Fragmented BSD flavors like they should be.
+	- FreeBSD bugfixes.
+	- Added DragonFlyBSD detection.
+	- xmonad detection bugfix.
+	- Fix CrunchBang detection.
+	- Add Trisquel detectin.
+
+
+v2.5.0
+	- Mac OS X detection added.
+	- Lots of tweaking on OS X detection.
+	- Fixes for distro detection.
+	- Change for BSD logo.
+	- Script now exits with 0 status.
+	- macports and homebrew detection for OS X.
+	- Experimental Cygwin detection. Commented out until cleaned.
+
+
+v2.4.7
+	- KWin detection bugfixes.
+	- Fixed non-ascii output.
+	- Fix for Frugalware pkg detection.
+	- Fix Gentoo detection.
+	- Proper GTK3 detection for GNOME.
+	- DE detection cleanup.
+	- GNOME Shell detection.
+	- Various code cleanups.
+
+
+v2.4.5
+	- Added Chakra detection.
+	- GTK detection bugfixes.
+	- Experimental GTK3 detection.
+
+
+v2.4.4
+	- SpectrWM added. Kept old ScrotWM for legacy.
+	- Colors bugfixes.
+	- Fixed LinuxDeepin and Parabola detection/logos.
+
+
+v2.4.3
+	- Woo! Colors! Define colors with -c.
+
+
+v2.4.2
+	- Added Viperr detection.
+	- Added LinuxDeepin detection.
+
+
+v2.4.1
+	- Spacing fixes
+	- Added ParabolaGNU detection.
+	- Fixed list of supported distributions in --help.
+
+
+v2.4.0
+	- New SolusOS logo and fixed detection
+	- Added CPU detection.
+	- Added Memory detection.
+	- Added Package Count detection (only working on Arch and SolusOS).
+
+
 v2.3.9
 	- Fixed SolusOS detection.
 	- Added MATE detection, theme detection possibly not working yet. Fixed WindowMaker detection.
