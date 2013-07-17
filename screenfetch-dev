@@ -800,7 +800,7 @@ detectdisk () {
 		diskusedper=$(awk '{print $5}' <<< "${totaldisk}")
 		diskusage="${diskused} / ${disktotal} (${diskusedper})"
 	fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current GPU...found as '$gpu'"
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current disk usage...found as '$diskusage'"
 }	
 # Disk Usage Detection - End
 
