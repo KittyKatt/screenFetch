@@ -47,7 +47,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca i3 xmonad ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca i3 xmonad ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion )
 denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder )
 
 # Screenshot Settings
@@ -1192,6 +1192,7 @@ detectwm () {
 						'metacity') WM="Metacity";;
 						'monsterwm') WM="monsterwm";;
 						'musca') WM="Musca";;
+						'notion') WM="Notion";;
 						'openbox') WM="OpenBox";;
 						'pekwm') WM="PekWM";;
 						'ratpoison') WM="Ratpoison";;
@@ -1243,6 +1244,7 @@ detectwm () {
 				'metacity') WM="Metacity";;
 				'monsterwm') WM="monsterwm";;
 				'musca') WM="Musca";;
+				'notion') WM="Notion";;
 				'openbox') WM="OpenBox";;
 				'pekwm') WM="PekWM";;
 				'ratpoison') WM="Ratpoison";;
@@ -1353,7 +1355,8 @@ detectwmtheme () {
 		;;
 		'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
 		'monsterwm') Win_theme="Not Present";;
-		'Musca') Win_theme="Not Present";;
+		'Musca') Win_theme="Not Present";;\
+		'Notion') Win_theme="Not Present";;
 		'OpenBox'|'Openbox')
 			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then
 				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)";
