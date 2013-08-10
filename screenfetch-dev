@@ -1954,8 +1954,8 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2         .-----------------.          %s"
-"$c2       -----------------------       %s"
+			fulloutput=("$c2          .---------------.           %s"
+"$c2       .---------------------.       %s"
 "$c2     .------------"$c1".sdAWHba."$c2"----.     %s"
 "$c2    ------------"$c1"omNWHMNWHM:  "$c2"----    %s"
 "$c2   ------------"$c1"sNWHNWHNMP'"$c2"    ---.   %s"
