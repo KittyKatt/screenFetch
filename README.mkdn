@@ -25,7 +25,7 @@ command! This script is very easy to add to and can easily be extended.
 ### Gentoo or Sabayon
 
 1. Emerge screenfetch from portage using `emerge screenfetch`
-2. Sabayon users can install it via entropy using 'equo install screenfetch'
+2. Sabayon users can install screenfetch from entropy using 'equo install screenfetch'
 
 ### Others
 
