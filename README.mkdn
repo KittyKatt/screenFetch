@@ -22,9 +22,10 @@ command! This script is very easy to add to and can easily be extended.
 1. Install screenfetch from the official repositories with urpmi or rpmdrake.
    e.g. # urpmi screenfetch
 
-### Gentoo
+### Gentoo or Sabayon
 
 1. Emerge screenfetch from portage using `emerge screenfetch`
+2. Sabayon users can install it via entropy using 'equo install screenfetch'
 
 ### Others
 
