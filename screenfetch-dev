@@ -800,8 +800,9 @@ detectdisk () {
 		diskused=$(awk '{print $3}' <<< "${totaldisk}")
 		diskusedper=$(awk '{print $5}' <<< "${totaldisk}")
 		diskusage="${diskused} / ${disktotal} (${diskusedper})"
+		diskusage_verbose=$(sed 's/%/%%/' <<< $diskusage)
 	fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current disk usage...found as '$diskusage'"
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current disk usage...found as '$diskusage_verbose'"
 }	
 # Disk Usage Detection - End
 
