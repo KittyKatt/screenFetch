@@ -324,7 +324,7 @@ detectdistro () {
 				done
 			fi
 
-			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" ]]; then
+			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" || "${distro_detect}" == "archarm" ]]; then
 				distro="Arch Linux"
 				distro_release="n/a"
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
@@ -440,8 +440,9 @@ detectdistro () {
 					fi
 				fi
 
-				# Arch Quick fix
+				# Hotfixes
 				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
+				[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
 			fi
 
 			if [[ "${distro}" == "Unknown" ]]; then
