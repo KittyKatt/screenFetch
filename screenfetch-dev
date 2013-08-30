@@ -350,7 +350,7 @@ detectdistro () {
 				distro="Fuduntu"
 				distro_codename=null
 			elif [[ "${distro_detect}" == "Gentoo" ]]; then
-				if [[ "$(lsb_release -sd)" =~ "Funtoo" ]]; then
+				if [[ "$(cat /etc/gentoo-release)" =~ "Funtoo" ]]; then
 					distro="Funtoo"
 				else
 					distro="Gentoo"
@@ -1894,7 +1894,7 @@ asciiText () {
 "$c2                                      %s")
 		;;
 
-		"Gentoo"|"Funtoo")
+		"Gentoo")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light purple') # Light Purple
@@ -1922,7 +1922,7 @@ asciiText () {
 		;;
 
 
-		"Funtoo-text")
+		"Funtoo")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light purple') # Light Purple
