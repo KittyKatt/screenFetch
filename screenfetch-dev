@@ -350,7 +350,7 @@ detectdistro () {
 				distro="Fuduntu"
 				distro_codename=null
 			elif [[ "${distro_detect}" == "Gentoo" ]]; then
-				if [[ "$(cat /etc/gentoo-release)" =~ "Funtoo" ]]; then
+				if [[ "$(lsb_release -sd)" =~ "Funtoo" ]]; then
 					distro="Funtoo"
 				else
 					distro="Gentoo"
@@ -1173,7 +1173,7 @@ detectwm () {
 		fi
 
 		if [[ ${WM} == "Not Found" ]]; then
-			for each in $wmnames; do
+			for each in "${wmnames[@]}"; do
 				PID="$(pgrep -U ${UID} $each)"
 				if [ "$PID" ]; then
 					case $each in
@@ -1208,8 +1208,8 @@ detectwm () {
 						'wmfs') WM="WMFS";;
 						'wmii') WM="wmii";;
 						'xfwm4') WM="Xfwm4";;
-						'xmonad') WM="XMonad";;
 						'i3') WM="i3";;
+						'xmonad') WM="XMonad";;
 					esac
 				fi
 
@@ -1894,7 +1894,7 @@ asciiText () {
 "$c2                                      %s")
 		;;
 
-		"Gentoo")
+		"Gentoo"|"Funtoo")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light purple') # Light Purple
@@ -1922,7 +1922,7 @@ asciiText () {
 		;;
 
 
-		"Funtoo")
+		"Funtoo-text")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light purple') # Light Purple
