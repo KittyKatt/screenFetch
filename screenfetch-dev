@@ -2583,6 +2583,34 @@ asciiText () {
 		;;
 
 
+		"Manjaro-tree")
+			if [[ "$no_color" != "1" ]]; then
+				c1="\e[1;32m" # Green
+				c2="\e[1;33m" # Yellow
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(
+"${c1}                         ###      %s"
+"${c1}     ###             ####        %s"
+"${c1}        ###       ####           %s"
+"${c1}         ##### #####             %s"
+"${c1}      #################          %s"
+"${c1}    ###     #####    ####        %s"
+"${c1}   ##        ${c2}OOO       ${c1}###       %s"
+"${c1}  #          ${c2}WW         ${c1}##       %s"
+"${c1}            ${c2}WW            ${c1}#      %s"
+"${c2}            WW                   %s"
+"${c2}            WW                   %s"
+"${c2}           WW                    %s"
+"${c2}           WW                    %s"
+"${c2}           WW                    %s"
+"${c2}          WW                     %s"
+"${c2}          WW                     %s"
+"${c2}          WW                     %s"
+"                                 %s")
+		;;
+
 
 
 		"Elementary OS")
@@ -2828,7 +2856,7 @@ infoDisplay () {
 	case ${myascii} in
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
-		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Android") labelcolor=$(getColor 'light green');;
+		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"Elementary OS") labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"ParabolaGNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
