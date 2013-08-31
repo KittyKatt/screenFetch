@@ -1183,7 +1183,7 @@ detectwm () {
 						'cinnamon') WM="Cinnamon";;
 						'compiz') WM="Compiz";;
 						'dminiwm') WM="dminiwm";;
-						'dwm') WM="DWM";;
+						'dwm') WM="dwm";;
 						'e16') WM="E16";;
 						'emerald') WM="Emerald";;
 						'enlightenment') WM="E17";;
