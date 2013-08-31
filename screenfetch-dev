@@ -727,7 +727,7 @@ detectcpu () {
 		elif [ -f $loc/scaling_max_freq ];then
 			cpu_mhz=$(cat $loc/scaling_max_freq | awk '{print $1/1000}')
 		else
-			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2) }' /proc/cpuinfo | head -n 1)
+			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2+.5) }' /proc/cpuinfo | head -n 1)
 		fi
 		if [ -n "$cpu_mhz" ];then
 			if [ $cpu_mhz -gt 999 ];then
