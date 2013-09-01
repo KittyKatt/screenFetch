@@ -746,21 +746,27 @@ detectcpu () {
 
 # GPU Detection - Begin (EXPERIMENTAL!)
 detectgpu () {
-	if [ -n "$(type -p lspci)" ]; then
-		gpu_info=$(lspci | grep VGA)
-		gpu=$(echo "$gpu_info" | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
-		gpu=$(echo "${gpu}" | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
-	elif [[ -n "$(type -p glxinfo)" && -z "$gpu" ]]; then
-		gpu_info=$(glxinfo 2>/dev/null)
-		gpu=$(echo "$gpu_info" | grep "OpenGL renderer string")
-		gpu=$(echo "$gpu" | cut -d ':' -f2)
-		gpu="${gpu:1}"
-		gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
-	elif [[ "${distro}" == "Mac OS X" ]]; then
-		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}')
-	elif [[ "${distro}" == "Cygwin" ]]; then
-		gpu=$(wmic path Win32_VideoController get caption)
-		gpu=$(tail -1 <<< ${gpu})
+	if [[ "${distro}" == "FreeBSD" ]]; then
+		gpu_info=$(pciconf -lv | grep -B 4 VGA)
+		gpu_info=$(echo "${gpu_info}" | grep -E 'device.*=.*')
+		gpu=$(echo "${gpu_info}" | sed 's/.*device.*= //' | sed "s/'//g")
+	else
+		if [ -n "$(type -p lspci)" ]; then
+			gpu_info=$(lspci | grep VGA)
+			gpu=$(echo "$gpu_info" | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
+			gpu=$(echo "${gpu}" | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
+		elif [[ -n "$(type -p glxinfo)" && -z "$gpu" ]]; then
+			gpu_info=$(glxinfo 2>/dev/null)
+			gpu=$(echo "$gpu_info" | grep "OpenGL renderer string")
+			gpu=$(echo "$gpu" | cut -d ':' -f2)
+			gpu="${gpu:1}"
+			gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
+		elif [[ "${distro}" == "Mac OS X" ]]; then
+			gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}')
+		elif [[ "${distro}" == "Cygwin" ]]; then
+			gpu=$(wmic path Win32_VideoController get caption)
+			gpu=$(tail -1 <<< ${gpu})
+		fi
 	fi
 
 	if [ -n "$gpu" ];then
@@ -770,7 +776,7 @@ detectgpu () {
 			gpu_info="Intel "
 		elif [ $(echo "$gpu_info" | grep -i amd | wc -l) -gt 0 ];then
 			gpu_info="AMD "
-		elif [ $(echo "$gpu_info" | grep -i ati | wc -l) -gt 0 ];then
+		elif [[ $(echo "$gpu_info" | grep -i ati | wc -l) -gt 0  || $(echo "$gpu_info" | grep -i radeon | wc -l) -gt 0 ]]; then
 			gpu_info="ATI "
 		else
 			gpu_info=$(echo "$gpu_info" | cut -d ':' -f2)
