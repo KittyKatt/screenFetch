@@ -738,7 +738,7 @@ detectcpu () {
 			fi
 		fi
 	fi
-	cpu=$(echo "${cpu}" | sed -r '{s/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g}' | xargs)
+	cpu=$(echo "${cpu}" | sed -r 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' | xargs)
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
