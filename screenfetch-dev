@@ -2630,24 +2630,24 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"                                  %s"
-"${c1}         eeeeeeeeeeeeeeeee         %s"
-"${c1}      eeeeeeeeeeeeeeeeeeeeeee      %s"
-"${c1}    eeeee  eeeeeeeeeeee   eeeee    %s"
-"${c1}  eeee   eeeee       eee     eeee  %s"
-"${c1} eeee   eeee          eee     eeee %s"
+"                                     %s"
+"${c1}         eeeeeeeeeeeeeeeee          %s"
+"${c1}      eeeeeeeeeeeeeeeeeeeeeee       %s"
+"${c1}    eeeee  eeeeeeeeeeee   eeeee     %s"
+"${c1}  eeee   eeeee       eee     eeee   %s"
+"${c1} eeee   eeee          eee     eeee  %s"
 "${c1}eee    eee            eee       eee %s"
-"${c1}eee   eee            eee        eee%s"
-"${c1}ee    eee           eeee       eeee%s"
-"${c1}ee    eee         eeeee      eeeeee%s"
-"${c1}ee    eee       eeeee      eeeee ee%s"
-"${c1}eee   eeee   eeeeee      eeeee  eee%s"
-"${c1}eee    eeeeeeeeee     eeeeee    eee%s"
-"${c1} eeeeeeeeeeeeeeeeeeeeeeee    eeeee %s"
-"${c1}  eeeeeeee eeeeeeeeeeee      eeee  %s"
-"${c1}    eeeee                 eeeee    %s"
-"${c1}      eeeeeee         eeeeeee      %s"
-"${c1}         eeeeeeeeeeeeeeeee         %s")
+"${c1}eee   eee            eee        eee %s"
+"${c1}ee    eee           eeee       eeee %s"
+"${c1}ee    eee         eeeee      eeeeee %s"
+"${c1}ee    eee       eeeee      eeeee ee %s"
+"${c1}eee   eeee   eeeeee      eeeee  eee %s"
+"${c1}eee    eeeeeeeeee     eeeeee    eee %s"
+"${c1} eeeeeeeeeeeeeeeeeeeeeeee    eeeee  %s"
+"${c1}  eeeeeeee eeeeeeeeeeee      eeee   %s"
+"${c1}    eeeee                 eeeee     %s"
+"${c1}      eeeeeee         eeeeeee       %s"
+"${c1}         eeeeeeeeeeeeeeeee          %s")
 	;;
 
 
