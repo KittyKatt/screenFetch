@@ -1257,7 +1257,7 @@ detectwm () {
 				'metacity') WM="Metacity";;
 				'monsterwm') WM="monsterwm";;
 				'musca') WM="Musca";;
-				'mutter') WM="Mutter";;
+				'mutter'*'|'gnome shell'*) WM="Mutter";;
 				'notion') WM="Notion";;
 				'openbox') WM="OpenBox";;
 				'pekwm') WM="PekWM";;
