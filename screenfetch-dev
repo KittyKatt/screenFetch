@@ -330,6 +330,8 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
 				distro="Chakra"
 				distro_release=null
+			elif [[ "${distro_detect}" == "CentOS" ]]; then
+				distro="CentOS"
 			elif [[ "${distro_detect}" == "Debian" ]]; then
 				if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
 					distro="CrunchBang"
@@ -486,6 +488,7 @@ detectdistro () {
 					elif [ -f /etc/mandriva-release ]; then distro="Mandriva"
 					elif [ -f /etc/SuSE-release ]; then distro="openSUSE"
 					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Linux"
+					elif [ -f /etc/redhat-release ] && grep -q "CentOS" /etc/redhat-release; then distro="CentOS"
 					elif [ -f /etc/slackware-version ]; then distro="Slackware"
 					elif [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"
 					elif [ -f /etc/sabayon-edition ]; then distro="Sabayon"; fi
@@ -594,6 +597,7 @@ detectdistro () {
 			viperr) distro="Viperr" ;;
 			linuxdeepin) distro="LinuxDeepin" ;;
 			chakra) distro="Chakra" ;;
+			centos) distro="CentOS";;
 			mac*os*x) distro="Mac OS X" ;;
 			fuduntu) distro="Fuduntu" ;;
 			manjaro) distro="Manjaro" ;;
@@ -2764,6 +2768,37 @@ asciiText () {
 "${c2}          ...............             %s")
                 ;;
 
+                "CentOS")
+                        if [[ "$no_color" != "1" ]]; then
+                                c1=$(getColor 'yellow') # White
+                                c2=$(getColor 'green') # White
+                                c3=$(getColor 'blue') # White
+                                c4=$(getColor 'purple') # White
+                                c5=$(getColor 'white') # White
+                        fi
+                        if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+                        startline="0"
+                        fulloutput=("${c1}                   ..                    %s"
+"${c1}                 .PLTJ.                 %s"
+"${c1}                <><><><>                %s"
+"       ${c2}KKSSV' 4KKK ${c1}LJ${c4} KKKL.'VSSKK       %s"
+"       ${c2}KKV' 4KKKKK ${c1}LJ${c4} KKKKAL 'VKK       %s"
+"       ${c2}V' ' 'VKKKK ${c1}LJ${c4} KKKKV' ' 'V       %s"
+"       ${c2}.4MA.' 'VKK ${c1}LJ${c4} KKV' '.4Mb.       %s"
+"${c4}     . ${c2}KKKKKA.' 'V ${c1}LJ${c4} V' '.4KKKKK ${c3}.     %s"
+"${c4}   .4D ${c2}KKKKKKKA.'' ${c1}LJ${c4} ''.4KKKKKKK ${c3}FA.   %s"
+"${c4}  <QDD ++++++++++++  ${c3}++++++++++++ GFD>  %s"
+"${c4}   'VD ${c3}KKKKKKKK'.. ${c2}LJ ${c1}..'KKKKKKKK ${c3}FV    %s"
+"${c4}     ' ${c3}VKKKKK'. .4 ${c2}LJ ${c1}K. .'KKKKKV ${c3}'     %s"
+"       ${c3} 'VK'. .4KK ${c2}LJ ${c1}KKA. .'KV'        %s"
+"       ${c3}A. . .4KKKK ${c2}LJ ${c1}KKKKA. . .4       %s"
+"       ${c3}KKA. 'KKKKK ${c2}LJ ${c1}KKKKK' .4KK       %s"
+"       ${c3}KKSSA. VKKK ${c2}LJ ${c1}KKKV .4SSKK       %s"
+"${c2}                <><><><>                 %s"
+"${c2}                 'MKKM'                  %s"
+"${c2}                   ''")
+		;;
+
 		*)
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -2873,7 +2908,7 @@ infoDisplay () {
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary OS") labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"ParabolaGNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
-		*) labelcolor=$(getColor 'yellow');;
+		"CentOS"|*) labelcolor=$(getColor 'yellow');;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
 	if [[ "$no_color" == "1" ]]; then labelcolor=""; bold=""; c0=""; textcolor=""; fi
