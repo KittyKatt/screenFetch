@@ -1169,68 +1169,70 @@ detectde () {
 detectwm () {
 	WM="Not Found"
 	if [[ -n ${DISPLAY} && ${distro} != "Cygwin" ]]; then
-		if type -p xprop >/dev/null 2>&1; then
-			WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
-			if [[ "$WM" =~ 'not found' ]]; then
-				WM="Not Found"
-			elif [[ "$WM" =~ 'Not found' ]]; then
-				WM="Not Found"
-			elif [[ "$WM" =~ '[Ii]nvalid window id format' ]]; then
-				WM="Not Found"
-			elif [[ "$WM" =~ "no such" ]]; then
-				WM="Not Found"
-			else
-				WM=${WM//* }
-				WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
-				WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
+
+		for each in "${wmnames[@]}"; do
+			PID="$(pgrep -U ${UID} $each)"
+			if [ "$PID" ]; then
+				case $each in
+					'awesome') WM="Awesome";;
+					'beryl') WM="Beryl";;
+					'bspwm') WM="bspwm";;
+					'blackbox') WM="Blackbox";;
+					'cinnamon') WM="Cinnamon";;
+					'compiz') WM="Compiz";;
+					'dminiwm') WM="dminiwm";;
+					'dwm') WM="dwm";;
+					'e16') WM="E16";;
+					'emerald') WM="Emerald";;
+					'enlightenment') WM="E17";;
+					'fluxbox') WM="FluxBox";;
+					'fvwm') WM="FVWM";;
+					'herbstluftwm') WM="herbstluftwm";;
+					'icewm') WM="IceWM";;
+					'kwin') WM="KWin";;
+					'metacity') WM="Metacity";;
+					'monsterwm') WM="monsterwm";;
+					'musca') WM="Musca";;
+					'notion') WM="Notion";;
+					'openbox') WM="OpenBox";;
+					'pekwm') WM="PekWM";;
+					'ratpoison') WM="Ratpoison";;
+					'sawfish') WM="Sawfish";;
+					'scrotwm') WM="ScrotWM";;
+					'spectrwm') WM="SpectrWM";;
+					'stumpwm') WM="StumpWM";;
+					'subtle') WM="subtle";;
+					'wmaker') WM="WindowMaker";;
+					'wmfs') WM="WMFS";;
+					'wmii') WM="wmii";;
+					'xfwm4') WM="Xfwm4";;
+					'i3') WM="i3";;
+					'xmonad') WM="XMonad";;
+				esac
 			fi
-		fi
+
+			if [[ ${WM} != "Not Found" ]]; then
+				break 1
+			fi
+		done
 
 		if [[ ${WM} == "Not Found" ]]; then
-			for each in "${wmnames[@]}"; do
-				PID="$(pgrep -U ${UID} $each)"
-				if [ "$PID" ]; then
-					case $each in
-						'awesome') WM="Awesome";;
-						'beryl') WM="Beryl";;
-						'blackbox') WM="Blackbox";;
-						'cinnamon') WM="Cinnamon";;
-						'compiz') WM="Compiz";;
-						'dminiwm') WM="dminiwm";;
-						'dwm') WM="dwm";;
-						'e16') WM="E16";;
-						'emerald') WM="Emerald";;
-						'enlightenment') WM="E17";;
-						'fluxbox') WM="FluxBox";;
-						'fvwm') WM="FVWM";;
-						'herbstluftwm') WM="herbstluftwm";;
-						'icewm') WM="IceWM";;
-						'kwin') WM="KWin";;
-						'metacity') WM="Metacity";;
-						'monsterwm') WM="monsterwm";;
-						'musca') WM="Musca";;
-						'notion') WM="Notion";;
-						'openbox') WM="OpenBox";;
-						'pekwm') WM="PekWM";;
-						'ratpoison') WM="Ratpoison";;
-						'sawfish') WM="Sawfish";;
-						'scrotwm') WM="ScrotWM";;
-						'spectrwm') WM="SpectrWM";;
-						'stumpwm') WM="StumpWM";;
-						'subtle') WM="subtle";;
-						'wmaker') WM="WindowMaker";;
-						'wmfs') WM="WMFS";;
-						'wmii') WM="wmii";;
-						'xfwm4') WM="Xfwm4";;
-						'i3') WM="i3";;
-						'xmonad') WM="XMonad";;
-					esac
+			if type -p xprop >/dev/null 2>&1; then
+				WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
+				if [[ "$WM" =~ 'not found' ]]; then
+					WM="Not Found"
+				elif [[ "$WM" =~ 'Not found' ]]; then
+					WM="Not Found"
+				elif [[ "$WM" =~ '[Ii]nvalid window id format' ]]; then
+					WM="Not Found"
+				elif [[ "$WM" =~ "no such" ]]; then
+					WM="Not Found"
+				else
+					WM=${WM//* }
+					WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
+					WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
 				fi
-
-				if [[ ${WM} != "Not Found" ]]; then
-					break 1
-				fi
-			done
+			fi
 		else
 			if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
 				if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
