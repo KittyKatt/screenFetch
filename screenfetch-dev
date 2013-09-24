@@ -564,46 +564,52 @@ detectdistro () {
 
 
 		fi
-	else
-		declare -l lcase
-		lcase=$distro
-		case $lcase in
-			arch*linux*old) distro="Arch Linux - Old" ;;
-			arch*linux) distro="Arch Linux" ;;
-			arch) distro="Arch Linux";;
-			elementary) distro="elementary OS";;
-			fedora) distro="Fedora" ;;
-			mageia) distro="Mageia" ;;
-			mandriva) distro="Mandriva" ;;
-			mandrake) distro="Mandrake" ;;
-			mint) distro="Mint" ;;
-			lmde) distro="LMDE" ;;
-			opensuse) distro="openSUSE" ;;
-			ubuntu) distro="Ubuntu" ;;
-			debian) distro="Debian" ;;
-			freebsd) distro="FreeBSD" ;;
-			openbsd) distro="OpenBSD" ;;
-			dragonflybsd) distro="DragonFlyBSD" ;;
-			netbsd) distro="NetBSD" ;;
-			red*hat*) distro="Red Hat Linux" ;;
-			crunchbang) distro="CrunchBang" ;;
-			gentoo) distro="Gentoo" ;;
-			funtoo) distro="Funtoo" ;;
-			slackware) distro="Slackware" ;;
-			frugalware) distro="Frugalware" ;;
-			peppermint) distro="Peppermint" ;;
-			solusos) distro="SolusOS" ;;
-			parabolagnu|parabolagnu/linux-libre) distro="ParabolaGNU/Linux-libre" ;;
-			viperr) distro="Viperr" ;;
-			linuxdeepin) distro="LinuxDeepin" ;;
-			chakra) distro="Chakra" ;;
-			centos) distro="CentOS";;
-			mac*os*x) distro="Mac OS X" ;;
-			fuduntu) distro="Fuduntu" ;;
-			manjaro) distro="Manjaro" ;;
-			cygwin) distro="Cygwin" ;;
-		esac
 	fi
+	if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
+		if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
+			distro=${distro,,}
+		else
+			distro="$(tr '[:upper:]' '[:lower:]' <<< ${distro})"
+		fi
+	else
+		distro="$(tr '[:upper:]' '[:lower:]' <<< ${distro})"
+	fi
+	case $distro in
+		arch*linux*old) distro="Arch Linux - Old" ;;
+		arch*linux) distro="Arch Linux" ;;
+		arch) distro="Arch Linux";;
+		elementary) distro="elementary OS";;
+		fedora) distro="Fedora" ;;
+		mageia) distro="Mageia" ;;
+		mandriva) distro="Mandriva" ;;
+		mandrake) distro="Mandrake" ;;
+		mint) distro="Mint" ;;
+		lmde) distro="LMDE" ;;
+		opensuse) distro="openSUSE" ;;
+		ubuntu) distro="Ubuntu" ;;
+		debian) distro="Debian" ;;
+		freebsd) distro="FreeBSD" ;;
+		openbsd) distro="OpenBSD" ;;
+		dragonflybsd) distro="DragonFlyBSD" ;;
+		netbsd) distro="NetBSD" ;;
+		red*hat*) distro="Red Hat Linux" ;;
+		crunchbang) distro="CrunchBang" ;;
+		gentoo) distro="Gentoo" ;;
+		funtoo) distro="Funtoo" ;;
+		slackware) distro="Slackware" ;;
+		frugalware) distro="Frugalware" ;;
+		peppermint) distro="Peppermint" ;;
+		solusos) distro="SolusOS" ;;
+		parabolagnu|parabolagnu/linux-libre) distro="ParabolaGNU/Linux-libre" ;;
+		viperr) distro="Viperr" ;;
+		linuxdeepin) distro="LinuxDeepin" ;;
+		chakra) distro="Chakra" ;;
+		centos) distro="CentOS";;
+		mac*os*x) distro="Mac OS X" ;;
+		fuduntu) distro="Fuduntu" ;;
+		manjaro) distro="Manjaro" ;;
+		cygwin) distro="Cygwin" ;;
+	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
 }
 # Distro Detection - End
