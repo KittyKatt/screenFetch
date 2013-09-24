@@ -360,6 +360,8 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "LinuxDeepin" ]]; then
 				distro="LinuxDeepin"
 				distro_codename=null
+			elif [[ "${distro_detect}" == "Debian Kali Linux" ]]; then
+				 distro="Kali Linux"
 			elif [[ "${distro_detect}" == "Mageia" ]]; then
 				distro="Mageia"
 			elif [[ "$distro_detect" == "MandrivaLinux" ]]; then
@@ -584,6 +586,7 @@ detectdistro () {
 		mandriva) distro="Mandriva" ;;
 		mandrake) distro="Mandrake" ;;
 		mint) distro="Mint" ;;
+		kali*linux) distro="Kali Linux" ;;
 		lmde) distro="LMDE" ;;
 		opensuse) distro="openSUSE" ;;
 		ubuntu) distro="Ubuntu" ;;
@@ -680,7 +683,7 @@ detectpkgs () {
 	case $distro in
 		'Arch Linux'|'ParabolaGNU/Linux-libre'|'Chakra'|'Manjaro') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | wc -l) ;;
+		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
@@ -2748,6 +2751,36 @@ asciiText () {
 "${c1}                                            .'"
 "${c1}                                             .")
 		;;
+		
+		"Kali Linux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') # White
+				c2=$(getColor 'black') # Light Red
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="1"
+			fulloutput=("${c1}.............."
+"${c1}            ..,;:ccc,.                           %s"
+"${c1}          ......''';lxO.                        %s"
+"${c1}.....''''..........,:ld;                        %s"
+"${c1}           .';;;:::;,,.x,                       %s"
+"${c1}      ..'''.            0Xxoc:,.  ...           %s"
+"${c1}  ....                ,ONkc;,;cokOdc',.         %s"
+"${c1} .                   OMo           ':"${c2}"dd"${c1}"o.       %s"
+"${c1}                    dMc               :OO;      %s"
+"${c1}                    0M.                 .:o.    %s"
+"${c1}                    ;Wd                         %s"
+"${c1}                     ;XO,                       %s"
+"${c1}                       ,d0Odlc;,..              %s"
+"${c1}                           ..',;:cdOOd::,.      %s"
+"${c1}                                    .:d;.':;.   %s"
+"${c1}                                       'd,  .'  %s"
+"${c1}                                         ;l   ..%s"
+"${c1}                                          .o    %s"
+"${c1}                                            c   %s"
+"${c1}                                            .'"
+"${c1}                                             .")
+		;;
 
                 "Sabayon")
                         if [[ "$no_color" != "1" ]]; then
@@ -2910,7 +2943,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
