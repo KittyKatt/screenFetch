@@ -2812,9 +2812,9 @@ asciiText () {
                 "CentOS")
                         if [[ "$no_color" != "1" ]]; then
                                 c1=$(getColor 'yellow') # White
-                                c2=$(getColor 'green') # White
-                                c3=$(getColor 'blue') # White
-                                c4=$(getColor 'purple') # White
+                                c2=$(getColor 'light green') # White
+                                c3=$(getColor 'light blue') # White
+                                c4=$(getColor 'light purple') # White
                                 c5=$(getColor 'white') # White
                         fi
                         if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
