@@ -2779,9 +2779,9 @@ asciiText () {
                 "CentOS")
                         if [[ "$no_color" != "1" ]]; then
                                 c1=$(getColor 'yellow') # White
-                                c2=$(getColor 'green') # White
-                                c3=$(getColor 'blue') # White
-                                c4=$(getColor 'purple') # White
+                                c2=$(getColor 'light green') # White
+                                c3=$(getColor 'light blue') # White
+                                c4=$(getColor 'light purple') # White
                                 c5=$(getColor 'white') # White
                         fi
                         if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
@@ -2795,8 +2795,8 @@ asciiText () {
 "       ${c2}.4MA.' 'VKK ${c1}LJ${c4} KKV' '.4Mb.       %s"
 "${c4}     . ${c2}KKKKKA.' 'V ${c1}LJ${c4} V' '.4KKKKK ${c3}.     %s"
 "${c4}   .4D ${c2}KKKKKKKA.'' ${c1}LJ${c4} ''.4KKKKKKK ${c3}FA.   %s"
-"${c4}  <QDD ++++++++++++  ${c3}++++++++++++ GFD>  %s"
-"${c4}   'VD ${c3}KKKKKKKK'.. ${c2}LJ ${c1}..'KKKKKKKK ${c3}FV    %s"
+"${c4}  +QDD ++++++++++++  ${c3}++++++++++++ GFD+  %s"
+"${c4}   'VD ${c3}KKKKKKKK'.. ${c2}LJ ${c1}..'KKKKKKKK ${c3}FV'   %s"
 "${c4}     ' ${c3}VKKKKK'. .4 ${c2}LJ ${c1}K. .'KKKKKV ${c3}'     %s"
 "       ${c3} 'VK'. .4KK ${c2}LJ ${c1}KKA. .'KV'        %s"
 "       ${c3}A. . .4KKKK ${c2}LJ ${c1}KKKKA. . .4       %s"
