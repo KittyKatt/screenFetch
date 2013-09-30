@@ -721,7 +721,10 @@ detectpkgs () {
 
 # CPU Detection - Begin
 detectcpu () {
-	if [ "$distro" == "Mac OS X" ]; then cpu=$(echo $(sysctl -n machdep.cpu.brand_string))
+	REGEXP="-r"
+	if [ "$distro" == "Mac OS X" ]; then 
+		cpu=$(echo $(sysctl -n machdep.cpu.brand_string))
+		REGEXP="-E"
 	elif [ "$distro" == "FreeBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "DragonflyBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
@@ -755,7 +758,7 @@ detectcpu () {
 			fi
 		fi
 	fi
-	cpu=$(echo "${cpu}" | sed -r 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' | xargs)
+	cpu=$(echo "${cpu}" | sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' | xargs)
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
