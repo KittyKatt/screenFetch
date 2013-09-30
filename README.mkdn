@@ -29,7 +29,7 @@ command! This script is very easy to add to and can easily be extended.
 
 ### Others
 
-1. Download the latest source. Found at http://git.silverirc.com/cgit.cgi/screenfetch-dev.git/plain/screenfetch-dev
+1. Download the latest source. Found at http://git.silverirc.com/cgit.cgi/screenfetch.git/plain/screenfetch-dev
 2. In a terminal, make the file executable by doing the following: `chmod +x /path/to/screenfetch/screenfetch-dev`
 3. Then, either keep it there, or move it to somewhere in your $PATH to make it available without having to use the full path to the script.
 
