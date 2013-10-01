@@ -26,6 +26,10 @@
 # to put forth suggestions/ideas. Thank you.
 #
 
+LANG=C
+LANGUAGE=C
+LC_ALL=C
+
 scriptVersion="3.2.0"
 
 ######################
