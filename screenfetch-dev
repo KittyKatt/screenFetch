@@ -361,6 +361,8 @@ detectdistro () {
 				else
 					distro="Gentoo"
 				fi
+			elif [[ "${distro_detect}" == "Jiyuu Linux" ]]; then
+				 distro="Jiyuu Linux"
 			elif [[ "${distro_detect}" == "LinuxDeepin" ]]; then
 				distro="LinuxDeepin"
 				distro_codename=null
@@ -2852,6 +2854,34 @@ asciiText () {
 "${c2}                   ''")
 		;;
 
+
+		"Jiyuu Linux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') # Light Blue
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c1}+++++++++++++++++++++++.        %s"
+"${c1}ss:-......-+so/:----.os-       %s"
+"${c1}ss        +s/        os-       %s"
+"${c1}ss       :s+         os-       %s"
+"${c1}ss       os.         os-       %s"
+"${c1}ss      .so          os-       %s"
+"${c1}ss      :s+          os-       %s"
+"${c1}ss      /s/          os-       %s"
+"${c1}ss      /s:          os-       %s"
+"${c1}ss      +s-          os-       %s"
+"${c1}ss-.....os:..........os-       %s"
+"${c1}++++++++os+++++++++oooo.       %s"
+"${c1}        os.     ./oo/.         %s"
+"${c1}        os.   ./oo:            %s"
+"${c1}        os. ./oo:              %s"
+"${c1}        os oo+-                %s"
+"${c1}        os+-                   %s"
+"${c1}        /.                     %s")
+		;;
+
+
 		*)
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -2955,7 +2985,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
