@@ -453,6 +453,7 @@ detectdistro () {
 				# Hotfixes
 				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 				[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
+				[[ "${distro}" == "elementary" ]] && distro="elementary OS"
 			fi
 
 			if [[ "${distro}" == "Unknown" ]]; then
@@ -591,7 +592,7 @@ detectdistro () {
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch*linux) distro="Arch Linux" ;;
 		arch) distro="Arch Linux";;
-		elementary) distro="elementary OS";;
+		'elementary'|'elementary os') distro="elementary OS";;
 		fedora) distro="Fedora" ;;
 		mageia) distro="Mageia" ;;
 		mandriva) distro="Mandriva" ;;
@@ -2655,7 +2656,7 @@ asciiText () {
 
 
 
-		"elementary OS")
+		"elementary OS"|"elementary os")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 			fi
@@ -2989,7 +2990,7 @@ infoDisplay () {
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
-		"CrunchBang"|"SolusOS"|"Viperr"|"elementary OS") labelcolor=$(getColor 'dark grey');;
+		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"ParabolaGNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
 		"CentOS"|*) labelcolor=$(getColor 'yellow');;
 	esac
