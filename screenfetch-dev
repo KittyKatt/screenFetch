@@ -1552,7 +1552,7 @@ detectgtk () {
 		'LXDE'*)
 			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
 				lxdeconf="/lxde/config"
-			elif [ $distro == "Trisquel" ]; then
+			elif [ "$distro" == "Trisquel" ]; then
 				lxdeconf=""
 			elif [ "$distro" == "FreeBSD" ]; then
 				lxdeconf=""
