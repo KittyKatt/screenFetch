@@ -782,7 +782,7 @@ detectgpu () {
 		gpu_info=$(pciconf -lv | grep -B 4 VGA)
 		gpu_info=$(echo "${gpu_info}" | grep -E 'device.*=.*')
 		gpu=$(echo "${gpu_info}" | sed 's/.*device.*= //' | sed "s/'//g")
-	else
+	elif [[ "$distro" != "Mac OS X" ]]; then
 		if [ -n "$(type -p lspci)" ]; then
 			gpu_info=$(lspci | grep VGA)
 			gpu=$(echo "$gpu_info" | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
@@ -793,12 +793,12 @@ detectgpu () {
 			gpu=$(echo "$gpu" | cut -d ':' -f2)
 			gpu="${gpu:1}"
 			gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
-		elif [[ "${distro}" == "Mac OS X" ]]; then
-			gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}')
-		elif [[ "${distro}" == "Cygwin" ]]; then
-			gpu=$(wmic path Win32_VideoController get caption)
-			gpu=$(tail -1 <<< ${gpu})
 		fi
+	elif [[ "${distro}" == "Mac OS X" ]]; then
+		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}')
+	elif [[ "${distro}" == "Cygwin" ]]; then
+		gpu=$(wmic path Win32_VideoController get caption)
+		gpu=$(tail -1 <<< ${gpu})
 	fi
 
 	if [ -n "$gpu" ];then
@@ -1033,11 +1033,13 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
-	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
-		if [[ "$distro" =~ "BSD" ]]; then
-			xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
-		else
-			xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
+	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+		if [[ -n ${DISPLAY} ]]; then
+			if [[ "$distro" =~ "BSD" ]]; then
+				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
+			else
+				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
+			fi
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
@@ -1059,122 +1061,124 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
-	if [[ -n ${DISPLAY} && ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
-		if type -p xprop >/dev/null 2>&1;then
-			xprop_root="$(xprop -root 2>/dev/null)"
-			if [[ -n ${xprop_root} ]]; then
-				DE=$(echo "${xprop_root}" | awk 'BEGIN {
-					de = "Not Present"
-				}
-				{
-					if ($1 ~ /^_DT_SAVE_MODE/) {
-						de = $NF
-						gsub(/\"/,"",de)
-						de = toupper(de)
-						exit
+	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+		if [[ -n ${DISPLAY} ]]; then
+			if type -p xprop >/dev/null 2>&1;then
+				xprop_root="$(xprop -root 2>/dev/null)"
+				if [[ -n ${xprop_root} ]]; then
+					DE=$(echo "${xprop_root}" | awk 'BEGIN {
+						de = "Not Present"
 					}
-					else if ($1 ~/^KDE_SESSION_VERSION/) {
-						de = "KDE"$NF
-						exit
-					}
-					else if ($1 ~ /^_MARCO/) {
-						de = "MATE"
-						exit
-					}
-					else if ($1 ~ /^_MUFFIN/) {
-						de = "Cinnamon"
-						exit
-					}
-					else if ($0 ~ /"xfce4"/) {
-						de = "XFCE4"
-						exit
-					}
-					else if ($0 ~ /"xfce5"/) {
-						de = "XFCE5"
-						exit
-					}
-				} END {
-					print de
-				}')
+					{
+						if ($1 ~ /^_DT_SAVE_MODE/) {
+							de = $NF
+							gsub(/\"/,"",de)
+							de = toupper(de)
+							exit
+						}
+						else if ($1 ~/^KDE_SESSION_VERSION/) {
+							de = "KDE"$NF
+							exit
+						}
+						else if ($1 ~ /^_MARCO/) {
+							de = "MATE"
+							exit
+						}
+						else if ($1 ~ /^_MUFFIN/) {
+							de = "Cinnamon"
+							exit
+						}
+						else if ($0 ~ /"xfce4"/) {
+							de = "XFCE4"
+							exit
+						}
+						else if ($0 ~ /"xfce5"/) {
+							de = "XFCE5"
+							exit
+						}
+					} END {
+						print de
+					}')
+				fi
 			fi
-		fi
 
-		if [[ ${DE} == "Not Present" ]]; then
-			if [[ -n ${GNOME_DESKTOP_SESSION_ID} ]]; then
-				DE="Gnome"
-				if type -p xprop >/dev/null 2>&1; then
-					if xprop -name "unity-launcher" >/dev/null 2>&1; then
-						DE="Unity"
-					elif xprop -name "launcher" >/dev/null 2>&1 &&
-						xprop -name "panel" >/dev/null 2>&1; then
+			if [[ ${DE} == "Not Present" ]]; then
+				if [[ -n ${GNOME_DESKTOP_SESSION_ID} ]]; then
+					DE="Gnome"
+					if type -p xprop >/dev/null 2>&1; then
+						if xprop -name "unity-launcher" >/dev/null 2>&1; then
+							DE="Unity"
+						elif xprop -name "launcher" >/dev/null 2>&1 &&
+							xprop -name "panel" >/dev/null 2>&1; then
 
-						DE="Unity"
+							DE="Unity"
+						fi
+					fi
+				elif [[ -n ${MATE_DESKTOP_SESSION_ID} ]]; then
+					DE="MATE"
+				elif [[ -n ${KDE_SESSION_VERSION} ]]; then
+					if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
+						DE="KDE5"
+					elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
+						DE="KDE4"
+					fi
+				elif [[ -n ${KDE_FULL_SESSION} ]]; then
+					if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
+						DE="KDE"
+						DEver_data=$( kded --version 2>/dev/null )
+						DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
 					fi
 				fi
-			elif [[ -n ${MATE_DESKTOP_SESSION_ID} ]]; then
-				DE="MATE"
-			elif [[ -n ${KDE_SESSION_VERSION} ]]; then
-				if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
-					DE="KDE5"
-				elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
-					DE="KDE4"
-				fi
-			elif [[ -n ${KDE_FULL_SESSION} ]]; then
-				if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
-					DE="KDE"
-					DEver_data=$( kded --version 2>/dev/null )
-					DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
+			fi
+
+			if [[ ${DE} != "Not Present" ]]; then
+				if [[ ${DE} == "Cinnamon" ]]; then
+					if type -p >/dev/null 2>&1; then
+						DEver=$(cinnamon --version)
+						DE="${DE} ${DEver//* }"
+					fi
+				elif [[ ${DE} == "Gnome" || ${DE} == "GNOME" ]]; then
+					if type -p gnome-session-properties >/dev/null 2>&1; then
+						DEver=$(gnome-session-properties --version)
+						DE="${DE} ${DEver//* }"
+					elif type -p gnome-session >/dev/null 2>&1; then
+						DEver=$(gnome-session --version)
+						DE="${DE} ${DEver//* }"
+					fi
+				elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
+					if type -p kded${DE#KDE} >/dev/null 2>&1; then
+						DEver=$(kded${DE#KDE} --version)
+						for l in $(echo "${DEver// /_}"); do
+							if [[ ${l//:*} == "KDE_Development_Platform" ]]; then
+								DEver=${l//*:_}
+								DE="KDE ${DEver//_*}"
+							fi;
+						done
+					fi
+				elif [[ ${DE} == "MATE" ]]; then
+					if type -p mate-session >/dev/null 2>&1; then
+						DEver=$(mate-session --version)
+						DE="${DE} ${DEver//* }"
+					fi
+
+				elif [[ ${DE} == "Unity" ]]; then
+					if type -p unity >/dev/null 2>&1; then
+						DEver=$(unity --version)
+						DE="${DE} ${DEver//* }"
+					fi
 				fi
 			fi
-		fi
 
-		if [[ ${DE} != "Not Present" ]]; then
-			if [[ ${DE} == "Cinnamon" ]]; then
-				if type -p >/dev/null 2>&1; then
-					DEver=$(cinnamon --version)
-					DE="${DE} ${DEver//* }"
+			if [[ "${DE}" == "Not Present" ]]; then
+				if pgrep -U ${UID} lxsession >/dev/null 2>&1; then
+					DE="LXDE"
+					if type -p lxpanel >/dev/null 2>&1; then
+						DEver=$(lxpanel -v)
+						DE="${DE} $DEver"
+					fi
+				elif pgrep -U ${UID} razor-session >/dev/null 2>&1; then
+					DE="RazorQt"
 				fi
-			elif [[ ${DE} == "Gnome" || ${DE} == "GNOME" ]]; then
-				if type -p gnome-session-properties >/dev/null 2>&1; then
-					DEver=$(gnome-session-properties --version)
-					DE="${DE} ${DEver//* }"
-				elif type -p gnome-session >/dev/null 2>&1; then
-					DEver=$(gnome-session --version)
-					DE="${DE} ${DEver//* }"
-				fi
-			elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
-				if type -p kded${DE#KDE} >/dev/null 2>&1; then
-					DEver=$(kded${DE#KDE} --version)
-					for l in $(echo "${DEver// /_}"); do
-						if [[ ${l//:*} == "KDE_Development_Platform" ]]; then
-							DEver=${l//*:_}
-							DE="KDE ${DEver//_*}"
-						fi;
-					done
-				fi
-			elif [[ ${DE} == "MATE" ]]; then
-				if type -p mate-session >/dev/null 2>&1; then
-					DEver=$(mate-session --version)
-					DE="${DE} ${DEver//* }"
-				fi
-
-			elif [[ ${DE} == "Unity" ]]; then
-				if type -p unity >/dev/null 2>&1; then
-					DEver=$(unity --version)
-					DE="${DE} ${DEver//* }"
-				fi
-			fi
-		fi
-
-		if [[ "${DE}" == "Not Present" ]]; then
-			if pgrep -U ${UID} lxsession >/dev/null 2>&1; then
-				DE="LXDE"
-				if type -p lxpanel >/dev/null 2>&1; then
-					DEver=$(lxpanel -v)
-					DE="${DE} $DEver"
-				fi
-			elif pgrep -U ${UID} razor-session >/dev/null 2>&1; then
-				DE="RazorQt"
 			fi
 		fi
 	elif [[ "${distro}" == "Mac OS X" ]]; then
@@ -1195,15 +1199,84 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [[ -n ${DISPLAY} && ${distro} != "Cygwin" ]]; then
+	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+		if [[ -n ${DISPLAY} ]]; then
+			for each in "${wmnames[@]}"; do
+				PID="$(pgrep -U ${UID} $each)"
+				if [ "$PID" ]; then
+					case $each in
+						'awesome') WM="Awesome";;
+						'beryl') WM="Beryl";;
+						'bspwm') WM="bspwm";;
+						'blackbox') WM="Blackbox";;
+						'cinnamon') WM="Cinnamon";;
+						'compiz') WM="Compiz";;
+						'dminiwm') WM="dminiwm";;
+						'dwm') WM="dwm";;
+						'e16') WM="E16";;
+						'emerald') WM="Emerald";;
+						'enlightenment') WM="E17";;
+						'fluxbox') WM="FluxBox";;
+						'fvwm') WM="FVWM";;
+						'herbstluftwm') WM="herbstluftwm";;
+						'icewm') WM="IceWM";;
+						'kwin') WM="KWin";;
+						'metacity') WM="Metacity";;
+						'monsterwm') WM="monsterwm";;
+						'musca') WM="Musca";;
+						'notion') WM="Notion";;
+						'openbox') WM="OpenBox";;
+						'pekwm') WM="PekWM";;
+						'ratpoison') WM="Ratpoison";;
+						'sawfish') WM="Sawfish";;
+						'scrotwm') WM="ScrotWM";;
+						'spectrwm') WM="SpectrWM";;
+						'stumpwm') WM="StumpWM";;
+						'subtle') WM="subtle";;
+						'wmaker') WM="WindowMaker";;
+						'wmfs') WM="WMFS";;
+						'wmii') WM="wmii";;
+						'xfwm4') WM="Xfwm4";;
+						'i3') WM="i3";;
+						'xmonad') WM="XMonad";;
+					esac
+				fi
 
-		for each in "${wmnames[@]}"; do
-			PID="$(pgrep -U ${UID} $each)"
-			if [ "$PID" ]; then
-				case $each in
+				if [[ ${WM} != "Not Found" ]]; then
+					break 1
+				fi
+			done
+
+			if [[ ${WM} == "Not Found" ]]; then
+				if type -p xprop >/dev/null 2>&1; then
+					WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
+					if [[ "$WM" =~ 'not found' ]]; then
+						WM="Not Found"
+					elif [[ "$WM" =~ 'Not found' ]]; then
+						WM="Not Found"
+					elif [[ "$WM" =~ '[Ii]nvalid window id format' ]]; then
+						WM="Not Found"
+					elif [[ "$WM" =~ "no such" ]]; then
+						WM="Not Found"
+					else
+						WM=${WM//* }
+						WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
+						WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
+					fi
+				fi
+			else
+				if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
+					if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
+						WM=${WM,,}
+					else
+						WM="$(tr '[:upper:]' '[:lower:]' <<< ${WM})"
+					fi
+				else
+					WM="$(tr '[:upper:]' '[:lower:]' <<< ${WM})"
+				fi
+				case ${WM} in
 					'awesome') WM="Awesome";;
 					'beryl') WM="Beryl";;
-					'bspwm') WM="bspwm";;
 					'blackbox') WM="Blackbox";;
 					'cinnamon') WM="Cinnamon";;
 					'compiz') WM="Compiz";;
@@ -1220,6 +1293,9 @@ detectwm () {
 					'metacity') WM="Metacity";;
 					'monsterwm') WM="monsterwm";;
 					'musca') WM="Musca";;
+					*'gala'*) WM="Gala";;
+					'mutter'*) WM="Mutter";;
+					'gnome shell'*) WM="Mutter";;
 					'notion') WM="Notion";;
 					'openbox') WM="OpenBox";;
 					'pekwm') WM="PekWM";;
@@ -1233,81 +1309,10 @@ detectwm () {
 					'wmfs') WM="WMFS";;
 					'wmii') WM="wmii";;
 					'xfwm4') WM="Xfwm4";;
-					'i3') WM="i3";;
 					'xmonad') WM="XMonad";;
+					'i3') WM="i3";;
 				esac
 			fi
-
-			if [[ ${WM} != "Not Found" ]]; then
-				break 1
-			fi
-		done
-
-		if [[ ${WM} == "Not Found" ]]; then
-			if type -p xprop >/dev/null 2>&1; then
-				WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
-				if [[ "$WM" =~ 'not found' ]]; then
-					WM="Not Found"
-				elif [[ "$WM" =~ 'Not found' ]]; then
-					WM="Not Found"
-				elif [[ "$WM" =~ '[Ii]nvalid window id format' ]]; then
-					WM="Not Found"
-				elif [[ "$WM" =~ "no such" ]]; then
-					WM="Not Found"
-				else
-					WM=${WM//* }
-					WM=$(xprop -id ${WM} 8s _NET_WM_NAME)
-					WM=$(echo $(WM=${WM//*= }; echo ${WM//\"}))
-				fi
-			fi
-		else
-			if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
-				if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
-					WM=${WM,,}
-				else
-					WM="$(tr '[:upper:]' '[:lower:]' <<< ${WM})"
-				fi
-			else
-				WM="$(tr '[:upper:]' '[:lower:]' <<< ${WM})"
-			fi
-			case ${WM} in
-				'awesome') WM="Awesome";;
-				'beryl') WM="Beryl";;
-				'blackbox') WM="Blackbox";;
-				'cinnamon') WM="Cinnamon";;
-				'compiz') WM="Compiz";;
-				'dminiwm') WM="dminiwm";;
-				'dwm') WM="dwm";;
-				'e16') WM="E16";;
-				'emerald') WM="Emerald";;
-				'enlightenment') WM="E17";;
-				'fluxbox') WM="FluxBox";;
-				'fvwm') WM="FVWM";;
-				'herbstluftwm') WM="herbstluftwm";;
-				'icewm') WM="IceWM";;
-				'kwin') WM="KWin";;
-				'metacity') WM="Metacity";;
-				'monsterwm') WM="monsterwm";;
-				'musca') WM="Musca";;
-				*'gala'*) WM="Gala";;
-				'mutter'*) WM="Mutter";;
-				'gnome shell'*) WM="Mutter";;
-				'notion') WM="Notion";;
-				'openbox') WM="OpenBox";;
-				'pekwm') WM="PekWM";;
-				'ratpoison') WM="Ratpoison";;
-				'sawfish') WM="Sawfish";;
-				'scrotwm') WM="ScrotWM";;
-				'spectrwm') WM="SpectrWM";;
-				'stumpwm') WM="StumpWM";;
-				'subtle') WM="subtle";;
-				'wmaker') WM="WindowMaker";;
-				'wmfs') WM="WMFS";;
-				'wmii') WM="wmii";;
-				'xfwm4') WM="Xfwm4";;
-				'xmonad') WM="XMonad";;
-				'i3') WM="i3";;
-			esac
 		fi
 	elif [[ ${distro} == "Mac OS X" && "${WM}" == "Not Found" ]]; then
 		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
@@ -1425,8 +1430,14 @@ detectwmtheme () {
 		'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
 		'XMonad') Win_theme="Not Present";;
 	esac
-
-	if [[ "${distro}" == "Cygwin" ]]; then
+	if [[ "${distro}" == "Mac OS X" ]]; then
+		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant)"
+		if themeNumber = 1; then
+			Win_theme="Blue"
+		else
+			Win_theme="Graphite"
+		fi
+	elif [[ "${distro}" == "Cygwin" ]]; then
 		themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
 		Win_theme=$(echo $themeFile | awk -F"\\" '{print $NF}' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')
 	fi
