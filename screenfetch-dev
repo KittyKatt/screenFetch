@@ -814,7 +814,7 @@ detectgpu () {
 			gpu_info=$(echo "$gpu_info" | cut -d ':' -f2)
 			gpu_info="${gpu_info:1} "
 		fi
-		gpu="${gpu_info}${gpu}"
+		gpu="${gpu}"
 	else
 		gpu="Not Found"
 	fi
