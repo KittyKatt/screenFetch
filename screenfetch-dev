@@ -394,8 +394,8 @@ detectdistro () {
 				distro="Mint"
 				if [[ "${distro_codename}" == "debian" ]]; then
 					distro="LMDE"
-					distro_codename=null
-					distro_release=null
+					distro_codename="n/a"
+					distro_release="n/a"
 				fi
 			elif [[ "${distro_detect}" == "SUSE LINUX" || "${distro_detect}" == "openSUSE project" ]]; then
 				distro="openSUSE"
