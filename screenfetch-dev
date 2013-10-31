@@ -1657,13 +1657,10 @@ detectgtk () {
 				fi
 
 				# Proper gtk3 Theme detection
-				#if [ $(which gsettings) ] && [ "$distro" != "Mac OS X" ]; then
-				#	gtk3Theme="$(gsettings get org.gnome.desktop.interface gtk-theme | tr -d \"\'\")"
+				#if type -p gsettings >/dev/null 2>&1; then
+				#	gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null)
+				#	gtk3Theme=${gtk3Theme//"'"}
 				#fi
-				if type -p gsettings >/dev/null 2>&1; then
-					gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null)
-					gtk3Theme=${gtk3Theme//"'"}
-				fi
 
 				# ROX-Filer icon detect only
 				if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
