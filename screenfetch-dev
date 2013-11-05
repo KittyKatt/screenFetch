@@ -1440,7 +1440,7 @@ detectwmtheme () {
 	esac
 	if [[ "${distro}" == "Mac OS X" ]]; then
 		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant)"
-		if themeNumber = 1; then
+		if [ "${themeNumber}" == "1" ]; then
 			Win_theme="Blue"
 		else
 			Win_theme="Graphite"
