@@ -3213,15 +3213,15 @@ if [[ "$overrideDisplay" ]]; then
 fi
 
 # Check for android
-if type -p getprop >/dev/null 2>&1; then
-	distro="Android"
-	detectmem
-	detectuptime
-	detectkernel
-	detectdroid
-	infoDisplay
-	exit 0
-fi
+#if type -p getprop >/dev/null 2>&1; then
+#	distro="Android"
+#	detectmem
+#	detectuptime
+#	detectkernel
+#	detectdroid
+#	infoDisplay
+#	exit 0
+#fi
 
 for i in "${display[@]}"; do
 	if [[ $i =~ wm ]]; then
