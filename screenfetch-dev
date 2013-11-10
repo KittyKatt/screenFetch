@@ -1347,7 +1347,13 @@ detectwmtheme () {
 		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'bspwm') Win_theme="Not Present";;
-		'Cinnamon'|'Muffin') Win_theme="$(gsettings get org.cinnamon.theme name)"; Win_theme=${Win_theme//"'"};;
+		'Cinnamon'|'Muffin')
+			de_theme="$(gsettings get org.cinnamon.theme name)"
+			de_theme=${de_theme//"'"}
+			win_theme="$(gsettings get org.cinnamon.desktop.wm.preferences theme)"
+			win_theme=${win_theme//"'"}
+			Win_theme="${de_theme} (${win_theme})"
+		;;
 		'Compiz'|'Mutter'*|'GNOME Shell'|'Gala')
 			if type -p gsettings >/dev/null 2>&1; then
 				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
