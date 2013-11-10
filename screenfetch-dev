@@ -1528,13 +1528,13 @@ detectgtk () {
 			;;
 			'Cinnamon'*) # Desktop Environment found as "Cinnamon"
 				if type -p gsettings >/dev/null 2>&1; then
-					gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
+					gtk3Theme=$(gsettings get org.cinnamon.desktop.interface gtk-theme)
 					gtk3Theme=${gtk3Theme//"'"}
 					gtk2Theme=${gtk3Theme}
 
-					gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme)
+					gtkIcons=$(gsettings get org.cinnamon.desktop.interface icon-theme)
 					gtkIcons=${gtkIcons//"'"}
-					gtkFont=$(gsettings get org.gnome.desktop.interface font-name)
+					gtkFont=$(gsettings get org.cinnamon.desktop.interface font-name)
 					gtkFont=${gtkFont//"'"}
 					if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
 				fi
