@@ -51,7 +51,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon )
 denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder )
 
 # Screenshot Settings
@@ -1217,7 +1217,7 @@ detectwm () {
 						'beryl') WM="Beryl";;
 						'bspwm') WM="bspwm";;
 						'blackbox') WM="Blackbox";;
-						'cinnamon') WM="Cinnamon";;
+						'cinnamon') WM="Muffin";;
 						'compiz') WM="Compiz";;
 						'dminiwm') WM="dminiwm";;
 						'dwm') WM="dwm";;
@@ -1304,6 +1304,7 @@ detectwm () {
 					*'gala'*) WM="Gala";;
 					'mutter'*) WM="Mutter";;
 					'gnome shell'*) WM="Mutter";;
+					'muffin') WM="Muffin";;
 					'notion') WM="Notion";;
 					'openbox') WM="OpenBox";;
 					'pekwm') WM="PekWM";;
@@ -1346,7 +1347,7 @@ detectwmtheme () {
 		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'bspwm') Win_theme="Not Present";;
-		'Cinnamon') Win_theme="$(gsettings get org.cinnamon.theme name)";;
+		'Cinnamon'|'Muffin') Win_theme="$(gsettings get org.cinnamon.theme name)"; Win_theme=${Win_theme//"'"};;
 		'Compiz'|'Mutter'*|'GNOME Shell'|'Gala')
 			if type -p gsettings >/dev/null 2>&1; then
 				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
