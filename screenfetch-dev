@@ -349,6 +349,9 @@ detectdistro () {
 					distro="CrunchBang"
 					distro_release=$(awk -F'=' '/^DISTRIB_RELEASE=/ {print $2}' /etc/lsb-release-crunchbang)
 					distro_codename=$(awk -F'=' '/^DISTRIB_DESCRIPTION=/ {print $2}' /etc/lsb-release-crunchbang)
+				elif [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
+					distro="Raspbian"
+					distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
 				else
 					distro="Debian"
 				fi
@@ -611,6 +614,7 @@ detectdistro () {
 		opensuse) distro="openSUSE" ;;
 		ubuntu) distro="Ubuntu" ;;
 		debian) distro="Debian" ;;
+		raspbian) distro="Raspbian" ;;
 		freebsd) distro="FreeBSD" ;;
 		openbsd) distro="OpenBSD" ;;
 		dragonflybsd) distro="DragonFlyBSD" ;;
@@ -756,6 +760,8 @@ detectcpu () {
 				model="IBM PowerPC G5 "
 			elif [[ $cpu =~ ^74.+ ]]; then
 				model="Motorola PowerPC G4 "
+			elif [[ "$(cat /proc/cpuinfo)" =~ "BCM2708" ]]; then
+				model="Broadcom BCM2835 ARM1176JZF-S"
 			else
 				model="IBM PowerPC G3 "
 			fi
@@ -1966,6 +1972,34 @@ asciiText () {
 		;;
 
 
+		"Raspbian")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light green') # Light Green
+				c2=$(getColor 'light red') # Light Red
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+                        fulloutput=("  $c1   .',;:cc;,'.     .,;::c:,,.   %s"
+"   $c1,ooolcloooo:  'oooooccloo:   %s"
+"   $c1.looooc;;:ol  :oc;;:ooooo'   %s"
+"     $c1;oooooo:      ,ooooooc.    %s"
+"       $c1.,:;'.       .;:;'.      %s"
+"       $c2.... ..'''''. ....       %s"
+"     $c2.''.   ..'''''.  ..''.     %s"
+"     $c2..  .....    .....  ..     %s"
+"    $c2.  .'''''''  .''''''.  .    %s"
+"  $c2.'' .''''''''  .'''''''. ''.  %s"
+"  $c2'''  '''''''    .''''''  '''  %s"
+"  $c2.'    ........... ...    .'.  %s"
+"    $c2....    ''''''''.   .''.    %s"
+"    $c2'''''.  ''''''''. .'''''    %s"
+"     $c2'''''.  .'''''. .'''''.    %s"
+"      $c2..''.     .    .''..      %s"
+"            $c2.'''''''            %s"
+"             $c2......       %s")
+		;;
+
+
 		"CrunchBang")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -3044,7 +3078,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
-		"Ubuntu-3color"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
+		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"ParabolaGNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
 		"CentOS"|"Ubuntu"|*) labelcolor=$(getColor 'yellow');;
