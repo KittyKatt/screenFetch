@@ -336,7 +336,7 @@ detectdistro () {
 				done
 			fi
 
-			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" || "${distro_detect}" == "archarm" ]]; then
+			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" || "${distro_detect}" == "Arch" || "${distro_detect}" == "archarm" ]]; then
 				distro="Arch Linux"
 				distro_release="n/a"
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
