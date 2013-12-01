@@ -1219,6 +1219,7 @@ detectwm () {
 				PID="$(pgrep -U ${UID} $each)"
 				if [ "$PID" ]; then
 					case $each in
+						'2bwm') WM="2bwm";;
 						'awesome') WM="Awesome";;
 						'beryl') WM="Beryl";;
 						'bspwm') WM="bspwm";;
@@ -1289,6 +1290,7 @@ detectwm () {
 					WM="$(tr '[:upper:]' '[:lower:]' <<< ${WM})"
 				fi
 				case ${WM} in
+					'2bwm') WM="2bwm";;
 					'awesome') WM="Awesome";;
 					'beryl') WM="Beryl";;
 					'blackbox') WM="Blackbox";;
