@@ -349,9 +349,11 @@ detectdistro () {
 					distro="CrunchBang"
 					distro_release=$(awk -F'=' '/^DISTRIB_RELEASE=/ {print $2}' /etc/lsb-release-crunchbang)
 					distro_codename=$(awk -F'=' '/^DISTRIB_DESCRIPTION=/ {print $2}' /etc/lsb-release-crunchbang)
-				elif [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
-					distro="Raspbian"
-					distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
+				elif [[ -f /etc/os-release ]]; then
+					if [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
+						distro="Raspbian"
+						distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
+				fi
 				else
 					distro="Debian"
 				fi
