@@ -793,12 +793,12 @@ detectcpu () {
 # GPU Detection - Begin (EXPERIMENTAL!)
 detectgpu () {
 	if [[ "${distro}" == "FreeBSD" ]]; then
-		gpu_info=$(pciconf -lv | grep -B 4 VGA)
+		gpu_info=$(pciconf -lv 2> /dev/null | grep -B 4 VGA)
 		gpu_info=$(echo "${gpu_info}" | grep -E 'device.*=.*')
 		gpu=$(echo "${gpu_info}" | sed 's/.*device.*= //' | sed "s/'//g")
 	elif [[ "$distro" != "Mac OS X" ]]; then
 		if [ -n "$(type -p lspci)" ]; then
-			gpu_info=$(lspci | grep VGA)
+			gpu_info=$(lspci 2> /dev/null | grep VGA)
 			gpu=$(echo "$gpu_info" | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
 			gpu=$(echo "${gpu}" | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
 		elif [[ -n "$(type -p glxinfo)" && -z "$gpu" ]]; then
