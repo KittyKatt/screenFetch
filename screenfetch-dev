@@ -336,7 +336,7 @@ detectdistro () {
 				done
 			fi
 
-			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" || "${distro_detect}" == "archarm" ]]; then
+			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" || "${distro_detect}" == "Arch" || "${distro_detect}" == "archarm" ]]; then
 				distro="Arch Linux"
 				distro_release="n/a"
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
@@ -1221,6 +1221,7 @@ detectwm () {
 				PID="$(pgrep -U ${UID} $each)"
 				if [ "$PID" ]; then
 					case $each in
+						'2bwm') WM="2bwm";;
 						'awesome') WM="Awesome";;
 						'beryl') WM="Beryl";;
 						'bspwm') WM="bspwm";;
@@ -1291,6 +1292,7 @@ detectwm () {
 					WM="$(tr '[:upper:]' '[:lower:]' <<< ${WM})"
 				fi
 				case ${WM} in
+					'2bwm') WM="2bwm";;
 					'awesome') WM="Awesome";;
 					'beryl') WM="Beryl";;
 					'blackbox') WM="Blackbox";;
