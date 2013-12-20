@@ -204,7 +204,7 @@ displayHelp() {
 	printf "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,\n"
 	printf "			      LMDE, Ubuntu, Crunchbang, Debian, Raspian, Gentoo, Fedora, SolusOS,\n"
 	printf "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,\n"
-	printf "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, OpenBSD\n"
+	printf "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, NetBSD, OpenBSD\n"
 	printf "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present\n"
 	printf "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,\n"
 	printf "			      Metacity, StumpWM, KWin, IceWM, FVWM,\n"
