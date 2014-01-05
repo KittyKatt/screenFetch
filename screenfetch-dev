@@ -206,7 +206,7 @@ displayHelp() {
 	printf "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,\n"
 	printf "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, OpenBSD\n"
 	printf "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present\n"
-	printf "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,\n"
+	printf "${underline}Supported Window Managers${c0}:    PekWM, Openbox, Fluxbox, Blackbox, Xfwm4,\n"
 	printf "			      Metacity, StumpWM, KWin, IceWM, FVWM,\n"
 	printf "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,\n"
 	printf "			      Ratpoison, wmii, WMFS, ScrotWM, SpectrWM,\n"
@@ -728,10 +728,6 @@ detectpkgs () {
 		;;
 		'OpenBSD') 
 			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
-			if type -p portmaster >/dev/null 2>&1; then
-				ports=$(portmaster -l | grep -Eo '[0-9]+ total installed' | sed 's/ total installed//')
-				pkgs=$((${pkgs} + ${ports}))
-			fi
 		;;
 		'FreeBSD')
 			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then 
@@ -920,7 +916,7 @@ detectmem () {
 		used_mem=$(($round_mem - $avail_mem))
 		usedmem=$(($used_mem / ($human * $human) ))
 	elif [ "$distro" == "OpenBSD" ]; then
-		totalmem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
+		totalmem=$(($(sysctl -n hw.physmem) / (1024 * 1024)))
 		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
@@ -1233,7 +1229,7 @@ detectwm () {
 						'e16') WM="E16";;
 						'emerald') WM="Emerald";;
 						'enlightenment') WM="E17";;
-						'fluxbox') WM="FluxBox";;
+						'fluxbox') WM="Fluxbox";;
 						'fvwm') WM="FVWM";;
 						'herbstluftwm') WM="herbstluftwm";;
 						'icewm') WM="IceWM";;
@@ -1242,7 +1238,7 @@ detectwm () {
 						'monsterwm') WM="monsterwm";;
 						'musca') WM="Musca";;
 						'notion') WM="Notion";;
-						'openbox') WM="OpenBox";;
+						'openbox') WM="Openbox";;
 						'pekwm') WM="PekWM";;
 						'ratpoison') WM="Ratpoison";;
 						'sawfish') WM="Sawfish";;
@@ -1303,7 +1299,7 @@ detectwm () {
 					'e16') WM="E16";;
 					'emerald') WM="Emerald";;
 					'enlightenment') WM="E17";;
-					'fluxbox') WM="FluxBox";;
+					'fluxbox') WM="Fluxbox";;
 					'fvwm') WM="FVWM";;
 					'herbstluftwm') WM="herbstluftwm";;
 					'icewm') WM="IceWM";;
@@ -1316,7 +1312,7 @@ detectwm () {
 					'gnome shell'*) WM="Mutter";;
 					'muffin') WM="Muffin";;
 					'notion') WM="Notion";;
-					'openbox') WM="OpenBox";;
+					'openbox') WM="Openbox";;
 					'pekwm') WM="PekWM";;
 					'ratpoison') WM="Ratpoison";;
 					'sawfish') WM="Sawfish";;
@@ -1354,7 +1350,7 @@ detectwmtheme () {
 	Win_theme="Not Found"
 	case $WM in
 		'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1 | head -n1)"; fi;;
-		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
+		'Blackbox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'bspwm') Win_theme="Not Present";;
 		'Cinnamon'|'Muffin')
@@ -1387,7 +1383,7 @@ detectwmtheme () {
 		'E17') Win_theme=${E_CONF_PROFILE};;
 		'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
 		'Finder') Win_theme="Not Present";;
-		'FluxBox'|'Fluxbox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
+		'Fluxbox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
 		'FVWM') Win_theme="Not Present";;
 		'i3') Win_theme="Not Present";;
 		'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
@@ -1436,7 +1432,7 @@ detectwmtheme () {
 		'monsterwm') Win_theme="Not Present";;
 		'Musca') Win_theme="Not Present";;\
 		'Notion') Win_theme="Not Present";;
-		'OpenBox'|'Openbox')
+		'Openbox')
 			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then
 				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)";
 			elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then
