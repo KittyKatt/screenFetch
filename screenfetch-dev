@@ -811,7 +811,13 @@ detectgpu () {
 			gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
 		fi
 	elif [[ "${distro}" == "Mac OS X" ]]; then
-		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}' | tr -d "\n")
+		gpu_info=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}')
+		gpu_len=$(echo "$gpu" | wc -l | tr -d ' ')
+		if [ "$gpu_len" -eq 1 ]; then
+			gpu=$(echo "$gpu_info" | tr -d '\n')
+		else
+			gpu=$(echo "$gpu_info" | tr '\n' '/')
+		fi
 	elif [[ "${distro}" == "Cygwin" ]]; then
 		gpu=$(wmic path Win32_VideoController get caption)
 		gpu=$(tail -1 <<< ${gpu})
