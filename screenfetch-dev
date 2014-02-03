@@ -1755,8 +1755,8 @@ detectdroid () {
 takeShot () {
 	if [[ -z $screenCommand ]]; then
 		if [[ "$hostshot" == "1" ]]; then
+			shotfiles[1]=${shotfile}
 			if [ "$distro" == "Mac OS X" ]; then 
-				shotfiles[1]=${shotfile}
 				displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
 				for (( i=2; i<=$displays; i++))
 				do
@@ -1765,15 +1765,15 @@ takeShot () {
 				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
-				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
-				scp -qo ConnectTimeout="${scptimeout}" "${shotfile}" "${serveraddr}:${serverdir}"
+				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfiles[@]}'"
+				scp -qo ConnectTimeout="${scptimeout}" "${shotfiles[@]}" "${serveraddr}:${serverdir}"
 				echo -e "${bold}==>${c0} Your screenshot can be viewed at ${baseurl}/$shotfile"
 			else
-				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+				verboseOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
 		else
+			shotfiles[1]=${shotfile}
 			if [ "$distro" == "Mac OS X" ]; then 
-				shotfiles[1]=${shotfile}
 				displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
 				for (( i=2; i<=$displays; i++))
 				do
@@ -1782,9 +1782,9 @@ takeShot () {
 				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
-				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
+				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfiles[@]}'"
 			else
-				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+				verboseOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
 		fi
 	else
