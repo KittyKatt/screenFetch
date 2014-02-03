@@ -1456,12 +1456,13 @@ detectwmtheme () {
 		'XMonad') Win_theme="Not Present";;
 	esac
 	if [[ "${distro}" == "Mac OS X" ]]; then
-		themeNumber="$(defaults read NSGlobalDomain)"
-		if [ "${themeNumber}" == "1" ]; then
+		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant 2>/dev/null)"
+		if [ "${themeNumber}" == "1" ] || [ "${themeNumber}x" == "x" ]; then
 			Win_theme="Blue"
 		else
 			Win_theme="Graphite"
 		fi
+                echo ${Win_theme}
 	elif [[ "${distro}" == "Cygwin" ]]; then
 		themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
 		Win_theme=$(echo $themeFile | awk -F"\\" '{print $NF}' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')
