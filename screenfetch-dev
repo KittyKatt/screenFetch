@@ -1462,7 +1462,6 @@ detectwmtheme () {
 		else
 			Win_theme="Graphite"
 		fi
-                echo ${Win_theme}
 	elif [[ "${distro}" == "Cygwin" ]]; then
 		themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
 		Win_theme=$(echo $themeFile | awk -F"\\" '{print $NF}' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')
