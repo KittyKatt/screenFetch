@@ -1456,7 +1456,7 @@ detectwmtheme () {
 		'XMonad') Win_theme="Not Present";;
 	esac
 	if [[ "${distro}" == "Mac OS X" ]]; then
-		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant)"
+		themeNumber="$(defaults read NSGlobalDomain)"
 		if [ "${themeNumber}" == "1" ]; then
 			Win_theme="Blue"
 		else
