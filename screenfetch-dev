@@ -714,14 +714,17 @@ detectpkgs () {
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
-			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
+			if [ -d "/usr/local/bin" ]; then 
+				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
+				pkgs=$((${loc_pkgs} - 1)); 
+			fi
 
 			if type -p port >/dev/null 2>&1; then
 				port_pkgs=$(port installed 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + (${port_pkgs} -1)))
 			fi
 
-			if type -p port >/dev/null 2>&1; then
+			if type -p brew >/dev/null 2>&1; then
 				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
