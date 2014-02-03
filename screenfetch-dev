@@ -1756,14 +1756,13 @@ takeShot () {
 	if [[ -z $screenCommand ]]; then
 		if [[ "$hostshot" == "1" ]]; then
 			if [ "$distro" == "Mac OS X" ]; then 
-				screenCommand="screencapture -x ${shotfile}"
+				shotfiles[1]=${shotfile}
 				displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
 				for (( i=2; i<=$displays; i++))
 				do
-					screenCommand="${screenCommand} $(echo ${shotfile} | sed "s/\(.*\)\./\1_${i}./")"
-					echo ${screenCommand}
+					shotfiles[$i]="$(echo ${shotfile} | sed "s/\(.*\)\./\1_${i}./")"
 				done
-				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; ${screenCommand} &> /dev/null
+				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
@@ -1774,14 +1773,13 @@ takeShot () {
 			fi
 		else
 			if [ "$distro" == "Mac OS X" ]; then 
-				screenCommand="screencapture -x ${shotfile}"
+				shotfiles[1]=${shotfile}
 				displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
 				for (( i=2; i<=$displays; i++))
 				do
-					screenCommand="${screenCommand} $(echo ${shotfile} | sed "s/\(.*\)\./\1_${i}./")"
-					echo ${screenCommand}
+					shotfiles[$i]="$(echo ${shotfile} | sed "s/\(.*\)\./\1_${i}./")"
 				done
-				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; ${screenCommand} &> /dev/null
+				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
