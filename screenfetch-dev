@@ -716,7 +716,7 @@ detectpkgs () {
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then 
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
-				pkgs=$((${loc_pkgs} - 1)); 
+				pkgs=$((${loc_pkgs} -1)); 
 			fi
 
 			if type -p port >/dev/null 2>&1; then
