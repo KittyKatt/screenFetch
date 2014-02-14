@@ -714,14 +714,17 @@ detectpkgs () {
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'openSUSE'|'Red Hat Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
-			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
+			if [ -d "/usr/local/bin" ]; then 
+				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
+				pkgs=$((${loc_pkgs} -1)); 
+			fi
 
 			if type -p port >/dev/null 2>&1; then
 				port_pkgs=$(port installed 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + (${port_pkgs} -1)))
 			fi
 
-			if type -p port >/dev/null 2>&1; then
+			if type -p brew >/dev/null 2>&1; then
 				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
@@ -1456,8 +1459,8 @@ detectwmtheme () {
 		'XMonad') Win_theme="Not Present";;
 	esac
 	if [[ "${distro}" == "Mac OS X" ]]; then
-		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant)"
-		if [ "${themeNumber}" == "1" ]; then
+		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant 2>/dev/null)"
+		if [ "${themeNumber}" == "1" ] || [ "${themeNumber}x" == "x" ]; then
 			Win_theme="Blue"
 		else
 			Win_theme="Graphite"
@@ -1752,22 +1755,36 @@ detectdroid () {
 takeShot () {
 	if [[ -z $screenCommand ]]; then
 		if [[ "$hostshot" == "1" ]]; then
-			if [ "$distro" == "Mac OS X" ]; then printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x "${shotfile}" &> /dev/null
+			shotfiles[1]=${shotfile}
+			if [ "$distro" == "Mac OS X" ]; then 
+				displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
+				for (( i=2; i<=$displays; i++))
+				do
+					shotfiles[$i]="$(echo ${shotfile} | sed "s/\(.*\)\./\1_${i}./")"
+				done
+				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
-				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
-				scp -qo ConnectTimeout="${scptimeout}" "${shotfile}" "${serveraddr}:${serverdir}"
+				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfiles[@]}'"
+				scp -qo ConnectTimeout="${scptimeout}" "${shotfiles[@]}" "${serveraddr}:${serverdir}"
 				echo -e "${bold}==>${c0} Your screenshot can be viewed at ${baseurl}/$shotfile"
 			else
-				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+				verboseOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
 		else
-			if [ "$distro" == "Mac OS X" ]; then printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x "${shotfile}" &> /dev/null
+			shotfiles[1]=${shotfile}
+			if [ "$distro" == "Mac OS X" ]; then 
+				displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
+				for (( i=2; i<=$displays; i++))
+				do
+					shotfiles[$i]="$(echo ${shotfile} | sed "s/\(.*\)\./\1_${i}./")"
+				done
+				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
-				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfile}'"
+				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfiles[@]}'"
 			else
-				verboseOut "ERROR: Problem saving screenshot to ${shotfile}"
+				verboseOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
 		fi
 	else
@@ -3131,7 +3148,7 @@ infoDisplay () {
 		if [[ "${display[@]}" =~ "uptime" ]]; then myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime"); out_array=( "${out_array[@]}" "$myuptime" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "pkgs" ]]; then mypkgs=$(echo -e "$labelcolor Packages:$textcolor $pkgs"); out_array=( "${out_array[@]}" "$mypkgs" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "shell" ]]; then myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell"); out_array=( "${out_array[@]}" "$myshell" ); ((display_index++)); fi
-		if [[ -n "$DISPLAY" ]]; then
+		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" ]]; then
 			if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
