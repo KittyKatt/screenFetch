@@ -412,8 +412,10 @@ detectdistro () {
 				fi
 			elif [[ "${distro_detect}" == "SUSE LINUX" || "${distro_detect}" == "openSUSE project" ]]; then
 				distro="openSUSE"
-			elif [[ "${distro_detect}" == "ParabolaGNU/Linux-libre" ]]; then
-				distro="ParabolaGNU/Linux-libre"
+			elif [[ "${distro_detect}" == "Parabola GNU/Linux-libre" ]]; then
+				distro="Parabola GNU/Linux-libre"
+				distro_codename="n/a"
+				distro_codename="n/a"
 			elif [[ "${distro_detect}" == "Peppermint" ]]; then
 				distro="Peppermint"
 				distro_codename=null
@@ -3101,7 +3103,7 @@ infoDisplay () {
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
-		"Gentoo"|"ParabolaGNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
+		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
 		"CentOS"|"Ubuntu"|*) labelcolor=$(getColor 'yellow');;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
