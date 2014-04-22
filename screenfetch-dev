@@ -416,7 +416,7 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Parabola GNU/Linux-libre" ]]; then
 				distro="Parabola GNU/Linux-libre"
 				distro_codename="n/a"
-				distro_codename="n/a"
+				distro_release="n/a"
 			elif [[ "${distro_detect}" == "Peppermint" ]]; then
 				distro="Peppermint"
 				distro_codename=null
