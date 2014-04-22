@@ -2481,7 +2481,7 @@ asciiText () {
 		;;
 
 
-		"ParabolaGNU/Linux-libre")
+		"Parabola GNU/Linux-libre")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light purple') # Light Purple
 				c2=$(getColor 'white') # White
