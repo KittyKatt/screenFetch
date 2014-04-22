@@ -629,7 +629,7 @@ detectdistro () {
 		frugalware) distro="Frugalware" ;;
 		peppermint) distro="Peppermint" ;;
 		solusos) distro="SolusOS" ;;
-		parabolagnu|parabolagnu/linux-libre|parabola) distro="ParabolaGNU/Linux-libre" ;;
+		parabolagnu|parabolagnu/linux-libre|parabola) distro="Parabola GNU/Linux-libre" ;;
 		viperr) distro="Viperr" ;;
 		linuxdeepin) distro="LinuxDeepin" ;;
 		chakra) distro="Chakra" ;;
