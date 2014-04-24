@@ -278,7 +278,6 @@ while getopts ":hsmevVEnNtlS:A:D:o:Bc:d:" flags; do
 		n) display_type="Text";;
 		o) overrideOpts=$OPTARG; continue;;
 		c) detectColors "$OPTARGS"; continue;;
-		# d) overrideDisplay=$OPTARG; continue;;
 		d) overrideDisplay=$OPTARG; continue;;
 		N) no_color='1';;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
