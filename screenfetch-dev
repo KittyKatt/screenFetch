@@ -205,9 +205,9 @@ displayHelp() {
 	printf "			      LMDE, Ubuntu, Crunchbang, Debian, Raspian, Gentoo, Fedora, SolusOS,\n"
 	printf "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,\n"
 	printf "			      Peppermint, Parabola GNU/Linux-libre, Viperr, LinuxDeepin, Chakra, \n"
-	printf "                              and FreeBSD, OpenBSD.\n"
+	printf "                              and FreeBSD, NetBSD, and OpenBSD.\n"
 	printf "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present\n"
-	printf "${underline}Supported Window Managers${c0}:    PekWM, Openbox, Fluxbox, Blackbox, Xfwm4,\n"
+	printf "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,\n"
 	printf "			      Metacity, StumpWM, KWin, IceWM, FVWM,\n"
 	printf "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,\n"
 	printf "			      Ratpoison, wmii, WMFS, ScrotWM, SpectrWM,\n"
@@ -734,6 +734,10 @@ detectpkgs () {
 		;;
 		'OpenBSD') 
 			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
+			if type -p portmaster >/dev/null 2>&1; then
+				ports=$(portmaster -l | grep -Eo '[0-9]+ total installed' | sed 's/ total installed//')
+				pkgs=$((${pkgs} + ${ports}))
+			fi
 		;;
 		'FreeBSD')
 			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then 
@@ -762,12 +766,12 @@ detectcpu () {
 			cpu=$(awk 'BEGIN{FS=":"} /^cpu/ { gsub(/  +/," ",$2); print $2; exit}' /proc/cpuinfo | sed 's/, altivec supported//;s/^ //')
 			if [[ $cpu =~ ^(PPC)*9.+ ]]; then
 				model="IBM PowerPC G5 "
-			elif [[ $cpu =~ 740/750 ]]; then
-				model="IBM PowerPC G3 "
 			elif [[ $cpu =~ ^74.+ ]]; then
 				model="Motorola PowerPC G4 "
 			elif [[ "$(cat /proc/cpuinfo)" =~ "BCM2708" ]]; then
 				model="Broadcom BCM2835 ARM1176JZF-S"
+			else
+				model="IBM PowerPC G3 "
 			fi
 			cpu="${model}${cpu}"
 		fi
@@ -922,7 +926,7 @@ detectmem () {
 		used_mem=$(($round_mem - $avail_mem))
 		usedmem=$(($used_mem / ($human * $human) ))
 	elif [ "$distro" == "OpenBSD" ]; then
-		totalmem=$(($(sysctl -n hw.physmem) / (1024 * 1024)))
+		totalmem=$(top -1 1 | awk '/Real:/ {k=split($3,a,"/");print a[k] }' | tr -d 'M')
 		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
@@ -1067,11 +1071,7 @@ detectres () {
 	elif [[ "${distro}" == "Cygwin" ]]; then
 		width=$(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr -d '\r\n ')
 		height=$(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr -d '\r\n ')
-		if [[ -z "$width" || -z "$height" ]]; then
-			xResolution=""
-		else
-			xResolution="${width}x${height}"
-		fi
+		xResolution="${width}x${height}"
 	else
 		xResolution="No X Server"
 	fi
@@ -1239,7 +1239,7 @@ detectwm () {
 						'e16') WM="E16";;
 						'emerald') WM="Emerald";;
 						'enlightenment') WM="E17";;
-						'fluxbox') WM="Fluxbox";;
+						'fluxbox') WM="FluxBox";;
 						'fvwm') WM="FVWM";;
 						'herbstluftwm') WM="herbstluftwm";;
 						'icewm') WM="IceWM";;
@@ -1248,7 +1248,7 @@ detectwm () {
 						'monsterwm') WM="monsterwm";;
 						'musca') WM="Musca";;
 						'notion') WM="Notion";;
-						'openbox') WM="Openbox";;
+						'openbox') WM="OpenBox";;
 						'pekwm') WM="PekWM";;
 						'ratpoison') WM="Ratpoison";;
 						'sawfish') WM="Sawfish";;
@@ -1309,7 +1309,7 @@ detectwm () {
 					'e16') WM="E16";;
 					'emerald') WM="Emerald";;
 					'enlightenment') WM="E17";;
-					'fluxbox') WM="Fluxbox";;
+					'fluxbox') WM="FluxBox";;
 					'fvwm') WM="FVWM";;
 					'herbstluftwm') WM="herbstluftwm";;
 					'icewm') WM="IceWM";;
@@ -1322,7 +1322,7 @@ detectwm () {
 					'gnome shell'*) WM="Mutter";;
 					'muffin') WM="Muffin";;
 					'notion') WM="Notion";;
-					'openbox') WM="Openbox";;
+					'openbox') WM="OpenBox";;
 					'pekwm') WM="PekWM";;
 					'ratpoison') WM="Ratpoison";;
 					'sawfish') WM="Sawfish";;
@@ -1360,7 +1360,7 @@ detectwmtheme () {
 	Win_theme="Not Found"
 	case $WM in
 		'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[a-zA-Z0-9]\+/[a-zA-Z0-9]\+.lua' -o | cut -d'/' -f1 | head -n1)"; fi;;
-		'Blackbox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
+		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'bspwm') Win_theme="Not Present";;
 		'Cinnamon'|'Muffin')
@@ -1393,7 +1393,7 @@ detectwmtheme () {
 		'E17') Win_theme=${E_CONF_PROFILE};;
 		'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
 		'Finder') Win_theme="Not Present";;
-		'Fluxbox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
+		'FluxBox'|'Fluxbox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
 		'FVWM') Win_theme="Not Present";;
 		'i3') Win_theme="Not Present";;
 		'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
@@ -1442,7 +1442,7 @@ detectwmtheme () {
 		'monsterwm') Win_theme="Not Present";;
 		'Musca') Win_theme="Not Present";;\
 		'Notion') Win_theme="Not Present";;
-		'Openbox')
+		'OpenBox'|'Openbox')
 			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml ]; then
 				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml)";
 			elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then
@@ -2003,7 +2003,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-                        fulloutput=("   $c1.',;:cc;,'.     .,;::c:,,.    %s"
+                        fulloutput=("  $c1   .',;:cc;,'.     .,;::c:,,.   %s"
 "   $c1,ooolcloooo:  'oooooccloo:   %s"
 "   $c1.looooc;;:ol  :oc;;:ooooo'   %s"
 "     $c1;oooooo:      ,ooooooc.    %s"
@@ -3137,7 +3137,7 @@ infoDisplay () {
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
 			elif [[ "$distro" == "Cygwin" ]]; then
 				distro=$(wmic os get name | head -2 | tail -1)
-				distro=$(expr match "$distro" '\(Microsoft Windows [A-Za-z0-9.]\+\)')
+				distro=$(expr match "$distro" '\(Microsoft Windows [A-Za-z0-9]\+\)')
 				sysArch=$(wmic os get OSArchitecture | head -2 | tail -1 | tr -d '\r ')
 				mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch")
 			else
@@ -3200,7 +3200,7 @@ infoDisplay () {
 				fi
 			fi
 		elif [[ "$fake_distro" == "Cygwin" ]]; then
-			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
+			if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
 					myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++))
