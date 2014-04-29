@@ -1,27 +1,30 @@
 #!/usr/bin/env bash
 
-# screenFetch - a CLI Bash script to show system/theme info in screenshots
+# screenFetch
 
-# Copyright (c) 2010-2014 Brett Bohnenkamper <kittykatt@kittykatt.us>
+# Script to fetch system and theme settings for screenshots in most mainstream
+# Linux distributions.
 
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# Copyright (c) 2010-2012 Brett Bohnenkamper < kittykatt AT archlinux DOT us >
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+# and associated documentation files (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Yes, I do realize some of this is horribly ugly coding. Any ideas/suggestions would be
 # appreciated by emailing me or by stopping by http://github.com/KittyKatt/screenFetch . You
-# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com/me0wz
+# could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com:6667/screenFetch
 # to put forth suggestions/ideas. Thank you.
-
+#
 
 LANG=C
 LANGUAGE=C
@@ -196,25 +199,19 @@ detectColors() {
 
 displayHelp() {
 	printf "${underline}Usage${c0}:\n"
-#	printf "  screenFetch [OPTIONAL FLAGS]\n\n"
-	printf "  ${0} [OPTIONAL FLAGS]\n\n"
+	printf "  screenFetch [OPTIONAL FLAGS]\n\n"
 	printf "screenFetch - a CLI Bash script to show system/theme info in screenshots.\n\n"
-	printf "${underline}Supported GNU/Linux Distributions${c0}:\n"
-	printf "	Arch Linux (Old and Current Logos), Chakra, CentOS, Debian, CrunchBang,\n"
-	printf "	Raspbian, elementary OS, Fedora, Frugalware, Fuduntu, Gentoo, Funtoo,\n"
-	printf "	Jiyuu Linux, LinuxDeepin, Kali Linux, Mageia, Mandriva, Manjaro, Linux Mint,\n"
-	printf "	LMDE, openSUSE, Parabola GNU/Linux-libre, Peppermint, Red Hat Enterprise\n"
-	printf "	Linux, Sabayon, Scientific Linux, Slackware, SolusOS, TinyCore, Trisquel,\n"
-	printf "	Ubuntu and Viperr.\n\n"
-	printf "${underline}Other Supported Systems${c0}:\n"
-	printf "	Mac OS X, FreeBSD, DragonFlyBSD, NetBSD, OpenBSD, Android and Cygwin.\n\n"
-	printf "${underline}Supported Desktop Managers${c0}:\n"
-	printf "	KDE, Gnome, Unity, LXDE, Cinnamon, MATE and RazorQt.\n\n"
-	printf "${underline}Supported Window Managers${c0}:\n"
-	printf "	2bwm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, E16, Emerald,\n"
-	printf "	E17, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca,\n"
-	printf "	Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM,\n"
-	printf "	SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3.\n\n"
+	printf "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,\n"
+	printf "			      LMDE, Ubuntu, Crunchbang, Debian, Raspian, Gentoo, Fedora, SolusOS,\n"
+	printf "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,\n"
+	printf "			      Peppermint, Parabola GNU/Linux-libre, Viperr, LinuxDeepin, Chakra, \n"
+	printf "                              and FreeBSD, OpenBSD.\n"
+	printf "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present\n"
+	printf "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,\n"
+	printf "			      Metacity, StumpWM, KWin, IceWM, FVWM,\n"
+	printf "			      DWM, Awesome, XMonad, Musca, i3, WindowMaker,\n"
+	printf "			      Ratpoison, wmii, WMFS, ScrotWM, SpectrWM,\n"
+	printf "			      subtle, Emerald, E17 and Beryl.\n\n"
 	printf "${underline}Options${c0}:\n"
 	printf "   ${bold}-v${c0}                 Verbose output.\n"
 	printf "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the\n"
@@ -266,8 +263,8 @@ while getopts ":hsmevVEnNtlS:A:D:o:Bc:d:" flags; do
 		v) verbosity=1; continue;;
 		V)
 			printf $underline"screenFetch"$c0" - Version $scriptVersion\n"
-			printf "Created by and licensed to Brett Bohnenkamper <kittykatt@kittykatt.us>\n"
-			printf "OS X porting done almost solely by shrx <http://github.com/shrx/> and Hu6.\n\n"
+			printf "Created by and licensed to Brett Bohnenkamper (kittykatt@kittykatt.us)\n"
+			printf "OS X porting done almost solely by shrx (https://github.com/shrx) and Hu6.\n\n"
 			printf "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 			exit 0
 		;;
@@ -278,6 +275,7 @@ while getopts ":hsmevVEnNtlS:A:D:o:Bc:d:" flags; do
 		n) display_type="Text";;
 		o) overrideOpts=$OPTARG; continue;;
 		c) detectColors "$OPTARGS"; continue;;
+		# d) overrideDisplay=$OPTARG; continue;;
 		d) overrideDisplay=$OPTARG; continue;;
 		N) no_color='1';;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
@@ -423,7 +421,7 @@ detectdistro () {
 				distro="Peppermint"
 				distro_codename=null
 			elif [[ "${distro_detect}" == "CentOS" || "${distro_detect}" =~ "RedHatEnterprise" ]]; then
-				distro="Red Hat Enterprise Linux"
+				distro="Red Hat Linux"
 			elif [[ "${distro_detect}" == "Sabayon" ]]; then
 				distro="Sabayon"
 			elif [[ "${distro_detect}" == "SolusOS" ]]; then
@@ -519,7 +517,7 @@ detectdistro () {
 					elif [ -f /etc/mandrake-release ]; then distro="Mandrake"
 					elif [ -f /etc/mandriva-release ]; then distro="Mandriva"
 					elif [ -f /etc/SuSE-release ]; then distro="openSUSE"
-					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Enterprise Linux"
+					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Linux"
 					elif [ -f /etc/redhat-release ] && grep -q "CentOS" /etc/redhat-release; then distro="CentOS"
 					elif [ -f /etc/slackware-version ]; then distro="Slackware"
 					elif [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"
@@ -626,7 +624,7 @@ detectdistro () {
 		openbsd) distro="OpenBSD" ;;
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		netbsd) distro="NetBSD" ;;
-		red*hat*) distro="Red Hat Enterprise Linux" ;;
+		red*hat*) distro="Red Hat Linux" ;;
 		crunchbang) distro="CrunchBang" ;;
 		gentoo) distro="Gentoo" ;;
 		funtoo) distro="Funtoo" ;;
@@ -717,7 +715,7 @@ detectpkgs () {
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
-		'Fedora'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'openSUSE'|'Red Hat Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then 
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
@@ -2342,7 +2340,7 @@ asciiText () {
 "$c1                 ::::::::::::")
 		;;
 
-		"Red Hat Enterprise Linux")
+		"Red Hat Linux")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light red') # Light Red
@@ -3104,7 +3102,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
-		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
+		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
 		"CentOS"|"Ubuntu"|*) labelcolor=$(getColor 'yellow');;
