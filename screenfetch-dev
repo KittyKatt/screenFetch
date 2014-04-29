@@ -766,12 +766,12 @@ detectcpu () {
 			cpu=$(awk 'BEGIN{FS=":"} /^cpu/ { gsub(/  +/," ",$2); print $2; exit}' /proc/cpuinfo | sed 's/, altivec supported//;s/^ //')
 			if [[ $cpu =~ ^(PPC)*9.+ ]]; then
 				model="IBM PowerPC G5 "
+			elif [[ $cpu =~ 740/750 ]]; then
+				model="IBM PowerPC G3 "
 			elif [[ $cpu =~ ^74.+ ]]; then
 				model="Motorola PowerPC G4 "
 			elif [[ "$(cat /proc/cpuinfo)" =~ "BCM2708" ]]; then
 				model="Broadcom BCM2835 ARM1176JZF-S"
-			else
-				model="IBM PowerPC G3 "
 			fi
 			cpu="${model}${cpu}"
 		fi
