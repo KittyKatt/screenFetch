@@ -1002,15 +1002,15 @@ detectshell_ver () {
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
 		if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
-			shell_type=$(ps -p $(ps -p $PPID -o pid --no-heading) -o cmd --no-heading)
+			shell_type=$(ps -p $PPID -o cmd --no-heading)
 			shell_type=${shell_type/-}
 			shell_type=${shell_type//*\/}
 		elif [[ "${distro}" == "Mac OS X" ]]; then
-			shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
+			shell_type=$(ps -p $PPID -o args| tail -1)
 			shell_type=${shell_type/-}
 			shell_type=${shell_type//*\/}
 		elif [[ "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" ]]; then
-			shell_type=$(ps -p $(ps -p $PPID -o pid | tail -1) -o args| tail -1)
+			shell_type=$(ps -p $PPID -o args| tail -1)
 			shell_type=${shell_type/-}
 			shell_type=${shell_type//*\/}
 		elif [[ "${distro}" == "Cygwin" ]]; then
