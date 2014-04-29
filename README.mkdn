@@ -41,19 +41,31 @@ or wherever you saved the script to. This will generate an ascii logo with the
 information printed to the side of the logo. There are some options that may be
 specifiedon the command line, and those are shown below or by executing `screenFetch -h`:
 
-        -v              Verbose output.
-        -n              Do no display ASCII distribution logo.
-        -s              Using this flag tells the script that you want it to
-                        take a screenshot.
-        -l              Specify that you have a light background. This
-                        turns all white text into dark gray text (in ascii
-                        logos and in information output).
-        -c 'COMMAND'    Here you can specify a custom screenshot command for
-                        the script to execute. Surrounding quotes are required.
-        -D 'DISTRO'     Here you can specify your distribution for the script
-                        to use. Surrounding quotes are required.
-        -V              Display current script version.
-        -h              Display this help.
+      -v                 Verbose output.
+      -o 'OPTIONS'       Allows for setting script variables on the
+                         command line. Must be in the following format...
+                         'OPTION1="OPTIONARG1";OPTION2="OPTIONARG2"'
+      -n                 Do not display ASCII distribution logo.
+      -N                 Strip all color from output.
+      -t                 Truncate output based on terminal width (Experimental!).
+      -s(m)              Using this flag tells the script that you want it
+                         to take a screenshot. Use the -m flag if you would like
+                         to move it to a new location afterwards.
+      -c string          You may change the outputted colors with -c. The format is
+                         as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the
+                         ASCII logo colors and the label colors. The second argument
+                         controls the colors of the information found. One argument may be
+                         used without the other.
+      -S 'COMMAND'       Here you can specify a custom screenshot command for
+                         the script to execute. Surrounding quotes are required.
+      -D 'DISTRO'        Here you can specify your distribution for the script
+                         to use. Surrounding quotes are required.
+      -A 'DISTRO'        Here you can specify the distribution art that you want
+                         displayed. This is for when you want your distro
+                         detected but want to display a different logo.
+      -E                 Suppress output of errors.
+      -V                 Display current script version.
+      -h                 Display this help.
 
 
 ## Contact Me
