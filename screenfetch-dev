@@ -1071,7 +1071,11 @@ detectres () {
 	elif [[ "${distro}" == "Cygwin" ]]; then
 		width=$(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr -d '\r\n ')
 		height=$(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr -d '\r\n ')
-		xResolution="${width}x${height}"
+		if [[ -z "$width" || -z "$height" ]]; then
+			xResolution=""
+		else
+			xResolution="${width}x${height}"
+		fi
 	else
 		xResolution="No X Server"
 	fi
@@ -3137,7 +3141,7 @@ infoDisplay () {
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
 			elif [[ "$distro" == "Cygwin" ]]; then
 				distro=$(wmic os get name | head -2 | tail -1)
-				distro=$(expr match "$distro" '\(Microsoft Windows [A-Za-z0-9]\+\)')
+				distro=$(expr match "$distro" '\(Microsoft Windows [A-Za-z0-9.]\+\)')
 				sysArch=$(wmic os get OSArchitecture | head -2 | tail -1 | tr -d '\r ')
 				mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch")
 			else
@@ -3200,7 +3204,7 @@ infoDisplay () {
 				fi
 			fi
 		elif [[ "$fake_distro" == "Cygwin" ]]; then
-			if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
+			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
 					myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++))
