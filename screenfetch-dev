@@ -1069,9 +1069,15 @@ detectres () {
 			xResolution=$(echo $xResolution | tr "\\n" "," | sed 's/\(.*\),/\1/')
 		fi
 	elif [[ "${distro}" == "Cygwin" ]]; then
-		width=$(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr -d '\r\n ')
-		height=$(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr -d '\r\n ')
-		xResolution="${width}x${height}"
+		width=$(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr '\r\n' ' ')
+		height=$(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr '\r\n' ' ')
+
+		xResolution=""
+		len=${#width[@]}
+		for ((i=0;i<len;i++)); do
+			xResolution="$xResolution + ${width[i]}x${height[i]}"
+		done
+		xResolution=$(echo $xResolution | sed 's/\+//')
 	else
 		xResolution="No X Server"
 	fi
