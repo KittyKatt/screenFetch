@@ -355,10 +355,7 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "CentOS" ]]; then
 				distro="CentOS"
 			elif [[ "${distro_detect}" == "Debian" ]]; then
-				if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
-					distro="CrunchBang"
-					distro_release=$(awk -F'=' '/^DISTRIB_RELEASE=/ {print $2}' /etc/lsb-release-crunchbang)
-					distro_codename=$(awk -F'=' '/^DISTRIB_DESCRIPTION=/ {print $2}' /etc/lsb-release-crunchbang)
+				distro="Debian"
 				elif [[ -f /etc/os-release ]]; then
 					if [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
 						distro="Raspbian"
@@ -603,10 +600,7 @@ detectdistro () {
 				fi
 			fi
 
-
-
 		fi
-	fi
 	if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
 		if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
 			distro=${distro,,}
