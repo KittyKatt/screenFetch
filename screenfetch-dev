@@ -1316,6 +1316,7 @@ detectwm () {
 					'dminiwm') WM="dminiwm";;
 					'dwm') WM="dwm";;
 					'e16') WM="E16";;
+					'echinus') WM="echinus";;
 					'emerald') WM="Emerald";;
 					'enlightenment') WM="E17";;
 					'fluxbox') WM="FluxBox";;
