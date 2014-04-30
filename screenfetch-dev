@@ -345,6 +345,10 @@ detectdistro () {
 			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" || "${distro_detect}" == "Arch" || "${distro_detect}" == "archarm" ]]; then
 				distro="Arch Linux"
 				distro_release="n/a"
+				if grep -q 'antergos' /etc/os-release; then
+					distro="Antergos"
+					distro_release="n/a"
+				fi
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
 				distro="Chakra"
 				distro_release=null
