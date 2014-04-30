@@ -472,6 +472,7 @@ detectdistro () {
 				fi
 
 				# Hotfixes
+				[[ "${distro}" == "antergos" || "${distro}" == "Antergos" ]] && distro="Antergos"
 				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 				[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
 				[[ "${distro}" == "elementary" ]] && distro="elementary OS"
@@ -610,6 +611,7 @@ detectdistro () {
 		distro="$(tr '[:upper:]' '[:lower:]' <<< ${distro})"
 	fi
 	case $distro in
+		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch*linux) distro="Arch Linux" ;;
 		arch) distro="Arch Linux";;
@@ -715,7 +717,7 @@ detectuptime () {
 detectpkgs () {
 	pkgs="Unknown"
 	case $distro in
-		'Arch Linux'|'ParabolaGNU/Linux-libre'|'Chakra'|'Manjaro') pkgs=$(pacman -Qq | wc -l) ;;
+		'Arch Linux'|'ParabolaGNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
@@ -3002,6 +3004,33 @@ asciiText () {
 "${c1}        /.                     %s")
 		;;
 
+		"Antergos")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'blue') # Light Blue
+				c2=$(getColor 'light blue') # Light Blue
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			fulloutput=("${c1}               \`.-/::/-\`\`"
+"${c1}            .-/osssssssso/.               %s"
+"${c1}           :osyysssssssyyys+-            %s"
+"${c1}        \`.+yyyysssssssssyyyyy+.          %s"
+"${c1}       \`/syyyyyssssssssssyyyyys-\`        %s"
+"${c1}      \`/yhyyyyysss${c2}++${c1}ssosyyyyhhy/\`        %s"
+"${c1}     .ohhhyyyys${c2}o++/+o${c1}so${c2}+${c1}syy${c2}+${c1}shhhho.      %s"
+"${c1}    .shhhhys${c2}oo++//+${c1}sss${c2}+++${c1}yyy${c2}+s${c1}hhhhs.     %s"
+"${c1}   -yhhhhs${c2}+++++++o${c1}ssso${c2}+++${c1}yyy${c2}s+o${c1}hhddy:    %s"
+"${c1}  -yddhhy${c2}o+++++o${c1}syyss${c2}++++${c1}yyy${c2}yooy${c1}hdddy-   %s"
+"${c1} .yddddhs${c2}o++o${c1}syyyyys${c2}+++++${c1}yyhh${c2}sos${c1}hddddy\`  %s"
+"${c1}\`odddddhyosyhyyyyyy${c2}++++++${c1}yhhhyosddddddo  %s"
+"${c1}.dmdddddhhhhhhhyyyo${c2}+++++${c1}shhhhhohddddmmh. %s"
+"${c1}ddmmdddddhhhhhhhso${c2}++++++${c1}yhhhhhhdddddmmdy %s"
+"${c1}dmmmdddddddhhhyso${c2}++++++${c1}shhhhhddddddmmmmh %s"
+"${c1}-dmmmdddddddhhys${c2}o++++o${c1}shhhhdddddddmmmmd- %s"
+"${c1} .smmmmddddddddhhhhhhhhhdddddddddmmmms. %s"
+"${c1}   \`+ydmmmdddddddddddddddddddmmmmdy/.     %s"
+"${c1}      \`.:+ooyyddddddddddddyyso+:.\`")
+		;;
 
 		*)
 			if [[ "$no_color" != "1" ]]; then
@@ -3106,7 +3135,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
