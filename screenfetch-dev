@@ -1975,6 +1975,35 @@ asciiText () {
 "$c1                          \`oo++.      %s")
 		;;
 
+		"Kubuntu")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') # Light Blue
+				c2=$(getColor 'white') # White
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("$c1               \`..-:::--.\`                %s"
+"$c1           ./osyyyyyyyyyyyyo/-           %s"
+"$c1        -+yyyyyyso+/yyyyyyyyyyyo:        %s"
+"$c1      -syyyyyyyyo"$c2"####"$c1"-yyyyyo-:oyyyy/     %s"
+"$c1    .oyyys/syyyyy."$c2"###"$c1"-/++."$c2"###"$c1"\`syyyyy:    %s"
+"$c1   -yyyy/"$c2"###"$c1"-oyyy+"$c2"::\'//:-####"$c1"+yyyyyyy+   %s"
+"$c1  .yyyyyy-"$c2"####"$c1"/yyyyyyyyyys/\`"$c2"#/"$c1"yyyyyyyy+  %s"
+"$c1  syyyyyyy-"$c2"##"$c1".oyyyyyyyyyyyyyy"$c2":##\`\`\`"$c1".oyyy %s"
+"$c1 -yyyyyso/"$c2"#\`"$c1"syyyyyyyyyyyyyyyy/"$c2"####\`"$c1":yyyo %s"
+"$c1 +yyy\`"$c2"#####"$c1"/yyyyyyyyyyyyyyyyyy+osyyyyyyy %s"
+"$c1 +yyy-\`"$c2"####"$c1"/yyyyyyyyyyyyyyyyyyyyyyyyyyyy %s"
+"$c1 :yyyyyys/"$c2"#."$c1"yyyyyyyyyyyyyyyyy"$c2"/#####/"$c1"oyyy %s"
+"$c1 \`syyyyyyy."$c2"#"$c1".syyyyyyyyyyyyyy/"$c2"#####"$c1"oyyys  %s"
+"$c1  -yyyyys-"$c2"###"$c1".syyyyyyyyyys+."$c2"#"$c1":sssooyyyo %s"
+"$c1   -yyyy:"$c2"##"$c1"\`/yyyy::"$c2"##//:.###"$c1"-yyyyyyyyo %s"
+"$c1    .syyyo/yyyyy+"$c2"####"$c1":/y"$c2"\\####"$c1"oyyyyyy/   %s"
+"$c1      :syyyyyyyy."$c2"##"$c1"\`oyyyy+"$c2"\`\`"$c1"-oyyyy+.%s"
+"$c1        -oyyyyyyo+/oyyyyyyyyyyys/\`      %s"
+"$c1          \`-/oyyyyyyyyyyyyys+:.         %s"
+"$c1               \`.-:::::--.\`             %s")
+		;;
+
 		"Debian")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -3106,7 +3135,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Kubuntu") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
