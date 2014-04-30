@@ -78,6 +78,9 @@ bold="\033[1m" # Bold Text
 underline="\033[4m" # Underline Text
 display_index=0
 
+# User options
+gtk_2line="no"
+
 # Static Color Definitions
 colorize () {
 	echo -ne "\033[38;5;$1m"
@@ -3189,7 +3192,12 @@ infoDisplay () {
 							mygtk3="${gtk3Theme} [GTK3]"
 						fi
 					fi
-					mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${mygtk2}${mygtk3}"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+					if [[ "$gtk_2line" == "yes" ]]; then 
+						mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++))
+						mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
+					else
+						mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${mygtk2}${mygtk3}"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+					fi
 					if [ "$gtkIcons" != "Not Found" ]; then
 						if [ -n "$gtkIcons" ]; then 
 							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
