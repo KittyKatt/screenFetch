@@ -363,7 +363,9 @@ detectdistro () {
 					if [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
 						distro="Raspbian"
 						distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
-				fi
+					else
+						distro="Debian"
+					fi
 				else
 					distro="Debian"
 				fi
