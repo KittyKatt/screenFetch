@@ -29,7 +29,7 @@ master (2014-04-30)
 	- Fixes for Cinnamon
 	- Fix for Android being detected if getprop exists. Disabling Android support until I figure out a better detection method.
 	- Redirect STDERR to function to make errors prettier.
-	- Commenting gsettings usage for GTK3 theme detection. Causes glib core dump in some places. Removed until I figure out why. 
+	- Commenting gsettings usage for GTK3 theme detection. Causes glib core dump in some places. Removed until I figure out why.
 
 v3.2.2
 	- Adding a 256 support for Ubuntu logo
