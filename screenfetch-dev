@@ -1069,8 +1069,8 @@ detectres () {
 			xResolution=$(echo $xResolution | tr "\\n" "," | sed 's/\(.*\),/\1/')
 		fi
 	elif [[ "${distro}" == "Cygwin" ]]; then
-		width=$(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr '\r\n' ' ')
-		height=$(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr '\r\n' ' ')
+		width=($(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr '\r\n' ' '))
+		height=($(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr '\r\n' ' '))
 
 		xResolution=""
 		len=${#width[@]}
