@@ -1074,10 +1074,12 @@ detectres () {
 
 		xResolution=""
 		len=${#width[@]}
+		
+		delim=" "
 		for ((i=0;i<len;i++)); do
-			xResolution="$xResolution + ${width[i]}x${height[i]}"
+			xResolution="${xResolution}${delim}${width[i]}x${height[i]}"
 		done
-		xResolution=$(echo $xResolution | sed 's/\+//')
+		xResolution=$(echo $xResolution | sed "s/^$delim//")
 	else
 		xResolution="No X Server"
 	fi
