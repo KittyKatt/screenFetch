@@ -308,10 +308,6 @@ v2.1.5
 	- Lots of capitalization errors in WM detection were brought to my attention. Fixed.
 	- Attempting to fix detection of Crunchbang Statler.
 
-v2.3.8
-	- Changed to relying on /proc/sys/kernel/hostname for hostname now instead of the `hostname`.
-	- Added tentative support for monsterwm and dminiwm.
-
 v2.1.4
 	- Commented out the DISPLAY setting on commandline until its stable.
 
