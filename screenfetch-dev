@@ -371,8 +371,7 @@ detectdistro () {
 				fi
 			elif [[ "${distro_detect}" == "elementary" || "${distro_detect}" == "elementary OS" ]]; then
 				distro="elementary OS"
-				
-			elif [[ "${distro_detect}" == "KaOS" || "${distro_detect}" == "kaos"]]; then
+			elif [[ "${distro_detect}" == "KaOS" || "${distro_detect}" == "kaos" ]]; then
 				distro="KaOS"	
 			elif [[ "${distro_detect}" == "Fedora" ]]; then
 				distro="Fedora"
