@@ -3,6 +3,67 @@
     changelog
 **** **** **** ****
 
+master (2014-04-30)
+	- update list of supported systems
+	- Add Antergos support.
+	- Fix Parabola pkg detection.
+	- Adding support for the echinus (dwm fork) WM.
+	- Add 2bwm support.
+	- Various Parabola GNU/Linux-libre aesthetic fixes.
+	- Adding NetBSD to supported distros in --help.
+	- Fix OpenBSD total RAM output.
+	- Un-camelCase the *box WMs, matching the documentation for the *box WMs.
+	- Added support for Windows 8.1 (Cygwin)
+	- Removed resolution from screenfetch when resolution cannot be found (Win8.1 cygwin)
+	- Fix detection of PowerPC G3 to be more exact instead of triggering on UltraSparcs
+	- Fixing shrx's URL.
+	- add manpage
+	- update header license text to GPLv3
+	- Red Hat Linux -> Red Hat Enterprise Linux
+	- Fix Parabola in --help.
+	- improved GPU detection formatting, fixed dual GPU detection formatting
+	- Fixes for OS X
+	- Fix Arch Linux detection for updated lsb_release
+	- Fix for Debian
+	- Added support for Raspbian
+	- Fixes for Cinnamon
+	- Fix for Android being detected if getprop exists. Disabling Android support until I figure out a better detection method.
+	- Redirect STDERR to function to make errors prettier.
+	- Commenting gsettings usage for GTK3 theme detection. Causes glib core dump in some places. Removed until I figure out why.
+
+v3.2.2
+	- Adding a 256 support for Ubuntu logo
+	- gpu_info code is still present but no longer in use
+	- OSX: Fix X11.app from launching, add Theme Name, GTK fix, fix for Mac's version of sed to fix cpu detection
+	- Fix for LXDE detection related things.
+	- Fixes for elementary OS detection.
+	- Adding Jiyuu Linux detection and ASCII.
+	- Fix for Funtoo detection and Funtoo-text.
+
+v3.2.0
+	- Add Support to Kali Linux.
+	- Possible fix for distro detection with cases.
+	- Fixes for CentOS detection.
+	- Fix for bspwm.
+	- Removing disk from DISPLAY.
+	- Fixes for Mutter/GNOME Shell
+	- Fixing spacing issues in new eOS ASCII.
+
+v3.1.0
+	- Fixing some stuff for FreeBSD GPU detection.
+	- Add alternate Manjaro art. Use with -A 'Manjaro-tree'.
+	- Fixed funtoo detection
+	- Added Sabayon
+	- Tweaked Fedora art
+	- Adding Notion WM to detected window managers
+	- Adding GPU detection to display and Cygwin GPU detection
+	- Color centralization. All logos and labels use color aliases now (i.e. blue/light blue).
+	- Fix for verbose output with error suppressing (-E).
+	- Fix for *BSD detectdisk.
+	- Fixing a problem with _net_wm_name
+	- Fix for elementary OS detection
+	- Fix for the BASH pre 4.0-ish lower-to-upper in WM detection.
+
 v3.0.5
 	- OS X GPU detection added.
 	- Fix for -n.
@@ -178,15 +239,77 @@ v2.3.9
 	- Added MATE detection, theme detection possibly not working yet. Fixed WindowMaker detection.
 	- Getting a DEB out! \o/
 
-
 v2.3.8
-	- Changed to relying on /proc/sys/kernel/hostname for hostname now instead of the `hostname`.
-	- Added tentative support for monsterwm and dminiwm.
+	- Adding tentative dminiwm support.
+	- net-tools deprecated. Relying on /proc/sys/kernel/hostname from now on.
+	- Adding tentative monsterwm support.
+	- Fixing openSUSE detection
 
+v2.3.7
+	- Correctly tabulated and added Mageia distro detection and ASCII.
+	- Adding tentative SolusOS detection via /etc/issue
+	- Adding SolusOS logo and colors.
 
-############################
- Didn't update this. Again.
-############################
+v2.3.6
+	- Adding tentative PeppermintOS detection.
+	- A couple of attempted KDE/KWin fixes.
+	- Fixed /etc/os-release detection
+	- Updating Frugalware detection with /etc/os-release.
+
+v2.3.5
+	- Adding tentative Frugalware detection.
+	- Adding 256 color support.
+	- suse and version fix
+	- Fixed a couple logo spacing issues. Added spaceing insensitivity to the -D flag.
+	- Added / fixed LXDE support.
+
+v2.3.4
+	- Fixed an error causing stuff to not be detected.
+	- e17 support
+	- Several other fixes an revertions
+
+v2.3.2
+	- Adding new Slackware ASCII art and detection.
+
+v2.3.1
+	- Fixing 'n/a' displaying of release/codename in my_distro.
+
+v2.3.0
+	- Added SuSe detection and made an ASCII logo for it.
+
+v2.2.9
+	- Attempting to fix DE detection with new GDM3
+
+v2.2.8
+	- Fixing some quotes errors and LMDE detection.
+
+v2.2.7
+	- Fixed a few space errors in Debian logo and added new LMDE logo.
+	- Removing official Compiz support. That should straighten a few things out.
+
+v2.2.4
+	- Temporarily re-enabling bg support via -B flag.
+
+v2.2.3
+	- Removing showing background by default by request.
+	- Correction in WM name (subtle)
+
+v2.2.1
+	- Added a couple of WMs: subtle, e16, and sawfish
+
+v2.2.0
+	- Deleted extra ASCII stuff and completely rewrote output stuff.
+
+v2.1.7
+	- Added a few changes and lsb_release support.
+
+v2.1.5
+	- Fixed multi-monitor resolution detection and modified default screenshot filename.
+	- Lots of capitalization errors in WM detection were brought to my attention. Fixed.
+	- Attempting to fix detection of Crunchbang Statler.
+
+v2.1.4
+	- Commented out the DISPLAY setting on commandline until its stable.
 
 v2.1.3 (HOLY SHIT BIG CHANGES)
 	- Added shitload of new features. Keep reading.
@@ -202,10 +325,13 @@ v2.1.3 (HOLY SHIT BIG CHANGES)
 	- Fixed bug in GNOME background output. Was outputing entire pathname. Now only outputs the filename of the image.
 	- Replaced old Arch Linux logo with new updated one. Don't really like the new one, but it was popular demand. Old one is still available through -D with the 'Arch Linux	- Old' argument for those of us that are old school.
 
-###################################
- .... oh. didn't update this ....
-###################################
+v2.0.3
+	- Adding XMonad detection.
 
+v2.0.1
+	- Fixing some spelling errors and added a few minor things.
+	- Experimental truncating based upon terminal width.
+	- Changed default Arch Linux ASCII logo due to popular demand. Old one is still available.
 
 v1.8.4
 	- Added experimental Compiz detection (WM and theme)
