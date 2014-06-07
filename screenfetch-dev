@@ -751,9 +751,6 @@ detectpkgs () {
 		;;
 		'OpenBSD') 
 			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
-			if type -p portmaster >/dev/null 2>&1; then
-				pkgs=$((${pkgs} + ${ports}))
-			fi
 		;;
 		'FreeBSD')
 			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then 
