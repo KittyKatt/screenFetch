@@ -205,7 +205,7 @@ displayHelp() {
 	printf "${underline}Supported GNU/Linux Distributions${c0}:\n"
 	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, CentOS, Debian,\n"
 	printf "	CrunchBang, Raspbian, elementary OS, Fedora, Frugalware, Fuduntu, Gentoo,\n"
-	printf "	Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, Mageia, Mandriva, Manjaro,\n"
+	printf "	Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, Korora, Mageia, Mandriva, Manjaro,\n"
 	printf "	Linux Mint, LMDE, openSUSE, Parabola GNU/Linux-libre, Peppermint,\n"
 	printf "	Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, SolusOS,\n"
 	printf "	TinyCore, Trisquel, Ubuntu and Viperr.\n\n"
@@ -396,6 +396,8 @@ detectdistro () {
 				distro_codename=null
 			elif [[ "${distro_detect}" == "Debian Kali Linux" ]]; then
 				 distro="Kali Linux"
+			elif [[ "${distro_detect}" == "Korora" ]]; then
+				distro="Korora"
 			elif [[ "${distro_detect}" == "Mageia" ]]; then
 				distro="Mageia"
 			elif [[ "$distro_detect" == "MandrivaLinux" ]]; then
@@ -521,6 +523,7 @@ detectdistro () {
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
 					elif [ -f /etc/debian_version ]; then distro="Debian"
 					elif [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then distro="Fedora"
+					elif [ -f /etc/fedora-release ] && grep -q "Korora" /etc/fedora-release; then distro="Korora"
 					elif [ -f /etc/frugalware-release ]; then distro="Frugalware"
 					elif [ -f /etc/gentoo-release ]; then
 						if grep -q "Funtoo" /etc/gentoo-release ; then
@@ -626,6 +629,7 @@ detectdistro () {
 		arch) distro="Arch Linux";;
 		'elementary'|'elementary os') distro="elementary OS";;
 		fedora) distro="Fedora" ;;
+		korora) distro="Korora" ;;
 		mageia) distro="Mageia" ;;
 		mandriva) distro="Mandriva" ;;
 		mandrake) distro="Mandrake" ;;
@@ -732,7 +736,7 @@ detectpkgs () {
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
-		'Fedora'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'Korora'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then 
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
@@ -2162,6 +2166,31 @@ asciiText () {
 "                                     %s")
 		;;
 
+		"Korora")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'white')
+				c2=$(getColor 'dark grey')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("$c1                                 %s"
+"$c1              _add55555555554"$c2",  %s"
+"$c1            _w?'"$c2"\`\`\`\`\`\`\`\`\`\`'"$c1")k"$c2"\`  %s"
+"$c1           _Z'"$c2"\`"$c1"            ]k"$c2"\`  %s"
+"$c1           m("$c2"\`"$c1"             )k"$c2"\`  %s"
+"$c1      _.ss"$c2"\`"$c1"m["$c2"\`"$c1",            ]e"$c2"\`  %s"
+"$c1    .uY\"^\`"$c2"\`"$c1"Xc"$c2"\`"$c1"?Ss.         d("$c2"\`  %s"
+"$c1   jF'"$c2"\`"$c1"    \`@.  "$c2"\`"$c1"Sc      .jr"$c2"\`   %s"
+"$c1  jr"$c2"\`"$c1"       \`?n_ "$c2"\`"$c1"$;   _a2\""$c2"\`    %s"
+"$c1 .m"$c2":"$c1"          \`~M"$c2":"$c1"1k"$c2"\`"$c1"5?!\`"$c2"\`      %s"
+"$c1 :#"$c2":"$c1"              )e"$c2"\`           %s"
+"$c1 :m"$c2":"$c1"             ,#'"$c2"\`           %s"
+"$c1 :#"$c2":"$c1"           .s2'"$c2"\`            %s"
+"$c1 :m,________.aa7^"$c2"\`              %s"
+"$c1 :#baaaaaaas!\""$c2"\`                 %s"
+"$c2  \"\"\"\"\"\"\"\"\"'\`                   %s")
+		;;
+
 		"FreeBSD")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # white
@@ -3185,7 +3214,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Korora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
