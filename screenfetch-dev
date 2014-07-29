@@ -2169,7 +2169,7 @@ asciiText () {
 		"Korora")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white')
-				c2=$(getColor 'dark grey')
+				c2=$(getColor 'light blue')
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
