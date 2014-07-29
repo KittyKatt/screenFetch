@@ -208,7 +208,7 @@ displayHelp() {
 	printf "	Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
 	printf "	Mandriva, Manjaro, Linux Mint, LMDE, openSUSE, Parabola GNU/Linux-libre,\n"
 	printf "	Peppermint, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware,\n"
-	printf "	SolusOS, TinyCore, Trisquel, Ubuntu and Viperr.\n\n"
+	printf "	SolusOS, TinyCore, Trisquel, Ubuntu, Viperr and Void.\n\n"
 	printf "${underline}Other Supported Systems${c0}:\n"
 	printf "	Mac OS X, FreeBSD, DragonFlyBSD, NetBSD, OpenBSD, Android and Cygwin.\n\n"
 	printf "${underline}Supported Desktop Managers${c0}:\n"
@@ -449,6 +449,10 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Viperr" ]]; then
 				distro="Viperr"
 				distro_codename=null
+			elif [ grep -q 'void' /etc/os-release ]; then
+				distro="Void"
+				distro_release="n/a"
+				distro_codename="n/a"
 			fi
 			if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro_release"; fi
 			if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro_more $distro_codename"; fi
@@ -654,6 +658,7 @@ detectdistro () {
 		solusos) distro="SolusOS" ;;
 		parabolagnu|parabolagnu/linux-libre|'parabola gnu/linux-libre'|parabola) distro="Parabola GNU/Linux-libre" ;;
 		viperr) distro="Viperr" ;;
+		void) distro="Void" ;;
 		kaos) distro="KaOS";;
 		linuxdeepin) distro="LinuxDeepin" ;;
 		chakra) distro="Chakra" ;;
@@ -3111,6 +3116,34 @@ asciiText () {
 "${c1}      \`.:+ooyyddddddddddddyyso+:.\`")
 		;;
 
+		"Void")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'green')       # Dark Green
+				c2=$(getColor 'light green') # Light Green
+				c3=$(getColor 'dark grey')   # Black
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c2}                 __.;=====;.__                  %s"
+"${c2}             _.=+==++=++=+=+===;.              %s"
+"${c2}              -=+++=+===+=+=+++++=_            %s"
+"${c1}         .     "${c2}"-=:\`\`     \`--==+=++==.          %s"
+"${c1}        _vi,    "${c2}"\`            --+=++++:         %s"
+"${c1}       .uvnvi.       "${c2}"_._       -==+==+.        %s"
+"${c1}      .vvnvnI\`    "${c2}".;==|==;.     :|=||=|.       %s"
+"${c3} +QmQQm"${c1}"pvvnv; "${c3}"_yYsyQQWUUQQQm #QmQ#"${c2}":"${c3}"QQQWUV\$QQmL %s"
+"${c3}  -QQWQW"${c1}"pvvo"${c3}"wZ?.wQQQE"${c2}"==<"${c3}"QWWQ/QWQW.QQWW"${c2}"(: "${c3}"jQWQE %s"
+"${c3}   -\$QQQQmmU'  jQQQ@"${c2}"+=<"${c3}"QWQQ)mQQQ.mQQQC"${c2}"+;${c3}jWQQ@' %s"
+"${c3}    -\$WQ8Y"${c1}"nI:   ${c3}QWQQwgQQWV"${c2}"\`"${c3}"mWQQ.jQWQQgyyWW@!   %s"
+"${c1}      -1vvnvv.     "${c2}"\`~+++\`        ++|+++        %s"
+"${c1}       +vnvnnv,                 "${c2}"\`-|===         %s"
+"${c1}        +vnvnvns.           .      "${c2}":=-         %s"
+"${c1}         -Invnvvnsi..___..=sv=.     "${c2}"\`          %s"
+"${c1}           +Invnvnvnnnnnnnnvvnn;.              %s"
+"${c1}             ~|Invnvnvvnvvvnnv}+\`              %s"
+"${c1}                -~\"|{*l}*|\"\"~                  %s")
+		;;
+
 		*)
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -3216,7 +3249,7 @@ infoDisplay () {
 	case ${myascii} in
 		"Arch Linux - Old"|"Fedora"|"Korora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia") labelcolor=$(getColor 'light cyan');;
-		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
+		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
