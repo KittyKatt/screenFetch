@@ -27,6 +27,10 @@ command! This script is very easy to add to and can easily be extended.
 1. Emerge screenfetch from portage using `emerge screenfetch`
 2. Sabayon users can install screenfetch from entropy using 'equo install screenfetch'
 
+### Debian
+
+1. Install `apt-get install screenfetch` (for unstable) That's it!
+
 ### Others
 
 1. Download the latest source. Found at http://git.silverirc.com/cgit.cgi/screenfetch.git/plain/screenfetch-dev
