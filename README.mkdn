@@ -31,6 +31,10 @@ command! This script is very easy to add to and can easily be extended.
 
 1. Install `apt-get install screenfetch` (for unstable) That's it!
 
+### FreeBSD
+
+1. screenfetch can be installed by using the ports system.
+
 ### Others
 
 1. Download the latest source. Found at http://git.silverirc.com/cgit.cgi/screenfetch.git/plain/screenfetch-dev
