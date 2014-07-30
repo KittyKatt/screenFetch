@@ -471,6 +471,11 @@ detectdistro () {
 				for l in $(echo $distrib_id); do
 					if [[ ${l} =~ ^ID= ]]; then
 						distrib_id=${l//*=}
+						# Quick fix for Arch Linux ARM on Raspberry Pi
+						if [[ $distrib_id == "archarm" ]]; then
+							# Ugly fix - set archarm to arch
+							distrib_id=${distrib_id:0:4}
+						fi
 						break 1
 					fi
 				done
