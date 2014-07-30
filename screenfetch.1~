@@ -1,7 +1,7 @@
 .\" This manpage was created with the following command and
 .\" then manually edited:
 .\" help2man -N -v "-V" -h "-h" ./screenfetch > screenfetch.1
-.TH SCREENFETCH "1" "July 2014" "3.6.0" "User Commands"
+.TH SCREENFETCH "1" "July 2014" "3.5.0" "User Commands"
 
 .SH NAME
 screenFetch \- The Bash Screenshot Information Tool
