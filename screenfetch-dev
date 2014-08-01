@@ -2053,7 +2053,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-                        fulloutput=(" $c1   .',;:cc;,'.   .,;::c:,,.     %s"
+                        fulloutput=(" $c1   .',;:cc;,'.    .,;::c:,,.    %s"
 "   $c1,ooolcloooo:  'oooooccloo:   %s"
 "   $c1.looooc;;:ol  :oc;;:ooooo'   %s"
 "     $c1;oooooo:      ,ooooooc.    %s"
