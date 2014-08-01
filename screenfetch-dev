@@ -471,6 +471,7 @@ detectdistro () {
 				for l in $(echo $distrib_id); do
 					if [[ ${l} =~ ^ID= ]]; then
 						distrib_id=${l//*=}
+						distrib_id=${distrib_id//\"/}
 						break 1
 					fi
 				done
@@ -742,6 +743,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'Korora'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Void') pkgs=$(xbps-query -l|wc -l);;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then 
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
@@ -2051,7 +2053,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-                        fulloutput=("  $c1   .',;:cc;,'.     .,;::c:,,.  %s"
+                        fulloutput=(" $c1   .',;:cc;,'.   .,;::c:,,.     %s"
 "   $c1,ooolcloooo:  'oooooccloo:   %s"
 "   $c1.looooc;;:ol  :oc;;:ooooo'   %s"
 "     $c1;oooooo:      ,ooooooc.    %s"
