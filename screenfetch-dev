@@ -449,7 +449,7 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Viperr" ]]; then
 				distro="Viperr"
 				distro_codename=null
-			elif [ grep -q 'void' /etc/os-release ]; then
+			elif grep -q 'void' /etc/os-release ; then
 				distro="Void"
 				distro_release="n/a"
 				distro_codename="n/a"
