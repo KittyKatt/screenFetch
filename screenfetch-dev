@@ -54,6 +54,8 @@ denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsessio
 # Screenshot Settings
 # This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
 screenshot=
+# This setting lets the script know if you want to upload the screenshot to Teknik.  1=Yes 0=No
+upload=
 # You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
 hostshot=
@@ -232,9 +234,10 @@ displayHelp() {
 	printf "   ${bold}-n${c0}                 Do not display ASCII distribution logo.\n"
 	printf "   ${bold}-N${c0}                 Strip all color from output.\n"
 	printf "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!).\n"
-	printf "   ${bold}-s(m)${c0}              Using this flag tells the script that you want it\n"
+	printf "   ${bold}-s(m)(u)${c0}              Using this flag tells the script that you want it\n"
 	printf "		      to take a screenshot. Use the -m flag if you would like\n"
-	printf "		      to move it to a new location afterwards.\n"
+	printf "		      to move it to a new location afterwards. Use the -u flag\n"
+  printf "          if you would like to upload the screenshot to teknik.io.\n"
 	printf "   ${bold}-c string${c0}          You may change the outputted colors with -c. The format is\n"
 	printf "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the\n"
 	printf "                      ASCII logo colors and the label colors. The second argument\n"
@@ -261,10 +264,11 @@ case $1 in
 esac
 		
 
-while getopts ":hsmevVEnNtlS:A:D:o:Bc:d:" flags; do
+while getopts ":hsumevVEnNtlS:A:D:o:Bc:d:" flags; do
 	case $flags in
 		h) displayHelp; exit 0;;
 		s) screenshot=1; continue;;
+    u) upload=1; continue;;
 		S) screenCommand=$OPTARG; continue;;
 		m) hostshot=1; continue;;
 		v) verbosity=1; continue;;
@@ -1824,6 +1828,16 @@ takeShot () {
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfiles[@]}'"
 				scp -qo ConnectTimeout="${scptimeout}" "${shotfiles[@]}" "${serveraddr}:${serverdir}"
 				echo -e "${bold}==>${c0} Your screenshot can be viewed at ${baseurl}/$shotfile"
+        if [[ "$upload" == "1" ]]; then
+          out=$(curl -sf -F file="@${shotfiles[@]}" http://api.teknik.io/upload/post)
+          if [[ "${out}" =~ "error" ]]; then
+            verboseOut "ERROR: Problem uploading ${shotfiles[@]}!"
+          else
+            out="${out##*name\":\"}"
+            out="${out%%\"*}"
+            printf "Your screenshot can be found at http://u.teknik.io/${out}\n"
+          fi
+        fi
 			else
 				verboseOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
@@ -1839,6 +1853,16 @@ takeShot () {
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
 				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfiles[@]}'"
+        if [[ "$upload" == "1" ]]; then
+          out=$(curl -sf -F file="@${shotfiles[@]}" http://api.teknik.io/upload/post)
+          if [[ "${out}" =~ "error" ]]; then
+            verboseOut "ERROR: Problem uploading ${shotfiles[@]}!"
+          else
+            out="${out##*name\":\"}"
+            out="${out%%\"*}"
+            printf "Your screenshot can be found at http://u.teknik.io/${out}\n"
+          fi
+        fi
 			else
 				verboseOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
