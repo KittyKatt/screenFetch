@@ -3323,7 +3323,6 @@ infoDisplay () {
 	# Some verbosity stuff
 	[[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
 	[[ "$verbosity" == "1" ]] && [[ "$hostshot" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
-	[[ "$verbosity" == "1" ]] && [[ "$upload" == "1" ]] && verboseOut "Screenshot will be uploaded to $uploadaddr."
 	#########################
 	# Info Variable Setting #
 	#########################
