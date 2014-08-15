@@ -202,8 +202,8 @@ displayHelp() {
 	printf "screenFetch - a CLI Bash script to show system/theme info in screenshots.\n\n"
 	printf "${underline}Supported GNU/Linux Distributions${c0}:\n"
 	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, CentOS, Debian,\n"
-	printf "	CrunchBang, Raspbian, elementary OS, Fedora, Frugalware, Fuduntu, Gentoo,\n"
-	printf "	Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
+	printf "	CrunchBang, Raspbian, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
+	printf "	Gentoo, Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
 	printf "	Mandriva, Manjaro, Linux Mint, LMDE, openSUSE, Parabola GNU/Linux-libre,\n"
 	printf "	Peppermint, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware,\n"
 	printf "	SolusOS, TinyCore, Trisquel, Ubuntu, Viperr and Void.\n\n"
@@ -371,6 +371,8 @@ detectdistro () {
 				fi
 			elif [[ "${distro_detect}" == "elementary" || "${distro_detect}" == "elementary OS" ]]; then
 				distro="elementary OS"
+			elif [[ "${distro_detect}" == "EvolveOS" ]]; then
+				distro="Evolve OS"
 			elif [[ "${distro_detect}" == "KaOS" || "${distro_detect}" == "kaos" ]]; then
 				distro="KaOS"	
 			elif [[ "${distro_detect}" == "Fedora" ]]; then
@@ -489,6 +491,7 @@ detectdistro () {
 				fi
 
 				# Hotfixes
+				[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
 				[[ "${distro}" == "antergos" || "${distro}" == "Antergos" ]] && distro="Antergos"
 				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 				[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
@@ -528,6 +531,7 @@ detectdistro () {
 					elif [ -f /etc/chakra-release ]; then distro="Chakra"
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
 					elif [ -f /etc/debian_version ]; then distro="Debian"
+					elif [ -f /etc/evolveos-release ]; then distro="Evolve OS"
 					elif [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then distro="Fedora"
 					elif [ -f /etc/fedora-release ] && grep -q "Korora" /etc/fedora-release; then distro="Korora"
 					elif [ -f /etc/frugalware-release ]; then distro="Frugalware"
