@@ -3,6 +3,9 @@
     changelog
 **** **** **** ****
 
+	- Added Evolve OS detection. No ASCII yet.
+	- Added imgur to configured upload hosts
+	- Fine tuned more of the upload function.
 v3.6.2
 	- Added upload support via -u flag
 	- Added pre-configured hosts for -u uploading: teknik, pomf, hmp, and mediacrush
