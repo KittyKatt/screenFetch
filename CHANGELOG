@@ -3,6 +3,11 @@
     changelog
 **** **** **** ****
 
+v3.6.2
+	- Added upload support via -u flag
+	- Added pre-configured hosts for -u uploading: teknik, pomf, hmp, and mediacrush
+	- Added a configurable section for an scp upload to a specified destination
+	- Removed -m flag
 v3.6.0
 	- Added PowerPC support for OS X
 	- Added support for Korora and Void Linux
