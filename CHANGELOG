@@ -3,9 +3,13 @@
     changelog
 **** **** **** ****
 
-master (2014-04-30)
+v3.6.0
+	- Added PowerPC support for OS X
+	- Added support for Korora and Void Linux
+	- Readme: added installation instruction for Debian
+
+v3.5.0
 	- update list of supported systems
-	- Add Antergos support.
 	- Fix Parabola pkg detection.
 	- Adding support for the echinus (dwm fork) WM.
 	- Add 2bwm support.
@@ -25,7 +29,7 @@ master (2014-04-30)
 	- Fixes for OS X
 	- Fix Arch Linux detection for updated lsb_release
 	- Fix for Debian
-	- Added support for Raspbian
+	- Added support for Raspbian, Antergos and KaOS
 	- Fixes for Cinnamon
 	- Fix for Android being detected if getprop exists. Disabling Android support until I figure out a better detection method.
 	- Redirect STDERR to function to make errors prettier.
