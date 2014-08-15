@@ -3,6 +3,7 @@
     changelog
 **** **** **** ****
 
+	- Added missing Evolve OS package detection.
 	- Added Evolve OS detection. No ASCII yet.
 	- Added imgur to configured upload hosts
 	- Fine tuned more of the upload function.
