@@ -826,23 +826,23 @@ detectcpu () {
 			cpu="${model}${cpu}"
 		fi
 		loc="/sys/devices/system/cpu/cpu0/cpufreq"
-		if [ -f $loc/bios_limit ];then
-			cpu_mhz=$(cat $loc/bios_limit | awk '{print $1/1000}')
+		if [ -f ${loc}/bios_limit ];then
+			cpu_mhz=$(awk '{print $1/1000}' "${loc}/bios_limit")
 		elif [ -f $loc/scaling_max_freq ];then
-			cpu_mhz=$(cat $loc/scaling_max_freq | awk '{print $1/1000}')
+			cpu_mhz=$(awk '{print $1/1000}' "${loc}/scaling_max_freq ")
 		else
 			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2+.5) }' /proc/cpuinfo | head -n 1)
 		fi
 		if [ -n "$cpu_mhz" ];then
 			if [ $cpu_mhz -gt 999 ];then
-				cpu_ghz=$(echo $cpu_mhz | awk '{print $1/1000}')
+				cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
 				cpu="$cpu @ ${cpu_ghz}GHz"
 			else
 				cpu="$cpu @ ${cpu_mhz}MHz"
 			fi
 		fi
 	fi
-	cpu=$(echo "${cpu}" | sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' | xargs)
+	cpu=$(sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' <<< "${cpu}" | xargs)
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
@@ -853,18 +853,18 @@ detectgpu () {
 	if [[ "${distro}" == "FreeBSD" ]]; then
 		gpu_info=$(pciconf -lv 2> /dev/null | grep -B 4 VGA)
 		gpu_info=$(grep -E 'device.*=.*' <<< "${gpu_info}")
-		gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
+		gpu="${gpu_info##*device*= }"
+		gpu="${gpu//\'}"
+		# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
 	elif [[ "$distro" != "Mac OS X" ]]; then
 		if [ -n "$(type -p lspci)" ]; then
 			gpu_info=$(lspci 2> /dev/null | grep VGA)
-			gpu=$(echo "$gpu_info" | grep -oE '\[.*\]' | sed 's/\[//;s/\]//')
-			gpu=$(echo "${gpu}" | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
+			gpu=$(grep -oE '\[.*\]' <<< "${gpu_info}" | sed 's/\[//;s/\]//' | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
 		elif [[ -n "$(type -p glxinfo)" && -z "$gpu" ]]; then
 			gpu_info=$(glxinfo 2>/dev/null)
-			gpu=$(echo "$gpu_info" | grep "OpenGL renderer string")
-			gpu=$(echo "$gpu" | cut -d ':' -f2)
+			gpu=$(grep "OpenGL renderer string" <<< "${gpu_info}" | cut -d ':' -f2)
 			gpu="${gpu:1}"
-			gpu_info=$(echo "$gpu_info" | grep "OpenGL vendor string")
+			gpu_info=$(grep "OpenGL vendor string" <<< "${gpu_info}")
 		fi
 	elif [[ "${distro}" == "Mac OS X" ]]; then
 		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
@@ -874,16 +874,16 @@ detectgpu () {
 	fi
 
 	if [ -n "$gpu" ];then
-		if [ $(echo "$gpu_info" | grep -i nvidia | wc -l) -gt 0 ];then
+		if [ $(grep -i nvidia <<< "${gpu_info}" | wc -l) -gt 0 ];then
 			gpu_info="NVidia "
-		elif [ $(echo "$gpu_info" | grep -i intel | wc -l) -gt 0 ];then
+		elif [ $(grep -i intel <<< "${gpu_info}" | wc -l) -gt 0 ];then
 			gpu_info="Intel "
-		elif [ $(echo "$gpu_info" | grep -i amd | wc -l) -gt 0 ];then
+		elif [ $(grep -i amd <<< "${gpu_info}" | wc -l) -gt 0 ];then
 			gpu_info="AMD "
-		elif [[ $(echo "$gpu_info" | grep -i ati | wc -l) -gt 0  || $(echo "$gpu_info" | grep -i radeon | wc -l) -gt 0 ]]; then
+		elif [[ $(grep -i ati <<< "${gpu_info}" | wc -l) -gt 0  || $(grep -i radeon <<< "${gpu_info}" | wc -l) -gt 0 ]]; then
 			gpu_info="ATI "
 		else
-			gpu_info=$(echo "$gpu_info" | cut -d ':' -f2)
+			gpu_info=$(cut -d ':' -f2 <<< "${gpu_info}")
 			gpu_info="${gpu_info:1} "
 		fi
 		gpu="${gpu}"

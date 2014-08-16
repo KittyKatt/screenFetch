@@ -14,6 +14,7 @@ Other Things:
 	2) Better -c. Support setting of all available colors in an ascii logo.
 	3) Centralized color setting. c{1,2,3,etc} and lablecolors all set in one place.
 	4) Better disk detection. Fix problems with it.
+	5) Cleanup detectuptime, detectcpu, 
 
 That's about it for now. If you can help with any of these, please 
 please PLEASE let me know by emailing me at kittykatt@kittykatt.us or by 
