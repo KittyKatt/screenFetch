@@ -322,7 +322,6 @@ fi
 detectdistro () {
 	if [[ -z "${distro}" ]]; then
 		distro="Unknown"
-
 		# LSB Release Check
 		if type -p lsb_release >/dev/null 2>&1; then
 			# read distro_detect distro_release distro_codename <<< $(lsb_release -sirc)
@@ -472,7 +471,7 @@ detectdistro () {
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
 			if [ $(uname -o 2>/dev/null) ]; then
-				if [ `uname -o` == "Cygwin" ]; then distro="Cygwin"; fake_distro="${distro}"; fi
+				if [ "$(uname -o)" == "Cygwin" ]; then distro="Cygwin"; fake_distro="${distro}"; fi
 			fi
 			if [ -f /etc/os-release ]; then
 				distrib_id=$(</etc/os-release);
@@ -680,7 +679,7 @@ detectdistro () {
 		manjaro) distro="Manjaro" ;;
 		cygwin) distro="Cygwin" ;;
 	esac
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '${distro} ${distro_release}'"
 }
 # Distro Detection - End
 
@@ -689,7 +688,7 @@ detecthost () {
 	myUser=${USER}
 	myHost=${HOSTNAME}
 	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
 }
 
 # Find Number of Running Processes
@@ -699,7 +698,7 @@ detecthost () {
 detectkernel () {
 	kernel=( $(uname -srm) )
 	kernel="${kernel[${#kernel[@]}-1]} ${kernel[@]:0:${#kernel[@]}-1}"
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding kernel version...found as '$kernel'"
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding kernel version...found as '${kernel}'"
 }
 # Kernel Version Detection - End
 
@@ -739,7 +738,7 @@ detectuptime () {
 		if [[ "$distro" =~ "NetBSD" ]]; then uptime=$(awk -F. '{print $1}' /proc/uptime); fi
 		if [[ "$distro" =~ "BSD" ]]; then uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}'); fi
 	fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '$uptime'"
+	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '${uptime}'"
 }
 # Uptime Detection - End
 
