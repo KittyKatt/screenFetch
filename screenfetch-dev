@@ -1839,10 +1839,9 @@ takeShot () {
 						baseurl='http://u.teknik.io'
 						uploadurl='http://api.teknik.io/upload/post'
 						ret=$(curl -sf -F file="@${shotfiles[@]}" ${uploadurl})
-						echo "$ret"
-						filehash="${ret##*name\":\"}"
-						filehash="${fileret%%\"*}"
-						desturl="${baseurl}/${filehash}"
+						desturl="${out##*url\":\"}"
+						desturl="${desturl%%\"*}"
+						desturl="${desturl//\\}"
 					;;
 					'mediacrush')
 						baseurl='https://mediacru.sh'
