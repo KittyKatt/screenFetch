@@ -1839,7 +1839,7 @@ takeShot () {
 						baseurl='http://u.teknik.io'
 						uploadurl='http://api.teknik.io/upload/post'
 						ret=$(curl -sf -F file="@${shotfiles[@]}" ${uploadurl})
-						desturl="${out##*url\":\"}"
+						desturl="${ret##*url\":\"}"
 						desturl="${desturl%%\"*}"
 						desturl="${desturl//\\}"
 					;;
