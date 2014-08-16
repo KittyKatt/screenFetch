@@ -87,7 +87,7 @@ gtk_2line="no"
 
 # Static Color Definitions
 colorize () {
-	echo -ne "\033[38;5;$1m"
+	printf "\033[38;5;$1m"
 }
 getColor() {
 	if [[ -n "$1" ]]; then
@@ -3401,7 +3401,7 @@ infoDisplay () {
 		if [[ "${display[@]}" =~ "pkgs" ]]; then mypkgs=$(echo -e "$labelcolor Packages:$textcolor $pkgs"); out_array=( "${out_array[@]}" "$mypkgs" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "shell" ]]; then myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell"); out_array=( "${out_array[@]}" "$myshell" ); ((display_index++)); fi
 		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" ]]; then
-			if [ -n "${xResolution}" ]; thn
+			if [ -n "${xResolution}" ]; then
 				if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			fi
 			if [[ "${display[@]}" =~ "de" ]]; then
