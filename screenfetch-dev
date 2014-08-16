@@ -143,12 +143,12 @@ function stderrOut {
 ####################
 
 detectColors() {
-	my_colors=$(printf "$OPTARG" | sed 's/^,/na,/;s/,$/,na/;s/,/ /')
-	my_lcolor=$(printf "$my_colors" | awk -F' ' '{print $1}')
-	if [[ "$my_lcolor" != "na" ]]; then
+	my_colors=$(sed 's/^,/na,/;s/,$/,na/;s/,/ /' <<< "${OPTARG}")
+	my_lcolor=$(awk -F' ' '{print $1}' <<< "${my_colors}")
+	if [[ "${my_lcolor}" != "na" ]]; then
 		if [[ $(tput colors) -eq "256" ]]; then my_lcolor="\033[38;5;${my_lcolor}m"
 		else
-			case $my_lcolor in
+			case ${my_lcolor} in
 				0|00)  export my_lcolor=$(getColor 'black');;
 				1|01)  export my_lcolor=$(getColor 'red');;
 				2|02)  export my_lcolor=$(getColor 'green');;
@@ -171,11 +171,11 @@ detectColors() {
 	else
 		unset my_lcolor
 	fi
-	my_hcolor=$(printf "$my_colors" | awk -F' ' '{print $2}')
-	if [[ "$my_hcolor" != "na" ]]; then
+	my_hcolor=$(awk -F' ' '{print $2}' <<< "${my_colors}")
+	if [[ "${my_hcolor}" != "na" ]]; then
 		if [[ $(tput colors) -eq "256" ]]; then my_hcolor="\033[38;5;${my_hcolor}m"
 		else
-			case $my_hcolor in
+			case ${my_hcolor} in
 				0|00)  export my_hcolor=$(getColor 'black');;
 				1|01)  export my_hcolor=$(getColor 'red');;
 				2|02)  export my_hcolor=$(getColor 'green');;
@@ -268,25 +268,25 @@ esac
 while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:" flags; do
 	case $flags in
 		h) displayHelp; exit 0;;
-		s) screenshot=1; continue ;;
-		S) screenCommand=$OPTARG; continue;;
+		s) screenshot='1'; continue ;;
+		S) screenCommand="${OPTARG}"; continue;;
 		u) upload='1'; uploadLoc="${OPTARG}" ;;
 		v) verbosity=1; continue;;
 		V)
-			printf $underline"screenFetch"$c0" - Version $scriptVersion\n"
+			printf ${underline}"screenFetch"${c0}" - Version ${scriptVersion}\n"
 			printf "Created by and licensed to Brett Bohnenkamper <kittykatt@kittykatt.us>\n"
 			printf "OS X porting done almost solely by shrx (https://github.com/shrx) and Hu6.\n\n"
 			printf "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 			exit 0
 		;;
-		E) errorSuppress="1";;
-		D) distro=$OPTARG; continue;;
-		A) asc_distro=$OPTARG; continue;;
-		t) truncateSet="Yes";;
-		n) display_type="Text";;
-		o) overrideOpts=$OPTARG; continue;;
-		c) detectColors "$OPTARGS"; continue;;
-		d) overrideDisplay=$OPTARG; continue;;
+		E) errorSuppress='1';;
+		D) distro="${OPTARG}"; continue;;
+		A) asc_distro="${OPTARG}"; continue;;
+		t) truncateSet='Yes';;
+		n) display_type='Text';;
+		o) overrideOpts="${OPTARG}"; continue;;
+		c) detectColors "${OPTARGS}"; continue;;
+		d) overrideDisplay="${OPTARG}"; continue;;
 		N) no_color='1';;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1;;
@@ -307,8 +307,8 @@ if [[ "$overrideOpts" ]]; then
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
 	OLD_IFS="$IFS"
 	IFS=";"
-	for overopt in "$overrideOpts"; do
-		eval "$overrideOpts"
+	for overopt in "${overrideOpts}"; do
+		eval "${overrideOpts}"
 	done
 	IFS="$OLD_IFS"
 fi
@@ -320,7 +320,7 @@ fi
 
 # Distro Detection - Begin
 detectdistro () {
-	if [[ -z $distro ]]; then
+	if [[ -z "${distro}" ]]; then
 		distro="Unknown"
 
 		# LSB Release Check
@@ -688,7 +688,7 @@ detectdistro () {
 detecthost () {
 	myUser=${USER}
 	myHost=${HOSTNAME}
-	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local/}; fi
+	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '$myUser@$myHost'"
 }
 
@@ -708,11 +708,11 @@ detectkernel () {
 detectuptime () {
 	unset uptime
 	if [ "$distro" == "Mac OS X" ]; then
-		boot=`sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1`
-		now=`date +%s`
+		boot=$(sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1)
+		now=$(date +%s)
 		uptime=$(($now-$boot))
 	elif [[ "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" ]]; then
-		if [[ "${distro}" == "FreeBSD" ]]; then boot=`sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1`
+		if [[ "${distro}" == "FreeBSD" ]]; then boot=$(sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1)
 		else boot=$(sysctl -n kern.boottime); fi
 		now=$(date +%s)
 		uptime=$((${now} - ${boot}))
@@ -747,7 +747,7 @@ detectuptime () {
 # Package Count - Begin
 detectpkgs () {
 	pkgs="Unknown"
-	case $distro in
+	case "${distro}" in
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'KaOS') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | wc -l) ;;
@@ -853,8 +853,8 @@ detectcpu () {
 detectgpu () {
 	if [[ "${distro}" == "FreeBSD" ]]; then
 		gpu_info=$(pciconf -lv 2> /dev/null | grep -B 4 VGA)
-		gpu_info=$(echo "${gpu_info}" | grep -E 'device.*=.*')
-		gpu=$(echo "${gpu_info}" | sed 's/.*device.*= //' | sed "s/'//g")
+		gpu_info=$(grep -E 'device.*=.*' <<< "${gpu_info}")
+		gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
 	elif [[ "$distro" != "Mac OS X" ]]; then
 		if [ -n "$(type -p lspci)" ]; then
 			gpu_info=$(lspci 2> /dev/null | grep VGA)
