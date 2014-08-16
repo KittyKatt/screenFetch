@@ -22,6 +22,11 @@
 # could also drop in on my IRC network, SilverIRC, at irc://kittykatt.silverirc.com/me0wz
 # to put forth suggestions/ideas. Thank you.
 
+# Requires: bash 4.0+
+# Optional dependencies: 	xorg-xdpyinfo (resoluton detection)
+#						scrot (screenshot taking)
+#						curl (screenshot uploading)
+
 
 LANG=C
 LANGUAGE=C
@@ -3396,7 +3401,9 @@ infoDisplay () {
 		if [[ "${display[@]}" =~ "pkgs" ]]; then mypkgs=$(echo -e "$labelcolor Packages:$textcolor $pkgs"); out_array=( "${out_array[@]}" "$mypkgs" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "shell" ]]; then myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell"); out_array=( "${out_array[@]}" "$myshell" ); ((display_index++)); fi
 		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" ]]; then
-			if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
+			if [ -n "${xResolution}" ]; thn
+				if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
+			fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
 					myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++))
