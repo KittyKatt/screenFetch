@@ -256,12 +256,22 @@ displayHelp() {
 	printf "   ${bold}-h${c0}                 Display this help.\n"
 }
 
+
+displayVersion() {
+	printf ${underline}"screenFetch"${c0}" - Version ${scriptVersion}\n"
+	printf "Created by and licensed to Brett Bohnenkamper <kittykatt@kittykatt.us>\n"
+	printf "OS X porting done almost solely by shrx (https://github.com/shrx) and Hu6.\n\n"
+	printf "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+}
+
+
 #####################
 # Begin Flags Phase
 #####################
 
 case $1 in
 	--help) displayHelp; exit 0;;
+	--version) displayVersion; exit 0;;
 esac
 		
 
@@ -272,13 +282,7 @@ while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:" flags; do
 		S) screenCommand="${OPTARG}"; continue;;
 		u) upload='1'; uploadLoc="${OPTARG}" ;;
 		v) verbosity=1; continue;;
-		V)
-			printf ${underline}"screenFetch"${c0}" - Version ${scriptVersion}\n"
-			printf "Created by and licensed to Brett Bohnenkamper <kittykatt@kittykatt.us>\n"
-			printf "OS X porting done almost solely by shrx (https://github.com/shrx) and Hu6.\n\n"
-			printf "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
-			exit 0
-		;;
+		V) displayVersion; exit 0;;
 		E) errorSuppress='1';;
 		D) distro="${OPTARG}"; continue;;
 		A) asc_distro="${OPTARG}"; continue;;
