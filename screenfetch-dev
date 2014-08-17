@@ -53,7 +53,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm )
 denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder )
 
 # Screenshot Settings
@@ -642,6 +642,7 @@ detectdistro () {
 		arch*linux) distro="Arch Linux" ;;
 		arch) distro="Arch Linux";;
 		'elementary'|'elementary os') distro="elementary OS";;
+		evolveos) distro="Evolve OS";;
 		fedora) distro="Fedora" ;;
 		korora) distro="Korora" ;;
 		mageia) distro="Mageia" ;;
@@ -1208,6 +1209,10 @@ detectde () {
 						DEver_data=$( kded --version 2>/dev/null )
 						DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
 					fi
+				elif [[ -n "${DESKTOP_SESSION}" ]]; then
+					if [[ "${DESKTOP_SESSION}" == "budgie-desktop" ]]; then
+						DE="Budgie"
+					fi
 				fi
 			fi
 
@@ -1290,6 +1295,7 @@ detectwm () {
 						'beryl') WM="Beryl";;
 						'bspwm') WM="bspwm";;
 						'blackbox') WM="BlackBox";;
+						'budgie-wm') WM="BudgieWM";;
 						'cinnamon') WM="Muffin";;
 						'compiz') WM="Compiz";;
 						'dminiwm') WM="dminiwm";;
@@ -1361,6 +1367,7 @@ detectwm () {
 					'awesome') WM="Awesome";;
 					'beryl') WM="Beryl";;
 					'blackbox') WM="BlackBox";;
+					'budgiewm') WM="BudgieWM";;
 					'cinnamon') WM="Cinnamon";;
 					'compiz') WM="Compiz";;
 					'dminiwm') WM="dminiwm";;
@@ -1425,6 +1432,10 @@ detectwmtheme () {
 		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
 		'Beryl') Win_theme="Not Present";;
 		'bspwm') Win_theme="Not Present";;
+		'BudgieWM')
+			Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
+			Win_theme="${Win_theme//\'}"
+		;;
 		'Cinnamon'|'Muffin')
 			de_theme="$(gsettings get org.cinnamon.theme name)"
 			de_theme=${de_theme//"'"}
@@ -1625,7 +1636,7 @@ detectgtk () {
 					if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
 				fi
 			;;
-			'GNOME'*|'Gnome'*|'Unity'*) # Desktop Environment found as "GNOME"
+			'GNOME'*|'Gnome'*|'Unity'*|'Budgie') # Desktop Environment found as "GNOME"
 				if type -p gsettings >/dev/null 2>&1; then
 					gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
 					gtk3Theme=${gtk3Theme//"'"}
