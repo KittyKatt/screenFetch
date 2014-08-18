@@ -834,7 +834,7 @@ detectcpu () {
 		if [ -f ${loc}/bios_limit ];then
 			cpu_mhz=$(awk '{print $1/1000}' "${loc}/bios_limit")
 		elif [ -f $loc/scaling_max_freq ];then
-			cpu_mhz=$(awk '{print $1/1000}' "${loc}/scaling_max_freq ")
+			cpu_mhz=$(awk '{print $1/1000}' "${loc}/scaling_max_freq")
 		else
 			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2+.5) }' /proc/cpuinfo | head -n 1)
 		fi
