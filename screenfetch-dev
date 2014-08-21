@@ -1387,7 +1387,7 @@ detectwm () {
 			fi
 		fi
 	elif [[ ${distro} == "Mac OS X" && "${WM}" == "Not Found" ]]; then
-		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
+		if ps -U ${USER} | grep Finder >/dev/null 2>&1; then
 			WM="Quartz Compositor"
 		fi
 	elif [[ "${distro}" == "Cygwin" ]]; then
