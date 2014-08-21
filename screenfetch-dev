@@ -705,13 +705,12 @@ detectkernel () {
 # Uptime Detection - Begin
 detectuptime () {
 	unset uptime
-	if [ "$distro" == "Mac OS X" ]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" ]]; then
 		boot=$(sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1)
 		now=$(date +%s)
 		uptime=$(($now-$boot))
-	elif [[ "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" ]]; then
-		if [[ "${distro}" == "FreeBSD" ]]; then boot=$(sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1)
-		else boot=$(sysctl -n kern.boottime); fi
+	elif [[ "${distro}" == "OpenBSD" ]]; then
+		boot=$(sysctl -n kern.boottime)
 		now=$(date +%s)
 		uptime=$((${now} - ${boot}))
 	else
