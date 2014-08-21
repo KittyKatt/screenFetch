@@ -798,8 +798,8 @@ detectpkgs () {
 # CPU Detection - Begin
 detectcpu () {
 	REGEXP="-r"
-	if [ "$distro" == "Mac OS X" ]; then 
-		cpu=$(echo $(machine))
+	if [ "$distro" == "Mac OS X" ]; then
+		cpu=$(machine)
 		if [[ $cpu == "ppc750" ]]; then
 			cpu="IBM PowerPC G3"
 		elif [[ $cpu == "ppc7400" || $cpu == "ppc7450" ]]; then
@@ -807,7 +807,7 @@ detectcpu () {
 		elif [[ $cpu == "ppc970" ]]; then
 			cpu="IBM PowerPC G5"
 		else
-		cpu=$(echo $(sysctl -n machdep.cpu.brand_string))
+		cpu=$(sysctl -n machdep.cpu.brand_string)
 		fi
 		REGEXP="-E"
 	elif [ "$distro" == "FreeBSD" ]; then cpu=$(sysctl -n hw.model)
