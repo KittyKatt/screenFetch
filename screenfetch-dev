@@ -127,7 +127,9 @@ getColor() {
 }
 
 function verboseOut {
-	printf "\033[1;31m:: \033[0m$1\n"
+	if [[ "$verbosity" -eq "1" ]]; then
+		printf "\033[1;31m:: \033[0m$1\n"
+	fi
 }
 
 function errorOut {
@@ -308,7 +310,7 @@ done
 ####################
 
 if [[ "$overrideOpts" ]]; then
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
+	verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
 	OLD_IFS="$IFS"
 	IFS=";"
 	for overopt in "${overrideOpts}"; do
@@ -676,7 +678,7 @@ detectdistro () {
 		manjaro) distro="Manjaro" ;;
 		cygwin) distro="Cygwin" ;;
 	esac
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '${distro} ${distro_release}'"
+	verboseOut "Finding distro...found as '${distro} ${distro_release}'"
 }
 # Distro Detection - End
 
@@ -685,7 +687,7 @@ detecthost () {
 	myUser=${USER}
 	myHost=${HOSTNAME}
 	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
+	verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
 }
 
 # Find Number of Running Processes
@@ -695,7 +697,7 @@ detecthost () {
 detectkernel () {
 	kernel=( $(uname -srm) )
 	kernel="${kernel[${#kernel[@]}-1]} ${kernel[@]:0:${#kernel[@]}-1}"
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding kernel version...found as '${kernel}'"
+	verboseOut "Finding kernel version...found as '${kernel}'"
 }
 # Kernel Version Detection - End
 
@@ -735,7 +737,7 @@ detectuptime () {
 		if [[ "$distro" =~ "NetBSD" ]]; then uptime=$(awk -F. '{print $1}' /proc/uptime); fi
 		if [[ "$distro" =~ "BSD" ]]; then uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}'); fi
 	fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current uptime...found as '${uptime}'"
+	verboseOut "Finding current uptime...found as '${uptime}'"
 }
 # Uptime Detection - End
 
@@ -781,7 +783,7 @@ detectpkgs () {
 		;;
 		'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
 	esac
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current package count...found as '$pkgs'"
+	verboseOut "Finding current package count...found as '$pkgs'"
 }
 
 
@@ -840,7 +842,7 @@ detectcpu () {
 		fi
 	fi
 	cpu=$(sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' <<< "${cpu}" | xargs)
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current CPU...found as '$cpu'"
+	verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
 
@@ -888,7 +890,7 @@ detectgpu () {
 		gpu="Not Found"
 	fi
 
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current GPU...found as '$gpu'"
+	verboseOut "Finding current GPU...found as '$gpu'"
 }
 # GPU Detection - End
 
@@ -910,7 +912,7 @@ detectdisk () {
 		diskusage="${diskused} / ${disktotal} (${diskusedper})"
 		diskusage_verbose=$(sed 's/%/%%/' <<< $diskusage)
 	fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current disk usage...found as '$diskusage_verbose'"
+	verboseOut "Finding current disk usage...found as '$diskusage_verbose'"
 }	
 # Disk Usage Detection - End
 
@@ -1011,7 +1013,7 @@ detectmem () {
 		totalmem="$(($memtotal / $human))"
 	fi
 	mem="${usedmem}MB / ${totalmem}MB"
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current RAM usage...found as '$mem'"
+	verboseOut "Finding current RAM usage...found as '$mem'"
 }
 # Memory Detection - End
 
@@ -1095,7 +1097,7 @@ detectshell () {
 	fi
 
 	myShell=${shell_type}
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current shell...found as '$myShell'"
+	verboseOut "Finding current shell...found as '$myShell'"
 }
 # Shell Detection - End
 
@@ -1130,7 +1132,7 @@ detectres () {
 	else
 		xResolution="No X Server"
 	fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding current resolution(s)...found as '$xResolution'"
+	verboseOut "Finding current resolution(s)...found as '$xResolution'"
 }
 # Resolution Detection - End
 
@@ -1272,7 +1274,7 @@ detectde () {
 		elif [ "$winver" == "6" ]; then DE='Aero'
 		else DE='Luna'; fi
 	fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding desktop environment...found as '$DE'"
+	verboseOut "Finding desktop environment...found as '$DE'"
 }
 ### DE Detection - End
 
@@ -1414,7 +1416,7 @@ detectwm () {
 		elif [ "$wind" = "Windawesome" ]; then WM="Windawesome"
 		else WM="DWM"; fi
 	fi
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager...found as '$WM'"
+	verboseOut "Finding window manager...found as '$WM'"
 }
 # WM Detection - End
 
@@ -1544,7 +1546,7 @@ detectwmtheme () {
 		Win_theme=$(echo $themeFile | awk -F"\\" '{print $NF}' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')
 	fi
 
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding window manager theme...found as '$Win_theme'"
+	verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
 
@@ -1789,13 +1791,11 @@ detectgtk () {
 			;;
 		esac
 	fi
-	if [[ "$verbosity" -eq "1" ]]; then
-		verboseOut "Finding GTK2 theme...found as '$gtk2Theme'"
-		verboseOut "Finding GTK3 theme...found as '$gtk3Theme'"
-		verboseOut "Finding icon theme...found as '$gtkIcons'"
-		verboseOut "Finding user font...found as '$gtkFont'"
-		[[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
-	fi
+	verboseOut "Finding GTK2 theme...found as '$gtk2Theme'"
+	verboseOut "Finding GTK3 theme...found as '$gtk3Theme'"
+	verboseOut "Finding icon theme...found as '$gtkIcons'"
+	verboseOut "Finding user font...found as '$gtkFont'"
+	[[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
 }
 # GTK Theme\Icon\Font Detection - END
 
@@ -1839,7 +1839,7 @@ takeShot () {
 				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
-				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfiles[@]}'"
+				verboseOut "Screenshot saved at '${shotfiles[@]}'"
 				printf "${bold}==>${c0}  Uploading your screenshot now..."
 				case "${uploadLoc}" in
 					'teknik')
@@ -1892,7 +1892,7 @@ takeShot () {
 				esac		
 				printf "your screenshot can be viewed at ${desturl}\n"
 			else
-				verboseOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
+				errorOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
 		else
 			shotfiles[1]=${shotfile}
@@ -1905,9 +1905,9 @@ takeShot () {
 				printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 			else scrot -cd3 "${shotfile}"; fi
 			if [ -f "${shotfile}" ]; then
-				[[ "$verbosity" -eq "1" ]] && verboseOut "Screenshot saved at '${shotfiles[@]}'"
+				verboseOut "Screenshot saved at '${shotfiles[@]}'"
 			else
-				verboseOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
+				errorOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
 		fi
 	else
@@ -3364,8 +3364,8 @@ infoDisplay () {
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
 	if [[ "$no_color" == "1" ]]; then labelcolor=""; bold=""; c0=""; textcolor=""; fi
 	# Some verbosity stuff
-	[[ "$verbosity" == "1" ]] && [[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
-	[[ "$verbosity" == "1" ]] && [[ "$upload" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
+	[[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
+	[[ "$upload" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
 	#########################
 	# Info Variable Setting #
 	#########################
@@ -3533,7 +3533,7 @@ fi
 
 
 if [[ "$overrideDisplay" ]]; then
-	[[ "$verbosity" -eq "1" ]] && verboseOut "Found 'd' flag in syntax. Overriding some display options..."
+	verboseOut "Found 'd' flag in syntax. Overriding some display options..."
 	overrideDisplay=${overrideDisplay//,/ }
 	display=( $overrideDisplay )
 fi
