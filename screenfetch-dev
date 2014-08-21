@@ -144,62 +144,44 @@ function stderrOut {
 #  Color Defines
 ####################
 
+colorNumberToCode() {
+	number="$1"
+	if [[ "${number}" == "na" ]]; then
+		unset code
+	elif [[ $(tput colors) -eq "256" ]]; then
+		code=$(colorize "${number}")
+	else
+		case "$number" in
+			0|00) code=$(getColor 'black');;
+			1|01) code=$(getColor 'red');;
+			2|02) code=$(getColor 'green');;
+			3|03) code=$(getColor 'brown');;
+			4|04) code=$(getColor 'blue');;
+			5|05) code=$(getColor 'purple');;
+			6|06) code=$(getColor 'cyan');;
+			7|07) code=$(getColor 'light grey');;
+			8|08) code=$(getColor 'dark grey');;
+			9|09) code=$(getColor 'light red');;
+			  10) code=$(getColor 'light green');;
+			  11) code=$(getColor 'yellow');;
+			  12) code=$(getColor 'light blue');;
+			  13) code=$(getColor 'light purple');;
+			  14) code=$(getColor 'light cyan');;
+			  15) code=$(getColor 'white');;
+			*) unset code;;
+		esac
+	fi
+	echo -n "${code}"
+}
+
+
 detectColors() {
 	my_colors=$(sed 's/^,/na,/;s/,$/,na/;s/,/ /' <<< "${OPTARG}")
 	my_lcolor=$(awk -F' ' '{print $1}' <<< "${my_colors}")
-	if [[ "${my_lcolor}" != "na" ]]; then
-		if [[ $(tput colors) -eq "256" ]]; then my_lcolor="\033[38;5;${my_lcolor}m"
-		else
-			case ${my_lcolor} in
-				0|00)  export my_lcolor=$(getColor 'black');;
-				1|01)  export my_lcolor=$(getColor 'red');;
-				2|02)  export my_lcolor=$(getColor 'green');;
-				3|03)  export my_lcolor=$(getColor 'brown');;
-				4|04)  export my_lcolor=$(getColor 'blue');;
-				5|05)  export my_lcolor=$(getColor 'purple');;
-				6|06)  export my_lcolor=$(getColor 'cyan');;
-				7|07)  export my_lcolor=$(getColor 'light grey');;
-				8|08)  export my_lcolor=$(getColor 'dark grey');;
-				9|09)  export my_lcolor=$(getColor 'light red');;
-				10) export my_lcolor=$(getColor 'light green');;
-				11) export my_lcolor=$(getColor 'yellow');;
-				12) export my_lcolor=$(getColor 'light blue');;
-				13) export my_lcolor=$(getColor 'light purple');;
-				14) export my_lcolor=$(getColor 'light cyan');;
-				15) export my_lcolor=$(getColor 'white');;
-				*) unset my_lcolor; continue ;;
-			esac
-		fi
-	else
-		unset my_lcolor
-	fi
+	my_lcolor=$(colorNumberToCode "${my_lcolor}")
+
 	my_hcolor=$(awk -F' ' '{print $2}' <<< "${my_colors}")
-	if [[ "${my_hcolor}" != "na" ]]; then
-		if [[ $(tput colors) -eq "256" ]]; then my_hcolor="\033[38;5;${my_hcolor}m"
-		else
-			case ${my_hcolor} in
-				0|00)  export my_hcolor=$(getColor 'black');;
-				1|01)  export my_hcolor=$(getColor 'red');;
-				2|02)  export my_hcolor=$(getColor 'green');;
-				3|03)  export my_hcolor=$(getColor 'brown');;
-				4|04)  export my_hcolor=$(getColor 'blue');;
-				5|05)  export my_hcolor=$(getColor 'purple');;
-				6|06)  export my_hcolor=$(getColor 'cyan');;
-				7|07)  export my_hcolor=$(getColor 'light grey');;
-				8|08)  export my_hcolor=$(getColor 'dark grey');;
-				9|09)  export my_hcolor=$(getColor 'light red');;
-				10) export my_hcolor=$(getColor 'light green');;
-				11) export my_hcolor=$(getColor 'yellow');;
-				12) export my_hcolor=$(getColor 'light blue');;
-				13) export my_hcolor=$(getColor 'light purple');;
-				14) export my_hcolor=$(getColor 'light cyan');;
-				15) export my_hcolor=$(getColor 'white');;
-				*) unset my_hcolor; continue ;;
-			esac
-		fi
-	else
-		unset my_hcolor
-	fi
+	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
 
