@@ -51,7 +51,7 @@ command! This script is very easy to add to and can easily be extended.
 To run screenFetch, open a terminal of some sort and type in the command `screenFetch`
 or wherever you saved the script to. This will generate an ascii logo with the
 information printed to the side of the logo. There are some options that may be
-specifiedon the command line, and those are shown below or by executing `screenFetch -h`:
+specified on the command line, and those are shown below or by executing `screenFetch -h`:
 
       -v                 Verbose output.
       -o 'OPTIONS'       Allows for setting script variables on the
