@@ -613,17 +613,9 @@ detectdistro () {
 			fi
 			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
 				if [[ -f /etc/system-release ]]; then
-					distro=$(awk 'BEGIN {
-						distro = "Unknown"
-					}
-					{
-						if ($0 ~ /"Scientific\ Linux"/) {
-							distro = "Scientific Linux"
-							exit
-						}
-					} END {
-						print distro
-					}' /etc/system-release)
+					if grep -q "Scientific Linux" /etc/system-release; then
+						distro="Scientific Linux"
+					fi
 				fi
 			fi
 
