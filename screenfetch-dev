@@ -126,16 +126,16 @@ getColor() {
 	fi
 }
 
-function verboseOut {
+verboseOut() {
 	if [[ "$verbosity" -eq "1" ]]; then
 		printf "\033[1;31m:: \033[0m$1\n"
 	fi
 }
 
-function errorOut {
+errorOut() {
 	printf "\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m$1\n"
 }
-function stderrOut {
+stderrOut() {
 	while IFS='' read -r line; do printf "\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m${line}\n"; done
 }
 
