@@ -359,7 +359,7 @@ detectdistro () {
 				fi
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
 				distro="Chakra"
-				distro_release=null
+				distro_release=""
 			elif [[ "${distro_detect}" == "CentOS" ]]; then
 				distro="CentOS"
 			elif [[ "${distro_detect}" == "Debian" ]]; then
