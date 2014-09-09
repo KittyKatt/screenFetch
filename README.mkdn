@@ -34,6 +34,7 @@ command! This script is very easy to add to and can easily be extended.
 ### Ubuntu (>14.04) and Debian (testing/unstable)
 
 1. Install: `apt-get install screenfetch`
+2. There is also a PPA for Ubuntu located at https://launchpad.net/%7Edjcj/+archive/ubuntu/screenfetch
 
 ### FreeBSD
 
