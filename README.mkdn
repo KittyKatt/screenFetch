@@ -61,6 +61,7 @@ specified on the command line, and those are shown below or by executing `screen
       -n                 Do not display ASCII distribution logo.
       -N                 Strip all color from output.
       -t                 Truncate output based on terminal width (Experimental!).
+      -p                 Output in portrait mode, with logo above info.
       -s(m)              Using this flag tells the script that you want it
                          to take a screenshot. Use the -m flag if you would like
                          to move it to a new location afterwards.
@@ -77,8 +78,8 @@ specified on the command line, and those are shown below or by executing `screen
                          displayed. This is for when you want your distro
                          detected but want to display a different logo.
       -E                 Suppress output of errors.
-      -V                 Display current script version.
-      -h                 Display this help.
+      -V, --version      Display current script version.
+      -h, --help         Display this help.
 
 
 ## Contact Me
