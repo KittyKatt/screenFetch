@@ -1266,7 +1266,7 @@ detectwm () {
 	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
 		if [[ -n ${DISPLAY} ]]; then
 			for each in "${wmnames[@]}"; do
-				PID="$(pgrep -U ${UID} $each)"
+				PID="$(pgrep -U ${UID} "^$each$")"
 				if [ "$PID" ]; then
 					case $each in
 						'2bwm') WM="2bwm";;
