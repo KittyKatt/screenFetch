@@ -219,6 +219,7 @@ displayHelp() {
 	printf "   ${bold}-n${c0}                 Do not display ASCII distribution logo.\n"
 	printf "   ${bold}-N${c0}                 Strip all color from output.\n"
 	printf "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!).\n"
+	printf "   ${bold}-p${c0}                 Portrait output.\n"
 	printf "   ${bold}-s(u)${c0}              Using this flag tells the script that you want it\n"
 	printf "		      to take a screenshot. Use the -u flag if you would like\n"
 	printf "		      to upload the screenshots to one of the pre-configured\n"
@@ -259,7 +260,7 @@ case $1 in
 esac
 		
 
-while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:" flags; do
+while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:p" flags; do
 	case $flags in
 		h) displayHelp; exit 0;;
 		s) screenshot='1'; continue ;;
@@ -276,6 +277,7 @@ while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:" flags; do
 		c) detectColors "${OPTARGS}"; continue;;
 		d) overrideDisplay="${OPTARG}"; continue;;
 		N) no_color='1';;
+		p) portraitSet='Yes' ;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1;;
 		*) errorOut "Error"; exit 1;;
@@ -3313,6 +3315,22 @@ asciiText () {
 				out_array=( "${out_array[@]}" )
 			fi
 		done
+
+	elif [[ "$portraitSet" = "Yes" ]]; then
+		for ((i=0; $i<${#fulloutput[*]}; i++)); do
+			printf "${fulloutput[$i]}$c0\n"
+		done
+
+        printf "\n"
+
+		for ((i=0; $i<${#fulloutput[*]}; i++)); do
+			[[ -z "$out_array" ]] && continue
+
+			printf "%s\n" "${out_array}"
+            unset out_array[0]
+            out_array=( "${out_array[@]}" )
+		done
+
 	else
 		#n=${#fulloutput[*]}
 		for ((i=0; i<${#fulloutput[*]}; i++)); do
