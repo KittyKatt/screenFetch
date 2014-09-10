@@ -3321,14 +3321,13 @@ asciiText () {
 			printf "${fulloutput[$i]}$c0\n"
 		done
 
-        printf "\n"
+        	printf "\n"
 
 		for ((i=0; $i<${#fulloutput[*]}; i++)); do
 			[[ -z "$out_array" ]] && continue
-
 			printf "%s\n" "${out_array}"
-            unset out_array[0]
-            out_array=( "${out_array[@]}" )
+            		unset out_array[0]
+			out_array=( "${out_array[@]}" )
 		done
 
 	else
