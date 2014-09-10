@@ -1686,7 +1686,7 @@ detectgtk () {
 			# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
 			*)	# Lightweight or No DE Found
-				if [ -f $HOME/.gtkrc-2.0 ]; then
+				if [ -f "$HOME/.gtkrc-2.0" ]; then
 					if grep -q gtk-theme $HOME/.gtkrc-2.0; then
 						gtk2Theme=$(awk -F'"' '/^gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
 					fi
@@ -1700,7 +1700,7 @@ detectgtk () {
 					fi
 				fi
 				# $HOME/.gtkrc.mine theme detect only
-				if [ -f $HOME/.gtkrc.mine ]; then
+				if [ -f "$HOME/.gtkrc.mine" ]; then
 					if grep -q "^include" $HOME/.gtkrc.mine; then
 						gtk2Theme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
 					fi
@@ -1730,7 +1730,7 @@ detectgtk () {
 				fi
 
 				# EXPERIMENTAL gtk3 Theme detection
-				if [ -f $HOME/.config/gtk-3.0/settings.ini ]; then
+				if [ -f "$HOME/.config/gtk-3.0/settings.ini" ]; then
 					if grep -q gtk-theme-name $HOME/.config/gtk-3.0/settings.ini; then
 						gtk3Theme=$(awk -F'=' '/^gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
 					fi
@@ -1743,7 +1743,7 @@ detectgtk () {
 				#fi
 
 				# ROX-Filer icon detect only
-				if [ -a ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options ]; then
+				if [ -a "${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options" ]; then
 					gtkIcons=$(awk -F'[>,<]' '/^icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
 				fi
 
@@ -1765,8 +1765,8 @@ detectgtk () {
 				fi
 
 				if [ "$distro" == "Cygwin" -a "$gtkFont" == "Not Found" ]; then
-					if [ -f $HOME/.minttyrc ]; then
-						gtkFont="$(cat $HOME/.minttyrc | grep '^Font=.*' | grep -o '[0-9A-z ]*$')"
+					if [ -f "$HOME/.minttyrc" ]; then
+						gtkFont="$(cat "$HOME/.minttyrc" | grep '^Font=.*' | grep -o '[0-9A-z ]*$')"
 					fi
 				fi
 			;;
