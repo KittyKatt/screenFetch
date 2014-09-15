@@ -446,10 +446,6 @@ detectdistro () {
 			elif [[ "${distro_detect}" == "Viperr" ]]; then
 				distro="Viperr"
 				distro_codename=null
-			elif grep -q 'void' /etc/os-release; then
-				distro="Void"
-				distro_release="n/a"
-				distro_codename="n/a"
 			fi
 			if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro_release"; fi
 			if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro_more $distro_codename"; fi
@@ -485,6 +481,7 @@ detectdistro () {
 				fi
 
 				# Hotfixes
+				[[ "${distro}" == "Void" || "${distro}" == "void" ]] && distro="Void"
 				[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
 				[[ "${distro}" == "antergos" || "${distro}" == "Antergos" ]] && distro="Antergos"
 				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
