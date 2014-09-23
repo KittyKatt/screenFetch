@@ -635,6 +635,7 @@ detectdistro () {
 		debian) distro="Debian" ;;
 		raspbian) distro="Raspbian" ;;
 		freebsd) distro="FreeBSD" ;;
+		freebsd*old) distro="FreeBSD - Old" ;;
 		openbsd) distro="OpenBSD" ;;
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		netbsd) distro="NetBSD" ;;
@@ -2253,7 +2254,7 @@ asciiText () {
 "    "$c1"y/               "$c2"-/\`   -o/       %s"         # Shell
 "   "$c1".-                  "$c2"::/sy+:.      %s"          # Resolution
 "   "$c1"/                     "$c2"\`--  /      %s"         # DE
-"  "$c1"\`:                          "$c2":\`     %s"        # WM 
+"  "$c1"\`:                          "$c2":\`     %s"        # WM
 "  "$c1"\`:                          "$c2":\`     %s"        # WM Theme
 "   "$c1"/                          "$c2"/      %s"          # GTK2 Theme
 "   "$c1".-                        "$c2"-.      %s"          # GTK3 Theme
@@ -2264,8 +2265,36 @@ asciiText () {
 "                                     %s"                    # GPU
 "                                     %s"                    # RAM
 )
-                ;;
+		;;
 
+		"FreeBSD - Old")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'white') # white
+				c2=$(getColor 'light red') # Light Red
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("$c2              ,        ,           %s"   # user@host
+"$c2             /(        )\`         %s"                 # OS
+"$c2             \ \___   / |         %s"                  # Kernel
+"$c2             /- "$c1"_$c2  \`-/  '         %s"         # Uptime
+"$c2            ($c1/\/ \ $c2\   /\\         %s"           # Packages
+"$c1            / /   |$c2 \`    \\        %s"             # Shell
+"$c1            O O   )$c2 /    |        %s"               # Resolution
+"$c1            \`-^--'\`$c2<     '        %s"             # DE
+"$c2           (_.)  _  )   /         %s"                  # WM
+"$c2            \`.___/\`    /          %s"                # WM Theme
+"$c2              \`-----' /           %s"                 # GTK2 Theme
+"$c1 <----.     "$c2"__/ __   \\            %s"            # GTK3 Theme
+"$c1 <----|===="$c2"O}}}$c1==$c2} \} \/$c1====      %s"    # Icon Theme
+"$c1 <----'    $c2\`--' \`.__,' \\          %s"            # Font
+"$c2              |        |          %s"                  # Disk
+"$c2               \       /       /\\ %s"                 # CPU
+"$c2          ______( (_  / \______/  %s"                  # GPU
+"$c2        ,'  ,-----'   |           %s"                  # RAM
+"$c2        \`--{__________)"
+"")
+		;;
 
 		"OpenBSD")
 			if [[ "$no_color" != "1" ]]; then
@@ -3332,7 +3361,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Korora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
-		"Ubuntu-3color"|"FreeBSD"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
+		"Ubuntu-3color"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
 		"CentOS"|"Ubuntu"|*) labelcolor=$(getColor 'yellow');;
