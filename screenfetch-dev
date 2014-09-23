@@ -904,29 +904,10 @@ detectmem () {
 	human=1024
 	if [ "$distro" == "Mac OS X" ]; then
 		totalmem=$(echo "$(sysctl -n hw.memsize)"/${human}^2|bc)
- 		usedmem=$(top -l 1 | awk '{
- 			if ($0 ~ /PhysMem/) {
- 				for (x=1; x<=NF; x++) {
- 					if ($x ~ /wired/) {
- 						wired = $(x-1)
- 						gsub(/[^0-9]/,"",wired)
- 					}
-
- 					if ($x ~ /^active/) {
- 						active = $(x-1)
- 						gsub(/[^0-9]/,"",active)
- 					}
-
- 					if ($x ~ /inactive/) {
- 						inactive = $(x-1)
- 						gsub(/[^0-9]/,"",inactive)
- 					}
- 				}
- 				usedmem = wired + active + inactive
- 				print usedmem
- 				exit
- 			}
- 		}')
+		wiredmem=$(vm_stat | grep wired | awk '{ print $4 }' | sed 's/\.//')
+		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
+		compressedmem=$(vm_stat | grep occupied | awk '{ print $5 }' | sed 's/\.//')
+		usedmem=$(((${wiredmem} + ${activemem} + ${compressedmem}) * 4096 / 1024 / 1024))		 		
 	elif [ "$distro" == "Cygwin" ]; then
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${total_mem}/1024))
