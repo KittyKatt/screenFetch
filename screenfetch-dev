@@ -1104,6 +1104,45 @@ detectde () {
 	DE="Not Present"
 	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
 		if [[ -n ${DISPLAY} ]]; then
+			if [[ ${DE} == "Not Present" ]]; then
+				if [[ -n "${XDG_CURRENT_DESKTOP}" ]]; then
+					if [[ "${XDG_CURRENT_DESKTOP}" == "X-Cinnamon" ]]; then
+						DE="Cinnamon"
+					fi
+				elif [[ -n ${GNOME_DESKTOP_SESSION_ID} ]]; then
+					DE="Gnome"
+					if type -p xprop >/dev/null 2>&1; then
+						if xprop -name "unity-launcher" >/dev/null 2>&1; then
+							DE="Unity"
+						elif xprop -name "launcher" >/dev/null 2>&1 &&
+							xprop -name "panel" >/dev/null 2>&1; then
+
+							DE="Unity"
+						fi
+					fi
+				elif [[ -n ${MATE_DESKTOP_SESSION_ID} ]]; then
+					DE="MATE"
+				elif [[ -n ${KDE_SESSION_VERSION} ]]; then
+					if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
+						DE="KDE5"
+					elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
+						DE="KDE4"
+					fi
+				elif [[ -n ${KDE_FULL_SESSION} ]]; then
+					if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
+						DE="KDE"
+						DEver_data=$( kded --version 2>/dev/null )
+						DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
+					fi
+				elif [[ -n "${DESKTOP_SESSION}" ]]; then
+					if [[ "${DESKTOP_SESSION}" == "budgie-desktop" ]]; then
+						DE="Budgie"
+					elif [[ "$DESKTOP_SESSION" == "Cinnamon" ]]; then
+						DE="Cinnamon"
+					fi
+				fi
+			fi
+
 			if type -p xprop >/dev/null 2>&1;then
 				xprop_root="$(xprop -root 2>/dev/null)"
 				if [[ -n ${xprop_root} ]]; then
@@ -1143,38 +1182,6 @@ detectde () {
 				fi
 			fi
 
-			if [[ ${DE} == "Not Present" ]]; then
-				if [[ -n ${GNOME_DESKTOP_SESSION_ID} ]]; then
-					DE="Gnome"
-					if type -p xprop >/dev/null 2>&1; then
-						if xprop -name "unity-launcher" >/dev/null 2>&1; then
-							DE="Unity"
-						elif xprop -name "launcher" >/dev/null 2>&1 &&
-							xprop -name "panel" >/dev/null 2>&1; then
-
-							DE="Unity"
-						fi
-					fi
-				elif [[ -n ${MATE_DESKTOP_SESSION_ID} ]]; then
-					DE="MATE"
-				elif [[ -n ${KDE_SESSION_VERSION} ]]; then
-					if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
-						DE="KDE5"
-					elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
-						DE="KDE4"
-					fi
-				elif [[ -n ${KDE_FULL_SESSION} ]]; then
-					if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
-						DE="KDE"
-						DEver_data=$( kded --version 2>/dev/null )
-						DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
-					fi
-				elif [[ -n "${DESKTOP_SESSION}" ]]; then
-					if [[ "${DESKTOP_SESSION}" == "budgie-desktop" ]]; then
-						DE="Budgie"
-					fi
-				fi
-			fi
 
 			if [[ ${DE} != "Not Present" ]]; then
 				if [[ ${DE} == "Cinnamon" ]]; then
