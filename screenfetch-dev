@@ -263,19 +263,19 @@ esac
 while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:p" flags; do
 	case $flags in
 		h) displayHelp; exit 0;;
-		s) screenshot='1'; continue ;;
-		S) screenCommand="${OPTARG}"; continue;;
+		s) screenshot='1' ;;
+		S) screenCommand="${OPTARG}" ;;
 		u) upload='1'; uploadLoc="${OPTARG}" ;;
-		v) verbosity=1; continue;;
+		v) verbosity=1 ;;
 		V) displayVersion; exit 0;;
 		E) errorSuppress='1';;
-		D) distro="${OPTARG}"; continue;;
-		A) asc_distro="${OPTARG}"; continue;;
+		D) distro="${OPTARG}" ;;
+		A) asc_distro="${OPTARG}" ;;
 		t) truncateSet='Yes';;
 		n) display_type='Text';;
-		o) overrideOpts="${OPTARG}"; continue;;
-		c) detectColors "${OPTARGS}"; continue;;
-		d) overrideDisplay="${OPTARG}"; continue;;
+		o) overrideOpts="${OPTARG}" ;;
+		c) detectColors "${OPTARGS}" ;;
+		d) overrideDisplay="${OPTARG}" ;;
 		N) no_color='1';;
 		p) portraitSet='Yes' ;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
