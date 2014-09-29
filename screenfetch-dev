@@ -1455,14 +1455,14 @@ detectwmtheme () {
 					if [[ -f $KDE_CONFIG_DIR/share/config/kdebugrc ]]; then
 						Win_theme=$(awk '/(decoration)/ {gsub(/\[/,"",$1); print $1; exit}' $KDE_CONFIG_DIR/share/config/kdebugrc)
 						if [[ -z $Win_theme ]]; then
-							Win_theme="Not Found"
+							Win_theme="Not Applicable"
 						fi
 					else
-						Win_theme="Not Found"
+						Win_theme="Not Applicable"
 					fi
 				fi
 
-				if [[ $Win_theme != 'Not Found' ]]; then
+				if [[ $Win_theme != 'Not Applicable' ]]; then
 					if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
 						if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
 							Win_theme=${Win_theme^}
@@ -3428,25 +3428,25 @@ infoDisplay () {
 			fi
 			if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "wmtheme" ]]; then
-					if [[ "${Win_theme}" == "Not Present" ]]; then
+					if [[ "${Win_theme}" == "Not Applicable" || "${Win_theme}" == "Not Found" ]]; then
 						:
 					else
 						mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
 					fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [ "$distro" == "Mac OS X" ]; then
-					if [ "$gtkFont" != "Not Found" ]; then
+					if [[ "$gtkFont" != "Not Applicable" || "$gtkFont" != "Not Found" ]]; then
 						if [ -n "$gtkFont" ]; then 
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 						fi
 					fi
 				else
-					if [ "$gtk2Theme" != "Not Found" ]; then
+					if [[ "$gtk2Theme" != "Not Applicable" || "$gtk2Theme" != "Not Found" ]]; then
 						if [ -n "$gtk2Theme" ]; then 
 							mygtk2="${gtk2Theme} [GTK2]"
 						fi
 					fi
-					if [ "$gtk3Theme" != "Not Found" ]; then
+					if [[ "$gtk3Theme" != "Not Applicable" || "$gtk3Theme" != "Not Found" ]]; then
 						if [ -n "$mygtk2" ]; then 
 							mygtk3=", ${gtk3Theme} [GTK3]"
 						else
@@ -3459,12 +3459,12 @@ infoDisplay () {
 					else
 						mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${mygtk2}${mygtk3}"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
 					fi
-					if [ "$gtkIcons" != "Not Found" ]; then
+					if [[ "$gtkIcons" != "Not Applicable" || "$gtkIcons" != "Not Found" ]]; then
 						if [ -n "$gtkIcons" ]; then 
 							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 						fi
 					fi
-					if [ "$gtkFont" != "Not Found" ]; then
+					if [[ "$gtkFont" != "Not Applicable" || "$gtkFont" != "Not Found" ]]; then
 						if [ -n "$gtkFont" ]; then 
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 						fi
@@ -3481,7 +3481,7 @@ infoDisplay () {
 			fi
 			if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "wmtheme" ]]; then
-				if [[ "${Win_theme}" == "Not Present" ]]; then
+				if [[ "${Win_theme}" == "Not Applicable" || "${Win_theme}" == "Not Found" ]]; then
 					:
 				else
 					mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++))
@@ -3517,7 +3517,7 @@ infoDisplay () {
 			fi
 			if [[ "${display[@]}" =~ "wm" ]]; then
 				echo -e "$mywm"
-				if [[ "${Win_theme}" != "Not Present" ]]; then
+				if [[ "${Win_theme}" != "Not Applicable" || "${Win_theme}" != "Not Found" ]]; then
 					echo -e "$mywmtheme"
 				fi
 			fi
