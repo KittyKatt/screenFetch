@@ -1813,7 +1813,7 @@ takeShot () {
 				case "${uploadLoc}" in
 					'teknik')
 						baseurl='https://u.teknik.io'
-						uploadurl='http:s//api.teknik.io/upload/post'
+						uploadurl='https://api.teknik.io/upload/post'
 						ret=$(curl -sf -F file="@${shotfiles[@]}" ${uploadurl})
 						desturl="${ret##*url\":\"}"
 						desturl="${desturl%%\"*}"
