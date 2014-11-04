@@ -63,7 +63,7 @@ screenshot=
 upload=
 # This setting lest the script know where you would like to upload the file to. Valid hosts are: teknik, mediacrush, pomf, imgur, hmp, and a configurable local.
 uploadLoc=
-# THis setting lets the script know whwther you want to hide the user and host. 1=Hide 0=Show
+# This setting lets the script know whether you want to hide the user and host. 1=Hide 0=Show
 hideUser=
 # You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
