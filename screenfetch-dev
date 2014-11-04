@@ -675,9 +675,6 @@ detecthost () {
 		myHost=${HOSTNAME}
 		if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
 		verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'";
-	else 
-		myUser="anon"
-		myHost="anonymous"
 	fi
 }
 
@@ -3402,7 +3399,15 @@ infoDisplay () {
 		mygpu=$(echo -e "$labelcolor GPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mygpu" )
 		mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" )
 	else
-		if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
+		if [[ "${display[@]}" =~ "host" ]]; then
+			if [[ "$hideUser" != "1" ]]; then 
+				myinfo=$(echo -e "${labelcolor}${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}");
+			else 
+				myinfo="";
+			fi
+			out_array=( "${out_array[@]}" "$myinfo" );
+			((display_index++));
+		fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [ "$distro" == "Mac OS X" ]; then
 				sysArch=`str1=$(ioreg -l -p IODeviceTree | grep firmware-abi);echo ${str1: -4: 2}bit`
