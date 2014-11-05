@@ -43,6 +43,7 @@ scriptVersion="3.6.5"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="distro host kernel uptime pkgs shell res de wm wmtheme gtk disk cpu gpu mem"
+valid_display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk disk cpu gpu mem )
 display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk cpu gpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
@@ -211,11 +212,12 @@ displayHelp() {
 	printf "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the\n"
 	printf "		      command line. Must be in the following format...\n"
 	printf "		      'OPTION1=\"OPTIONARG1\";OPTION2=\"OPTIONARG2\"'\n"
-	#echo -e "   ${bold}-d 'ARGUMENTS'${c0}     Allows for setting what information is displayed"
-	#echo -e "		      on the command line. Format must be as follows:"
-	#echo -e "		      OPTION,OPTION,OPTION,OPTION. Valid options are"
-	#echo -e "		      host, distro, kernel, uptime, pkgs, shell, res, de, wm,"
-	#echo -e "		      wmtheme, gtk, cpu, gpu, mem."
+	printf "   ${bold}-d '+var;-var;var'${c0} Allows for setting what information is displayed\n"
+	printf "		      on the command line. You can add displays with +var,var. You\n"
+	printf "		      can delete displays with -var,var. Setting without + or - will\n"
+	printf "		      set display to that explicit combination. Add and delete statements\n"
+	printf "		      may be used in conjunction by placing a ; between them as so:\n"
+	printf "		      +var,var,var;-var,var.\n"
 	printf "   ${bold}-n${c0}                 Do not display ASCII distribution logo.\n"
 	printf "   ${bold}-N${c0}                 Strip all color from output.\n"
 	printf "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!).\n"
@@ -289,9 +291,9 @@ done
 ###################
 
 
-####################
-# Override Options
-####################
+############################
+# Override Options/Display
+############################
 
 if [[ "$overrideOpts" ]]; then
 	verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
@@ -3545,9 +3547,45 @@ fi
 
 
 if [[ "$overrideDisplay" ]]; then
-	verboseOut "Found 'd' flag in syntax. Overriding some display options..."
-	overrideDisplay=${overrideDisplay//,/ }
-	display=( $overrideDisplay )
+	verboseOut "Found 'd' flag in syntax. Overriding display..."
+	OLDIFS=$IFS
+	IFS=';'
+	for i in ${overrideDisplay}; do
+		modchar="${i:0:1}"
+		if [[ "${modchar}" == "-" ]]; then
+			i=${i/${modchar}}
+			_OLDIFS=IFS
+			IFS=,
+			for n in $i; do
+				if [[ ! "${display[@]}" =~ "$n" ]]; then
+					echo "The var $n is not currently being displayed."
+				else
+					display=( "${display[@]/${n}}" )
+				fi
+			done
+			IFS=$_OLDIFS
+		elif [[ "${modchar}" == "+" ]]; then
+			i=${i/${modchar}}
+		        _OLDIFS=IFS
+		        IFS=,
+		        for n in $i; do
+				if [[ "${valid_display[@]}" =~ "$n" ]]; then
+					if [[ "${display[@]}" =~ "$n" ]]; then
+						echo "The $n var is already being displayed."
+					else
+			        	        display+=($n)
+					fi
+				else
+					echo "The var $n is not a valid display var."
+				fi
+		        done
+		        IFS=$_OLDIFS
+		else
+			i="${i//,/ }"
+			display=($i)
+		fi
+	done
+	IFS=$OLDIFS
 fi
 
 # Check for android
@@ -3562,16 +3600,18 @@ fi
 #fi
 
 for i in "${display[@]}"; do
-	if [[ $i =~ wm ]]; then
-		 ! [[ $WM  ]] && detectwm;
-		 ! [[ $Win_theme ]] && detectwmtheme;
-	else
-		if [[ "${display[*]}" =~ "$i" ]]; then 
-			if [[ "$errorSuppress" == "1" ]]; then detect${i} 2>/dev/null
-			else 
-				exec 3> >(stderrOut)
-				detect${i} 2>&3
-				exec 3>&-
+	if [[ ! "$i" == "" ]]; then
+		if [[ $i =~ wm ]]; then
+			 ! [[ $WM  ]] && detectwm;
+			 ! [[ $Win_theme ]] && detectwmtheme;
+		else
+			if [[ "${display[*]}" =~ "$i" ]]; then 
+				if [[ "$errorSuppress" == "1" ]]; then detect${i} 2>/dev/null
+				else 
+					exec 3> >(stderrOut)
+					detect${i} 2>&3
+					exec 3>&-
+				fi
 			fi
 		fi
 	fi
