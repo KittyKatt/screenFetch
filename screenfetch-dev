@@ -792,6 +792,9 @@ detectcpu () {
 	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	else
 		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
+		if [ -z "$cpu" ]; then
+			cpu=$(awk 'BEGIN{FS=":"} /Hardware/ { print $2; exit }' /proc/cpuinfo)
+		fi
 		if [ -z "$cpu" ]; then 
 			cpu=$(awk 'BEGIN{FS=":"} /^cpu/ { gsub(/  +/," ",$2); print $2; exit}' /proc/cpuinfo | sed 's/, altivec supported//;s/^ //')
 			if [[ $cpu =~ ^(PPC)*9.+ ]]; then
