@@ -64,6 +64,8 @@ screenshot=
 upload=
 # This setting lest the script know where you would like to upload the file to. Valid hosts are: teknik, mediacrush, pomf, imgur, hmp, and a configurable local.
 uploadLoc=
+# This setting lets the script know whether you want to hide the user and host. 1=Hide 0=Show
+hideUser=
 # You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
 shotfile=$(printf "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
@@ -222,6 +224,7 @@ displayHelp() {
 	printf "   ${bold}-N${c0}                 Strip all color from output.\n"
 	printf "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!).\n"
 	printf "   ${bold}-p${c0}                 Portrait output.\n"
+	printf "   ${bold}-H${c0}                 Hide user and hostname.\n"
 	printf "   ${bold}-s(u)${c0}              Using this flag tells the script that you want it\n"
 	printf "		      to take a screenshot. Use the -u flag if you would like\n"
 	printf "		      to upload the screenshots to one of the pre-configured\n"
@@ -262,7 +265,7 @@ case $1 in
 esac
 		
 
-while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:p" flags; do
+while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:p:H" flags; do
 	case $flags in
 		h) displayHelp; exit 0;;
 		s) screenshot='1' ;;
@@ -280,6 +283,7 @@ while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:p" flags; do
 		d) overrideDisplay="${OPTARG}" ;;
 		N) no_color='1';;
 		p) portraitSet='Yes' ;;
+		H) hideUser='1' ;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1;;
 		*) errorOut "Error"; exit 1;;
@@ -668,10 +672,12 @@ detectdistro () {
 
 # Host and User detection - Begin
 detecthost () {
-	myUser=${USER}
-	myHost=${HOSTNAME}
-	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
-	verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
+	if [[ "$hideUser" != "1" ]]; then
+		myUser=${USER}
+		myHost=${HOSTNAME}
+		if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
+		verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'";
+	fi
 }
 
 # Find Number of Running Processes
@@ -3398,7 +3404,15 @@ infoDisplay () {
 		mygpu=$(echo -e "$labelcolor GPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mygpu" )
 		mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" )
 	else
-		if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
+		if [[ "${display[@]}" =~ "host" ]]; then
+			if [[ "$hideUser" != "1" ]]; then 
+				myinfo=$(echo -e "${labelcolor}${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}");
+			else 
+				myinfo="";
+			fi
+			out_array=( "${out_array[@]}" "$myinfo" );
+			((display_index++));
+		fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [ "$distro" == "Mac OS X" ]; then
 				sysArch=`str1=$(ioreg -l -p IODeviceTree | grep firmware-abi);echo ${str1: -4: 2}bit`

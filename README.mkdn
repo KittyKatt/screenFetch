@@ -62,6 +62,7 @@ specified on the command line, and those are shown below or by executing `screen
       -N                 Strip all color from output.
       -t                 Truncate output based on terminal width (Experimental!).
       -p                 Output in portrait mode, with logo above info.
+      -H                 Hide user and hostname.
       -s(m)              Using this flag tells the script that you want it
                          to take a screenshot. Use the -m flag if you would like
                          to move it to a new location afterwards.
