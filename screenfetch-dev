@@ -1250,11 +1250,11 @@ detectde () {
 						DE="${DE} ${DEver//* }"
 					fi
 				elif [[ ${DE} == "Gnome" || ${DE} == "GNOME" ]]; then
-					if type -p gnome-session-properties >/dev/null 2>&1; then
-						DEver=$(gnome-session-properties --version)
+					if type -p gnome-session >/dev/null 2>&1; then
+						DEver=$(gnome-session --version 2> /dev/null)
 						DE="${DE} ${DEver//* }"
-					elif type -p gnome-session >/dev/null 2>&1; then
-						DEver=$(gnome-session --version)
+					elif type -p gnome-session-properties >/dev/null 2>&1; then
+						DEver=$(gnome-session-properties --version 2> /dev/null)
 						DE="${DE} ${DEver//* }"
 					fi
 				elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
