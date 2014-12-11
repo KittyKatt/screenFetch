@@ -262,7 +262,7 @@ case $1 in
 esac
 		
 
-while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:p" flags; do
+while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:pa:" flags; do
 	case $flags in
 		h) displayHelp; exit 0;;
 		s) screenshot='1' ;;
@@ -280,6 +280,7 @@ while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:p" flags; do
 		d) overrideDisplay="${OPTARG}" ;;
 		N) no_color='1';;
 		p) portraitSet='Yes' ;;
+		a) art="${OPTARG}" ;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1;;
 		*) errorOut "Error"; exit 1;;
@@ -1895,8 +1896,10 @@ asciiText () {
 # Distro logos and ASCII outputs
 	if [[ "$fake_distro" ]]; then distro="${fake_distro}"; fi
 	if [[ "$asc_distro" ]]; then myascii="${asc_distro}"
+	elif [[ "$art" ]]; then myascii="custom"
 	else myascii="${distro}"; fi
 	case ${myascii} in
+		"custom") source "$art" ;;
 		"Arch Linux - Old")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -3379,6 +3382,7 @@ infoDisplay () {
 		"CentOS"|"Ubuntu"|*) labelcolor=$(getColor 'yellow');;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
+	if [[ "$art" ]]; then source "$art"; fi
 	if [[ "$no_color" == "1" ]]; then labelcolor=""; bold=""; c0=""; textcolor=""; fi
 	# Some verbosity stuff
 	[[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
