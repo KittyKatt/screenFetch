@@ -1760,7 +1760,7 @@ detectgtk () {
 
 				if [ "$distro" == "Cygwin" -a "$gtkFont" == "Not Found" ]; then
 					if [ -f "$HOME/.minttyrc" ]; then
-						gtkFont="$(cat "$HOME/.minttyrc" | grep '^Font=.*' | grep -o '[0-9A-z ]*$')"
+						gtkFont="$(grep '^Font=.*' "$HOME/.minttyrc" | grep -o '[0-9A-z ]*$')"
 					fi
 				fi
 			;;
