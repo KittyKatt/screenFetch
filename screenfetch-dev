@@ -646,6 +646,7 @@ detectdistro () {
 		crunchbang) distro="CrunchBang" ;;
 		gentoo) distro="Gentoo" ;;
 		funtoo) distro="Funtoo" ;;
+		sabayon) distro="Sabayon" ;;
 		slackware) distro="Slackware" ;;
 		frugalware) distro="Frugalware" ;;
 		peppermint) distro="Peppermint" ;;
