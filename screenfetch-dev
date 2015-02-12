@@ -120,6 +120,8 @@ getColor() {
 			'white')		color_ret='\033[0m\033[1;37m';;
 			# Some 256 colors
 			'orange') color_ret="$(colorize '202')";;
+			# HaikuOS
+			'black_haiku') color_ret="$(colorize '7')";;
 		esac
 		[[ -n "${color_ret}" ]] && echo "${color_ret}"
 	else
@@ -461,6 +463,7 @@ detectdistro () {
 		if [ "$distro" == "Unknown" ]; then
 			if [ $(uname -o 2>/dev/null) ]; then
 				if [ "$(uname -o)" == "Cygwin" ]; then distro="Cygwin"; fake_distro="${distro}"; fi
+				if [ "$(uname -o)" == "Haiku" ]; then distro="Haiku"; fake_distro="${distro}"; fi
 			fi
 			if [ -f /etc/os-release ]; then
 				distrib_id=$(</etc/os-release);
@@ -609,14 +612,16 @@ detectdistro () {
 
 		fi
 	fi
-	if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
-		if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
-			distro=${distro,,}
+	if [[ "${distro}" != "Haiku" ]]; then
+		if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
+			if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
+				distro=${distro,,}
+			else
+				distro="$(tr '[:upper:]' '[:lower:]' <<< ${distro})"
+			fi
 		else
 			distro="$(tr '[:upper:]' '[:lower:]' <<< ${distro})"
 		fi
-	else
-		distro="$(tr '[:upper:]' '[:lower:]' <<< ${distro})"
 	fi
 	case $distro in
 		antergos) distro="Antergos" ;;
@@ -662,6 +667,7 @@ detectdistro () {
 		fuduntu) distro="Fuduntu" ;;
 		manjaro) distro="Manjaro" ;;
 		cygwin) distro="Cygwin" ;;
+		haiku) distro="Haiku" ;;
 	esac
 	verboseOut "Finding distro...found as '${distro} ${distro_release}'"
 }
@@ -698,6 +704,8 @@ detectuptime () {
 		boot=$(sysctl -n kern.boottime)
 		now=$(date +%s)
 		uptime=$((${now} - ${boot}))
+	elif [[ "${distro}" == "Haiku" ]]; then
+		uptime=$(uptime | cut -d ',' -f2,3 | sed 's/ up //; s/ hour,/h/; s/ minutes/m/;')
 	else
 		if [[ -f /proc/uptime ]]; then
 			uptime=$(</proc/uptime)
@@ -705,7 +713,7 @@ detectuptime () {
 		fi
 	fi
 
-	if [[ -n ${uptime} ]]; then
+	if [[ -n ${uptime} ]] && [[ "${distro}" != "Haiku" ]]; then
 		secs=$((${uptime}%60))
 		mins=$((${uptime}/60%60))
 		hours=$((${uptime}/3600%24))
@@ -791,6 +799,15 @@ detectcpu () {
 	elif [ "$distro" == "FreeBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "DragonflyBSD" ]; then cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
+	elif [ "$distro" == "Haiku" ]; then
+		cpu=$(sysinfo -cpu | grep 'CPU #0' | cut -d'"' -f2 | sed 's/(tm)//; s/Processor//;')
+		cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
+		if [ $(echo $cpu_mhz) -gt 999 ];then
+			cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
+			cpu="$cpu @ ${cpu_ghz}GHz"
+		else
+			cpu="$cpu @ ${cpu_mhz}MHz"
+		fi
 	else
 		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
 		if [ -z "$cpu" ]; then
@@ -956,6 +973,9 @@ detectmem () {
 			used_mem=$((${phys_mem} - ${free_mem}))
 			usedmem=$((${used_mem} / $human))
 		fi
+	elif [ "$distro" == "Haiku" ]; then
+		totalmem=$(( $(sysinfo -mem | head -n1 | cut -d'/' -f3 | tr -d ' ' | tr -d ')') / 1024 / 1024 ))
+		usedmem=$(( $(sysinfo -mem | head -n1 | cut -d'/' -f2 | sed 's/max//; s/ //g') / 1024 / 1024 ))
 	else
 		mem_info=$(</proc/meminfo)
 		mem_info=$(echo $(echo $(mem_info=${mem_info// /}; echo ${mem_info//kB/})))
@@ -1030,7 +1050,7 @@ detectshell () {
 			shell_type=$(ps -p $PPID -o args| tail -1)
 			shell_type=${shell_type/-}
 			shell_type=${shell_type//*\/}
-		elif [[ "${distro}" == "Cygwin" ]]; then
+		elif [[ "${distro}" == "Cygwin" ]] || [[ "${distro}" == "Haiku" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		else
 			shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
@@ -2858,6 +2878,34 @@ asciiText () {
 "${c4}                 \"VEzjt:;;z>*\`       %s")
 		;;
 
+		"Haiku")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'black_haiku') # Black
+				c2=$(getColor 'light grey') # Light Gray
+				c3=$(getColor 'green') # Green
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(
+"${c1}          :dc'                      %s"
+"${c1}       'l:;'${c2},${c1}'ck.    .;dc:.         %s"
+"${c1}       co    ${c2}..${c1}k.  .;;   ':o.       %s"
+"${c1}       co    ${c2}..${c1}k. ol      ${c2}.${c1}0.       %s"
+"${c1}       co    ${c2}..${c1}k. oc     ${c2}..${c1}0.       %s"
+"${c1}       co    ${c2}..${c1}k. oc     ${c2}..${c1}0.       %s"
+"${c1}.Ol,.  co ${c2}...''${c1}Oc;kkodxOdddOoc,.    %s"
+"${c1} ';lxxlxOdxkxk0kd${c3}oooll${c1}dl${c3}ccc:${c1}clxd;   %s"
+"${c1}     ..${c3}oOolllllccccccc:::::${c1}od;      %s"
+"${c1}       cx:ooc${c3}:::::::;${c1}cooolcX.       %s"
+"${c1}       cd${c2}.${c1}''cloxdoollc' ${c2}...${c1}0.       %s"
+"${c1}       cd${c2}......${c1}k;${c2}.${c1}xl${c2}....  .${c1}0.       %s"
+"${c1}       .::c${c2};..${c1}cx;${c2}.${c1}xo${c2}..... .${c1}0.       %s"
+"${c1}          '::c'${c2}...${c1}do${c2}..... .${c1}K,       %s"
+"${c1}                  cd,.${c2}....:${c1}O,${c2}...... %s"
+"${c1}                    ':clod:'${c2}......  %s"
+"${c1}                        ${c2}.           %s")
+		;;
+
 		"Trisquel")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
@@ -3379,6 +3427,7 @@ infoDisplay () {
 		"Ubuntu-3color"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
+		"Haiku") labelcolor=$(getColor 'green');;
 		"CentOS"|"Ubuntu"|*) labelcolor=$(getColor 'yellow');;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
