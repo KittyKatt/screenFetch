@@ -2167,6 +2167,37 @@ asciiText () {
 "$c2                                      %s")
 		;;
 
+		"ChromeOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'green') # Green
+				c2=$(getColor 'light red') # Light Red
+				c3=$(getColor 'yellow') # Bold Yellow
+				c4=$(getColor 'light blue') # Light Blue
+				c5=$(getColor 'white') # White
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; c5="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("$c2             .,:loool:,.               %s"
+"$c2         .,coooooooooooooc,.          %s"
+"$c2      .,lllllllllllllllllllll,.       %s"
+"$c2     ;ccccccccccccccccccccccccc;      %s"
+"$c1   '${c2}ccccccccccccccccccccccccccccc.    %s"
+"$c1  ,oo${c2}c::::::::okO${c5}000${c3}0OOkkkkkkkkkkk:   %s"
+"$c1 .ooool${c2};;;;:x${c5}K0${c4}kxxxxxk${c5}0X${c3}K0000000000.  %s"
+"$c1 :oooool${c2};,;O${c5}K${c4}ddddddddddd${c5}KX${c3}000000000d  %s"
+"$c1 lllllool${c2};l${c5}N${c4}dllllllllllld${c5}N${c3}K000000000  %s"
+"$c1 lllllllll${c2}o${c5}M${c4}dccccccccccco${c5}W${c3}K000000000  %s"
+"$c1 ;cllllllllX${c5}X${c4}c:::::::::c${c5}0X${c3}000000000d  %s"
+"$c1 .ccccllllllO${c5}Nk${c4}c;,,,;cx${c5}KK${c3}0000000000.  %s"
+"$c1  .cccccclllllxOO${c5}OOO${c1}Okx${c3}O0000000000;   %s"
+"$c1   .:ccccccccllllllllo${c3}O0000000OOO,    %s"
+"$c1     ,:ccccccccclllcd${c3}0000OOOOOOl.     %s"
+"$c1       '::ccccccccc${c3}dOOOOOOOkx:.       %s"
+"$c1         ..,::cccc${c3}xOOOkkko;.          %s"
+"$c1             ..,:${c3}dOkxl:.              %s")
+
+		;;
+
 		"Gentoo")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -3421,7 +3452,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Korora"|"Mandriva"|"Mandrake"|"Chakra"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Korora"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
