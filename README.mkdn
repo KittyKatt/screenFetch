@@ -40,6 +40,10 @@ command! This script is very easy to add to and can easily be extended.
 
 1. screenfetch can be installed by using the ports system.
 
+### Fedora (21 or later)
+
+1. Install it with yum running: `yum install screenfetch`
+
 ### Others
 
 1. Download the latest source. Found at http://git.silverirc.com/cgit.cgi/screenfetch.git/plain/screenfetch-dev
