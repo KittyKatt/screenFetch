@@ -373,6 +373,8 @@ detectdistro () {
 				else
 					distro="Debian"
 				fi
+			elif [[ "${distro_detect}" == "Raspbian" ]]; then
+				distro="Raspbian"
 			elif [[ "${distro_detect}" == "elementary" || "${distro_detect}" == "elementary OS" ]]; then
 				distro="elementary OS"
 			elif [[ "${distro_detect}" == "EvolveOS" ]]; then
