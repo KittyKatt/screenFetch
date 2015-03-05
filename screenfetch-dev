@@ -249,7 +249,7 @@ displayHelp() {
 displayVersion() {
 	printf ${underline}"screenFetch"${c0}" - Version ${scriptVersion}\n"
 	printf "Created by and licensed to Brett Bohnenkamper <kittykatt@kittykatt.us>\n"
-	printf "OS X porting done almost solely by shrx (https://github.com/shrx) and Hu6.\n\n"
+	printf "OS X porting done almost solely by shrx (https://github.com/shrx) and John D. Duncan, III (https://github.com/JohnDDuncanIII).\n\n"
 	printf "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
 }
 
