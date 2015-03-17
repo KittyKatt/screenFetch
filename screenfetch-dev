@@ -196,7 +196,7 @@ displayHelp() {
 	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, CentOS, Debian,\n"
 	printf "	CrunchBang, Raspbian, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
 	printf "	Gentoo, Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
-	printf "	Mandriva, Manjaro, Linux Mint, LMDE, openSUSE, Parabola GNU/Linux-libre,\n"
+	printf "	Mandriva, Manjaro, Linux Mint, LMDE, Logos, openSUSE, Parabola GNU/Linux-libre,\n"
 	printf "	Peppermint, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware,\n"
 	printf "	SolusOS, TinyCore, Trisquel, Ubuntu, Viperr and Void.\n\n"
 	printf "${underline}Other Supported Systems${c0}:\n"
@@ -353,6 +353,10 @@ detectdistro () {
 					distro="Antergos"
 					distro_release="n/a"
 				fi
+				if grep -q -i 'logos' /etc/os-release; then
+					distro="Logos"
+					distro_release="n/a"
+				fi
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
 				distro="Chakra"
 				distro_release=""
@@ -497,6 +501,7 @@ detectdistro () {
 				[[ "${distro}" == "Void" || "${distro}" == "void" ]] && distro="Void"
 				[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
 				[[ "${distro}" == "antergos" || "${distro}" == "Antergos" ]] && distro="Antergos"
+				[[ "${distro}" == "logos" || "${distro}" == "Logos" ]] && distro="Logos"
 				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 				[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
 				[[ "${distro}" == "elementary" ]] && distro="elementary OS"
@@ -651,6 +656,7 @@ detectdistro () {
 		raspbian) distro="Raspbian" ;;
 		freebsd) distro="FreeBSD" ;;
 		freebsd*old) distro="FreeBSD - Old" ;;
+		logos) distro="Logos" ;;
 		openbsd) distro="OpenBSD" ;;
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		netbsd) distro="NetBSD" ;;
@@ -3000,7 +3006,31 @@ asciiText () {
 "                                 %s")
 		;;
 
-
+    		"Logos")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'green') # Green
+				c2=$(getColor 'white') # White
+			fi
+			startline="0"
+			fulloutput=(
+"$c1    ..:.:.               $c2%s"
+"$c1   ..:.:.:.:.            $c2%s"
+"$c1  ..:.:.:.:.:.:.         $c2%s"
+"$c1 ..:.:.:.:.:.:.:.:.      $c2%s"
+"$c1   .:.::;.::::..:.:.:.   $c2%s"
+"$c1      .:.:.::.::.::.;;/  $c2%s"
+"$c1         .:.::.::://///  $c2%s"
+"$c1            ..;;///////  $c2%s"
+"$c1            ///////////  $c2%s"
+"$c1         //////////////  $c2%s"
+"$c1      /////////////////  $c2%s"
+"$c1   ///////////////////   $c2%s"
+"$c1 //////////////////      $c2%s"
+"$c1  //////////////         $c2%s"
+"$c1   //////////            $c2%s"
+"$c1    //////               $c2%s"
+"$c1     //                  $c2%s")
+		;;
 		"Manjaro-tree")
 			if [[ "$no_color" != "1" ]]; then
 				c1="\e[1;32m" # Green
@@ -3460,7 +3490,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Korora"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Korora"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
