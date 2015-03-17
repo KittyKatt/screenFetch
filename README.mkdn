@@ -7,7 +7,7 @@ script can be used to generate one of those nifty terminal theme
 information + ASCII distribution logos you see in everyone's screenshots
 nowadays. It will auto-detect your distribution and display an ASCII
 version of that distribution's logo and some valuable information to the
-right. There are options to specify no ascii art, colors, taking a
+right. There are options to specify no ASCII art, colors, taking a
 screenshot upon displaying info, and even customizing the screenshot
 command! This script is very easy to add to and can easily be extended.
 
@@ -53,10 +53,10 @@ command! This script is very easy to add to and can easily be extended.
 
 ## Running screenfetch
 
-To run screenFetch, open a terminal of some sort and type in the command `screenFetch`
-or wherever you saved the script to. This will generate an ascii logo with the
+To run screenFetch, open a terminal of some sort and type in the command `screenfetch`
+or wherever you saved the script to. This will generate an ASCII logo with the
 information printed to the side of the logo. There are some options that may be
-specified on the command line, and those are shown below or by executing `screenFetch -h`:
+specified on the command line, and those are shown below or by executing `screenfetch -h`:
 
       -v                 Verbose output.
       -o 'OPTIONS'       Allows for setting script variables on the
