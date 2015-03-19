@@ -1,0 +1,29 @@
+if [[ "$no_color" != "1" ]]; then
+	c1=$(getColor 'light blue') # Blue
+	c2=$(getColor 'white') # White
+fi
+if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+startline="0"
+fulloutput=(
+"$c1                   ....                     %s"
+"$c1             .';:cccccccc:;,.              %s"
+"$c1         .,cccccccccccc${c2}lKXKOd${c1}lc,.          %s"
+"$c1       'cccccccccccccccco${c2}kMMMMKx${c1}lc'        %s"
+"$c1     .ccccccccccc${c2}odxkkxdo${c1}ccl${c2}dNMMWx${c1}cc.      %s"
+"$c1    ;ccccccccl${c2}kXWMMMMMMMMWKk${c1}lcx${c2}K0o${c1}ccc;     %s"
+"$c1   ;cccccccc${c2}OMMMKk${c1}dollodO${c2}XMMW0${c1}lccccccc;    %s"
+"$c1  'cl${c2}O0x${c1}cccco${c2}Ok${c1}llx${c2}0XNNX0x${c1}co${c2}0MMNo${c1}ccccccc'   %s"
+"$c1  cc${c2}0MMK${c1}c${c2}lNW0${c1}cc${c2}dWMMX${c1}OO${c2}NMMN${c1}oc${c2}kMMNl${c1}ccccccc   %s"
+"$c1 .cc${c2}WMMk${c1}c${c2}kMMK${c1}cl${c2}WMWd${c1}ccccx${c2}MMN${c1}cc${c2}NMMd${c1}ccccccc.  %s"
+"$c1 .cc${c2}WMMk${c1}c${c2}OMMK${c1}cl${c2}MMWo${c1}ccccd${c2}MMN${c1}cc${c2}NMMx${c1}ccccccc.  %s"
+"$c1  cc${c2}0MMK${c1}c${c2}oNMK${c1}cc${c2}xWMWK${c1}OO${c2}dMMWd${c1}cx${c2}MMNl${c1}ccccccc   %s"
+"$c1  .c${c2}lO0x${c1}ccccl${c2}xx${c1}ll${c2}lKNWWNK${c1}kll${c2}OMMWo${c1}ccccccc'   %s"
+"$c1   ;cccccccc${c2}OMMWo${c1}oolccloo${c2}kWMMKl${c1}ccccccc;    %s"
+"$c1    ,cccccccc${c2}oONMMMMMMMMMMXO${c1}ocx${c2}0kl${c1}ccc,     %s"
+"$c1     .cccccccccc${c2}ldxkOOkx${c1}lccc${c2}dNMMWd${c1}cc.      %s"
+"$c1       .ccccccccccccccccc${c2}dWMMMXk${c1}lc'        %s"
+"$c1         .,cccccccccccc${c2}xNNKOxl${c1}c,.          %s"
+"$c1             .';:cccccccc:;,.              %s"
+"$c1                   ....                    %s")
+
+

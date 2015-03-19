@@ -1,0 +1,27 @@
+if [[ "$no_color" != "1" ]]; then
+	c1=$(getColor 'light blue') # Blue
+	c2=$(getColor 'white') # White
+fi
+if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+startline="0"
+fulloutput=(
+"$c1               ...::::...                 %s"
+"$c1           ..::::::::::::::..            %s"
+"$c1        .::::::::::::::::::::::.         %s"
+"$c1      .::::::::::::${c2}cc${c1}:::${c2}cx0kOx${c1}:::.       %s"
+"$c1     :::::::::${c2}cc${c1}::${c2}KMWo${c1}:${c2}lKMMMMMo${c1}::::      %s"
+"$c1    :::::::::${c2}OMWl${c1}:${c2}WMNc${c1}:${c2}KMMMMNd${c1}::::::     %s"
+"$c1   :::::::${c2}OO${c1}:${c2}dWWl${c1}:${c2}oOl${c1}::${c2}OWWKx${c1}:::::::::    %s"
+"$c1  :::::::${c2}lNMO${c1}:${c2}clcldxkkkxdc${c1}::::::::::::   %s"
+"$c1 .::::::::${c2}cdllkXWMMMMMMMMWk${c1}:::::::::::,  %s"
+"$c1 ::::::::::${c2}cOWMMMMMMMMMMMWd${c1}::::::::::::  %s"
+"$c1 ':::::::::${c2}kMMMMMMMMMMMNOl${c1}::::::::::::'  %s"
+"$c1  :::::::::${c2}kMMMMMMMMXkl${c1}:::::::::::::::   %s"
+"$c1   ::::::::${c2}lKMMMMMKl${c1}::${c2}oOKKO${c1}::::::::::    %s"
+"$c1    ::::::::${c2}lkWMMMXd${c1}:${c2}jNMMMK${c1}:::::::::     %s"
+"$c1     :::::::::${c2}ikXMMMMMMMXx${c1}:::::::::      %s"
+"$c1      '::::::::::${c2}loxkkdl${c1}:::::::::'       %s"
+"$c1        '::::::::::::::::::::::'         %s"
+"$c1           \`''::::::::::::''\`            %s"
+"$c1                \`'::::'\`                 %s")
+
