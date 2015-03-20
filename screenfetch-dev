@@ -2064,7 +2064,7 @@ asciiText () {
 "$c1 \+/+o+++$c3\`o++o$c2               ++////.  %s"
 "$c1  .++.o+$c3++oo+:\`$c2             /dddhhh.  %s"
 "$c3       .+.o+oo:.$c2          \`oddhhhh+   %s"
-"$c3        \+.++o+o\`\`-\`\`$c2\`\`.:ohdhhhhh+    %s"
+"$c3        \+.++o+o\`$c2\`-\`\`\`\`.:ohdhhhhh+    %s"
 "$c3         \`:o+++ $c2\`ohhhhhhhhyo++os:     %s"
 "$c3           .o:$c2\`.syhhhhhhh/$c3.oo++o\`     %s"
 "$c2               /osyyyyyyo$c3++ooo+++/    %s"
