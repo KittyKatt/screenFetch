@@ -1,7 +1,7 @@
 .\" This manpage was created with the following command and
 .\" then manually edited:
 .\" help2man -N -v "-V" -h "-h" ./screenfetch > screenfetch.1
-.TH SCREENFETCH "1" "February 2015" "3.6.5" "User Commands"
+.TH SCREENFETCH "1" "March 2015" "3.6.5" "User Commands"
 
 .SH NAME
 screenFetch \- The Bash Screenshot Information Tool
@@ -52,8 +52,14 @@ Verbose output.
 .B \-o 'OPTIONS'
 Allows for setting script variables on the
 command line. Must be in the following format:
-.br
 \&'OPTION1="OPTIONARG1";OPTION2="OPTIONARG2"'
+.TP
+.B -d '+var;-var;var'
+Allows for setting what information is displayed on the command line. You can
+add displays with +var,var.  You can delete displays with -var,var. Setting
+without + or - will set display to that explicit combination. Add and delete
+statements may be used in conjunction by placing a ; between them as so:
++var,var,var;-var,var.
 .TP
 .B \-n
 Do not display ASCII distribution logo.
