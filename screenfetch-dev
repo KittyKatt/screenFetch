@@ -193,7 +193,7 @@ displayHelp() {
 	printf "  ${0} [OPTIONAL FLAGS]\n\n"
 	printf "screenFetch - a CLI Bash script to show system/theme info in screenshots.\n\n"
 	printf "${underline}Supported GNU/Linux Distributions${c0}:\n"
-	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, CentOS, Debian,\n"
+	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, Chapeau, CentOS, Debian,\n"
 	printf "	CrunchBang, Raspbian, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
 	printf "	Gentoo, Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
 	printf "	Mandriva, Manjaro, Linux Mint, LMDE, Logos, openSUSE, Parabola GNU/Linux-libre,\n"
