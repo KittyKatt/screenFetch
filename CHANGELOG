@@ -3,10 +3,23 @@
     changelog
 **** **** **** ****
 
-	- Added missing Evolve OS package detection.
-	- Added Evolve OS detection. No ASCII yet.
+	- Fixing package detection in apt/dpkg distros
+	- Fix xmonad detection
+	- Add detection for Sabayon, Haiku, Logos and Chapeau
+	- Add ChromeOS logo (without distro detection)
+	- Add an option to supply custom ASCII art
+	- Combine GTK 2/3 themes if they are the same
+	- Reimplement '-d' (allows for setting what information is displayed on the command line)
+
+v3.6.5
+	- Fixed RAM usage on OS X
+	- Added old FreeBSD logo
+	- Added portrait mode output
+	- Simplify Scientific Linux detection
+	- Added '--version' command line longoption as an alternative to '-v'
+	- Added Evolve OS detection
 	- Added imgur to configured upload hosts
-	- Fine tuned more of the upload function.
+	- Fine tuned more of the upload function
 v3.6.2
 	- Added upload support via -u flag
 	- Added pre-configured hosts for -u uploading: teknik, pomf, hmp, and mediacrush
