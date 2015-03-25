@@ -187,28 +187,24 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
+supported_distros="Arch Linux (Old and Current Logos), Antergos, Chakra, Chapeau, CentOS, Debian, CrunchBang, Raspbian, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Gentoo, Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia, Mandriva, Manjaro, Linux Mint, LMDE, Logos, openSUSE, Parabola GNU/Linux-libre, Peppermint, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, SolusOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+
+supported_wms="2bwm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
 displayHelp() {
 	printf "${underline}Usage${c0}:\n"
 	printf "  ${0} [OPTIONAL FLAGS]\n\n"
 	printf "screenFetch - a CLI Bash script to show system/theme info in screenshots.\n\n"
 	printf "${underline}Supported GNU/Linux Distributions${c0}:\n"
-	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, Chapeau, CentOS, Debian,\n"
-	printf "	CrunchBang, Raspbian, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
-	printf "	Gentoo, Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
-	printf "	Mandriva, Manjaro, Linux Mint, LMDE, Logos, openSUSE, Parabola GNU/Linux-libre,\n"
-	printf "	Peppermint, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware,\n"
-	printf "	SolusOS, TinyCore, Trisquel, Ubuntu, Viperr and Void.\n\n"
+	printf "${supported_distros}" | fold -s | sed 's/^/\t/g'
+	printf "\n\n"
 	printf "${underline}Other Supported Systems${c0}:\n"
 	printf "	Mac OS X, FreeBSD, DragonFlyBSD, NetBSD, OpenBSD, Haiku, Android and Cygwin.\n\n"
 	printf "${underline}Supported Desktop Managers${c0}:\n"
 	printf "	KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE and RazorQt.\n\n"
 	printf "${underline}Supported Window Managers${c0}:\n"
-	printf "	2bwm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, E16, E17,\n"
-	printf "	echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity,\n"
-	printf "	monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison,\n"
-	printf "	Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii,\n"
-	printf "	Xfwm4, XMonad and i3.\n\n"
+	printf "${supported_wms}" | fold -s | sed 's/^/\t/g'
+	printf "\n\n"
 	printf "${underline}Options${c0}:\n"
 	printf "   ${bold}-v${c0}                 Verbose output.\n"
 	printf "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the\n"
