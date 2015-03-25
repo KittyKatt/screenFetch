@@ -193,8 +193,8 @@ displayHelp() {
 	printf "  ${0} [OPTIONAL FLAGS]\n\n"
 	printf "screenFetch - a CLI Bash script to show system/theme info in screenshots.\n\n"
 	printf "${underline}Supported GNU/Linux Distributions${c0}:\n"
-	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, Chapeau, CentOS, Debian,\n"
-	printf "	CrunchBang, Raspbian, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
+	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, Chapeau, CentOS, CrunchBang,\n"
+	printf "	Debian, Raspbian, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
 	printf "	Gentoo, Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
 	printf "	Mandriva, Manjaro, Linux Mint, LMDE, Logos, openSUSE, Parabola GNU/Linux-libre,\n"
 	printf "	Peppermint, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware,\n"
@@ -542,6 +542,7 @@ detectdistro () {
 					elif [ -f /etc/chakra-release ]; then distro="Chakra"
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
 					elif [ -f /etc/debian_version ]; then distro="Debian"
+					elif [ -f /etc/dragora-version ]; then distro="Dragora" && distro_more="$(cut -d, -f1 /etc/dragora-version)"
 					elif [ -f /etc/evolveos-release ]; then distro="Evolve OS"
 					elif [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then distro="Fedora"
 					elif [ -f /etc/fedora-release ] && grep -q "Korora" /etc/fedora-release; then distro="Korora"
@@ -642,6 +643,7 @@ detectdistro () {
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch*linux) distro="Arch Linux" ;;
 		arch) distro="Arch Linux";;
+		dragora) distro="Dragora" ;;
 		'elementary'|'elementary os') distro="elementary OS";;
 		evolveos) distro="Evolve OS";;
 		fedora) distro="Fedora" ;;
@@ -756,6 +758,7 @@ detectpkgs () {
 	pkgs="Unknown"
 	case "${distro}" in
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'KaOS') pkgs=$(pacman -Qq | wc -l) ;;
+		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
