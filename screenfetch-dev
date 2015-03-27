@@ -54,7 +54,7 @@ display_type="ASCII"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm )
 denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder )
 
 # Screenshot Settings
@@ -1273,6 +1273,8 @@ detectde () {
 					fi
 				elif pgrep -U ${UID} razor-session >/dev/null 2>&1; then
 					DE="RazorQt"
+				elif pgrep -U ${UID} dtsession >/dev/null 2>&1; then
+					DE="CDE"
 				fi
 			fi
 		fi
@@ -1310,6 +1312,7 @@ detectwm () {
 						'compiz') WM="Compiz";;
 						'dminiwm') WM="dminiwm";;
 						'dwm') WM="dwm";;
+						'dtwm') WM="dtwm";;
 						'e16') WM="E16";;
 						'emerald') WM="Emerald";;
 						'enlightenment') WM="E17";;
