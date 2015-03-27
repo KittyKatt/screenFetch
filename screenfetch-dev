@@ -640,8 +640,7 @@ detectdistro () {
 	case $distro in
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
-		arch*linux) distro="Arch Linux" ;;
-		arch) distro="Arch Linux";;
+		arch|arch*linux) distro="Arch Linux" ;;
 		'elementary'|'elementary os') distro="elementary OS";;
 		evolveos) distro="Evolve OS";;
 		fedora) distro="Fedora" ;;
