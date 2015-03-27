@@ -1165,45 +1165,6 @@ detectde () {
 	DE="Not Present"
 	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
 		if [[ -n ${DISPLAY} ]]; then
-			if [[ ${DE} == "Not Present" ]]; then
-				if [[ -n "${XDG_CURRENT_DESKTOP}" ]]; then
-					if [[ "${XDG_CURRENT_DESKTOP}" == "X-Cinnamon" ]]; then
-						DE="Cinnamon"
-					fi
-				elif [[ -n ${GNOME_DESKTOP_SESSION_ID} ]]; then
-					DE="Gnome"
-					if type -p xprop >/dev/null 2>&1; then
-						if xprop -name "unity-launcher" >/dev/null 2>&1; then
-							DE="Unity"
-						elif xprop -name "launcher" >/dev/null 2>&1 &&
-							xprop -name "panel" >/dev/null 2>&1; then
-
-							DE="Unity"
-						fi
-					fi
-				elif [[ -n ${MATE_DESKTOP_SESSION_ID} ]]; then
-					DE="MATE"
-				elif [[ -n ${KDE_SESSION_VERSION} ]]; then
-					if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
-						DE="KDE5"
-					elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
-						DE="KDE4"
-					fi
-				elif [[ -n ${KDE_FULL_SESSION} ]]; then
-					if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
-						DE="KDE"
-						DEver_data=$( kded --version 2>/dev/null )
-						DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
-					fi
-				elif [[ -n "${DESKTOP_SESSION}" ]]; then
-					if [[ "${DESKTOP_SESSION}" == "budgie-desktop" ]]; then
-						DE="Budgie"
-					elif [[ "$DESKTOP_SESSION" == "Cinnamon" ]]; then
-						DE="Cinnamon"
-					fi
-				fi
-			fi
-
 			if type -p xprop >/dev/null 2>&1;then
 				xprop_root="$(xprop -root 2>/dev/null)"
 				if [[ -n ${xprop_root} ]]; then
@@ -1243,6 +1204,100 @@ detectde () {
 				fi
 			fi
 
+			if [[ ${DE} == "Not Present" ]]; then
+				# Lets use xdg-open code for Gnome/Enlightment/KDe/Lxde/Mate/XFCE detection
+				# http://bazaar.launchpad.net/~vcs-imports/xdg-utils/master/view/head:/scripts/xdg-utils-common.in#L251
+				if [ -n "${XDG_CURRENT_DESKTOP}" ]; then
+					case "${XDG_CURRENT_DESKTOP}" in
+						ENLIGHTENMENT)
+							DE=Enlightenment;
+							;;
+						GNOME)
+							DE=Gnome;
+							;;
+						KDE)
+							DE=KDE;
+							;;
+						LXDE)
+							DE=LXDE;
+							;;
+						MATE)
+							DE=Mate;
+							;;
+						XFCE)
+							DE=XFCE
+							;;
+						'X-Cinnamon')
+							DE=Cinnamon
+							;;
+					esac
+				fi
+
+				if [ x"$DE" = x"" ]; then
+					# classic fallbacks
+					if [ x"$KDE_FULL_SESSION" != x"" ]; then DE=KDE;
+					elif [ x"$GNOME_DESKTOP_SESSION_ID" != x"" ]; then DE=Gnome;
+					elif [ x"$MATE_DESKTOP_SESSION_ID" != x"" ]; then DE=MATE;
+					elif `dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1` ; then DE=Gnome;
+					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=XFCE;
+					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then DE=XFCE
+					elif echo $DESKTOP | grep -q '^Enlightenment'; then DE=Enlightenment;
+					fi
+				fi
+
+				if [ x"$DE" = x"" ]; then
+					# fallback to checking $DESKTOP_SESSION
+					case "$DESKTOP_SESSION" in
+						gnome)
+							DE=Gnome;
+							;;
+						LXDE|Lubuntu)
+							DE=LXDE;
+							;;
+						MATE)
+							DE=MATE;
+							;;
+						xfce|xfce4|'Xfce Session')
+							DE=XFCE;
+							;;
+						'budgie-desktop')
+							DE=Budgie
+							;;
+						Cinnamon)
+							DE=Cinnamon
+							;;
+					esac
+				fi
+
+				if [[ ${DE} == "Gnome" ]]; then
+					if type -p xprop >/dev/null 2>&1; then
+						if xprop -name "unity-launcher" >/dev/null 2>&1; then
+							DE="Unity"
+						elif xprop -name "launcher" >/dev/null 2>&1 &&
+							xprop -name "panel" >/dev/null 2>&1; then
+
+							DE="Unity"
+						fi
+					fi
+				fi
+
+				if [[ ${DE} == "KDE" ]]; then
+					if [[ -n ${KDE_SESSION_VERSION} ]]; then
+						if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
+							DE="KDE5"
+						elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
+							DE="KDE4"
+						fi
+					elif [[ -n ${KDE_FULL_SESSION} ]]; then
+						if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
+							DE="KDE"
+							DEver_data=$( kded --version 2>/dev/null )
+							DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
+						fi
+					fi
+				fi
+			fi
+
 
 			if [[ ${DE} != "Not Present" ]]; then
 				if [[ ${DE} == "Cinnamon" ]]; then
@@ -1251,11 +1306,11 @@ detectde () {
 						DE="${DE} ${DEver//* }"
 					fi
 				elif [[ ${DE} == "Gnome" || ${DE} == "GNOME" ]]; then
-					if type -p gnome-session-properties >/dev/null 2>&1; then
-						DEver=$(gnome-session-properties --version)
+					if type -p gnome-session >/dev/null 2>&1; then
+						DEver=$(gnome-session --version 2> /dev/null)
 						DE="${DE} ${DEver//* }"
-					elif type -p gnome-session >/dev/null 2>&1; then
-						DEver=$(gnome-session --version)
+					elif type -p gnome-session-properties >/dev/null 2>&1; then
+						DEver=$(gnome-session-properties --version 2> /dev/null)
 						DE="${DE} ${DEver//* }"
 					fi
 				elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
