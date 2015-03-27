@@ -359,6 +359,7 @@ detectdistro () {
 				fi
 			elif [[ "${distro_detect}" == "BLAG" ]]; then
 				distro="BLAG"
+				distro_more="$(head -n1 /etc/fedora-release)"
 			elif [[ "${distro_detect}" == "Chakra" ]]; then
 				distro="Chakra"
 				distro_release=""
