@@ -268,26 +268,26 @@ esac
 
 while getopts ":hsu:evVEnNtlS:A:D:o:Bc:d:pa:" flags; do
 	case $flags in
-		h) displayHelp; exit 0;;
+		h) displayHelp; exit 0 ;;
 		s) screenshot='1' ;;
 		S) screenCommand="${OPTARG}" ;;
 		u) upload='1'; uploadLoc="${OPTARG}" ;;
 		v) verbosity=1 ;;
-		V) displayVersion; exit 0;;
-		E) errorSuppress='1';;
+		V) displayVersion; exit 0 ;;
+		E) errorSuppress='1' ;;
 		D) distro="${OPTARG}" ;;
 		A) asc_distro="${OPTARG}" ;;
-		t) truncateSet='Yes';;
-		n) display_type='Text';;
+		t) truncateSet='Yes' ;;
+		n) display_type='Text' ;;
 		o) overrideOpts="${OPTARG}" ;;
 		c) detectColors "${OPTARGS}" ;;
 		d) overrideDisplay="${OPTARG}" ;;
-		N) no_color='1';;
+		N) no_color='1' ;;
 		p) portraitSet='Yes' ;;
 		a) art="${OPTARG}" ;;
-		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1;;
-		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1;;
-		*) errorOut "Error"; exit 1;;
+		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1 ;;
+		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1 ;;
+		*) errorOut "Error"; exit 1 ;;
 	esac
 done
 
@@ -343,130 +343,155 @@ detectdistro () {
 				done
 			fi
 
-			if [[ "${distro_detect}" == "archlinux" || "${distro_detect}" == "Arch Linux" || "${distro_detect}" == "arch" || "${distro_detect}" == "Arch" || "${distro_detect}" == "archarm" ]]; then
-				distro="Arch Linux"
-				distro_release="n/a"
-				if grep -q 'antergos' /etc/os-release; then
-					distro="Antergos"
+			case "${distro_detect}" in
+				"archlinux"|"Arch Linux"|"arch"|"Arch"|"archarm")
+					distro="Arch Linux"
 					distro_release="n/a"
-				fi
-				if grep -q -i 'logos' /etc/os-release; then
-					distro="Logos"
-					distro_release="n/a"
-				fi
-			elif [[ "${distro_detect}" == "BLAG" ]]; then
-				distro="BLAG"
-				distro_more="$(head -n1 /etc/fedora-release)"
-			elif [[ "${distro_detect}" == "Chakra" ]]; then
-				distro="Chakra"
-				distro_release=""
-			elif [[ "${distro_detect}" == "CentOS" ]]; then
-				distro="CentOS"
-			elif [[ "${distro_detect}" == "Chapeau" ]]; then
-				distro="Chapeau"
-			elif [[ "${distro_detect}" == "Debian" ]]; then
-				if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
-					distro="CrunchBang"
-					distro_release=$(awk -F'=' '/^DISTRIB_RELEASE=/ {print $2}' /etc/lsb-release-crunchbang)
-					distro_codename=$(awk -F'=' '/^DISTRIB_DESCRIPTION=/ {print $2}' /etc/lsb-release-crunchbang)
-				elif [[ -f /etc/os-release ]]; then
-					if [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
-						distro="Raspbian"
-						distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
+					if grep -q 'antergos' /etc/os-release; then
+						distro="Antergos"
+						distro_release="n/a"
+					fi
+					if grep -q -i 'logos' /etc/os-release; then
+						distro="Logos"
+						distro_release="n/a"
+					fi
+					;;
+				"BLAG")
+					distro="BLAG"
+					distro_more="$(head -n1 /etc/fedora-release)"
+					;;
+				"Chakra")
+					distro="Chakra"
+					distro_release=""
+					;;
+				"CentOS") distro="CentOS"
+					;;
+				"Chapeau") distro="Chapeau"
+					;;
+				"Debian")
+					if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
+						distro="CrunchBang"
+						distro_release=$(awk -F'=' '/^DISTRIB_RELEASE=/ {print $2}' /etc/lsb-release-crunchbang)
+						distro_codename=$(awk -F'=' '/^DISTRIB_DESCRIPTION=/ {print $2}' /etc/lsb-release-crunchbang)
+					elif [[ -f /etc/os-release ]]; then
+						if [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
+							distro="Raspbian"
+							distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
+						else
+							distro="Debian"
+						fi
 					else
 						distro="Debian"
 					fi
-				else
-					distro="Debian"
-				fi
-			elif [[ "${distro_detect}" == "Raspbian" ]]; then
-				distro="Raspbian"
-			elif [[ "${distro_detect}" == "elementary" || "${distro_detect}" == "elementary OS" ]]; then
-				distro="elementary OS"
-			elif [[ "${distro_detect}" == "EvolveOS" ]]; then
-				distro="Evolve OS"
-			elif [[ "${distro_detect}" == "KaOS" || "${distro_detect}" == "kaos" ]]; then
-				distro="KaOS"	
-			elif [[ "${distro_detect}" == "Fedora" ]]; then
-				distro="Fedora"
-			elif [[ "${distro_detect}" == "frugalware" ]]; then
-				distro="Frugalware"
-				distro_codename=null
-				distro_release=null
-			elif [[ "${distro_detect}" == "Fuduntu" ]]; then
-				distro="Fuduntu"
-				distro_codename=null
-			elif [[ "${distro_detect}" == "Gentoo" ]]; then
-				if [[ "$(lsb_release -sd)" =~ "Funtoo" ]]; then
-					distro="Funtoo"
-				else
-					distro="Gentoo"
-				fi
-			elif [[ "${distro_detect}" == "gNewSense" ]]; then
-				distro="gNewSense"
-			elif [[ "${distro_detect}" == "Jiyuu Linux" ]]; then
-				distro="Jiyuu Linux"
-			elif [[ "${distro_detect}" == "LinuxDeepin" ]]; then
-				distro="LinuxDeepin"
-				distro_codename=null
-			elif [[ "${distro_detect}" == "Deepin" ]]; then
-				distro="Deepin"
-			elif [[ "${distro_detect}" == "Debian Kali Linux" ]]; then
-				 distro="Kali Linux"
-			elif [[ "${distro_detect}" == "Korora" ]]; then
-				distro="Korora"
-			elif [[ "${distro_detect}" == "Mageia" ]]; then
-				distro="Mageia"
-			elif [[ "$distro_detect" == "MandrivaLinux" ]]; then
-				distro="Mandriva"
-				if [[ "${distro_codename}" == "turtle" ]]; then
-					distro="Mandriva-${distro_release}"
+					;;
+				"Raspbian")
+					distro="Raspbian"
+					;;
+				"elementary"|"elementary OS")
+					distro="elementary OS"
+					;;
+				"EvolveOS")
+					distro="Evolve OS"
+					;;
+				"KaOS"|"kaos")
+					distro="KaOS"
+					;;
+				"Fedora")
+					distro="Fedora"
+					;;
+				"frugalware")
+					distro="Frugalware"
 					distro_codename=null
-				elif [[ "${distro_codename}" == "Henry_Farman" ]]; then
-					distro="Mandriva-${distro_release}"
+					distro_release=null
+					;;
+				"Fuduntu")
+					distro="Fuduntu"
 					distro_codename=null
-				elif [[ "${distro_codename}" == "Farman" ]]; then
-					distro="Mandriva-${distro_release}"
+					;;
+				"Gentoo")
+					if [[ "$(lsb_release -sd)" =~ "Funtoo" ]]; then
+						distro="Funtoo"
+					else
+						distro="Gentoo"
+					fi
+					;;
+				"gNewSense")
+					distro="gNewSense"
+					;;
+				"Jiyuu Linux")
+					distro="Jiyuu Linux"
+					;;
+				"LinuxDeepin")
+					distro="LinuxDeepin"
 					distro_codename=null
-				elif [[ "${distro_codename}" == "Adelie" ]]; then
-					distro="Mandriva-${distro_release}"
-					distro_codename=null
-				elif [[ "${distro_codename}" == "pauillac" ]]; then
-					distro="Mandriva-${distro_release}"
-					distro_codename=null
-				fi
-			elif [[ "${distro_detect}" == "ManjaroLinux" ]]; then
-				distro="Manjaro"
-			elif [[ "${distro_detect}" == "LinuxMint" ]]; then
-				distro="Mint"
-				if [[ "${distro_codename}" == "debian" ]]; then
-					distro="LMDE"
+					;;
+				"Deepin")
+					distro="Deepin"
+					;;
+				"Debian Kali Linux")
+					distro="Kali Linux"
+					;;
+				"Korora")
+					distro="Korora"
+					;;
+				"Mageia")
+					distro="Mageia"
+					;;
+				"MandrivaLinux")
+					distro="Mandriva"
+					case "${distro_codename}" in
+						"turtle"|"Henry_Farman"|"Farman"|"Adelie"|"pauillac")
+							distro="Mandriva-${distro_release}"
+							distro_codename=null
+							;;
+					esac
+					;;
+				"ManjaroLinux")
+					distro="Manjaro"
+					;;
+				"LinuxMint")
+					distro="Mint"
+					if [[ "${distro_codename}" == "debian" ]]; then
+						distro="LMDE"
+						distro_codename="n/a"
+						distro_release="n/a"
+					fi
+					;;
+				"SUSE LINUX"|"openSUSE project")
+					distro="openSUSE"
+					;;
+				"Parabola GNU/Linux-libre"|"Parabola")
+					distro="Parabola GNU/Linux-libre"
 					distro_codename="n/a"
 					distro_release="n/a"
-				fi
-			elif [[ "${distro_detect}" == "SUSE LINUX" || "${distro_detect}" == "openSUSE project" ]]; then
-				distro="openSUSE"
-			elif [[ "${distro_detect}" == "Parabola GNU/Linux-libre" || "${distro_detect}" == "Parabola" ]]; then
-				distro="Parabola GNU/Linux-libre"
-				distro_codename="n/a"
-				distro_release="n/a"
-			elif [[ "${distro_detect}" == "Peppermint" ]]; then
-				distro="Peppermint"
-				distro_codename=null
-			elif [[ "${distro_detect}" == "CentOS" || "${distro_detect}" =~ "RedHatEnterprise" ]]; then
-				distro="Red Hat Enterprise Linux"
-			elif [[ "${distro_detect}" == "Sabayon" ]]; then
-				distro="Sabayon"
-			elif [[ "${distro_detect}" == "SolusOS" ]]; then
-				distro="SolusOS"
-			elif [[ "${distro_detect}" == "Trisquel" ]]; then
-				distro="Trisquel"
-			elif [[ "${distro_detect}" == "Ubuntu" ]]; then
-				distro="Ubuntu"
-			elif [[ "${distro_detect}" == "Viperr" ]]; then
-				distro="Viperr"
-				distro_codename=null
-			fi
+					;;
+				"Peppermint")
+					distro="Peppermint"
+					distro_codename=null
+					;;
+				"CentOS")
+					distro="Red Hat Enterprise Linux"
+					;;
+				"Sabayon")
+					distro="Sabayon"
+					;;
+				"SolusOS")
+					distro="SolusOS"
+					;;
+				"Trisquel")
+					distro="Trisquel"
+					;;
+				"Ubuntu")
+					distro="Ubuntu"
+					;;
+				"Viperr")
+					distro="Viperr"
+					distro_codename=null
+					;;
+				*)
+					;;
+			esac
+			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then distro="Red Hat Enterprise Linux"; fi
 			if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro_release"; fi
 			if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro_more $distro_codename"; fi
 			if [[ -n ${distro_more} ]]; then
@@ -657,8 +682,8 @@ detectdistro () {
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
 		dragora) distro="Dragora" ;;
-		'elementary'|'elementary os') distro="elementary OS";;
-		evolveos) distro="Evolve OS";;
+		elementary|'elementary os') distro="elementary OS";;
+		evolveos) distro="Evolve OS" ;;
 		fedora) distro="Fedora" ;;
 		gnewsense) distro="gNewSense" ;;
 		korora) distro="Korora" ;;
@@ -696,7 +721,7 @@ detectdistro () {
 		linuxdeepin) distro="LinuxDeepin" ;;
 		deepin) distro="Deepin" ;;
 		chakra) distro="Chakra" ;;
-		centos) distro="CentOS";;
+		centos) distro="CentOS" ;;
 		mac*os*x) distro="Mac OS X" ;;
 		fuduntu) distro="Fuduntu" ;;
 		manjaro) distro="Manjaro" ;;
