@@ -196,7 +196,7 @@ displayHelp() {
 	printf "	Arch Linux (Old and Current Logos), Antergos, BLAG, Chakra, Chapeau, CentOS, Debian,\n"
 	printf "	CrunchBang, Dragora, Raspbian, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
 	printf "	Gentoo, Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
-	printf "	Mandriva, Manjaro, Linux Mint, LMDE, Logos, openSUSE, Parabola GNU/Linux-libre,\n"
+	printf "	Mandriva, Manjaro, Linux Mint, NixOS, LMDE, Logos, openSUSE, Parabola GNU/Linux-libre,\n"
 	printf "	Peppermint, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware,\n"
 	printf "	SolusOS, TinyCore, Trisquel, Ubuntu, Viperr and Void.\n\n"
 	printf "${underline}Other Supported Systems${c0}:\n"
@@ -445,6 +445,8 @@ detectdistro () {
 					distro_codename="n/a"
 					distro_release="n/a"
 				fi
+			elif [[ "${distro_detect}" == "NixOS" ]]; then
+				distro="NixOS"
 			elif [[ "${distro_detect}" == "SUSE LINUX" || "${distro_detect}" == "openSUSE project" ]]; then
 				distro="openSUSE"
 			elif [[ "${distro_detect}" == "Parabola GNU/Linux-libre" || "${distro_detect}" == "Parabola" ]]; then
@@ -566,6 +568,7 @@ detectdistro () {
 					elif [ -f /etc/mageia-release ]; then distro="Mageia"
 					elif [ -f /etc/mandrake-release ]; then distro="Mandrake"
 					elif [ -f /etc/mandriva-release ]; then distro="Mandriva"
+					elif [ -f /etc/NIXOS ]; then distro="NixOS"
 					elif [ -f /etc/SuSE-release ]; then distro="openSUSE"
 					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Enterprise Linux"
 					elif [ -f /etc/redhat-release ] && grep -q "CentOS" /etc/redhat-release; then distro="CentOS"
@@ -632,11 +635,17 @@ detectdistro () {
 					fi
 				fi
 			fi
-
-
-
 		fi
 	fi
+
+	# NixOS
+	nixos-version 2>/dev/null 1>/dev/null
+	# "$(which nixos-version)" won't work for some reason
+	if [[ "$(echo $?)" -eq 0 ]]; then
+		distro="NixOS"
+		distro_more="NixOS $(nixos-version)"
+	fi
+
 	if [[ "${distro}" != "Haiku" ]]; then
 		if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
 			if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
@@ -648,6 +657,7 @@ detectdistro () {
 			distro="$(tr '[:upper:]' '[:lower:]' <<< ${distro})"
 		fi
 	fi
+
 	case $distro in
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
@@ -663,6 +673,7 @@ detectdistro () {
 		mandriva) distro="Mandriva" ;;
 		mandrake) distro="Mandrake" ;;
 		mint) distro="Mint" ;;
+		nix|nix*os) distro="NixOS" ;;
 		kali*linux) distro="Kali Linux" ;;
 		lmde) distro="LMDE" ;;
 		opensuse) distro="openSUSE" ;;
@@ -773,6 +784,7 @@ detectpkgs () {
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
+		'NixOS') pkgs=$(ls -d /nix/store/*/ | wc -l) ;;
 		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l|wc -l);;
 		'Evolve OS') pkgs=$(pisi list-installed | wc -l);;
@@ -1123,12 +1135,16 @@ detectshell () {
 # Resolution Detection - Begin
 detectres () {
 	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
-		if [[ -n ${DISPLAY} ]]; then
+		# NixOS: "$(which xdpyinfo)" won't work for some reason
+		xdpyinfo 2>/dev/null 1>/dev/null
+		if [[ "$(echo $?)" -eq 0 ]] && [[ -n ${DISPLAY} ]]; then
 			if [[ "$distro" =~ "BSD" ]]; then
 				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
 			else
 				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
 			fi
+		else
+			xResolution=""
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
@@ -3445,6 +3461,35 @@ asciiText () {
 "${c1}                -~\"|{*l}*|\"\"~                  %s")
 		;;
 
+		"NixOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'purple')
+				c2=$(getColor 'light blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c2}                  .:.                   %s"
+"${c2}                  :::                  %s"
+"${c2}          ...     :::      ${c1}.:.         %s"
+"${c2}          ':::::. :::      ${c1}:::         %s"
+"${c1}  ...         ${c2}'::::::      ${c1}:::     ..  %s"
+"${c1}   ::::.       ..${c2}':::::.   ${c1}:::  .::::' %s"
+"${c1}     ''::::..::::''  ${c2}'':::.${c1}::::::''    %s"
+"${c1}       .::::${c2}.${c1}''          ${c2}':${c1}:::'        %s"
+"${c1}    .:::::${c2}:::              ${c1}:::         %s"
+"${c1}  .:::'   ${c2}:::              ${c1}:::  ${c2}..:::  %s"
+"${c1}  ''      ${c2}:::              ${c1}:${c2}.:::::''   %s"
+"${c2}         .:::${c1}:.          ${c2}.:::::'       %s"
+"${c2}     ..::::::${c1}'::::.  ${c2}.:::::''::::..    %s"
+"${c2}   ::::'  :::   ${c1}'::::${c2}':'        ${c2}'::::. %s"
+"${c2}  '''     :::     ${c1}:::::::.         ${c2}''' %s"
+"${c2}          :::     ${c1}:::  ':::::.         %s"
+"${c2}          :::     ${c1}:::      '''         %s"
+"${c2}           '      ${c1}:::                  %s"
+"${c1}                  :::                  %s"
+"${c1}                   '                   %s")
+		;;
+
 		*)
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -3563,7 +3608,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"NixOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
