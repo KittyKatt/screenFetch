@@ -194,7 +194,7 @@ displayHelp() {
 	printf "screenFetch - a CLI Bash script to show system/theme info in screenshots.\n\n"
 	printf "${underline}Supported GNU/Linux Distributions${c0}:\n"
 	printf "	Arch Linux (Old and Current Logos), Antergos, Chakra, Chapeau, CentOS, Debian,\n"
-	printf "	CrunchBang, Raspbian, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
+	printf "	CrunchBang, Raspbian, gNewSense, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu,\n"
 	printf "	Gentoo, Funtoo, Jiyuu Linux, LinuxDeepin, Kali Linux, KaOS, Korora, Mageia,\n"
 	printf "	Mandriva, Manjaro, Linux Mint, LMDE, Logos, openSUSE, Parabola GNU/Linux-libre,\n"
 	printf "	Peppermint, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware,\n"
@@ -381,6 +381,8 @@ detectdistro () {
 				fi
 			elif [[ "${distro_detect}" == "Raspbian" ]]; then
 				distro="Raspbian"
+			elif [[ "${distro_detect}" == "gNewSense" ]]; then
+				distro="gNewSense"
 			elif [[ "${distro_detect}" == "elementary" || "${distro_detect}" == "elementary OS" ]]; then
 				distro="elementary OS"
 			elif [[ "${distro_detect}" == "EvolveOS" ]]; then
@@ -541,7 +543,12 @@ detectdistro () {
 					if [ -f /etc/arch-release ]; then distro="Arch Linux"
 					elif [ -f /etc/chakra-release ]; then distro="Chakra"
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
-					elif [ -f /etc/debian_version ]; then distro="Debian"
+					elif [ -f /etc/debian_version ]; then
+						if [ -f /etc/issue ] && grep -q "gNewSense" /etc/issue ; then
+							distro="gNewSense"
+						else
+							distro="Debian"
+						fi
 					elif [ -f /etc/evolveos-release ]; then distro="Evolve OS"
 					elif [ -f /etc/fedora-release ] && grep -q "Fedora" /etc/fedora-release; then distro="Fedora"
 					elif [ -f /etc/fedora-release ] && grep -q "Korora" /etc/fedora-release; then distro="Korora"
@@ -656,6 +663,7 @@ detectdistro () {
 		ubuntu) distro="Ubuntu" ;;
 		debian) distro="Debian" ;;
 		raspbian) distro="Raspbian" ;;
+		gnewsense) distro="gNewSense" ;;
 		freebsd) distro="FreeBSD" ;;
 		freebsd*old) distro="FreeBSD - Old" ;;
 		logos) distro="Logos" ;;
@@ -756,7 +764,7 @@ detectpkgs () {
 	case "${distro}" in
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'KaOS') pkgs=$(pacman -Qq | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
+		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'Raspbian'|'gNewSense'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'Fedora'|'Korora'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
@@ -2131,7 +2139,6 @@ asciiText () {
 "                                %s")
 		;;
 
-
 		"Raspbian")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Light Green
@@ -2159,6 +2166,26 @@ asciiText () {
 "             $c2......       %s")
 		;;
 
+		"gNewSense")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') # Light Blue
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+                        fulloutput=("$c1                      ..,,,,..                       %s"
+"$c1                .oocchhhhhhhhhhccoo.                %s"
+"$c1         .ochhlllllllc hhhhhh ollllllhhco.          %s"
+"$c1     ochlllllllllll hhhllllllhhh lllllllllllhco     %s"
+"$c1  .cllllllllllllll hlllllo  +hllh llllllllllllllc.  %s"
+"$c1 ollllllllllhco\'\'  hlllllo  +hllh  \`\`ochllllllllllo %s"
+"$c1 hllllllllc\'       hllllllllllllh       \`cllllllllh %s"
+"$c1 ollllllh          +llllllllllll+          hllllllo %s"
+"$c1  \`cllllh.           ohllllllho           .hllllc\'  %s"
+"$c1     ochllc.            ++++            .cllhco     %s"
+"$c1        \`+occooo+.                .+ooocco+\'        %s"
+"$c1               \`+oo++++      ++++oo+\'               %s"
+"$c1                                                    %s")
+		;;
 
 		"CrunchBang")
 			if [[ "$no_color" != "1" ]]; then
@@ -3524,7 +3551,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
