@@ -3625,6 +3625,22 @@ asciiText () {
 		#n=${#fulloutput[*]}
 		for ((i=0; i<${#fulloutput[*]}; i++)); do
 			# echo "${out_array[@]}"
+			febreeze=$(awk 'BEGIN{srand();print int(rand()*(1000-1))+1 }')
+			if [[ "${febreeze}" == "411" || "${febreeze}" == "188" || "${febreeze}" == "15" || "${febreeze}" == "166" || "${febreeze}" == "609" ]]; then
+				f_size=${#fulloutput[*]}
+				o_size=${#out_array[*]}
+				f_max=$(( 32768 / f_size * f_size ))
+				#o_max=$(( 32768 / o_size * o_size ))
+				for ((a=f_size-1; a>0; a--)); do
+					while (( (rand=$RANDOM) >= f_max )); do :; done
+					rand=$(( rand % (a+1) ))
+					tmp=${fulloutput[a]} fulloutput[a]=${fulloutput[rand]} fulloutput[rand]=$tmp
+				done
+				for ((b=o_size-1; b>0; b--)); do
+					rand=$(( rand % (b+1) ))
+					tmp=${out_array[b]} out_array[b]=${out_array[rand]} out_array[rand]=$tmp
+				done
+			fi
 			printf "${fulloutput[i]}$c0\n" "${out_array}"
 			if [[ "$i" -ge "$startline" ]]; then
 				unset out_array[0]
