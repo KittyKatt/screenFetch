@@ -189,7 +189,7 @@ detectColors() {
 
 supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, , Mageia, Mandriva/Mandrake, Manjaro, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, SolusOS, TinyCore, Trisquel, Ubuntu, Viperr, and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, and Windows+Cygwin."
-supported_wms="2bwm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
+supported_wms="2bwm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
 displayHelp() {
 	printf "${underline}Usage${c0}:\n"
@@ -202,7 +202,7 @@ displayHelp() {
 	printf "${supported_other}" | fold -s | sed 's/^/\t/g'
 	printf "\n\n"
 	printf "${underline}Supported Desktop Managers${c0}:\n"
-	printf "	KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE and RazorQt.\n\n"
+	printf "	KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt.\n\n"
 	printf "${underline}Supported Window Managers${c0}:\n"
 	printf "${supported_wms}" | fold -s | sed 's/^/\t/g'
 	printf "\n\n"
