@@ -1249,6 +1249,9 @@ detectde () {
 						KDE)
 							DE=KDE;
 							;;
+						LUMINA)
+							DE=Lumina;
+							;;
 						LXDE)
 							DE=LXDE;
 							;;
@@ -1282,6 +1285,9 @@ detectde () {
 						gnome)
 							DE=Gnome;
 							;;
+						LUMINA)
+							DE=Lumina;
+							;;
 						LXDE|Lubuntu)
 							DE=LXDE;
 							;;
@@ -1296,6 +1302,18 @@ detectde () {
 							;;
 						Cinnamon)
 							DE=Cinnamon
+							;;
+					esac
+				fi
+
+				if [ x"$GDMSESSION" = x"" ]; then
+					# fallback to checking $GDMSESSION
+					case "$GDMSESSION" in
+						Lumina*|LUMINA*|lumina*)
+							DE=Lumina
+							;;
+						MATE|mate)
+							DE=MATE
 							;;
 					esac
 				fi
