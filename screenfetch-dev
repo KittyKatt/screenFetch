@@ -508,38 +508,51 @@ detectdistro () {
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
 			if [ $(uname -o 2>/dev/null) ]; then
-				if [ "$(uname -o)" == "Cygwin" ]; then distro="Cygwin"; fake_distro="${distro}"; fi
-				if [ "$(uname -o)" == "Haiku" ]; then distro="Haiku"; fake_distro="${distro}"; fi
+				case "$(uname -o)" in
+					"Cygwin")
+						distro="Cygwin"
+						fake_distro="${distro}"
+					;;
+					"Haiku")
+						distro="Haiku"
+						fake_distro="${distro}"
+					;;
+					"GNU/Linux")
+						if type -p crux >/dev/null 2>&1; then distro="CRUX"; fi
+					;;
+				esac
 			fi
-			if [ -f /etc/os-release ]; then
-				distrib_id=$(</etc/os-release);
-				for l in $(echo $distrib_id); do
-					if [[ ${l} =~ ^ID= ]]; then
-						distrib_id=${l//*=}
-						distrib_id=${distrib_id//\"/}
-						break 1
+			if [[ "${distro}" == "Unknown" ]]; then
+				if [ -f /etc/os-release ]; then
+					distrib_id=$(</etc/os-release);
+					for l in $(echo $distrib_id); do
+						if [[ ${l} =~ ^ID= ]]; then
+							distrib_id=${l//*=}
+							distrib_id=${distrib_id//\"/}
+							break 1
+						fi
+					done
+					if [[ -n ${distrib_id} ]]; then
+						if [[ -n ${BASH_VERSINFO} && ${BASH_VERSINFO} -ge 4 ]]; then
+							distrib_id=$(for i in ${distrib_id}; do echo -n "${i^} "; done)
+							distro=${distrib_id% }
+							unset distrib_id
+						else
+							distrib_id=$(for i in ${distrib_id}; do FIRST_LETTER=$(echo -n "${i:0:1}" | tr "[:lower:]" "[:upper:]"); echo -n "${FIRST_LETTER}${i:1} "; done)
+							distro=${distrib_id% }
+							unset distrib_id
+						fi
 					fi
-				done
-				if [[ -n ${distrib_id} ]]; then
-					if [[ -n ${BASH_VERSINFO} && ${BASH_VERSINFO} -ge 4 ]]; then
-						distrib_id=$(for i in ${distrib_id}; do echo -n "${i^} "; done)
-						distro=${distrib_id% }
-						unset distrib_id
-					else
-						distrib_id=$(for i in ${distrib_id}; do FIRST_LETTER=$(echo -n "${i:0:1}" | tr "[:lower:]" "[:upper:]"); echo -n "${FIRST_LETTER}${i:1} "; done)
-						distro=${distrib_id% }
-						unset distrib_id
-					fi
-				fi
 
-				# Hotfixes
-				[[ "${distro}" == "Void" || "${distro}" == "void" ]] && distro="Void"
-				[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
-				[[ "${distro}" == "antergos" || "${distro}" == "Antergos" ]] && distro="Antergos"
-				[[ "${distro}" == "logos" || "${distro}" == "Logos" ]] && distro="Logos"
-				[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
-				[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
-				[[ "${distro}" == "elementary" ]] && distro="elementary OS"
+					# Hotfixes
+					[[ "${distro}" == "Void" || "${distro}" == "void" ]] && distro="Void"
+					[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
+					[[ "${distro}" == "antergos" || "${distro}" == "Antergos" ]] && distro="Antergos"
+					[[ "${distro}" == "logos" || "${distro}" == "Logos" ]] && distro="Logos"
+					[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
+					[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
+					[[ "${distro}" == "elementary" ]] && distro="elementary OS"
+				fi
 			fi
 
 			if [[ "${distro}" == "Unknown" ]]; then
