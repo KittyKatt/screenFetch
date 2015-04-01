@@ -2313,6 +2313,36 @@ asciiText () {
 "$c2                                      %s")
 		;;
 
+		"CRUX")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light cyan')
+				c2=$(getColor 'yellow')
+				c3=$(getColor 'white')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			fulloutput=(""
+"${c1}          odddd             %s"
+"${c1}       oddxkkkxxdoo        %s"
+"${c1}      ddcoddxxxdoool       %s"
+"${c1}      xdclodod  olol       %s"
+"${c1}      xoc  xdd  olol       %s"
+"${c1}      xdc  ${c2}k00${c1}Okdlol       %s"
+"${c1}      xxd${c2}kOKKKOkd${c1}ldd       %s"
+"${c1}      xdco${c2}xOkdlo${c1}dldd       %s"
+"${c1}      ddc:cl${c2}lll${c1}oooodo      %s"
+"${c1}    odxxdd${c3}xkO000kx${c1}ooxdo    %s"
+"${c1}   oxdd${c3}x0NMMMMMMWW0od${c1}kkxo  %s"
+"${c1}  oooxd${c3}0WMMMMMMMMMW0o${c1}dxkx  %s"
+"${c1} docldkXW${c3}MMMMMMMWWN${c1}Odolco  %s"
+"${c1} xx${c2}dx${c1}kxxOKN${c3}WMMWN${c1}0xdoxo::c  %s"
+"${c2} xOkkO${c1}0oo${c3}odOW${c2}WW${c1}XkdodOxc:l  %s"
+"${c2} dkkkxkkk${c3}OKX${c2}NNNX0Oxx${c1}xc:cd  %s"
+"${c2}  odxxdx${c3}xllod${c2}ddooxx${c1}dc:ldo  %s"
+"${c2}    lodd${c1}dolccc${c2}ccox${c1}xoloo"
+"")
+		;;
+
 		"ChromeOS")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green') # Green
@@ -3748,7 +3778,7 @@ infoDisplay () {
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
 		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS") labelcolor=$(getColor 'light blue');;
-		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin") labelcolor=$(getColor 'light cyan');;
+		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
