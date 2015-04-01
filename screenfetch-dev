@@ -1186,10 +1186,12 @@ detectshell () {
 detectres () {
 	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
 		if [[ -n ${DISPLAY} ]]; then
-			if [[ "$distro" =~ "BSD" ]]; then
-				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
-			else
-				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
+			if type -p xdpyinfo >/dev/null 2>&1; then
+				if [[ "$distro" =~ "BSD" ]]; then
+					xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
+				else
+					xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
+				fi
 			fi
 		fi
 	elif [[ ${distro} == "Mac OS X" ]]; then
