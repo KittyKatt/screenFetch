@@ -4012,8 +4012,9 @@ if [[ "$overrideDisplay" ]]; then
 		        done
 		        IFS=$_OLDIFS
 		else
+			IFS=$OLDIFS
 			i="${i//,/ }"
-			display=($i)
+			display=( $i )
 		fi
 	done
 	IFS=$OLDIFS
