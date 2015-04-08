@@ -440,6 +440,9 @@ detectdistro () {
 				"Korora")
 					distro="Korora"
 					;;
+				"Lunar Linux"|"lunar")
+					distro="Lunar Linux"
+					;;
 				"Mageia")
 					distro="Mageia"
 					;;
@@ -728,6 +731,7 @@ detectdistro () {
 		nix|nix*os) distro="NixOS" ;;
 		kali*linux) distro="Kali Linux" ;;
 		lmde) distro="LMDE" ;;
+		lunar|lunar*linux) distro="Lunar Linux";;
 		opensuse) distro="openSUSE" ;;
 		ubuntu) distro="Ubuntu" ;;
 		debian) distro="Debian" ;;
