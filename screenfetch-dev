@@ -1295,6 +1295,9 @@ detectde () {
 						'X-Cinnamon')
 							DE=Cinnamon
 							;;
+						Unity)
+							DE=Unity
+							;;
 					esac
 				fi
 
