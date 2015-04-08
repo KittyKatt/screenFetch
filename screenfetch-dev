@@ -3654,14 +3654,15 @@ asciiText () {
 		;;
 
 		*)
-			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'white') # White
-				c2=$(getColor 'dark grey') # Light Gray
-				c3=$(getColor 'yellow') # Light Yellow
-			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
-			startline="0"
-			fulloutput=("                             %s"
+			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
+				if [[ "$no_color" != "1" ]]; then
+					c1=$(getColor 'white') # White
+					c2=$(getColor 'dark grey') # Light Gray
+					c3=$(getColor 'yellow') # Light Yellow
+				fi
+				if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+				startline="0"
+				fulloutput=("                             %s"
 "                            %s"
 "                            %s"
 "$c2         #####$c0              %s"
@@ -3679,6 +3680,28 @@ asciiText () {
 "                            %s"
 "                            %s"
 "                            %s")
+			else
+				if [[ "$no_color" != "1" ]]; then
+					c1=$(getColor 'light green') # Light Green
+				fi
+				if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+				startline="0"
+				fulloutput=("                                             %s"
+   "                                            %s"
+"$c1 UUU     UUU NNN      NNN IIIII XXX     XXXX%s"
+"$c1 UUU     UUU NNNN     NNN  III    XX   xXX  %s"
+"$c1 UUU     UUU NNNNN    NNN  III     XX xXX   %s"
+"$c1 UUU     UUU NNN NN   NNN  III      XXXX    %s"
+"$c1 UUU     UUU NNN  NN  NNN  III      xXX     %s"
+"$c1 UUU     UUU NNN   NN NNN  III     xXXXX    %s"
+"$c1 UUU     UUU NNN    NNNNN  III    xXX  XX   %s"
+"$c1  UUUuuuUUU  NNN     NNNN  III   xXX    XX  %s"
+"$c1    UUUUU    NNN      NNN IIIII xXXx    xXXx%s"
+   "                                            %s"
+   "                                            %s"
+   "                                            %s"
+   "                                            %s")
+			fi
   		;;
 	esac
 
