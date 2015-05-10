@@ -751,6 +751,7 @@ detectdistro () {
 		frugalware) distro="Frugalware" ;;
 		peppermint) distro="Peppermint" ;;
 		solusos) distro="SolusOS" ;;
+		trisquel) distro="Trisquel";;
 		parabolagnu|parabolagnu/linux-libre|'parabola gnu/linux-libre'|parabola) distro="Parabola GNU/Linux-libre" ;;
 		viperr) distro="Viperr" ;;
 		void) distro="Void" ;;
