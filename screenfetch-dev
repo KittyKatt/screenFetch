@@ -596,7 +596,7 @@ detectdistro () {
 			fi
 
 			if [[ "${distro}" == "Unknown" ]]; then
-				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
 					if [ -f /etc/arch-release ]; then distro="Arch Linux"
 					elif [ -f /etc/chakra-release ]; then distro="Chakra"
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
@@ -665,7 +665,7 @@ detectdistro () {
 				fi
 			fi
 
-			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
 				if [[ -f /etc/issue ]]; then
 					distro=$(awk 'BEGIN {
 						distro = "Unknown"
@@ -689,7 +689,7 @@ detectdistro () {
 				fi
 			fi
 
-			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
 				if [[ -f /etc/system-release ]]; then
 					if grep -q "Scientific Linux" /etc/system-release; then
 						distro="Scientific Linux"
@@ -893,12 +893,20 @@ detectcpu () {
 		elif [[ $cpu == "ppc970" ]]; then
 			cpu="IBM PowerPC G5"
 		else
-		cpu=$(sysctl -n machdep.cpu.brand_string)
+			cpu=$(sysctl -n machdep.cpu.brand_string)
 		fi
 		REGEXP="-E"
-	elif [ "$distro" == "FreeBSD" ]; then cpu=$(sysctl -n hw.model)
-	elif [ "$distro" == "DragonflyBSD" ]; then cpu=$(sysctl -n hw.model)
-	elif [ "$distro" == "OpenBSD" ]; then cpu=$(sysctl -n hw.model | sed 's/@.*//')
+	elif [ "$OSTYPE" == "gnu" ]; then
+		# no /proc/cpuinfo on GNU/Hurd
+		if [ "$(uname -m | grep 'i*86')" ]; then
+			cpu="Unkown x86"
+		else
+			cpu="Unkown"
+		fi
+	elif [[ "$distro" == "FreeBSD" || "$distro" == "DragonflyBSD" ]]; then
+		cpu=$(sysctl -n hw.model)
+	elif [ "$distro" == "OpenBSD" ]; then
+		cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	elif [ "$distro" == "Haiku" ]; then
 		cpu=$(sysinfo -cpu | grep 'CPU #0' | cut -d'"' -f2 | sed 's/(tm)//; s/Processor//;')
 		cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
@@ -960,15 +968,15 @@ detectgpu () {
 		gpu="${gpu//\'}"
 		# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
 	elif [[ "$distro" != "Mac OS X" ]]; then
-		if [[ -n "$(type -p nvidia-smi)" ]]; then
-			gpu=$(nvidia-smi -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
-		elif [[ -n "$(type -p glxinfo)" && -z "${gpu}" ]]; then
-			gpu_info=$(glxinfo 2>/dev/null)
+		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
+			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
+		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p glxinfo)" && -z "${gpu}" ]]; then
+			gpu_info=$($(PATH="/usr/sbin:$PATH" type -p glxinfo | cut -f1) 2>/dev/null)
 			gpu=$(grep "OpenGL renderer string" <<< "${gpu_info}" | cut -d ':' -f2  | sed -n '1h;2,$H;${g;s/\n/,/g;p}')
 			gpu="${gpu:1}"
 			gpu_info=$(grep "OpenGL vendor string" <<< "${gpu_info}")
-		elif [[ -n "$(type -p lspci)" && -z "$gpu" ]]; then
-			gpu_info=$(lspci 2> /dev/null | grep VGA)
+		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p lspci)" && -z "$gpu" ]]; then
+			gpu_info=$($(PATH="/usr/bin:$PATH" type -p lspci | cut -f1) 2> /dev/null | grep VGA)
 			gpu=$(grep -oE '\[.*\]' <<< "${gpu_info}" | sed 's/\[//;s/\]//' | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
 		fi
 	elif [[ "${distro}" == "Mac OS X" ]]; then
@@ -1140,7 +1148,7 @@ detectshell_ver () {
 }
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
-		if [[ "${distro}" == "Cygwin" || "${distro}" == "Haiku" ]]; then
+		if [[ "${distro}" == "Cygwin" || "${distro}" == "Haiku" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		else
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
@@ -3682,6 +3690,35 @@ asciiText () {
 "                            %s"
 "                            %s"
 "                            %s")
+
+			elif [[ "$(echo "${kernel}" | grep 'GNU' )" || "$(echo "${kernel}" | grep 'Hurd' )" || "${OSTYPE}" == "gnu" ]]; then
+				startline="0"
+				fulloutput=(
+"    _-\`\`\`\`\`-,           ,- '- .       %s"
+"   .'   .- - |          | - -.  \`.   %s"
+"  /.'  /                     \`.   \\  %s"
+" :/   :      _...   ..._      \`\`   : %s"
+" ::   :     /._ .\`:'_.._\\.    ||   : %s"
+" ::    \`._ ./  ,\`  :    \\ . _.''   . %s"
+" \`:.      /   |  -.  \\-. \\\\\_      /  %s"
+"   \\:._ _/  .'   .@)  \\@) \` \`\\ ,.'   %s"
+"      _/,--'       .- .\\,-.\`--\`.     %s"
+"        ,'/''     (( \\ \`  )          %s"
+"         /'/'  \\    \`-'  (           %s"
+"          '/''  \`._,-----'           %s"
+"           ''/'    .,---'            %s"
+"            ''/'      ;:             %s"
+"              ''/''  ''/             %s"
+"                ''/''/''             %s"
+"                  '/'/'              %s"
+"                   \`;                %s")
+# Source: https://www.gnu.org/graphics/alternative-ascii.en.html
+# Copyright (C) 2003, Vijay Kumar
+# Permission is granted to copy, distribute and/or modify this image under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+
 			else
 				if [[ "$no_color" != "1" ]]; then
 					c1=$(getColor 'light green') # Light Green
