@@ -899,9 +899,9 @@ detectcpu () {
 	elif [ "$OSTYPE" == "gnu" ]; then
 		# no /proc/cpuinfo on GNU/Hurd
 		if [ "$(uname -m | grep 'i*86')" ]; then
-			cpu="Unkown x86"
+			cpu="Unknown x86"
 		else
-			cpu="Unkown"
+			cpu="Unknown"
 		fi
 	elif [[ "$distro" == "FreeBSD" || "$distro" == "DragonflyBSD" ]]; then
 		cpu=$(sysctl -n hw.model)
