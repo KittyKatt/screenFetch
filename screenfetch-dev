@@ -1744,11 +1744,12 @@ detectwmtheme () {
 }
 # WM Theme Detection - END
 
-# GTK Theme\Icon\Font Detection - BEGIN
+# GTK Theme\Icon\Cursor\Font Detection - BEGIN
 detectgtk () {
 	gtk2Theme="Not Found"
 	gtk3Theme="Not Found"
 	gtkIcons="Not Found"
+	gtkCursor="Not Found"
 	gtkFont="Not Found"
 	# Font detection (OS X)
 	if [[ ${distro} == "Mac OS X" ]]; then
@@ -1823,6 +1824,8 @@ detectgtk () {
 
 					gtkIcons=$(gsettings get org.cinnamon.desktop.interface icon-theme)
 					gtkIcons=${gtkIcons//"'"}
+					gtkCursor=$(gsettings get org.cinnamon.desktop.interface cursor-theme)
+					gtkCursor=${gtkCursor//"'"}
 					gtkFont=$(gsettings get org.cinnamon.desktop.interface font-name)
 					gtkFont=${gtkFont//"'"}
 					if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
@@ -1835,6 +1838,8 @@ detectgtk () {
 					gtk2Theme=${gtk3Theme}
 					gtkIcons=$(gsettings get org.gnome.desktop.interface icon-theme)
 					gtkIcons=${gtkIcons//"'"}
+					gtkCursor=$(gsettings get org.gnome.desktop.interface cursor-theme)
+					gtkCursor=${gtkCursor//"'"}
 					gtkFont=$(gsettings get org.gnome.desktop.interface font-name)
 					gtkFont=${gtkFont//"'"}
 					if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
@@ -1849,50 +1854,49 @@ detectgtk () {
 				fi
 			;;
 			'MATE'*) # MATE desktop environment
-				#if type -p gsettings >/dev/null 2&>1; then
-				gtk3Theme=$(gsettings get org.mate.interface gtk-theme)
-				# gtk3Theme=${gtk3Theme//"'"}
-				gtk2Theme=${gtk3Theme}
-				gtkIcons=$(gsettings get org.mate.interface icon-theme)
-				gtkIcons=${gtkIcons//"'"}
-				gtkFont=$(gsettings get org.mate.interface font-name)
-				gtkFont=${gtkFont//"'"}
-				#fi
+				if type -p gsettings >/dev/null 2>&1; then
+					gtk3Theme=$(gsettings get org.mate.interface gtk-theme)
+					gtk3Theme=${gtk3Theme//"'"}
+					gtk2Theme=${gtk3Theme}
+					gtkIcons=$(gsettings get org.mate.interface icon-theme)
+					gtkIcons=${gtkIcons//"'"}
+					gtkCursor=$(gsettings get org.mate.peripherals-mouse cursor-theme)
+					gtkCursor=${gtkCursor//"'"}
+					gtkFont=$(gsettings get org.mate.interface font-name)
+					gtkFont=${gtkFont//"'"}
+				fi
 			;;
 			'XFCE'*) # Desktop Environment found as "XFCE"
 				if type -p xfconf-query >/dev/null 2>&1; then
 					gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName)
-				fi
-
-				if type -p xfconf-query >/dev/null 2>&1; then
 					gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
-				fi
-
-				if type -p xfconf-query >/dev/null 2>&1; then
+					gtkCursor=$(xfconf-query -c xsettings -p /Gtk/CursorThemeName)
 					gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
 				fi
 			;;
 			'LXDE'*)
-				if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
+				confhome="${XDG_CONFIG_HOME:-${HOME}/.config}"
+				if [ -f "${confhome}/lxde/config" ]; then
 					lxdeconf="/lxde/config"
-				elif [ "$distro" == "Trisquel" ]; then
+				elif [ "$distro" == "Trisquel" ] || [ "$distro" == "FreeBSD" ]; then
 					lxdeconf=""
-				elif [ "$distro" == "FreeBSD" ]; then
-					lxdeconf=""
+				elif [ -f "${confhome}/lxsession/Lubuntu/desktop.conf" ]; then
+					lxdeconf="/lxsession/Lubuntu/desktop.conf"
 				else
 					lxdeconf="/lxsession/LXDE/desktop.conf"
 				fi
-				# TODO: Clean me.
-				if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
-					gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-				fi
 
-				if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
-					gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+				if grep -q "sNet\/ThemeName" "${confhome}${lxdeconf}" 2>/dev/null; then
+					gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${confhome}${lxdeconf})
 				fi
-
-				if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
-					gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+				if grep -q IconThemeName "${confhome}${lxdeconf}" 2>/dev/null; then
+					gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${confhome}${lxdeconf})
+				fi
+				if grep -q CursorThemeName "${confhome}${lxdeconf}" 2>/dev/null; then
+					gtkCursor=$(awk -F'=' '/sGtk\/CursorThemeName/ {print $2}' ${confhome}${lxdeconf})
+				fi
+				if grep -q FontName "${confhome}${lxdeconf}" 2>/dev/null; then
+					gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${confhome}${lxdeconf})
 				fi
 			;;
 
@@ -1988,10 +1992,11 @@ detectgtk () {
 	verboseOut "Finding GTK2 theme...found as '$gtk2Theme'"
 	verboseOut "Finding GTK3 theme...found as '$gtk3Theme'"
 	verboseOut "Finding icon theme...found as '$gtkIcons'"
+	verboseOut "Finding cursor theme...found as '$gtkCursor'"
 	verboseOut "Finding user font...found as '$gtkFont'"
 	[[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
 }
-# GTK Theme\Icon\Font Detection - END
+# GTK Theme\Icon\Cursor\Font Detection - END
 
 # Android-specific detections
 detectdroid () {
@@ -3958,6 +3963,11 @@ infoDisplay () {
 					if [[ "$gtkIcons" != "Not Applicable" || "$gtkIcons" != "Not Found" ]]; then
 						if [ -n "$gtkIcons" ]; then 
 							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
+						fi
+					fi
+					if [[ "$gtkCursor" != "Not Applicable" || "$gtkCursor" != "Not Found" ]]; then
+						if [ -n "$gtkCursor" ]; then 
+							mycursor=$(echo -e "$labelcolor Cursor Theme:$textcolor $gtkCursor"); out_array=( "${out_array[@]}" "$mycursor" ); ((display_index++))
 						fi
 					fi
 					if [[ "$gtkFont" != "Not Applicable" || "$gtkFont" != "Not Found" ]]; then
