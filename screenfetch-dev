@@ -3927,18 +3927,18 @@ infoDisplay () {
 					fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [ "$distro" == "Mac OS X" ]; then
-					if [[ "$gtkFont" != "Not Applicable" || "$gtkFont" != "Not Found" ]]; then
+					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
 						if [ -n "$gtkFont" ]; then 
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 						fi
 					fi
 				else
-					if [[ "$gtk2Theme" != "Not Applicable" || "$gtk2Theme" != "Not Found" ]]; then
+					if [[ "$gtk2Theme" != "Not Applicable" && "$gtk2Theme" != "Not Found" ]]; then
 						if [ -n "$gtk2Theme" ]; then 
 							mygtk2="${gtk2Theme} [GTK2]"
 						fi
 					fi
-					if [[ "$gtk3Theme" != "Not Applicable" || "$gtk3Theme" != "Not Found" ]]; then
+					if [[ "$gtk3Theme" != "Not Applicable" && "$gtk3Theme" != "Not Found" ]]; then
 						if [ -n "$mygtk2" ]; then 
 							mygtk3=", ${gtk3Theme} [GTK3]"
 						else
@@ -3950,17 +3950,19 @@ infoDisplay () {
 						mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
 					else
 						if [[ "$gtk2Theme" == "$gtk3Theme" ]]; then
-						    mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${gtk2Theme} [GTK2/3]"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+							if [[ "$gtk2Theme" != "Not Applicable" && "$gtk2Theme" != "Not Found" ]]; then
+								mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${gtk2Theme} [GTK2/3]"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+							fi
 						else
-						    mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${mygtk2}${mygtk3}"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+							mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${mygtk2}${mygtk3}"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
 						fi
 					fi
-					if [[ "$gtkIcons" != "Not Applicable" || "$gtkIcons" != "Not Found" ]]; then
+					if [[ "$gtkIcons" != "Not Applicable" && "$gtkIcons" != "Not Found" ]]; then
 						if [ -n "$gtkIcons" ]; then 
 							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 						fi
 					fi
-					if [[ "$gtkFont" != "Not Applicable" || "$gtkFont" != "Not Found" ]]; then
+					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
 						if [ -n "$gtkFont" ]; then 
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 						fi
@@ -4013,7 +4015,7 @@ infoDisplay () {
 			fi
 			if [[ "${display[@]}" =~ "wm" ]]; then
 				echo -e "$mywm"
-				if [[ "${Win_theme}" != "Not Applicable" || "${Win_theme}" != "Not Found" ]]; then
+				if [[ "${Win_theme}" != "Not Applicable" && "${Win_theme}" != "Not Found" ]]; then
 					echo -e "$mywmtheme"
 				fi
 			fi
