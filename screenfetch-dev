@@ -434,7 +434,7 @@ detectdistro () {
 				"Deepin")
 					distro="Deepin"
 					;;
-				"Debian Kali Linux")
+				"Kali"|"Debian Kali Linux")
 					distro="Kali Linux"
 					;;
 				"Korora")
@@ -605,6 +605,9 @@ detectdistro () {
 							distro="gNewSense"
 						else
 							distro="Debian"
+						fi
+						if grep -q "Kali" /etc/debian_version ; then
+							distro="Kali Linux"
 						fi
 					elif [ -f /etc/dragora-version ]; then distro="Dragora" && distro_more="$(cut -d, -f1 /etc/dragora-version)"
 					elif [ -f /etc/evolveos-release ]; then distro="Evolve OS"
