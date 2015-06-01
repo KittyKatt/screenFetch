@@ -3164,6 +3164,36 @@ asciiText () {
 "${c6}      \`:+oo+/:-..-:/+o+/-      %s\n")
 		;;
 
+		"Mac OS X - Classic")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'blue') # Blue
+				c2=$(getColor 'light blue') # Light blue
+				c3=$(getColor 'light grey') # Gray
+				c4=$(getColor 'dark grey') # Dark Ggray
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c3}\n                        ..              %s"
+"${c3}                       dWc             %s"
+"${c3}                     ,X0'              %s"
+"${c1}  ;;;;;;;;;;;;;;;;;;${c3}0Mk${c2}::::::::::::::: %s"
+"${c1}  ;;;;;;;;;;;;;;;;;${c3}KWo${c2}:::::::::::::::: %s"
+"${c1}  ;;;;;;;;;${c4}NN${c1};;;;;${c3}KWo${c2}:::::${c3}NN${c2}:::::::::: %s"
+"${c1}  ;;;;;;;;;${c4}NN${c1};;;;${c3}0Md${c2}::::::${c3}NN${c2}:::::::::: %s"
+"${c1}  ;;;;;;;;;${c4}NN${c1};;;${c3}xW0${c2}:::::::${c3}NN${c2}:::::::::: %s"
+"${c1}  ;;;;;;;;;;;;;;${c3}KMc${c2}::::::::::::::::::: %s"
+"${c1}  ;;;;;;;;;;;;;${c3}lWX${c2}:::::::::::::::::::: %s"
+"${c1}  ;;;;;;;;;;;;;${c3}xWWXXXXNN7${c2}::::::::::::: %s"
+"${c1}  ;;;;;;;;;;;;;;;;;;;;${c3}WK${c2}:::::::::::::: %s"
+"${c1}  ;;;;;${c4}TKX0ko.${c1};;;;;;;${c3}kMx${c2}:::${c3}.cOKNF${c2}::::: %s"
+"${c1}  ;;;;;;;;${c4}\`kO0KKKKKKK${c3}NMNXK0OP*${c2}:::::::: %s"
+"${c1}  ;;;;;;;;;;;;;;;;;;;${c3}kMx${c2}:::::::::::::: %s"
+"${c1}  ;;;;;;;;;;;;;;;;;;;;${c3}WX${c2}:::::::::::::: %s"
+"${c3}                      lMc              %s"
+"${c3}                       kN.             %s"
+"${c3}                        o'             %s\n")
+		;;
+
 		"Windows"|"Cygwin")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light red') # Red
