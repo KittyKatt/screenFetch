@@ -880,9 +880,11 @@ detectpkgs () {
 		;;
 		'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
 		'Haiku')
+		haikualpharelease="no"
 		if [ -d /boot/system/package-links ]; then
 			pkgs=$(ls /boot/system/package-links | wc -l)
 		elif type -p installoptionalpackage >/dev/null 2>&1; then
+			haikualpharelease="yes"
 			pkgs=$(installoptionalpackage -l | sed -n '3p' | wc -w)
 		fi
 		;;
@@ -3242,8 +3244,13 @@ asciiText () {
 
 		"Haiku")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'black_haiku') # Black
-				c2=$(getColor 'light grey') # Light Gray
+				if [ "$haikualpharelease" == "yes" ]; then
+					c1=$(getColor 'black_haiku') # Black
+					c2=$(getColor 'light grey') # Light Gray
+				else
+					c1=$(getColor 'black') # Black
+					c2=${c1}
+				fi
 				c3=$(getColor 'green') # Green
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
