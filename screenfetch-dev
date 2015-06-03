@@ -522,6 +522,7 @@ detectdistro () {
 					"Haiku")
 						distro="Haiku"
 						fake_distro="${distro}"
+						distro_more="${distro} $(uname -v | tr ' ' '\n' | grep 'hrev')"
 					;;
 					"GNU/Linux")
 						if type -p crux >/dev/null 2>&1; then 
@@ -878,7 +879,13 @@ detectpkgs () {
 				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | awk '{sub(" ", "");print $1}'; fi)
 		;;
 		'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
-		'Haiku') pkgs=$(installoptionalpackage -l | sed -n '3p' | wc -w) ;;
+		'Haiku')
+		if [ -d /boot/system/package-links ]; then
+			pkgs=$(ls /boot/system/package-links | wc -l)
+		elif type -p installoptionalpackage >/dev/null 2>&1; then
+			pkgs=$(installoptionalpackage -l | sed -n '3p' | wc -w)
+		fi
+		;;
 	esac
 	verboseOut "Finding current package count...found as '$pkgs'"
 }
