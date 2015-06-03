@@ -880,13 +880,13 @@ detectpkgs () {
 		;;
 		'Cygwin') cygfix=2; pkgs=$(($(cygcheck -cd | wc -l)-$cygfix)) ;;
 		'Haiku')
-		haikualpharelease="no"
-		if [ -d /boot/system/package-links ]; then
-			pkgs=$(ls /boot/system/package-links | wc -l)
-		elif type -p installoptionalpackage >/dev/null 2>&1; then
-			haikualpharelease="yes"
-			pkgs=$(installoptionalpackage -l | sed -n '3p' | wc -w)
-		fi
+			haikualpharelease="no"
+			if [ -d /boot/system/package-links ]; then
+				pkgs=$(ls /boot/system/package-links | wc -l)
+			elif type -p installoptionalpackage >/dev/null 2>&1; then
+				haikualpharelease="yes"
+				pkgs=$(installoptionalpackage -l | sed -n '3p' | wc -w)
+			fi
 		;;
 	esac
 	verboseOut "Finding current package count...found as '$pkgs'"
