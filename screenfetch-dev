@@ -1683,7 +1683,10 @@ detectwmtheme () {
 			fi
 
 			if [[ -n $KDE_CONFIG_DIR ]]; then
-				Win_theme=$(awk '/PluginLib=kwin3_/{gsub(/PluginLib=kwin3_/,"",$0); print $0; exit}' $KDE_CONFIG_DIR/share/config/kwinrc)
+				KDE_CONFIG_DIR=${KDE_CONFIG_DIR%/}
+				if [[ -f $KDE_CONFIG_DIR/share/config/kwinrc ]]; then
+					Win_theme=$(awk '/PluginLib=kwin3_/{gsub(/PluginLib=kwin3_/,"",$0); print $0; exit}' $KDE_CONFIG_DIR/share/config/kwinrc)
+				fi
 				if [[ -z $Win_theme ]]; then
 					if [[ -f $KDE_CONFIG_DIR/share/config/kdebugrc ]]; then
 						Win_theme=$(awk '/(decoration)/ {gsub(/\[/,"",$1); print $1; exit}' $KDE_CONFIG_DIR/share/config/kdebugrc)
