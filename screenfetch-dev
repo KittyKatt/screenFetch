@@ -1119,7 +1119,7 @@ detectmem () {
 		usedmem="$(((($memtotal - $memfree) - $membuffer - $memcached) / $human))"
 		totalmem="$(($memtotal / $human))"
 	fi
-	mem="${usedmem}MB / ${totalmem}MB"
+	mem="${usedmem}MiB / ${totalmem}MiB"
 	verboseOut "Finding current RAM usage...found as '$mem'"
 }
 # Memory Detection - End
