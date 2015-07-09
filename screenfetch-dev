@@ -190,7 +190,7 @@ detectColors() {
 }
 
 supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
-supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X and Windows+Cygwin."
+supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X,Windows+Cygwin and Windows+Msys."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
@@ -519,6 +519,11 @@ detectdistro () {
 						distro="Cygwin"
 						fake_distro="${distro}"
 					;;
+					"Msys")
+						distro="Msys"
+						fake_distro="${distro}"
+						distro_more="${distro} $(uname -r | head -c 1)"
+					;;
 					"Haiku")
 						distro="Haiku"
 						fake_distro="${distro}"
@@ -767,6 +772,7 @@ detectdistro () {
 		fuduntu) distro="Fuduntu" ;;
 		manjaro) distro="Manjaro" ;;
 		cygwin) distro="Cygwin" ;;
+		msys) distro="Msys" ;;
 		haiku) distro="Haiku" ;;
 	esac
 	verboseOut "Finding distro...found as '${distro} ${distro_release}'"
@@ -838,7 +844,7 @@ detectuptime () {
 detectpkgs () {
 	pkgs="Unknown"
 	case "${distro}" in
-		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'KaOS') pkgs=$(pacman -Qq | wc -l) ;;
+		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'KaOS'|'Msys') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
@@ -990,7 +996,7 @@ detectgpu () {
 		fi
 	elif [[ "${distro}" == "Mac OS X" ]]; then
 		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
-	elif [[ "${distro}" == "Cygwin" ]]; then
+	elif [[ "${distro}" =~ (Cygwin|Msys) ]]; then
 		gpu=$(wmic path Win32_VideoController get caption)
 		gpu=$(tail -1 <<< ${gpu})
 	fi
@@ -1051,7 +1057,7 @@ detectmem () {
 		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
 		compressedmem=$(vm_stat | grep occupied | awk '{ print $5 }' | sed 's/\.//')
 		usedmem=$(((${wiredmem} + ${activemem} + ${compressedmem}) * 4096 / 1024 / 1024))		 		
-	elif [ "$distro" == "Cygwin" ]; then
+	elif [[ "$distro" == "Cygwin" || "$distro" == "Msys" ]]; then
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${total_mem}/1024))
 		free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
@@ -1157,7 +1163,7 @@ detectshell_ver () {
 }
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
-		if [[ "${distro}" == "Cygwin" || "${distro}" == "Haiku" || "${OSTYPE}" == "gnu" ]]; then
+		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		else
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
@@ -1205,7 +1211,7 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
-	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" && ${distro} != "Msys" ]]; then
 		if [[ -n ${DISPLAY} ]]; then
 			if type -p xdpyinfo >/dev/null 2>&1; then
 				if [[ "$distro" =~ "BSD" ]]; then
@@ -1220,7 +1226,7 @@ detectres () {
 		if [[ "$(echo $xResolution | wc -l)" -ge 1 ]]; then
 			xResolution=$(echo $xResolution | tr "\\n" "," | sed 's/\(.*\),/\1/')
 		fi
-	elif [[ "${distro}" == "Cygwin" ]]; then
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		width=($(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr '\r\n' ' '))
 		height=($(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr '\r\n' ' '))
 
@@ -1243,7 +1249,7 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
-	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" && ${distro} != "Msys" ]]; then
 		if [[ -n ${DISPLAY} ]]; then
 			if type -p xprop >/dev/null 2>&1;then
 				xprop_root="$(xprop -root 2>/dev/null)"
@@ -1467,7 +1473,7 @@ detectde () {
 		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
 			DE="Aqua"
 		fi
-	elif [[ "${distro}" == "Cygwin" ]]; then
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		winver=`wmic os get version | grep -o '^[0-9]'`
 		if [ "$winver" == "7" ]; then DE='Aero'
 		elif [ "$winver" == "6" ]; then DE='Aero'
@@ -1481,7 +1487,7 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" && ${distro} != "Msys" ]]; then
 		if [[ -n ${DISPLAY} ]]; then
 			for each in "${wmnames[@]}"; do
 				PID="$(pgrep -U ${UID} "^$each$")"
@@ -1610,7 +1616,7 @@ detectwm () {
 		if ps -U ${USER} | grep Finder >/dev/null 2>&1; then
 			WM="Quartz Compositor"
 		fi
-	elif [[ "${distro}" == "Cygwin" ]]; then
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		bugn=$(tasklist | grep -o 'bugn' | tr -d '\r \n')
 		wind=$(tasklist | grep -o 'Windawesome' | tr -d '\r \n')
 		if [ "$bugn" = "bugn" ]; then WM="bug.n"
@@ -1746,8 +1752,8 @@ detectwmtheme () {
 		else
 			Win_theme="Graphite"
 		fi
-	elif [[ "${distro}" == "Cygwin" ]]; then
-		themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
+		themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' //v 'CurrentTheme' | grep -o '[A-Z]:\\.*')"
 		Win_theme=$(echo $themeFile | awk -F"\\" '{print $NF}' | grep -o '[0-9A-z. ]*$' | grep -o '^[0-9A-z ]*')
 	fi
 
@@ -1988,9 +1994,11 @@ detectgtk () {
 					fi
 				fi
 
-				if [ "$distro" == "Cygwin" -a "$gtkFont" == "Not Found" ]; then
-					if [ -f "$HOME/.minttyrc" ]; then
-						gtkFont="$(grep '^Font=.*' "$HOME/.minttyrc" | grep -o '[0-9A-z ]*$')"
+				if [[ "$distro" == "Cygwin" || "$distro" == "Msys" ]]; then
+					if [ "$gtkFont" == "Not Found" ]; then
+						if [ -f "$HOME/.minttyrc" ]; then
+							gtkFont="$(grep '^Font=.*' "$HOME/.minttyrc" | grep -o '[0-9A-z ]*$')"
+						fi
 					fi
 				fi
 			;;
@@ -3200,7 +3208,7 @@ asciiText () {
 "${c3}                        o'             %s\n")
 		;;
 
-		"Windows"|"Cygwin")
+		"Windows"|"Cygwin"|"Msys")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light red') # Red
 				c2=$(getColor 'light green') # Green
@@ -3899,7 +3907,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
-		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
+		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
@@ -3934,7 +3942,7 @@ infoDisplay () {
 				buildVers=`buildVers=$(sw_vers|grep BuildVersion);echo ${buildVers:14}`
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
-			elif [[ "$distro" == "Cygwin" ]]; then
+			elif [[ "$distro" == "Cygwin" || "$distro" == "Msys" ]]; then
 				distro=$(wmic os get name | head -2 | tail -1)
 				distro=$(expr match "$distro" '\(Microsoft Windows [A-Za-z0-9.]\+\)')
 				sysArch=$(wmic os get OSArchitecture | head -2 | tail -1 | tr -d '\r ')
@@ -4011,7 +4019,7 @@ infoDisplay () {
 					# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
 				fi
 			fi
-		elif [[ "$fake_distro" == "Cygwin" ]]; then
+		elif [[ "$fake_distro" == "Cygwin" || "$fake_distro" == "Msys" ]]; then
 			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
@@ -4027,7 +4035,7 @@ infoDisplay () {
 				fi
 			fi
 		fi
-		[[ "${fake_distro}" != "Cygwin" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
+		[[ "${fake_distro}" != "Msys" ]] && [[ "${fake_distro}" != "Cygwin" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
