@@ -15,7 +15,7 @@ command! This script is very easy to add to and can easily be extended.
 
 ### Arch Linux
 
-1. Install `screenfetch-git` or `screenfetch` from the AUR. That's it!
+1. Install `screenfetch` from the official repositories or `screenfetch-git` from the AUR. That's it!
 
 ### Mageia
 
@@ -31,7 +31,7 @@ command! This script is very easy to add to and can easily be extended.
 1. Emerge screenfetch from portage using `emerge screenfetch`
 2. Sabayon users can install screenfetch from entropy using `equo install screenfetch`
 
-### Ubuntu (>14.04) and Debian (testing/unstable)
+### Ubuntu (>14.04) and Debian (stable/testing/unstable)
 
 1. Install: `apt-get install screenfetch`
 2. There is also a PPA for Ubuntu located at https://launchpad.net/%7Edjcj/+archive/ubuntu/screenfetch
@@ -106,4 +106,3 @@ to Rizon and reach me at `irc://irc.rizon.net/screenFetch`
 ![Screenfetch sample](https://u.teknik.io/hjpGj7.png)
 
 ![Screenfetch sample](https://u.teknik.io/k5bhMn.png)
-
