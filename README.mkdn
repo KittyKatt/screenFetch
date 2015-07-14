@@ -96,13 +96,3 @@ If you would like to suggest something new, inform me of an issue in the
 script, become part of the project, or talk to me about anything else,
 you can either email me at `zeldarealm@gmail.com` or you can connect
 to Rizon and reach me at `irc://irc.rizon.net/screenFetch`
-
-## Screenshots
-
-![Screenfetch sample](https://u.teknik.io/hOfW3J.png)
-
-![Screenfetch sample](https://u.teknik.io/PexJgr.png)
-
-![Screenfetch sample](https://u.teknik.io/hjpGj7.png)
-
-![Screenfetch sample](https://u.teknik.io/k5bhMn.png)
