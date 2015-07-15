@@ -269,7 +269,7 @@ case $1 in
 	--help) displayHelp; exit 0;;
 	--version) displayVersion; exit 0;;
 esac
-		
+
 
 while getopts ":hsu:evVEnLNtlS:A:D:o:Bc:d:pa:" flags; do
 	case $flags in
@@ -524,7 +524,7 @@ detectdistro () {
 						fake_distro="${distro}"
 					;;
 					"GNU/Linux")
-						if type -p crux >/dev/null 2>&1; then 
+						if type -p crux >/dev/null 2>&1; then
 							distro="CRUX"
 							distro_more="${distro} $(crux | awk '{print $3}')"
 						fi
@@ -851,9 +851,9 @@ detectpkgs () {
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
 		'Lunar Linux') pkgs=$(lvu installed | wc -l) ;;
 		'Mac OS X')
-			if [ -d "/usr/local/bin" ]; then 
+			if [ -d "/usr/local/bin" ]; then
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
-				pkgs=$((${loc_pkgs} -1)); 
+				pkgs=$((${loc_pkgs} -1));
 			fi
 
 			if type -p port >/dev/null 2>&1; then
@@ -866,7 +866,7 @@ detectpkgs () {
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
 		;;
-		'OpenBSD') 
+		'OpenBSD')
 			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
 			if type -p portmaster >/dev/null 2>&1; then
 				ports=$(portmaster -l | grep -Eo '[0-9]+ total installed' | sed 's/ total installed//')
@@ -874,7 +874,7 @@ detectpkgs () {
 			fi
 		;;
 		'FreeBSD')
-			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then 
+			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
 				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | awk '{sub(" ", "");print $1}'; fi)
 		;;
 		'Cygwin')
@@ -933,7 +933,7 @@ detectcpu () {
 		if [ -z "$cpu" ]; then
 			cpu=$(awk 'BEGIN{FS=":"} /Hardware/ { print $2; exit }' /proc/cpuinfo)
 		fi
-		if [ -z "$cpu" ]; then 
+		if [ -z "$cpu" ]; then
 			cpu=$(awk 'BEGIN{FS=":"} /^cpu/ { gsub(/  +/," ",$2); print $2; exit}' /proc/cpuinfo | sed 's/, altivec supported//;s/^ //')
 			if [[ $cpu =~ ^(PPC)*9.+ ]]; then
 				model="IBM PowerPC G5 "
@@ -1043,7 +1043,7 @@ detectdisk () {
 		diskusage_verbose=$(sed 's/%/%%/' <<< $diskusage)
 	fi
 	verboseOut "Finding current disk usage...found as '$diskusage_verbose'"
-}	
+}
 # Disk Usage Detection - End
 
 
@@ -1057,7 +1057,7 @@ detectmem () {
 		wiredmem=$(vm_stat | grep wired | awk '{ print $4 }' | sed 's/\.//')
 		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
 		compressedmem=$(vm_stat | grep occupied | awk '{ print $5 }' | sed 's/\.//')
-		usedmem=$(((${wiredmem} + ${activemem} + ${compressedmem}) * 4 / $human))		 		
+		usedmem=$(((${wiredmem} + ${activemem} + ${compressedmem}) * 4 / $human))
 	elif [ "$distro" == "Cygwin" ]; then
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${total_mem}/$human))
@@ -1233,7 +1233,7 @@ detectres () {
 
 		xResolution=""
 		len=${#width[@]}
-		
+
 		delim=" "
 		for ((i=0;i<len;i++)); do
 			xResolution="${xResolution}${delim}${width[i]}x${height[i]}"
@@ -1661,7 +1661,7 @@ detectwmtheme () {
 		'dminiwm') Win_theme="Not Applicable";;
 		'dwm') Win_theme="Not Applicable";;
 		'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--0.0.cfg)";;
-		'E17'|'Enlightenment') 
+		'E17'|'Enlightenment')
 			if [ "$(which eet 2>/dev/null)" ]; then
 				econfig="$(eet -d $HOME/.e/e/config/standard/e.cfg config | awk '/value \"file\" string.*.edj/{ print $4 }')"
 				econfigend="${econfig##*/}"
@@ -2042,7 +2042,7 @@ takeShot () {
 	if [[ -z $screenCommand ]]; then
 		if [[ "${upload}" == "1" ]]; then
 			shotfiles[1]=${shotfile}
-			if [ "$distro" == "Mac OS X" ]; then 
+			if [ "$distro" == "Mac OS X" ]; then
 				displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
 				for (( i=2; i<=$displays; i++))
 				do
@@ -2101,14 +2101,14 @@ takeShot () {
 						scp -qo ConnectTimeout="${scptimeout}" "${shotfiles[@]}" "${serveraddr}:${serverdir}"
 						desturl="${baseurl}/${shotfile}"
 					;;
-				esac		
+				esac
 				printf "your screenshot can be viewed at ${desturl}\n"
 			else
 				errorOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 			fi
 		else
 			shotfiles[1]=${shotfile}
-			if [ "$distro" == "Mac OS X" ]; then 
+			if [ "$distro" == "Mac OS X" ]; then
 				displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
 				for (( i=2; i<=$displays; i++))
 				do
@@ -3482,7 +3482,7 @@ asciiText () {
 "${c1}                                            .'"
 "${c1}                                             .")
 		;;
-		
+
 		"Kali Linux")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # White
@@ -3543,9 +3543,9 @@ asciiText () {
 
                 "KaOS")
 	if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'light blue') 
-				c2=$(getColor 'light grey') 
-				c3=$(getColor 'red') 
+				c1=$(getColor 'light blue')
+				c2=$(getColor 'light grey')
+				c3=$(getColor 'red')
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
@@ -3976,24 +3976,24 @@ infoDisplay () {
 			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [ "$distro" == "Mac OS X" ]; then
 					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
-						if [ -n "$gtkFont" ]; then 
+						if [ -n "$gtkFont" ]; then
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 						fi
 					fi
 				else
 					if [[ "$gtk2Theme" != "Not Applicable" && "$gtk2Theme" != "Not Found" ]]; then
-						if [ -n "$gtk2Theme" ]; then 
+						if [ -n "$gtk2Theme" ]; then
 							mygtk2="${gtk2Theme} [GTK2]"
 						fi
 					fi
 					if [[ "$gtk3Theme" != "Not Applicable" && "$gtk3Theme" != "Not Found" ]]; then
-						if [ -n "$mygtk2" ]; then 
+						if [ -n "$mygtk2" ]; then
 							mygtk3=", ${gtk3Theme} [GTK3]"
 						else
 							mygtk3="${gtk3Theme} [GTK3]"
 						fi
 					fi
-					if [[ "$gtk_2line" == "yes" ]]; then 
+					if [[ "$gtk_2line" == "yes" ]]; then
 						mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++))
 						mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
 					else
@@ -4006,12 +4006,12 @@ infoDisplay () {
 						fi
 					fi
 					if [[ "$gtkIcons" != "Not Applicable" && "$gtkIcons" != "Not Found" ]]; then
-						if [ -n "$gtkIcons" ]; then 
+						if [ -n "$gtkIcons" ]; then
 							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
 						fi
 					fi
 					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
-						if [ -n "$gtkFont" ]; then 
+						if [ -n "$gtkFont" ]; then
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
 						fi
 					fi
@@ -4150,9 +4150,9 @@ for i in "${display[@]}"; do
 			 ! [[ $WM  ]] && detectwm;
 			 ! [[ $Win_theme ]] && detectwmtheme;
 		else
-			if [[ "${display[*]}" =~ "$i" ]]; then 
+			if [[ "${display[*]}" =~ "$i" ]]; then
 				if [[ "$errorSuppress" == "1" ]]; then detect${i} 2>/dev/null
-				else 
+				else
 					exec 3> >(stderrOut)
 					detect${i} 2>&3
 					exec 3>&-
