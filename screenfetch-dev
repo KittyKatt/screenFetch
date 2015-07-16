@@ -189,7 +189,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X and Windows+Cygwin."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -373,6 +373,11 @@ detectdistro () {
 				"CentOS") distro="CentOS"
 					;;
 				"Chapeau") distro="Chapeau"
+					;;
+				"BunsenLabs")
+					distro=$(source /etc/lsb-release; echo "$DISTRIB_ID")
+					distro_release=$(source /etc/lsb-release; echo "$DISTRIB_RELEASE")
+					distro_codename=$(source /etc/lsb-release; echo "$DISTRIB_CODENAME")
 					;;
 				"Debian")
 					if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
@@ -718,6 +723,7 @@ detectdistro () {
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
+		bunsenlabs) distro="BunsenLabs" ;;
 		dragora) distro="Dragora" ;;
 		elementary|'elementary os') distro="elementary OS";;
 		evolveos) distro="Evolve OS" ;;
@@ -841,7 +847,7 @@ detectpkgs () {
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'KaOS') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Fuduntu'|'Ubuntu'|'Mint'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
+		'Fuduntu'|'Ubuntu'|'Mint'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
@@ -3712,6 +3718,39 @@ asciiText () {
 "${c1}                   '                   %s")
 		;;
 
+		"BunsenLabs")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="5"
+			fulloutput=(\
+"${c1}            HC]"
+"${c1}          H]]]]"
+"${c1}        H]]]]]]4"
+"${c1}      @C]]]]]]]]*"
+"${c1}     @]]]]]]]]]]xd"
+"${c1}    @]]]]]]]]]]]]]d       %s"
+"${c1}   0]]]]]]]]]]]]]]]]     %s"
+"${c1}   kx]]]]]]x]]x]]]]]%%    %s"
+"${c1}  #x]]]]]]]]]]]]]x]]]d   %s"
+"${c1}  #]]]]]]qW  x]]x]]]]]4  %s"
+"${c1}  k]x]]xg     %%x]]]]]]%%  %s"
+"${c1}  Wx]]]W       x]]]]]]]  %s"
+"${c1}  #]]]4         xx]]x]]  %s"
+"${c1}   px]           ]]]]]x  %s"
+"${c1}   Wx]           x]]x]]  %s"
+"${c1}    &x           x]]]]   %s"
+"${c1}     m           x]]]]   %s"
+"${c1}                 x]x]    %s"
+"${c1}                 x]]]    %s"
+"${c1}                ]]]]"
+"${c1}                x]x"
+"${c1}               x]q"
+"${c1}               ]g"
+"${c1}              q")
+    ;;
+
 		*)
 			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -3721,7 +3760,7 @@ asciiText () {
 				fi
 				if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 				startline="0"
-				fulloutput=("                             %s"
+				fulloutput=("															%s"
 "                            %s"
 "                            %s"
 "$c2         #####$c0              %s"
