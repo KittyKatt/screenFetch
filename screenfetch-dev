@@ -2782,7 +2782,7 @@ asciiText () {
 		"openSUSE")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Bold Green
-				c2=$(getColor 'white') # Bold White
+				c2=$c0$bold
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
