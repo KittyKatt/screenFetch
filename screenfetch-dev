@@ -189,7 +189,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X and Windows+Cygwin."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -490,6 +490,9 @@ detectdistro () {
 				"Solus")
 					distro="Solus"
 					;;
+				"SteamOS")
+					distro="SteamOS"
+					;;
 				"Trisquel")
 					distro="Trisquel"
 					;;
@@ -754,6 +757,7 @@ detectdistro () {
 		frugalware) distro="Frugalware" ;;
 		peppermint) distro="Peppermint" ;;
 		solus) distro="Solus" ;;
+		steam|steam*os) distro="SteamOS" ;;
 		trisquel) distro="Trisquel";;
 		parabolagnu|parabolagnu/linux-libre|'parabola gnu/linux-libre'|parabola) distro="Parabola GNU/Linux-libre" ;;
 		viperr) distro="Viperr" ;;
@@ -841,7 +845,7 @@ detectpkgs () {
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'KaOS') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Fuduntu'|'Ubuntu'|'Mint'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
+		'Fuduntu'|'Ubuntu'|'Mint'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'SteamOS') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
@@ -2951,6 +2955,34 @@ asciiText () {
 "${c2}         ww                    %s")
 		;;
 
+		"SteamOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light grey') # Gray
+				c2=$(getColor 'purple') # Dark Purple
+				c3=$(getColor 'light purple') # Light Purple
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c2}               .,,,,.                 %s"
+"${c2}         .,'onNMMMMMNNnn',.          %s"
+"${c2}      .'oNM${c3}ANK${c2}MMMMMMMMMMMNNn'.       %s"
+"${c3}    .'ANMMMMMMMXK${c2}NNWWWPFFWNNMNn.     %s"
+"${c3}   ;NNMMMMMMMMMMNWW'' ${c2},.., ${c2}'WMMM,    %s"
+"${c3}  ;NMMMMV++++VNWWW' ${c3}.+;'':+, ${c3}'WM${c2}W,   %s"
+"${c3} ,VNNWP+${c1}######${c3}+WW,  ${c1}+:    ${c3}:+, ${c3}+MMM,  %s"
+"${c3} '${c1}+#############,   +.    ,+' ${c3}+NMMM  %s"
+"${c1}   '*#########*'     '*,,*' ${c3}.+NMMMM. %s"
+"${c1}      \`'*###*'          ,.,;###${c3}+WNM, %s"
+"${c1}          .,;;,      .;##########${c3}+W  %s"
+"${c1} ,',.         ';  ,+##############'  %s"
+"${c1}  '###+. :,. .,; ,###############'   %s"
+"${c1}   '####.. \`'' .,###############'    %s"
+"${c1}     '#####+++################'      %s"
+"${c1}       '*##################*'        %s"
+"${c1}          ''*##########*''           %s"
+"${c1}               ''''''                ")
+		;;
+
 		"Mageia")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -3908,7 +3940,7 @@ infoDisplay () {
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
-		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG") labelcolor=$(getColor 'light purple');;
+		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
 		"CentOS"|*) labelcolor=$(getColor 'yellow');;
 	esac
