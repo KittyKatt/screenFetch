@@ -2957,7 +2957,7 @@ asciiText () {
 
 		"SteamOS")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'light grey') # Gray
+				c1=$(getColor 'grey') # Gray
 				c2=$(getColor 'purple') # Dark Purple
 				c3=$(getColor 'light purple') # Light Purple
 			fi
@@ -2968,7 +2968,7 @@ asciiText () {
 "${c2}      .'oNM${c3}ANK${c2}MMMMMMMMMMMNNn'.       %s"
 "${c3}    .'ANMMMMMMMXK${c2}NNWWWPFFWNNMNn.     %s"
 "${c3}   ;NNMMMMMMMMMMNWW'' ${c2},.., ${c2}'WMMM,    %s"
-"${c3}  ;NMMMMV++++VNWWW' ${c3}.+;'':+, ${c3}'WM${c2}W,   %s"
+"${c3}  ;NMMMMV+##+VNWWW' ${c3}.+;'':+, ${c3}'WM${c2}W,   %s"
 "${c3} ,VNNWP+${c1}######${c3}+WW,  ${c1}+:    ${c3}:+, ${c3}+MMM,  %s"
 "${c3} '${c1}+#############,   +.    ,+' ${c3}+NMMM  %s"
 "${c1}   '*#########*'     '*,,*' ${c3}.+NMMMM. %s"
