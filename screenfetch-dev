@@ -2093,6 +2093,7 @@ takeShot () {
 						desturl="${desturl%%\"*}"
 						desturl="${desturl//\\}"
 					;;
+<<<<<<< HEAD
           'fetch')
             baseurl='http://fetched.io/shots'
             uploadurl='http://fetched.io/shots'
