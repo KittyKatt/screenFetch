@@ -850,6 +850,7 @@ detectpkgs () {
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
 		'Lunar Linux') pkgs=$(lvu installed | wc -l) ;;
+		'Haiku') pkgs=$(ls /packages | wc -l) ;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
