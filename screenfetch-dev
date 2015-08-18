@@ -1341,7 +1341,7 @@ detectde () {
 				if [ x"$DE" = x"" ]; then
 					# fallback to checking $DESKTOP_SESSION
 					case "$DESKTOP_SESSION" in
-						gnome|gnome-fallback)
+						gnome)
 							DE=Gnome;
 							;;
 						LUMINA)
@@ -1368,7 +1368,7 @@ detectde () {
 				if [ x"$GDMSESSION" = x"" ]; then
 					# fallback to checking $GDMSESSION
 					case "$GDMSESSION" in
-						gnome|gnome-fallback)
+						gnome|gnome-fallback|gnome-fallback-compiz)
 							DE=Gnome;
 							;;
 						Lumina*|LUMINA*|lumina*)
