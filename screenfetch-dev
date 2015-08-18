@@ -506,9 +506,6 @@ detectdistro () {
 			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then distro="Red Hat Enterprise Linux"; fi
 			if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro_release"; fi
 			if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro_more $distro_codename"; fi
-			if [[ -n ${distro_more} ]]; then
-				distro_more="${distro} ${distro_more}"
-			fi
 		fi
 
 		# Existing File Check
@@ -526,11 +523,11 @@ detectdistro () {
 					"GNU/Linux")
 						if type -p crux >/dev/null 2>&1; then
 							distro="CRUX"
-							distro_more="${distro} $(crux | awk '{print $3}')"
+							distro_more="$(crux | awk '{print $3}')"
 						fi
 						if type -p nixos-version >/dev/null 2>&1; then
 							distro="NixOS"
-							distro_more="NixOS $(nixos-version)"
+							distro_more="$(nixos-version)"
 						fi
 					;;
 				esac
@@ -714,6 +711,10 @@ detectdistro () {
 		else
 			distro="$(tr '[:upper:]' '[:lower:]' <<< ${distro})"
 		fi
+	fi
+
+	if [[ -n ${distro_more} ]]; then
+		distro_more="${distro} ${distro_more}"
 	fi
 
 	case $distro in
