@@ -646,6 +646,7 @@ detectdistro () {
 							distro="Mandriva"
 						fi
 					elif [ -f /etc/NIXOS ]; then distro="NixOS"
+					elif [ -f /etc/SuSE-release ]; then distro="openSUSE"
 					elif [ -f /etc/pclinuxos-release ]; then distro="PCLinuxOS"
 					elif [ -f /etc/redhat-release ]; then
 						if grep -q "CentOS" /etc/redhat-release; then
