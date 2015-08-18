@@ -189,7 +189,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, PCLinuxOS, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X and Windows+Cygwin."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -477,6 +477,11 @@ detectdistro () {
 					distro_codename="n/a"
 					distro_release="n/a"
 					;;
+				"PCLinuxOS")
+					distro="PCLinuxOS"
+					distro_codename="n/a"
+					distro_release="n/a"
+					;;
 				"Peppermint")
 					distro="Peppermint"
 					distro_codename=null
@@ -628,12 +633,29 @@ detectdistro () {
 							distro="Gentoo"
 						fi
 					elif [ -f /etc/mageia-release ]; then distro="Mageia"
-					elif [ -f /etc/mandrake-release ]; then distro="Mandrake"
-					elif [ -f /etc/mandriva-release ]; then distro="Mandriva"
+					elif [ -f /etc/mandrake-release ]; then
+						if grep -q "PCLinuxOS" /etc/mandrake-release ; then
+							distro="PCLinuxOS"
+						else
+							distro="Mandrake"
+						fi
+					elif [ -f /etc/mandriva-release ]; then
+						if grep -q "PCLinuxOS" /etc/mandriva-release ; then
+							distro="PCLinuxOS"
+						else
+							distro="Mandriva"
+						fi
 					elif [ -f /etc/NIXOS ]; then distro="NixOS"
 					elif [ -f /etc/SuSE-release ]; then distro="openSUSE"
-					elif [ -f /etc/redhat-release ] && grep -q "Red Hat" /etc/redhat-release; then distro="Red Hat Enterprise Linux"
-					elif [ -f /etc/redhat-release ] && grep -q "CentOS" /etc/redhat-release; then distro="CentOS"
+					elif [ -f /etc/pclinuxos-release ]; then distro="PCLinuxOS"
+					elif [ -f /etc/redhat-release ]; then
+						if grep -q "CentOS" /etc/redhat-release; then
+							distro="CentOS"
+						elif grep -q "PCLinuxOS" /etc/redhat-release; then
+							distro="PCLinuxOS"
+						else
+							distro="Red Hat Enterprise Linux"
+						fi
 					elif [ -f /etc/slackware-version ]; then distro="Slackware"
 					elif [ -f /usr/share/doc/tc/release.txt ]; then distro="TinyCore"
 					elif [ -f /etc/sabayon-edition ]; then distro="Sabayon"; fi
@@ -753,6 +775,7 @@ detectdistro () {
 		slackware) distro="Slackware" ;;
 		frugalware) distro="Frugalware" ;;
 		peppermint) distro="Peppermint" ;;
+		pclinuxos|pclos) distro="PCLinuxOS" ;;
 		solus) distro="Solus" ;;
 		trisquel) distro="Trisquel";;
 		parabolagnu|parabolagnu/linux-libre|'parabola gnu/linux-libre'|parabola) distro="Parabola GNU/Linux-libre" ;;
@@ -845,7 +868,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
-		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'PCLinuxOS'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
