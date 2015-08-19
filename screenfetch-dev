@@ -2782,28 +2782,28 @@ asciiText () {
 		"openSUSE")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Bold Green
-				c2=$(getColor 'white') # Bold White
+				c2=$c0$bold
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=("$c2             .;ldkO0000Okdl;.                %s"
-"$c2         .;d00xl:,'....';:ok00d;.           %s"
-"$c2       .d00l'                ,o00d.         %s"
-"$c2     .d0Kd."$c1" :Okxol:;'.          "$c2":O0d.       %s"
-"$c2    'OK"$c1"KKK0kOKKKKKKKKKKOxo:'      "$c2"lKO'      %s"
-"$c2   ,0K"$c1"KKKKKKKKKKKKKKK0d:"$c2",,,"$c1":dx:"$c2"    ;00,     %s"
-"$c2  .OK"$c1"KKKKKKKKKKKKKKKk."$c2".oOkdl."$c1"'0k."$c2"   cKO.    %s"
-"$c2  :KK"$c1"KKKKKKKKKKKKKKK: "$c2"kKx..od "$c1"lKd"$c2"   .OK:    %s"
-"$c2  dKK"$c1"KKKKKKKKKOx0KKKd "$c2";0KKKO, "$c1"kKKc"$c2"   dKd    %s"
-"$c2  dKK"$c1"KKKKKKKKKK;.;oOKx,.."$c2"'"$c1"..;kKKK0."$c2"  dKd    %s"
-"$c2  :KK"$c1"KKKKKKKKKK0o;...;cdxxOK0Oxc,.  "$c2".0K:    %s"
-"$c2   kKK"$c1"KKKKKKKKKKKKK0xl;'......,cdo  "$c2"lKk     %s"
-"$c2   '0K"$c1"KKKKKKKKKKKKKKKKKKKK00KKOo;  "$c2"c00'     %s"
-"$c2    .kK"$c1"KKOxddxkOO00000Okxoc;'.   "$c2".dKk.      %s"
-"$c2      l0Ko.                    .c00l.       %s"
-"$c2       .l0Kk:.              .;xK0l.         %s"
-"$c2          ,lkK0xl:;,,,,;:ldO0kl,            %s"
-"$c2              .':ldxkkkkxdl:'.              %s")
+"$c2         .;d00xl:^''''''^:ok00d;.           %s"
+"$c2       .d00l'                'o00d.         %s"
+"$c2     .d0Kd'"$c1"  Okxol:;,.          "$c2":O0d.       %s"
+"$c2    .OK"$c1"KKK0kOKKKKKKKKKKOxo:,      "$c2"lKO.      %s"
+"$c2   ,0K"$c1"KKKKKKKKKKKKKKK0P^"$c2",,,"$c1"^dx:"$c2"    ;00,     %s"
+"$c2  .OK"$c1"KKKKKKKKKKKKKKKk'"$c2".oOPPb."$c1"'0k."$c2"   cKO.    %s"
+"$c2  :KK"$c1"KKKKKKKKKKKKKKK: "$c2"kKx..dd "$c1"lKd"$c2"   'OK:    %s"
+"$c2  dKK"$c1"KKKKKKKKKOx0KKKd "$c2"^0KKKO' "$c1"kKKc"$c2"   dKd    %s"
+"$c2  dKK"$c1"KKKKKKKKKK;.;oOKx,.."$c2"^"$c1"..;kKKK0."$c2"  dKd    %s"
+"$c2  :KK"$c1"KKKKKKKKKK0o;...^cdxxOK0O/^^'  "$c2".0K:    %s"
+"$c2   kKK"$c1"KKKKKKKKKKKKK0x;,,......,;od  "$c2"lKk     %s"
+"$c2   '0K"$c1"KKKKKKKKKKKKKKKKKKKK00KKOo^  "$c2"c00'     %s"
+"$c2    'kK"$c1"KKOxddxkOO00000Okxoc;''   "$c2".dKk'      %s"
+"$c2      l0Ko.                    .c00l'       %s"
+"$c2       'l0Kk:.              .;xK0l'         %s"
+"$c2          'lkK0xl:;,,,,;:ldO0kl'            %s"
+"$c2              '^:ldxkkkkxdl:^'              %s")
 		;;
 
 		"Slackware")
