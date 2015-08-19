@@ -1355,6 +1355,12 @@ detectde () {
 					fi
 				fi
 
+				case "$DESKTOP_SESSION" in
+					gnome|gnome-fallback|gnome-fallback-compiz )
+						DE=Gnome
+						;;
+				esac
+
 				if [ x"$DE" = x"" ]; then
 					# fallback to checking $DESKTOP_SESSION
 					case "$DESKTOP_SESSION" in
