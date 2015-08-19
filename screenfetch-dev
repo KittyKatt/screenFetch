@@ -515,10 +515,12 @@ detectdistro () {
 					"Cygwin")
 						distro="Cygwin"
 						fake_distro="${distro}"
+						if [ "$(wmic os get version | grep -o '^10')" ]; then
+							fake_distro="Windows 10"
+						fi
 					;;
 					"Haiku")
 						distro="Haiku"
-						fake_distro="${distro}"
 					;;
 					"GNU/Linux")
 						if type -p crux >/dev/null 2>&1; then
@@ -1482,9 +1484,9 @@ detectde () {
 			DE="Aqua"
 		fi
 	elif [[ "${distro}" == "Cygwin" ]]; then
+		# https://msdn.microsoft.com/en-us/library/ms724832%28VS.85%29.aspx
 		winver=`wmic os get version | grep -o '^[0-9]'`
-		if [ "$winver" == "7" ]; then DE='Aero'
-		elif [ "$winver" == "6" ]; then DE='Aero'
+		if [ "$winver" == "6" ] || [ "$winver" == "1" ]; then DE='Aero'
 		else DE='Luna'; fi
 	fi
 	verboseOut "Finding desktop environment...found as '$DE'"
@@ -2140,9 +2142,9 @@ takeShot () {
 
 asciiText () {
 # Distro logos and ASCII outputs
-	if [[ "$fake_distro" ]]; then distro="${fake_distro}"; fi
 	if [[ "$asc_distro" ]]; then myascii="${asc_distro}"
 	elif [[ "$art" ]]; then myascii="custom"
+	elif [[ "$fake_distro" ]]; then myascii="${fake_distro}"
 	else myascii="${distro}"; fi
 	case ${myascii} in
 		"custom") source "$art" ;;
@@ -3243,6 +3245,33 @@ asciiText () {
 "${c4}                 \"VEzjt:;;z>*\`       %s")
 		;;
 
+		"Windows 10")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') # Blue
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c1}                                  ..,  %s"
+"${c1}                      ....,,:;+ccllll %s"
+"${c1}        ...,,+:;  cllllllllllllllllll %s"
+"${c1}  ,cclllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}                                      %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  llllllllllllll  lllllllllllllllllll %s"
+"${c1}  \`'ccllllllllll  lllllllllllllllllll %s"
+"${c1}         \`'\"\"*::  :ccllllllllllllllll %s"
+"${c1}                        \`\`\`\`''\"*::cll %s"
+"${c1}                                   \`\` %s")
+		;;
+
 		"Haiku")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'black_haiku') # Black
@@ -4027,7 +4056,7 @@ infoDisplay () {
 					# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
 				fi
 			fi
-		elif [[ "$fake_distro" == "Cygwin" ]]; then
+		elif [[ "$fake_distro" == "Cygwin" || "$fake_distro" == "Windows 10" ]]; then
 			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
@@ -4043,7 +4072,7 @@ infoDisplay () {
 				fi
 			fi
 		fi
-		[[ "${fake_distro}" != "Cygwin" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
+		[[ "${fake_distro}" != "Cygwin" && "$fake_distro" != "Windows 10" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
