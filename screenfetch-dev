@@ -521,6 +521,7 @@ detectdistro () {
 					;;
 					"Haiku")
 						distro="Haiku"
+						distro_more="$(uname -v | tr ' ' '\n' | grep 'hrev')"
 					;;
 					"GNU/Linux")
 						if type -p crux >/dev/null 2>&1; then
@@ -902,6 +903,15 @@ detectpkgs () {
 				pkgs=$((${pkgs} + ${chocopkgs}))
 			fi
 		;;
+		'Haiku')
+			haikualpharelease="no"
+			if [ -d /boot/system/package-links ]; then
+				pkgs=$(ls /boot/system/package-links | wc -l)
+			elif type -p installoptionalpackage >/dev/null 2>&1; then
+				haikualpharelease="yes"
+				pkgs=$(installoptionalpackage -l | sed -n '3p' | wc -w)
+			fi
+		;;
 	esac
 	verboseOut "Finding current package count...found as '$pkgs'"
 }
@@ -937,12 +947,14 @@ detectcpu () {
 		cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	elif [ "$distro" == "Haiku" ]; then
 		cpu=$(sysinfo -cpu | grep 'CPU #0' | cut -d'"' -f2 | sed 's/(tm)//; s/Processor//;')
-		cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
-		if [ $(echo $cpu_mhz) -gt 999 ];then
-			cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
-			cpu="$cpu @ ${cpu_ghz}GHz"
-		else
-			cpu="$cpu @ ${cpu_mhz}MHz"
+		if [ -z "$(echo $cpu | grep '@')" ]; then
+			cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
+			if [ $(echo $cpu_mhz) -gt 999 ];then
+				cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
+				cpu="$cpu @ ${cpu_ghz}GHz"
+			else
+				cpu="$cpu @ ${cpu_mhz}MHz"
+			fi
 		fi
 	else
 		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
@@ -1000,7 +1012,7 @@ detectgpu () {
 		gpu="${gpu_info##*device*= }"
 		gpu="${gpu//\'}"
 		# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
-	elif [[ "$distro" != "Mac OS X" ]]; then
+	elif [[ "${distro}" != "Mac OS X" && "${distro}" != "Haiku" ]]; then
 		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
 			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
 		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p glxinfo)" && -z "${gpu}" ]]; then
@@ -1017,6 +1029,8 @@ detectgpu () {
 	elif [[ "${distro}" == "Cygwin" ]]; then
 		gpu=$(wmic path Win32_VideoController get caption)
 		gpu=$(tail -1 <<< ${gpu})
+	elif [[ "${distro}" == "Haiku" ]]; then
+		gpu="$(listdev | grep -A2 -e 'device Display controller' | tail -n1 | sed 's/  device ....: //')"
 	fi
 
 	if [ -n "$gpu" ];then
@@ -1229,7 +1243,7 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
-	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" ]]; then
+	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" && ${distro} != "Haiku" ]]; then
 		if [[ -n ${DISPLAY} ]]; then
 			if type -p xdpyinfo >/dev/null 2>&1; then
 				if [[ "$distro" =~ "BSD" ]]; then
@@ -1256,6 +1270,10 @@ detectres () {
 			xResolution="${xResolution}${delim}${width[i]}x${height[i]}"
 		done
 		xResolution=$(echo $xResolution | sed "s/^$delim//")
+	elif [[ "${distro}" == "Haiku" ]]; then
+		width=$(screenmode | cut -d ' ' -f2)
+		height=$(screenmode | cut -d ' ' -f3 | tr -d ',')
+		xResolution="$(echo ${width}x${height})"
 	else
 		xResolution="No X Server"
 	fi
@@ -3288,14 +3306,19 @@ asciiText () {
 
 		"Haiku")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'black_haiku') # Black
-				c2=$(getColor 'light grey') # Light Gray
+				if [ "$haikualpharelease" == "yes" ]; then
+					c1=$(getColor 'black_haiku') # Black
+					c2=$(getColor 'light grey') # Light Gray
+				else
+					c1=$(getColor 'black') # Black
+					c2=${c1}
+				fi
 				c3=$(getColor 'green') # Green
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1}          :dc'                      %s"
+"${c1}          :dc'                       %s"
 "${c1}       'l:;'${c2},${c1}'ck.    .;dc:.         %s"
 "${c1}       co    ${c2}..${c1}k.  .;;   ':o.       %s"
 "${c1}       co    ${c2}..${c1}k. ol      ${c2}.${c1}0.       %s"
@@ -4084,6 +4107,10 @@ infoDisplay () {
 				else
 					mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++))
 				fi
+			fi
+		elif [[ "$distro" == "Haiku" ]]; then
+			if [ -n "${xResolution}" ]; then
+				if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			fi
 		fi
 		[[ "${fake_distro}" != "Cygwin" && "$fake_distro" != "Windows 10" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
