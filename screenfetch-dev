@@ -56,7 +56,7 @@ display_logo="no"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm )
 denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder )
 
 # Screenshot Settings
@@ -189,10 +189,10 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X and Windows+Cygwin."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
-supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
+supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
 displayHelp() {
 	printf "${underline}Usage${c0}:\n"
@@ -506,9 +506,6 @@ detectdistro () {
 			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then distro="Red Hat Enterprise Linux"; fi
 			if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro_release"; fi
 			if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro_more $distro_codename"; fi
-			if [[ -n ${distro_more} ]]; then
-				distro_more="${distro} ${distro_more}"
-			fi
 		fi
 
 		# Existing File Check
@@ -526,11 +523,11 @@ detectdistro () {
 					"GNU/Linux")
 						if type -p crux >/dev/null 2>&1; then
 							distro="CRUX"
-							distro_more="${distro} $(crux | awk '{print $3}')"
+							distro_more="$(crux | awk '{print $3}')"
 						fi
 						if type -p nixos-version >/dev/null 2>&1; then
 							distro="NixOS"
-							distro_more="NixOS $(nixos-version)"
+							distro_more="$(nixos-version)"
 						fi
 					;;
 				esac
@@ -697,9 +694,18 @@ detectdistro () {
 					if grep -q "Scientific Linux" /etc/system-release; then
 						distro="Scientific Linux"
 					fi
+				elif [[ -f /etc/lsb-release ]]; then
+					if grep -q "CHROMEOS_RELEASE_NAME" /etc/lsb-release; then
+						distro="$(awk -F'=' '/^CHROMEOS_RELEASE_NAME=/ {print $2}' /etc/lsb-release)"
+						distro_more="$(awk -F'=' '/^CHROMEOS_RELEASE_VERSION=/ {print $2}' /etc/lsb-release)"
+					fi
 				fi
 			fi
 		fi
+	fi
+
+	if [[ -n ${distro_more} ]]; then
+		distro_more="${distro} ${distro_more}"
 	fi
 
 	if [[ "${distro}" != "Haiku" ]]; then
@@ -726,6 +732,7 @@ detectdistro () {
 		korora) distro="Korora" ;;
 		blag) distro="BLAG" ;;
 		chapeau) distro="Chapeau" ;;
+		chrome*|chromium*) distro="Chrome OS" ;;
 		crux) distro="CRUX" ;;
 		mageia) distro="Mageia" ;;
 		mandriva) distro="Mandriva" ;;
@@ -843,7 +850,7 @@ detectpkgs () {
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
-		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
+		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
 		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
@@ -1501,6 +1508,7 @@ detectwm () {
 						'bspwm') WM="bspwm";;
 						'blackbox') WM="BlackBox";;
 						'budgie-wm') WM="BudgieWM";;
+						'chromeos-wm') WM="chromeos-wm";;
 						'cinnamon') WM="Muffin";;
 						'compiz') WM="Compiz";;
 						'dminiwm') WM="dminiwm";;
@@ -1575,6 +1583,7 @@ detectwm () {
 					'blackbox') WM="BlackBox";;
 					'budgiewm') WM="BudgieWM";;
 					'cinnamon') WM="Cinnamon";;
+					'chromeos-wm') WM="chromeos-wm";;
 					'compiz') WM="Compiz";;
 					'dminiwm') WM="dminiwm";;
 					'dwm') WM="dwm";;
@@ -2387,7 +2396,7 @@ asciiText () {
 "")
 		;;
 
-		"ChromeOS")
+		"Chrome OS")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green') # Green
 				c2=$(getColor 'light red') # Light Red
