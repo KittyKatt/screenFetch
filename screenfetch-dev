@@ -1012,7 +1012,7 @@ detectgpu () {
 		gpu="${gpu_info##*device*= }"
 		gpu="${gpu//\'}"
 		# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
-	elif [[ "${distro}" != "Mac OS X" && "${distro}" != "Haiku" ]]; then
+	elif [[ "${distro}" != "Mac OS X" && "${distro}" != "Haiku" && "${distro}" != "OpenBSD" ]]; then
 		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
 			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
 		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p glxinfo)" && -z "${gpu}" ]]; then
