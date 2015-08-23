@@ -1117,7 +1117,7 @@ detectmem () {
 		used_mem=$(($round_mem - $avail_mem))
 		usedmem=$(($used_mem / ($human * $human) ))
 	elif [ "$distro" == "OpenBSD" ]; then
-		totalmem=$(dmesg | grep 'real mem' | cut -d' ' -f5 | tr -d '()MB')
+		totalmem=$(grep 'real mem' /var/run/dmesg.boot | cut -d' ' -f6 | tr -d '()MB')
 		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
