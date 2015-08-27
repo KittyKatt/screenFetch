@@ -57,7 +57,7 @@ display_logo="no"
 # WM & DE process names
 # Removed WM's: compiz
 wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm )
-denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession gnome-settings-daemon mate-session mate-settings-daemon Finder )
+denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder )
 
 # Screenshot Settings
 # This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
@@ -1381,6 +1381,9 @@ detectde () {
 						Unity)
 							DE=Unity
 							;;
+						LXQt)
+							DE=LXQt
+							;;
 					esac
 				fi
 
@@ -1527,6 +1530,8 @@ detectde () {
 						DEver=$(lxpanel -v)
 						DE="${DE} $DEver"
 					fi
+				elif pgrep -U ${UID} lxqt-session >/dev/null 2>&1; then
+					DE="LXQt"
 				elif pgrep -U ${UID} razor-session >/dev/null 2>&1; then
 					DE="RazorQt"
 				elif pgrep -U ${UID} dtsession >/dev/null 2>&1; then
