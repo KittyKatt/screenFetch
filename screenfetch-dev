@@ -747,10 +747,6 @@ detectdistro () {
 		fi
 	fi
 
-	if [[ -n ${distro_more} ]]; then
-		distro_more="${distro} ${distro_more}"
-	fi
-
 	case $distro in
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
