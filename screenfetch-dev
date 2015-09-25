@@ -458,6 +458,16 @@ detectdistro () {
 				"ManjaroLinux")
 					distro="Manjaro"
 					;;
+				"Mer")
+					distro="Mer"
+					if [[ -f /etc/os-release ]]; then
+						if grep -q 'SailfishOS' /etc/os-release; then
+							distro="SailfishOS"
+							distro_codename="$(grep 'VERSION=' /etc/os-release | cut -d '(' -f2 | cut -d ')' -f1)"
+							distro_release="$(awk -F'=' '/^VERSION=/ {print $2}' /etc/os-release)"
+						fi
+					fi
+					;;
 				"NixOS")
 					distro="NixOS"
 					;;
@@ -491,6 +501,13 @@ detectdistro () {
 					;;
 				"Sabayon")
 					distro="Sabayon"
+					;;
+				"SailfishOS")
+					distro="SailfishOS"
+					if [[ -f /etc/os-release ]]; then
+						distro_codename="$(grep 'VERSION=' /etc/os-release | cut -d '(' -f2 | cut -d ')' -f1)"
+						distro_release="$(awk -F'=' '/^VERSION=/ {print $2}' /etc/os-release)"
+					fi
 					;;
 				"Solus")
 					distro="Solus"
@@ -768,6 +785,7 @@ detectdistro () {
 		mageia) distro="Mageia" ;;
 		mandriva) distro="Mandriva" ;;
 		mandrake) distro="Mandrake" ;;
+		mer) distro="Mer" ;;
 		mint) distro="Mint" ;;
 		nix|nix*os) distro="NixOS" ;;
 		kali*linux) distro="Kali Linux" ;;
@@ -792,6 +810,7 @@ detectdistro () {
 		frugalware) distro="Frugalware" ;;
 		pclinuxos|pclos) distro="PCLinuxOS" ;;
 		peppermint) distro="Peppermint" ;;
+		sailfish|sailfish*os) distro="SailfishOS" ;;
 		solus) distro="Solus" ;;
 		trisquel) distro="Trisquel";;
 		parabolagnu|parabolagnu/linux-libre|'parabola gnu/linux-libre'|parabola) distro="Parabola GNU/Linux-libre" ;;
@@ -885,7 +904,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
-		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'PCLinuxOS'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
@@ -3815,6 +3834,32 @@ asciiText () {
 "${c1}                   '                   %s")
 		;;
 
+		"SailfishOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'blue') # Blue
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c1}              .+eWWW             %s"
+"${c1}          .+ee+++eee      e.    %s"
+"${c1}       .ee++eeeeeeee    +e.     %s"
+"${c1}     .e++ee++eeeeeee+eee+e+     %s"
+"${c1}    ee.e+.ee+eee++eeeeee+       %s"
+"${c1}   W.+e.e+.e++ee+eee            %s"
+"${c1}  W.+e.W.ee.W++ee'              %s"
+"${c1} +e.W W.e+.W.W+                 %s"
+"${c1} W.e.+e.W W W.                  %s"
+"${c1} e e e +e.W.W                   %s"
+"${c1}       .W W W.                  %s"
+"${c1}        W.+e.W.                 %s"
+"${c1}         W++e.ee+.              %s"
+"${c1}          ++ +ee++eeeee++.      %s"
+"${c1}          '     '+++e   'ee.    %s"
+"${c1}                           ee   %s"
+"${c1}                            ee  %s"
+"${c1}                             e  %s")
+		;;
+
 		*)
 			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -4006,7 +4051,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
