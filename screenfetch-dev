@@ -64,7 +64,7 @@ denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsessio
 screenshot=
 # This setting lets the script know if you want to upload the screenshot to a filehost. 1=Yes 0=No
 upload=
-# This setting lest the script know where you would like to upload the file to. Valid hosts are: teknik, mediacrush, pomf, imgur, hmp, and a configurable local.
+# This setting lest the script know where you would like to upload the file to. Valid hosts are: teknik, mediacrush, imgur, hmp, and a configurable local.
 uploadLoc=
 # You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
@@ -229,7 +229,7 @@ displayHelp() {
 	printf "   ${bold}-s(u)${c0}              Using this flag tells the script that you want it\n"
 	printf "		      to take a screenshot. Use the -u flag if you would like\n"
 	printf "		      to upload the screenshots to one of the pre-configured\n"
-	printf "		      locations. These include: teknik, pomf, imgur, mediacrush, and hmp.\n"
+	printf "		      locations. These include: teknik, imgur, mediacrush, and hmp.\n"
 	printf "   ${bold}-c string${c0}          You may change the outputted colors with -c. The format is\n"
 	printf "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the\n"
 	printf "                      ASCII logo colors and the label colors. The second argument\n"
@@ -2145,14 +2145,6 @@ takeShot () {
 						uploadurl='http://imgur.com/upload'
 						ret=$(curl -sf -F file="@${shotfiles[@]}" ${uploadurl})
 						filehash="${ret##*hash\":\"}"
-						filehash="${filehash%%\"*}"
-						desturl="${baseurl}/${filehash}"
-					;;
-					'pomf')
-						baseurl='http://a.pomf.se'
-						uploadurl='http://pomf.se/upload.php'
-						ret=$(curl --silent -sf -F files[]="@${shotfiles[@]}" ${uploadurl})
-						filehash="${ret##*url\":\"}"
 						filehash="${filehash%%\"*}"
 						desturl="${baseurl}/${filehash}"
 					;;
