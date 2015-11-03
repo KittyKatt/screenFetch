@@ -570,6 +570,7 @@ detectdistro () {
 					[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 					[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
 					[[ "${distro}" == "elementary" ]] && distro="elementary OS"
+					[[ "${distro}" == "Fedora" && -d /etc/qubes-rpc ]] && distro="qubes" # Inner VM
 				fi
 			fi
 
@@ -808,6 +809,7 @@ detectdistro () {
 		tinycore|tinycore*linux) distro="TinyCore" ;;
 		cygwin) distro="Cygwin" ;;
 		haiku) distro="Haiku" ;;
+		qubes) distro="Qubes OS" ;;
 	esac
 	verboseOut "Finding distro...found as '${distro} ${distro_release}'"
 }
@@ -3815,6 +3817,36 @@ asciiText () {
 "${c1}                   '                   %s")
 		;;
 
+		"Qubes OS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'cyan')
+				c2=$(getColor 'blue')
+				c3=$(getColor 'light blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(
+"$c1      $c3                ####                      %s"
+"$c1        $c3            ########                   %s"
+"$c1          $c3        ############                 %s"
+"$c1            $c3    #######  #######               %s"
+"$c1              #$c3######      ######$c2#             %s"
+"$c1            ####$c3###          ###$c2####           %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1            #######     $c2     #######           %s"
+"$c1              #######   $c2   #########           %s"
+"$c1                ####### $c2 ##############        %s"
+"$c1                  ######$c2######  ######         %s"
+"$c1                    ####$c2####     ###           %s"
+"$c1                      ##$c2##                     %s" 
+"$c1                                                  %s")
+		;;
+
+
 		*)
 			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -4006,7 +4038,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS") labelcolor=$(getColor 'light blue');;
+		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"Qubes OS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
