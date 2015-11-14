@@ -189,7 +189,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, NixOS, openSUSE, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, NixOS, openSUSE, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+Msys."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -603,6 +603,7 @@ detectdistro () {
 					[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 					[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
 					[[ "${distro}" == "elementary" ]] && distro="elementary OS"
+					[[ "${distro}" == "Fedora" && -d /etc/qubes-rpc ]] && distro="qubes" # Inner VM
 				fi
 			fi
 
@@ -844,6 +845,7 @@ detectdistro () {
 		fuduntu) distro="Fuduntu" ;;
 		manjaro) distro="Manjaro" ;;
 		tinycore|tinycore*linux) distro="TinyCore" ;;
+		qubes) distro="Qubes OS" ;;
 		cygwin) distro="Cygwin" ;;
 		msys|msys2) distro="Msys" ;;
 		haiku) distro="Haiku" ;;
@@ -925,7 +927,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
-		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
@@ -3957,6 +3959,35 @@ asciiText () {
 "${c1}                             e  %s")
 		;;
 
+		"Qubes OS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'cyan')
+				c2=$(getColor 'blue')
+				c3=$(getColor 'light blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(
+"$c1      $c3                ####                      %s"
+"$c1        $c3            ########                   %s"
+"$c1          $c3        ############                 %s"
+"$c1            $c3    #######  #######               %s"
+"$c1              #$c3######      ######$c2#             %s"
+"$c1            ####$c3###          ###$c2####           %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1            #######     $c2     #######           %s"
+"$c1              #######   $c2   #########           %s"
+"$c1                ####### $c2 ##############        %s"
+"$c1                  ######$c2######  ######         %s"
+"$c1                    ####$c2####     ###           %s"
+"$c1                      ##$c2##                     %s"
+"$c1                                                  %s")
+		;;
+
 		*)
 			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -4148,7 +4179,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS") labelcolor=$(getColor 'light blue');;
+		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS"|"Qubes OS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
