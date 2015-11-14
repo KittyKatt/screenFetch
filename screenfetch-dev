@@ -948,6 +948,10 @@ detectpkgs () {
 				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
+			if type -p pkgin >/dev/null 2>&1; then
+				pkgsrc_pkgs=$(pkgin list 2>/dev/null | wc -l)
+				pkgs=$((${pkgs} + ${pkgsrc_pkgs}))
+			fi
 		;;
 		'OpenBSD')
 			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
