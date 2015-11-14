@@ -551,8 +551,9 @@ detectdistro () {
 				esac
 			fi
 			if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
-				if [ "$(wmic os get version | grep -o '^10')" ]; then
-					fake_distro="Windows 10"
+				# https://msdn.microsoft.com/en-us/library/ms724832%28VS.85%29.aspx
+				if [ "$(wmic os get version | grep -o '^\(6\.[23]\|10\)')" ]; then
+					fake_distro="Windows - Modern"
 				fi
 			fi
 			if [[ "${distro}" == "Unknown" ]]; then
@@ -1559,9 +1560,11 @@ detectde () {
 		fi
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		# https://msdn.microsoft.com/en-us/library/ms724832%28VS.85%29.aspx
-		winver=`wmic os get version | grep -o '^[0-9]'`
-		if [ "$winver" == "6" ] || [ "$winver" == "1" ]; then DE='Aero'
-		else DE='Luna'; fi
+		if [ "$(wmic os get version | grep -o '^\(6\|10\)')" ]; then
+			DE='Aero'
+		else
+			DE='Luna'
+		fi
 	fi
 	verboseOut "Finding desktop environment...found as '$DE'"
 }
@@ -3318,7 +3321,7 @@ asciiText () {
 "${c4}                 \"VEzjt:;;z>*\`       %s")
 		;;
 
-		"Windows 10")
+		"Windows - Modern")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Blue
 			fi
@@ -4198,7 +4201,7 @@ infoDisplay () {
 					# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
 				fi
 			fi
-		elif [[ "$fake_distro" == "Cygwin" || "$fake_distro" == "Msys" || "$fake_distro" == "Windows 10" ]]; then
+		elif [[ "$fake_distro" == "Cygwin" || "$fake_distro" == "Msys" || "$fake_distro" == "Windows - Modern" ]]; then
 			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
@@ -4218,7 +4221,7 @@ infoDisplay () {
 				if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			fi
 		fi
-		[[ "${fake_distro}" != "Cygwin" && "${fake_distro}" != "Msys" && "${fake_distro}" != "Windows 10" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
+		[[ "${fake_distro}" != "Cygwin" && "${fake_distro}" != "Msys" && "${fake_distro}" != "Windows - Modern" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
