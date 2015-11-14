@@ -781,10 +781,6 @@ detectdistro () {
 		fi
 	fi
 
-	if [[ -n ${distro_more} ]]; then
-		distro_more="${distro} ${distro_more}"
-	fi
-
 	case $distro in
 		alpine) distro="Alpine Linux" ;;
 		antergos) distro="Antergos" ;;
