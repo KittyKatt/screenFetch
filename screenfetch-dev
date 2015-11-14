@@ -189,7 +189,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, NixOS, openSUSE, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, NixOS, openSUSE, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+Msys."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -785,6 +785,7 @@ detectdistro () {
 	fi
 
 	case $distro in
+		alpine) distro="Alpine Linux" ;;
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
@@ -916,6 +917,7 @@ detectuptime () {
 detectpkgs () {
 	pkgs="Unknown"
 	case "${distro}" in
+		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'KaOS'|'Msys') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
@@ -1252,7 +1254,7 @@ detectshell_ver () {
 }
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
-		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${OSTYPE}" == "gnu" ]]; then
+		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		else
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
@@ -2243,6 +2245,32 @@ asciiText () {
 	else myascii="${distro}"; fi
 	case ${myascii} in
 		"custom") source "$art" ;;
+
+		"Alpine Linux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') # Light
+				c2=$(getColor 'blue') # Dark
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c1}        ................           %s"
+"${c1}       ∴::::::::::::::::∴         %s"
+"${c1}      ∴::::::::::::::::::∴        %s"
+"${c1}     ∴::::::::::::::::::::∴       %s"
+"${c1}    ∴:::::::. :::::':::::::∴      %s"
+"${c1}   ∴:::::::.   ;::; ::::::::∴     %s"
+"${c1}  ∴::::::;      ∵     :::::::∴    %s"
+"${c1} ∴:::::.     .         .::::::∴   %s"
+"${c1} ::::::     :::.    .    ::::::   %s"
+"${c1} ∵::::     ::::::.  ::.   ::::∵   %s"
+"${c1}  ∵:..   .:;::::::: :::.  :::∵    %s"
+"${c1}   ∵::::::::::::::::::::::::∵     %s"
+"${c1}    ∵::::::::::::::::::::::∵      %s"
+"${c1}     ∵::::::::::::::::::::∵       %s"
+"${c1}      ::::::::::::::::::::        %s"
+"${c1}       ∵::::::::::::::::∵         %s")
+		;;
+
 		"Arch Linux - Old")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -4128,7 +4156,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS") labelcolor=$(getColor 'light blue');;
+		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
