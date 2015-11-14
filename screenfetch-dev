@@ -248,8 +248,8 @@ displayHelp() {
 	printf "		      displayed. This is for when you want your distro\n"
 	printf "                      detected but want to display a different logo.\n"
 	printf "   ${bold}-E${c0}                 Suppress output of errors.\n"
-	printf "   ${bold}-V${c0}                 Display current script version.\n"
-	printf "   ${bold}-h${c0}                 Display this help.\n"
+	printf "   ${bold}-V, --version${c0}      Display current script version.\n"
+	printf "   ${bold}-h, --help${c0}         Display this help.\n"
 }
 
 
