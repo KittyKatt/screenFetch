@@ -2002,17 +2002,18 @@ detectgtk () {
 					fi
 				fi
 				# $HOME/.gtkrc.mine theme detect only
+				minegtkrc=''
 				if [[ -f "$HOME/.gtkrc.mine" || -f "$HOME/.gtkrc-2.0.mine" ]]; then
-					MINEGTKRC="$HOME/.gtkrc*.mine"
-					if grep -q "^include" $MINEGTKRC; then
-						gtk2Theme=$(grep '^include.*gtkrc' $MINEGTKRC | awk -F "/" '{ print $5 }')
+					minegtkrc="$HOME/.gtkrc*.mine"
+					if grep -q "^include" $minegtkrc; then
+						gtk2Theme=$(grep '^include.*gtkrc' $minegtkrc | awk -F "/" '{ print $5 }')
 					fi
-					if grep -q "^gtk-icon-theme-name" $MINEGTKRC; then
-						gtkIcons=$(grep '^gtk-icon-theme-name' $MINEGTKRC | awk -F '"' '{print $2}')
+					if grep -q "^gtk-icon-theme-name" $minegtkrc; then
+						gtkIcons=$(grep '^gtk-icon-theme-name' $minegtkrc | awk -F '"' '{print $2}')
 					fi
 				fi
 				# /etc/gtk-2.0/gtkrc compatability
-				if [[ -f /etc/gtk-2.0/gtkrc && ! -f $HOME/.gtkrc-2.0 && ! -f $MINEGTKRC ]]; then
+				if [[ -f /etc/gtk-2.0/gtkrc && ! -f $HOME/.gtkrc-2.0 && ! -f $minegtkrc ]]; then
 					if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
 						gtk2Theme=$(awk -F'"' '/^gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 					fi
