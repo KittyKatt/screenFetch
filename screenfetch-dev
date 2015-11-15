@@ -2042,16 +2042,21 @@ detectgtk () {
 					fi
 				fi
 				# $HOME/.gtkrc.mine theme detect only
-				if [ -f "$HOME/.gtkrc.mine" ]; then
-					if grep -q "^include" $HOME/.gtkrc.mine; then
-						gtk2Theme=$(grep '^include.*gtkrc' $HOME/.gtkrc.mine | awk -F "/" '{ print $5 }')
+				if [[ -f "$HOME/.gtkrc.mine" ]]; then
+					minegtkrc="$HOME/.gtkrc.mine"
+				elif [[ -f "$HOME/.gtkrc-2.0.mine" ]]; then
+					minegtkrc="$HOME/.gtkrc-2.0.mine"
+				fi
+				if [ -f "$minegtkrc" ]; then
+					if grep -q "^include" "$minegtkrc"; then
+						gtk2Theme=$(grep '^include.*gtkrc' "$minegtkrc" | awk -F "/" '{ print $5 }')
 					fi
-					if grep -q "^gtk-icon-theme-name" $HOME/.gtkrc.mine; then
-						gtkIcons=$(grep '^gtk-icon-theme-name' $HOME/.gtkrc.mine | awk -F '"' '{print $2}')
+					if grep -q "^gtk-icon-theme-name" "$minegtkrc"; then
+						gtkIcons=$(grep '^gtk-icon-theme-name' "$minegtkrc" | awk -F '"' '{print $2}')
 					fi
 				fi
 				# /etc/gtk-2.0/gtkrc compatability
-				if [[ -f /etc/gtk-2.0/gtkrc && ! -f $HOME/.gtkrc-2.0 && ! -f $HOME/.gtkrc.mine ]]; then
+				if [[ -f /etc/gtk-2.0/gtkrc && ! -f "$HOME/.gtkrc-2.0" && ! -f "$HOME/.gtkrc.mine" && ! -f "$HOME/.gtkrc-2.0.mine" ]]; then
 					if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
 						gtk2Theme=$(awk -F'"' '/^gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 					fi
@@ -2086,7 +2091,7 @@ detectgtk () {
 
 				# ROX-Filer icon detect only
 				if [ -a "${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options" ]; then
-					gtkIcons=$(awk -F'[>,<]' '/^icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
+					gtkIcons=$(awk -F'[>,<]' '/icon_theme/ {print $3}' ${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options)
 				fi
 
 				# E17 detection
