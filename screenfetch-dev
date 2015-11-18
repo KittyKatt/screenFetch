@@ -918,6 +918,9 @@ detectpkgs () {
 			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
 				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | awk '{sub(" ", "");print $1}'; fi)
 		;;
+		'NetBSD')
+			pkgs=$(pkg_info | wc -l | tr -d ' ')
+		;;
 		'Cygwin')
 			cygfix=2
 			pkgs=$(($(cygcheck -cd | wc -l) - ${cygfix}))
