@@ -4226,12 +4226,11 @@ infoDisplay () {
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
 			elif [[ "$distro" == "Cygwin" || "$distro" == "Msys" ]]; then
-				distro=$(wmic os get name | head -2 | tail -1)
-				distro=$(expr match "$distro" '\(Microsoft Windows [A-Za-z0-9.]\+\)')
+				distro="$(wmic os get caption | sed 's/\r//g; s/[ \t]*$//g; 2!d')"
 				if [[ "$(wmic os get version | grep -o '^10\.')" == "10." ]]; then
 					distro="$distro (v$(wmic os get version | grep '^10\.' | tr -d ' '))"
 				fi
-				sysArch=$(wmic os get OSArchitecture | head -2 | tail -1 | tr -d '\r ')
+				sysArch=$(wmic os get OSArchitecture | sed 's/\r//g; s/[ \t]*$//g; 2!d')
 				mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch")
 			else
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more")
