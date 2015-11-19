@@ -4045,8 +4045,7 @@ infoDisplay () {
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
 			elif [[ "$distro" == "Cygwin" ]]; then
-				distro=$(wmic os get name | head -2 | tail -1)
-				distro=$(expr match "$distro" '\(Microsoft Windows [A-Za-z0-9.]\+\)')
+				distro="$(wmic os get caption | sed 's/\r//g; s/[ \t]*$//g; 2!d')"
 				if [[ "$(wmic os get version | grep -o '^10\.')" == "10." ]]; then
 					distro="$distro (v$(wmic os get version | grep '^10\.' | tr -d ' '))"
 				fi
