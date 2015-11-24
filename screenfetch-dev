@@ -1404,7 +1404,7 @@ detectde () {
 						KDE)
 							DE=KDE;
 							;;
-						LUMINA)
+						LUMINA|Lumina)
 							DE=Lumina;
 							;;
 						LXDE)
@@ -1452,7 +1452,7 @@ detectde () {
 						gnome)
 							DE=Gnome;
 							;;
-						LUMINA)
+						LUMINA|Lumina)
 							DE=Lumina;
 							;;
 						LXDE|Lubuntu)
