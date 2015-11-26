@@ -56,8 +56,8 @@ display_logo="no"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm )
-denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm )
+denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder deepin )
 
 # Screenshot Settings
 # This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
@@ -191,8 +191,8 @@ detectColors() {
 
 supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, NixOS, openSUSE, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+Msys."
-supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
-supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
+supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE and RazorQt."
+supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
 displayHelp() {
 	printf "${underline}Usage${c0}:\n"
@@ -1444,6 +1444,9 @@ detectde () {
 					gnome|gnome-fallback|gnome-fallback-compiz )
 						DE=Gnome
 						;;
+					deepin)
+						DE=Deepin
+						;;
 				esac
 
 				if [ x"$DE" = x"" ]; then
@@ -1561,6 +1564,11 @@ detectde () {
 						DEver=$(unity --version)
 						DE="${DE} ${DEver//* }"
 					fi
+				elif [[ ${DE} == "Deepin" ]]; then
+					if [[ -f /etc/deepin-version ]]; then
+						DEver="$(awk -F '=' '/Version/ {print $2}' /etc/deepin-version)"
+						DE="${DE} ${DEver//* }"
+					fi
 				fi
 			fi
 
@@ -1616,6 +1624,7 @@ detectwm () {
 						'chromeos-wm') WM="chromeos-wm";;
 						'cinnamon') WM="Muffin";;
 						'compiz') WM="Compiz";;
+						'deepin-wm') WM="deepin-wm";;
 						'dminiwm') WM="dminiwm";;
 						'dwm') WM="dwm";;
 						'dtwm') WM="dtwm";;
@@ -1690,6 +1699,7 @@ detectwm () {
 					'cinnamon') WM="Cinnamon";;
 					'chromeos-wm') WM="chromeos-wm";;
 					'compiz') WM="Compiz";;
+					'deepin-wm') WM="Deepin WM";;
 					'dminiwm') WM="dminiwm";;
 					'dwm') WM="dwm";;
 					'e16') WM="E16";;
@@ -1770,6 +1780,12 @@ detectwmtheme () {
 				Win_theme=${Win_theme//"'"}
 			elif type -p gconftool-2 >/dev/null 2>&1; then
 				Win_theme=$(gconftool-2 -g /apps/metacity/general/theme)
+			fi
+		;;
+		'Deepin WM')
+			if type -p gsettings >/dev/null 2>&1; then
+				Win_theme="$(gsettings get com.deepin.wrap.gnome.desktop.wm.preferences theme)"
+				Win_theme=${Win_theme//"'"}
 			fi
 		;;
 		'dminiwm') Win_theme="Not Applicable";;
