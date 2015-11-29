@@ -32,7 +32,7 @@ LANG=C
 LANGUAGE=C
 LC_ALL=C
 
-scriptVersion="3.6.8"
+scriptVersion="3.7.0"
 
 ######################
 # Settings for fetcher
