@@ -3,11 +3,16 @@
     changelog
 **** **** **** ****
 
+	- Fixed package count, shell detection and colors on NetBSD
+	- Added pkgsrc support for OS X
+	- Use new NixOS logo
+	- pomf host removed (does not exist anymore)
 	- Display the package count, resolution, GPU and OS version on Haiku
 	- Display release version and package count on TinyCore Linux
-	- Show modern logo on Windows 10
-	- Added detection for chromeos-wm and LXQt
-	- Added detection for Chrome OS, Chromium OS and PCLinuxOS
+	- Display exact release version on Windows 10
+	- Use modern logo on Windows 10 and Windows 8
+	- Added detection for chromeos-wm, LXQt and Deepin [DEs/WMs]
+	- Added detection for Chrome OS, Chromium OS, PCLinuxOS, BunsenLabs, Msys, SteamOS, SailfishOS, Mer, Alpine, Qubes OS and Oracle Linux
 
 v3.7.0
 	- Show RAM in IEC units (MiB instead of MB)
