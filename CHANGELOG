@@ -3,11 +3,28 @@
     changelog
 **** **** **** ****
 
-	- Fixing package detection in apt/dpkg distros
-	- Fix xmonad detection
-	- Add detection for Sabayon, Haiku, Logos and Chapeau
-	- Add ChromeOS logo (without distro detection)
-	- Add an option to supply custom ASCII art
+	- Display the package count, resolution, GPU and OS version on Haiku
+	- Display release version and package count on TinyCore Linux
+	- Show modern logo on Windows 10
+	- Added detection for chromeos-wm and LXQt
+	- Added detection for Chrome OS, Chromium OS and PCLinuxOS
+
+v3.7.0
+	- Show RAM in IEC units (MiB instead of MB)
+	- Count Chocolatey packages in Cygwin if present
+
+v3.6.8
+	- Added classic Mac OS logo
+	- Added generic Unix logo for unknown non-Linux distros
+	- Added an option to display ASCII distribution logo only
+	- Fixed total memory detection on OpenBSD
+	- Fixed package detection in Solus and in apt/dpkg distros
+	- Fixed xmonad detection
+	- Added detection for Sabayon, Haiku, Logos, Chapeau, BLAG, Dragora, gNewSense, NixOS, Crux, Lunar and GNU/Hurd (generic)
+	- Added detection for CDE/dtwm, Lumina and 9wm
+	- Added ChromeOS logo (without distro detection)
+	- Use Ubuntu-3color logo by default, remove old yellow logo
+	- Added an option to supply custom ASCII art
 	- Combine GTK 2/3 themes if they are the same
 	- Reimplement '-d' (allows for setting what information is displayed on the command line)
 
