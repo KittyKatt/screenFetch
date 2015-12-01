@@ -981,7 +981,7 @@ detectcpu () {
 		fi
 	else
 		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
-		cpun=$(grep "physical id" /proc/cpuinfo | sort | uniq | wc -l)
+		cpun=$(grep -c '^processor' /proc/cpuinfo)
 		if [ -z "$cpu" ]; then
 			cpu=$(awk 'BEGIN{FS=":"} /Hardware/ { print $2; exit }' /proc/cpuinfo)
 		fi
