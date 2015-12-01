@@ -1014,7 +1014,7 @@ detectcpu () {
 		REGEXP="-E"
 	elif [ "$OSTYPE" == "gnu" ]; then
 		# no /proc/cpuinfo on GNU/Hurd
-		if [ "$(uname -m | grep 'i*86')" ]; then
+		if [ "$(uname -m | grep 'i.86')" ]; then
 			cpu="Unknown x86"
 		else
 			cpu="Unknown"
@@ -1024,19 +1024,17 @@ detectcpu () {
 	elif [ "$distro" == "OpenBSD" ]; then
 		cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	elif [ "$distro" == "Haiku" ]; then
-		cpu=$(sysinfo -cpu | grep 'CPU #0' | cut -d'"' -f2 | sed 's/(tm)//; s/Processor//;')
-		if [ -z "$(echo $cpu | grep '@')" ]; then
-			cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
-			if [ $(echo $cpu_mhz) -gt 999 ];then
-				cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
-				cpu="$cpu @ ${cpu_ghz}GHz"
-			else
-				cpu="$cpu @ ${cpu_mhz}MHz"
-			fi
+		cpu=$(sysinfo -cpu | grep 'CPU #0' | cut -d'"' -f2 | awk 'BEGIN{FS=" @"; OFS="\n"} { print $1; exit }')
+		cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
+		if [ $(echo $cpu_mhz) -gt 999 ];then
+			cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
+			cpufreq="${cpu_ghz}GHz"
+		else
+			cpufreq="${cpu_mhz}MHz"
 		fi
 	else
 		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | awk 'BEGIN{FS=" @"; OFS="\n"} { print $1; exit }')
-		cpun=$(grep "physical id" /proc/cpuinfo | sort | uniq | wc -l)
+		cpun=$(grep -c '^processor' /proc/cpuinfo)
 		if [ -z "$cpu" ]; then
 			cpu=$(awk 'BEGIN{FS=":"} /Hardware/ { print $2; exit }' /proc/cpuinfo)
 		fi
@@ -1066,17 +1064,23 @@ detectcpu () {
 		if [ -n "$cpu_mhz" ];then
 			if [ $(echo $cpu_mhz | cut -d. -f1) -gt 999 ];then
 				cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
-				cpu="$cpu @ ${cpu_ghz}GHz"
+				cpufreq="${cpu_ghz}GHz"
 			else
-				cpu="$cpu @ ${cpu_mhz}MHz"
+				cpufreq="${cpu_mhz}MHz"
 			fi
 		fi
 	fi
-        if [[ "${cpun}" -gt "1" ]]; then
-               	cpu=$(sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' <<< "${cpun}x ${cpu}" | xargs)
-        else
-               	cpu=$(sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' <<< "${cpu}" | xargs)
-        fi
+	if [[ "${cpun}" -gt "1" ]]; then
+		cpun="${cpun}x "
+	else
+		cpun=""
+	fi
+	if [ -z "$cpufreq" ]; then
+		cpu="${cpun}${cpu}"
+	else
+		cpu="$cpu @ ${cpun}${cpufreq}"
+	fi
+	cpu=$(sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' <<< "${cpu}" | xargs)
 	verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
