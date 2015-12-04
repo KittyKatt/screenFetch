@@ -2819,7 +2819,7 @@ asciiText () {
 
 		"NetBSD")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'light red') # Light Red
+				c1=$(getColor 'orange') # Orange
 				c2=$(getColor 'white') # White
 			fi
 			startline="0"
@@ -4057,10 +4057,11 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
-		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
+		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
+		"NetBSD") labelcolor=$(getColor 'orange');;
 		"CentOS"|*) labelcolor=$(getColor 'yellow');;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
