@@ -2206,6 +2206,14 @@ takeShot () {
 						desturl="${desturl%%\"*}"
 						desturl="${desturl//\\}"
 					;;
+        				'fetch')
+        					baseurl='http://fetched.io/shots'
+       						uploadurl='http://fetched.io/shots'
+        					ret=$(curl -sf -F file="@${shotfiles[@]}" -F fetchedKey="$FETCHED_ID" -F os="$distro" -F osVer="$distro_release" -F osCodeName="$distro_codename" -F kernel="$kernel" -F uptime="$uptime" -F packages="$pkgs" -F shell="$shell_type" -F resolution="$xResolution" -F de="$DE" -F wm="$WM" -F wmTheme="$Win_theme" -F gtk2Theme="$gtk2Theme" -F gtk3Theme="$gtk3Theme" -F iconTheme="$gtkIcons" -F font="$gtkFont" -F cpu="$cpu" -F gpu="$gpu" -F ram="$mem" ${uploadurl})
+        					filehash="${ret##*shortId\":\"}"
+        					filehash="${filehash%%\"*}"
+        					desturl="${baseurl}/${filehash}"
+        				;;
 					'local-example')
 						baseurl="http://www.example.com"
 						serveraddr="www.example.com"
