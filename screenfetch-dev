@@ -56,7 +56,7 @@ display_logo="no"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm)
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm sway)
 denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder deepin)
 
 # Screenshot Settings
@@ -1631,6 +1631,7 @@ detectwm () {
 						'spectrwm') WM="SpectrWM";;
 						'stumpwm') WM="StumpWM";;
 						'subtle') WM="subtle";;
+						'sway') WM="sway";;
 						'swm') WM="swm";;
 						'wmaker') WM="WindowMaker";;
 						'wmfs') WM="WMFS";;
@@ -1710,6 +1711,7 @@ detectwm () {
 					'spectrwm') WM="SpectrWM";;
 					'stumpwm') WM="StumpWM";;
 					'subtle') WM="subtle";;
+					'sway') WM="sway";;
 					'swm') WM="swm";;
 					'wmaker') WM="WindowMaker";;
 					'wmfs') WM="WMFS";;
