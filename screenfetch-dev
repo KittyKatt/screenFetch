@@ -2257,7 +2257,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c1              __                      %s"
+			fulloutput=("$c1              __                     %s"
 "$c1          _=(SDGJT=_                 %s"
 "$c1        _GTDJHGGFCVS)                %s"
 "$c1       ,GTDJGGDTDFBGX0               %s"
@@ -2285,7 +2285,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("${c1}                   -\`"
-"${c1}                  .o+\`                 %s"
+"${c1}                  .o+\`                %s"
 "${c1}                 \`ooo/                %s"
 "${c1}                \`+oooo:               %s"
 "${c1}               \`+oooooo:              %s"
@@ -2312,7 +2312,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("                                       %s"
+			fulloutput=("                                      %s"
 "$c2 MMMMMMMMMMMMMMMMMMMMMMMMMmds+.       %s"
 "$c2 MMm----::-://////////////oymNMd+\`    %s"
 "$c2 MMd      "$c1"/++                "$c2"-sNMd:   %s"
@@ -2340,7 +2340,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("          "${c1}"\`.-::---..            %s"
+			fulloutput=("          "${c1}"\`.-::---..           %s"
 "${c2}       .:++++ooooosssoo:.      %s"
 "${c2}     .+o++::.      \`.:oos+.    %s"
 "${c2}    :oo:.\`             -+oo"${c1}":   %s"
@@ -2368,7 +2368,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2                          ./+o+-       %s"
+			fulloutput=("$c2                          ./+o+-      %s"
 "$c1                  yyyyy- $c2-yyyyyy+     %s"
 "$c1               $c1://+//////$c2-yyyyyyo     %s"
 "$c3           .++ $c1.:/++++++/-$c2.+sss/\`     %s"
@@ -2395,7 +2395,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-                        fulloutput=("  $c1       _,met\$\$\$\$\$gg.           %s"
+                        fulloutput=("  $c1       _,met\$\$\$\$\$gg.          %s"
 "  $c1    ,g\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$P.       %s"
 "  $c1  ,g\$\$P\"\"       \"\"\"Y\$\$.\".     %s"
 "  $c1 ,\$\$P'              \`\$\$\$.     %s"
@@ -2423,7 +2423,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-                        fulloutput=(" $c1   .',;:cc;,'.    .,;::c:,,.    %s"
+                        fulloutput=(" $c1   .',;:cc;,'.    .,;::c:,,.   %s"
 "   $c1,ooolcloooo:  'oooooccloo:   %s"
 "   $c1.looooc;;:ol  :oc;;:ooooo'   %s"
 "     $c1;oooooo:      ,ooooooc.    %s"
@@ -2450,7 +2450,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-            fulloutput=("                                       %s"
+            fulloutput=("                                      %s"
 "$c2         "$c1"███"$c2"        "$c1"███"$c2"          "$c1"███"$c2"  %s"
 "$c2         "$c1"███"$c2"        "$c1"███"$c2"          "$c1"███"$c2"  %s"
 "$c2         "$c1"███"$c2"        "$c1"███"$c2"          "$c1"███"$c2"  %s"
@@ -2479,7 +2479,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(""
-"${c1}          odddd             %s"
+"${c1}          odddd            %s"
 "${c1}       oddxkkkxxdoo        %s"
 "${c1}      ddcoddxxxdoool       %s"
 "${c1}      xdclodod  olol       %s"
@@ -2510,7 +2510,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; c5="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2             .,:loool:,.               %s"
+			fulloutput=("$c2             .,:loool:,.              %s"
 "$c2         .,coooooooooooooc,.          %s"
 "$c2      .,lllllllllllllllllllll,.       %s"
 "$c2     ;ccccccccccccccccccccccccc;      %s"
@@ -2538,7 +2538,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2         -/oyddmdhs+:.                %s"
+			fulloutput=("$c2         -/oyddmdhs+:.               %s"
 "$c2     -o"$c1"dNMMMMMMMMNNmhy+"$c2"-\`            %s"
 "$c2   -y"$c1"NMMMMMMMMMMMNNNmmdhy"$c2"+-          %s"
 "$c2 \`o"$c1"mMMMMMMMMMMMMNmdmmmmddhhy"$c2"/\`       %s"
@@ -2566,7 +2566,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("                                                     %s"
+			fulloutput=("                                                    %s"
 "                                                    %s"
 "                                                    %s"
 "                                                    %s"
@@ -2593,7 +2593,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2           /:-------------:\          %s"
+			fulloutput=("$c2           /:-------------:\         %s"
 "$c2        :-------------------::       %s"
 "$c2      :-----------"$c1"/shhOHbmp"$c2"---:\\     %s"
 "$c2    /-----------"$c1"omMMMNNNMMD  "$c2"---:    %s"
@@ -2620,7 +2620,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2               .-/-.                %s"
+			fulloutput=("$c2               .-/-.               %s"
 "$c2             ////////.             %s"
 "$c2           ////////"$c1"y+"$c2"//.           %s"
 "$c2         ////////"$c1"mMN"$c2"/////.         %s"
@@ -2649,7 +2649,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c1                 ____________    %s"
+			fulloutput=("$c1                 ____________   %s"
 "$c1              _add55555555554"$c2":  %s"
 "$c1            _w?'"$c2"\`\`\`\`\`\`\`\`\`\`'"$c1")k"$c2":  %s"
 "$c1           _Z'"$c2"\`"$c1"            ]k"$c2":  %s"
@@ -2673,7 +2673,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-                        fulloutput=("$c1                      ..,,,,..                       %s"
+                        fulloutput=("$c1                      ..,,,,..                      %s"
 "$c1                .oocchhhhhhhhhhccoo.                %s"
 "$c1         .ochhlllllllc hhhhhh ollllllhhco.          %s"
 "$c1     ochlllllllllll hhhllllllhhh lllllllllllhco     %s"
@@ -2694,7 +2694,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c1              d                      %s"
+			fulloutput=("$c1              d                     %s"
 "$c1             ,MK:                   %s"
 "$c1             xMMMX:                 %s"
 "$c1            .NMMMMMX;               %s"
@@ -2720,7 +2720,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("                                      %s"   # user@host
+			fulloutput=("                                     %s"   # user@host
 "   "$c1"\`\`\`                        "$c2"\`      %s"      # OS
 "  "$c1"\` \`.....---..."$c2"....--.\`\`\`   -/      %s"     # Kernel
 "  "$c1"+o   .--\`         "$c2"/y:\`      +.     %s"        # Uptime
@@ -2748,7 +2748,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2              ,        ,           %s"   # user@host
+			fulloutput=("$c2              ,        ,          %s"   # user@host
 "$c2             /(        )\`         %s"                 # OS
 "$c2             \ \___   / |         %s"                  # Kernel
 "$c2             /- "$c1"_$c2  \`-/  '         %s"         # Uptime
@@ -2784,7 +2784,7 @@ asciiText () {
 "                                       "$c3" _      "
 "                                       "$c3"(_)      "
 ""$c1"              |    .                            "
-""$c1"          .   |L  /|   .         "$c3" _      %s"
+""$c1"          .   |L  /|   .         "$c3" _     %s"
 ""$c1"      _ . |\ _| \--+._/| .       "$c3"(_)    %s"
 ""$c1"     / ||\| Y J  )   / |/| ./           %s"
 ""$c1"    J  |)'( |        \` F\`.'/       "$c3" _   %s"
@@ -2815,7 +2815,7 @@ asciiText () {
 				c4=$(getColor 'light red')
 			fi
 			startline="0"
-			fulloutput=("                     "$c1" |                     %s"
+			fulloutput=("                     "$c1" |                    %s"
 "                    "$c1" .-.                   %s"
 "                   "$c3" ()"$c1"I"$c3"()                  %s"
 "              "$c1" \"==.__:-:__.==\"             %s"
@@ -2843,7 +2843,7 @@ asciiText () {
 			fi
 			startline="0"
 			fulloutput=(
-"                                  "$c1"__,gnnnOCCCCCOObaau,_      %s"
+"                                  "$c1"__,gnnnOCCCCCOObaau,_     %s"
 "   "$c2"_._                    "$c1"__,gnnCCCCCCCCOPF\"''              %s"
 "  "$c2"(N\\\\\\\\"$c1"XCbngg,._____.,gnnndCCCCCCCCCCCCF\"___,,,,___          %s"
 "   "$c2"\\\\N\\\\\\\\"$c1"XCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCOOOOPYvv.     %s"
@@ -2872,7 +2872,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("                                          %s"
+			fulloutput=("                                         %s"
 "$c2                         \`\`              %s"
 "$c2                        \`-.              %s"
 "$c1       \`               $c2.---              %s"
@@ -2899,7 +2899,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2             .;ldkO0000Okdl;.                %s"
+			fulloutput=("$c2             .;ldkO0000Okdl;.               %s"
 "$c2         .;d00xl:^''''''^:ok00d;.           %s"
 "$c2       .d00l'                'o00d.         %s"
 "$c2     .d0Kd'"$c1"  Okxol:;,.          "$c2":O0d.       %s"
@@ -2927,7 +2927,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("$c1                   :::::::"
-"$c1             :::::::::::::::::::               %s"
+"$c1             :::::::::::::::::::              %s"
 "$c1          :::::::::::::::::::::::::           %s"
 "$c1        ::::::::"${c2}"cllcccccllllllll"${c1}"::::::        %s"
 "$c1     :::::::::"${c2}"lc               dc"${c1}":::::::      %s"
@@ -2956,7 +2956,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("                                           %s"
+			fulloutput=("                                          %s"
 "$c2              \`.-..........\`              %s"
 "$c2             \`////////::.\`-/.             %s"
 "$c2             -: ....-////////.            %s"
@@ -2986,7 +2986,7 @@ asciiText () {
 			fulloutput=("${c2}          \`++/::-.\`"
 "${c2}         /o+++++++++/::-.\`"
 "${c2}        \`o+++++++++++++++o++/::-.\`"
-"${c2}        /+++++++++++++++++++++++oo++/:-.\`\`         %s"
+"${c2}        /+++++++++++++++++++++++oo++/:-.\`\`        %s"
 "${c2}       .o+ooooooooooooooooooosssssssso++oo++/:-\`  %s"
 "${c2}       ++osoooooooooooosssssssssssssyyo+++++++o:  %s"
 "${c2}      -o+ssoooooooooooosssssssssssssyyo+++++++s\`  %s"
@@ -3016,7 +3016,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c2}             8ZZZZZZ"${c1}"MMMMM               %s"
+			fulloutput=("${c2}             8ZZZZZZ"${c1}"MMMMM              %s"
 "${c2}          .ZZZZZZZZZ"${c1}"MMMMMMM.           %s"
 "${c1}        MM"${c2}"ZZZZZZZZZ"${c1}"MMMMMMM"${c2}"ZZZZ         %s"
 "${c1}      MMMMM"${c2}"ZZZZZZZZ"${c1}"MMMMM"${c2}"ZZZZZZZM       %s"
@@ -3044,7 +3044,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c1}               e         e      %s"
+			fulloutput=("${c1}               e         e     %s"
 "${c1}             eee       ee      %s"
 "${c1}            eeee     eee       %s"
 "${c2}        wwwwwwwww"${c1}"eeeeee        %s"
@@ -3071,7 +3071,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("$c2               .°°.               %s"
+			fulloutput=("$c2               .°°.              %s"
 "$c2                °°   .°°.        %s"
 "$c2                .°°°. °°         %s"
 "$c2                .   .            %s"
@@ -3100,7 +3100,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("                                  %s"
+			fulloutput=("                                 %s"
 "${c1}              eeeeeeeee          %s"
 "${c1}          eeeeeeeeeeeeeee        %s"
 "${c1}       eeeeee"${c2}"//////////"${c1}"eeeee     %s"
@@ -3128,7 +3128,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c1}    wwzapd         dlzazw       %s"
+			fulloutput=("${c1}    wwzapd         dlzazw      %s"
 "${c1}   an"${c2}"#"${c1}"zncmqzepweeirzpas"${c2}"#"${c1}"xz     %s"
 "${c1} apez"${c2}"##"${c1}"qzdkawweemvmzdm"${c2}"##"${c1}"dcmv   %s"
 "${c1}zwepd"${c2}"####"${c1}"qzdweewksza"${c2}"####"${c1}"ezqpa  %s"
@@ -3155,7 +3155,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c1}  eeeeeeeeeeeeeeeeeeeeeeeeeeee    %s"
+			fulloutput=("${c1}  eeeeeeeeeeeeeeeeeeeeeeeeeeee   %s"
 "${c1} eee  eeeeeee          eeeeeeee  %s"
 "${c1}ee   eeeeeeeee      eeeeeeeee ee %s"
 "${c1}e   eeeeeeeee     eeeeeeeee    e %s"
@@ -3182,7 +3182,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-                        fulloutput=("${c1}              ............                %s"
+                        fulloutput=("${c1}              ............               %s"
 "${c1}          .';;;;;.       .,;,.           %s"
 "${c1}       .,;;;;;;;.       ';;;;;;;.        %s"
 "${c1}     .;::::::::'     .,::;;,''''',.      %s"
@@ -3208,7 +3208,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c1}      _ _ _        \"kkkkkkkk.          %s"
+			fulloutput=("${c1}      _ _ _        \"kkkkkkkk.         %s"
 "${c1}    ,kkkkkkkk.,    \'kkkkkkkkk,        %s"
 "${c1}    ,kkkkkkkkkkkk., \'kkkkkkkkk.       %s"
 "${c1}   ,kkkkkkkkkkkkkkkk,\'kkkkkkkk,       %s"
@@ -3239,7 +3239,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("${c1}       \`dwoapfjsod\`"${c2}"           \`dwoapfjsod\`"
-"${c1}    \`xdwdsfasdfjaapz\`"${c2}"       \`dwdsfasdfjaapzx\`     %s"
+"${c1}    \`xdwdsfasdfjaapz\`"${c2}"       \`dwdsfasdfjaapzx\`    %s"
 "${c1}  \`wadladfladlafsozmm\`"${c2}"     \`wadladfladlafsozmm\`  %s"
 "${c1} \`aodowpwafjwodisosoaas\`"${c2}" \`odowpwafjwodisosoaaso\` %s"
 "${c1} \`adowofaowiefawodpmmxs\`"${c2}" \`dowofaowiefawodpmmxso\` %s"
@@ -3272,7 +3272,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; c5="${my_lcolor}"; c6="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("\n${c1}                 -/+:.          %s"
+			fulloutput=("\n${c1}                 -/+:.         %s"
 "${c1}                :++++.         %s"
 "${c1}               /+++/.          %s"
 "${c1}       .:-::- .+/:-\`\`.::-      %s"
@@ -3299,7 +3299,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c3}\n                        ..              %s"
+			fulloutput=("${c3}\n                        ..             %s"
 "${c3}                       dWc             %s"
 "${c3}                     ,X0'              %s"
 "${c1}  ;;;;;;;;;;;;;;;;;;${c3}0Mk${c2}::::::::::::::: %s"
@@ -3329,7 +3329,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c1}        ,.=:!!t3Z3z.,                 %s"
+			fulloutput=("${c1}        ,.=:!!t3Z3z.,                %s"
 "${c1}       :tt:::tt333EE3                %s"
 "${c1}       Et:::ztt33EEEL${c2} @Ee.,      .., %s"
 "${c1}      ;tt:::tt333EE7${c2} ;EEEEEEttttt33# %s"
@@ -3353,7 +3353,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c1}                                  ..,  %s"
+			fulloutput=("${c1}                                  .., %s"
 "${c1}                      ....,,:;+ccllll %s"
 "${c1}        ...,,+:;  cllllllllllllllllll %s"
 "${c1}  ,cclllllllllll  lllllllllllllllllll %s"
@@ -3388,7 +3388,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1}          :dc'                       %s"
+"${c1}          :dc'                      %s"
 "${c1}       'l:;'${c2},${c1}'ck.    .;dc:.         %s"
 "${c1}       co    ${c2}..${c1}k.  .;;   ':o.       %s"
 "${c1}       co    ${c2}..${c1}k. ol      ${c2}.${c1}0.       %s"
@@ -3415,7 +3415,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1}                          ▄▄▄▄▄▄       %s"
+"${c1}                          ▄▄▄▄▄▄      %s"
 "${c1}                       ▄█████████▄    %s"
 "${c1}       ▄▄▄▄▄▄         ████▀   ▀████   %s"
 "${c1}    ▄██████████▄     ████▀   ▄▄ ▀███  %s"
@@ -3442,7 +3442,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1} ██████████████████  ████████     %s"
+"${c1} ██████████████████  ████████    %s"
 "${c1} ██████████████████  ████████    %s"
 "${c1} ██████████████████  ████████    %s"
 "${c1} ██████████████████  ████████    %s"
@@ -3495,7 +3495,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1}                         ###      %s"
+"${c1}                         ###     %s"
 "${c1}     ###             ####        %s"
 "${c1}        ###       ####           %s"
 "${c1}         ##### #####             %s"
@@ -3524,7 +3524,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"                                     %s"
+"                                    %s"
 "${c1}         eeeeeeeeeeeeeeeee          %s"
 "${c1}      eeeeeeeeeeeeeeeeeeeeeee       %s"
 "${c1}    eeeee  eeeeeeeeeeee   eeeee     %s"
@@ -3555,7 +3555,7 @@ asciiText () {
 	                fulloutput=(
 "${c2}       ╲ ▁▂▂▂▁ ╱"
 "${c2}       ▄███████▄ "
-"${c2}      ▄██${c1} ${c2}███${c1} ${c2}██▄        %s"
+"${c2}      ▄██${c1} ${c2}███${c1} ${c2}██▄       %s"
 "${c2}     ▄███████████▄      %s"
 "${c2}  ▄█ ▄▄▄▄▄▄▄▄▄▄▄▄▄ █▄   %s"
 "${c2}  ██ █████████████ ██   %s"
@@ -3577,7 +3577,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("${c1}                  =/;;/-"
-"${c1}                 +:    //                    %s"
+"${c1}                 +:    //                   %s"
 "${c1}                /;      /;                  %s"
 "${c1}               -X        H.                 %s"
 "${c1} .//;;;:;;-,   X=        :+   .-;:=;:;#;.   %s"
@@ -3606,7 +3606,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("${c1}.............."
-"${c1}            ..,;:ccc,.                           %s"
+"${c1}            ..,;:ccc,.                          %s"
 "${c1}          ......''';lxO.                        %s"
 "${c1}.....''''..........,:ld;                        %s"
 "${c1}           .';;;:::;,,.x,                       %s"
@@ -3636,7 +3636,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("${c1}.............."
-"${c1}            ..,;:ccc,.                           %s"
+"${c1}            ..,;:ccc,.                          %s"
 "${c1}          ......''';lxO.                        %s"
 "${c1}.....''''..........,:ld;                        %s"
 "${c1}           .';;;:::;,,.x,                       %s"
@@ -3665,7 +3665,7 @@ asciiText () {
                         fi
                         if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
                         startline="0"
-                        fulloutput=("${c2}            ...........                %s"
+                        fulloutput=("${c2}            ...........               %s"
 "${c2}         ..             ..            %s"
 "${c2}      ..                   ..         %s"
 "${c2}    ..           ${c1}o           ${c2}..       %s"
@@ -3695,7 +3695,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1} ████████ ████████             %s"
+"${c1} ████████ ████████            %s"
 "${c1}   ██████ ██████              %s"
 "${c1}     ████ ████                %s"
 "${c1}        █ █                   %s"
@@ -3724,7 +3724,7 @@ asciiText () {
                         fi
                         if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
                         startline="0"
-                        fulloutput=("${c1}                   ..                    %s"
+                        fulloutput=("${c1}                   ..                   %s"
 "${c1}                 .PLTJ.                 %s"
 "${c1}                <><><><>                %s"
 "       ${c2}KKSSV' 4KKK ${c1}LJ${c4} KKKL.'VSSKK       %s"
@@ -3752,7 +3752,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c1}+++++++++++++++++++++++.        %s"
+			fulloutput=("${c1}+++++++++++++++++++++++.       %s"
 "${c1}ss:-......-+so/:----.os-       %s"
 "${c1}ss        +s/        os-       %s"
 "${c1}ss       :s+         os-       %s"
@@ -3780,7 +3780,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=("${c1}               \`.-/::/-\`\`"
-"${c1}            .-/osssssssso/.               %s"
+"${c1}            .-/osssssssso/.              %s"
 "${c1}           :osyysssssssyyys+-            %s"
 "${c1}        \`.+yyyysssssssssyyyyy+.          %s"
 "${c1}       \`/syyyyyssssssssssyyyyys-\`        %s"
@@ -3808,7 +3808,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c2}                 __.;=====;.__                  %s"
+			fulloutput=("${c2}                 __.;=====;.__                 %s"
 "${c2}             _.=+==++=++=+=+===;.              %s"
 "${c2}              -=+++=+===+=+=+++++=_            %s"
 "${c1}         .     "${c2}"-=:\`\`     \`--==+=++==.          %s"
@@ -3835,7 +3835,7 @@ asciiText () {
       fi
       if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
       startline="0"
-      fulloutput=("${c1}          ::::.    ${c2}':::::     ::::'          %s"
+      fulloutput=("${c1}          ::::.    ${c2}':::::     ::::'         %s"
 "${c1}          ':::::    ${c2}':::::.  ::::'           %s"
 "${c1}            :::::     ${c2}'::::.:::::            %s"
 "${c1}      .......:::::..... ${c2}::::::::             %s"
@@ -3862,7 +3862,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c1}              .+eWWW             %s"
+			fulloutput=("${c1}              .+eWWW            %s"
 "${c1}          .+ee+++eee      e.    %s"
 "${c1}       .ee++eeeeeeee    +e.     %s"
 "${c1}     .e++ee++eeeeeee+eee+e+     %s"
@@ -3891,7 +3891,7 @@ asciiText () {
 				fi
 				if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 				startline="0"
-				fulloutput=("                             %s"
+				fulloutput=("                            %s"
 "                            %s"
 "                            %s"
 "$c2         #####$c0              %s"
@@ -3913,7 +3913,7 @@ asciiText () {
 			elif [[ "$(echo "${kernel}" | grep 'GNU' )" || "$(echo "${kernel}" | grep 'Hurd' )" || "${OSTYPE}" == "gnu" ]]; then
 				startline="0"
 				fulloutput=(
-"    _-\`\`\`\`\`-,           ,- '- .       %s"
+"    _-\`\`\`\`\`-,           ,- '- .      %s"
 "   .'   .- - |          | - -.  \`.   %s"
 "  /.'  /                     \`.   \\  %s"
 " :/   :      _...   ..._      \`\`   : %s"
@@ -3944,7 +3944,7 @@ asciiText () {
 				fi
 				if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 				startline="0"
-				fulloutput=("                                             %s"
+				fulloutput=("                                            %s"
    "                                            %s"
 "$c1 UUU     UUU NNN      NNN IIIII XXX     XXXX%s"
 "$c1 UUU     UUU NNNN     NNN  III    XX   xXX  %s"
@@ -4093,7 +4093,7 @@ infoDisplay () {
 	# Info Variable Setting #
 	#########################
 	if [[ "${distro}" == "Android" ]]; then
-		myhostname=$(echo -e "${labelcolor}${hostname}"); out_array=( "${out_array[@]}" "$myhostname" )
+		myhostname=$(echo -e "${labelcolor} ${hostname}"); out_array=( "${out_array[@]}" "$myhostname" )
 		mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $distro_ver"); out_array=( "${out_array[@]}" "$mydistro" )
 		mydevice=$(echo -e "$labelcolor Device:$textcolor $device"); out_array=( "${out_array[@]}" "$mydevice" )
 		myrom=$(echo -e "$labelcolor ROM:$textcolor $rom"); out_array=( "${out_array[@]}" "$myrom" )
@@ -4104,7 +4104,7 @@ infoDisplay () {
 		mygpu=$(echo -e "$labelcolor GPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mygpu" )
 		mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" )
 	else
-		if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor}${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
+		if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor} ${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [ "$distro" == "Mac OS X" ]; then
 				sysArch=`str1=$(ioreg -l -p IODeviceTree | grep firmware-abi);echo ${str1: -4: 2}bit`
