@@ -2395,30 +2395,27 @@ asciiText () {
 		
 		"Ubuntu GNOME")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'cyan') # White
-				c2=$(getColor 'white') # Light Red
+				c1=$(getColor 'light cyan') # Light Cyan
+				c2=$(getColor 'white') # White
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 				startline="0"
-				fulloutput=("${c1}MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM %s"
-					    "${c1}MMMMMMMMMMMMMMMM${c2}o${c1}MMMMMMMMMMMMMMMMMMMMMMM%s"
-					    "${c1}MMMMMMMMMMMM${c2}ooooooo${c1}MMMMMMMMMMMMMMMMMMMMM%s"
-					    "${c1}MMMMMMMMMM${c2}ooooooooooo${c1}MMMMMMMMMMMMMMMMMMM%s"
-					    "${c1}MMMMMMMM${c2}oooo${c1}MMMMMM${c2}ooooo${c1}MMMMMMMMMMMMMMMMM%s"
-					    "${c1}MMMMMMM${c2}oooo${c1}MMMMMMMMM${c2}ooooo${c1}MMMMMMMMMMMMMMM%s"
-					    "${c1}MMMMMM${c2}oooo${c1}MMMM${c2}oooo${c1}MMMM${c2}ooooo${c1}MMMMMMMMMMMMM%s"
-					    "${c1}MMMMMM${c2}oooo${c1}MMMM${c2}ooooo${c1}MMMMM${c2}ooooo${c1}MMMMMMMMMMM%s"
-					    "${c1}MMMMMMM${c2}oooo${c1}MMMMMM${c2}ooooo${c1}MMMM${c2}ooooo${c1}MMMMMMMMM%s"
-					    "${c1}MMMMMMMM${c2}ooooo${c1}MMMMM${c2}ooooo${c1}MMMMM${c2}ooooo${c1}MMMMMMM%s"
-					    "${c1}MMMMMMMMMM${c2}ooooo${c1}MMMMMM${c2}ooooo${c1}MMMM${c2}ooooo${c1}MMMMM%s"
-					    "${c1}MMMM${c2}oo${c1}MMMMMM${c2}ooooo${c1}MMMMM${c2}oooooo${c1}MMMM${c2}oooo${c1}MMMM%s"
-					    "${c1}MMMM${c2}ooooo${c1}MMMMM${c2}ooooo${c1}MMMMMM${c2}ooooo${c1}MMMMMMMMMM%s"
-					    "${c1}MMMMMM${c2}oooo${c1}MMMMMM${c2}ooooo${c1}MMMMM${c2}oooo${c1}MMMMMMMMMM%s"
-					    "${c1}MMMMMMMM${c2}ooooo${c1}MMMMM${c2}oo${c1}MMMMMM${c2}ooo${c1}MMMMMMMMMMM%s"
-					    "${c1}MMMMMMMMMM${c2}ooooo${c1}MMMMMMMMM${c2}oooo${c1}MMMMMMMMMMMM%s"
-					    "${c1}MMMMMMMMMMMM${c2}oooooooooooooo${c1}MMMMMMMMMMMMMM%s"
-					    "${c1}MMMMMMMMMMMMMM${c2}oooooooooo${c1}MMMMMMMMMMMMMMMM%s"
-					    "${c1}MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM%o")
+				fulloutput=("$c2              ./o.                      %s"
+"$c2            .oooooooo                  %s"
+"$c2          .oooo\`\`\`soooo                %s"
+"$c2        .oooo\`     \`soooo              %s"
+"$c2       .ooo\`   $c1.o.$c2   \`\oooo.           %s"
+"$c2       :ooo   $c1:oooo.$c2   \`\oooo.         %s"
+"$c2        sooo    $c1\`ooooo$c2    \ooooo       %s"
+"$c2         \oooo    $c1\`soooo$c2    \`ooooo     %s"
+"$c2          \`soooo    $c1\`\oooo$c2    \`soooo   %s"
+"$c1    ./oo    $c2\`\oooo    $c1\`\oooo.$c2   \`\ooo  %s"
+"$c1    \`\oooo.   $c2\`\oooo.   $c1\`\oooo.$c2   \`\`   %s"
+"$c1      \`\oooo.    $c2\oooo     $c1\ooo\`$c2       %s"
+"$c1         \`ooooo    $c2\`\`    $c1.oooo$c2         %s"
+"$c1           \`soooo.     .oooo\`          %s"
+"$c1             \`\ooooooooooo\`            "
+"$c1                \`\`\ooo\`\`               ")
 		;;
 
 		"Debian")
@@ -4111,8 +4108,8 @@ infoDisplay () {
 		fi
 	fi
 	case ${myascii} in
-		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS") labelcolor=$(getColor 'light blue');;
-		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"Ubuntu GNOME") labelcolor=$(getColor 'light cyan');;
+		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS"|"Ubuntu GNOME") labelcolor=$(getColor 'light blue');;
+		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
