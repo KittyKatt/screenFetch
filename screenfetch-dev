@@ -189,7 +189,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, Solus, TinyCore, Trisquel, Ubuntu, Ubuntu GNOME, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X and Windows+Cygwin."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -2248,6 +2248,11 @@ asciiText () {
 	elif [[ "$art" ]]; then myascii="custom"
 	elif [[ "$fake_distro" ]]; then myascii="${fake_distro}"
 	else myascii="${distro}"; fi
+	if [[ ${myascii} == "Ubuntu" ]]; then
+		if [[ ${DE} != "Gnome" ]]; then
+			myascii="Ubuntu GNOME"
+		fi
+	fi
 	case ${myascii} in
 		"custom") source "$art" ;;
 		"Arch Linux - Old")
@@ -2386,6 +2391,34 @@ asciiText () {
 "$c2               /osyyyyyyo$c3++ooo+++/    %s"
 "$c2                   \`\`\`\`\` $c3+oo+++o\:    %s"
 "$c3                          \`oo++.      %s")
+		;;
+		
+		"Ubuntu GNOME")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light cyan') # White
+				c2=$(getColor 'cyan') # Light Red
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+				startline="0"
+				fulloutput=("$c1                +                       %s"
+					    "$c1            +-sss-o                     %s"
+					    "$c1          /-ssssssso\                   %s"
+					    "$c1        /+-s      +ss-o                 %s"
+					    "$c1       -os+         -so-.               %s"
+					    "$c1      /::\    -os-    .so\+             %s"
+					    "$c1      \--\    \oss\     +sso\           %s"
+					    "$c1       +os-      +-:s+    ::oss         %s"
+					    "$c1        +:os+     '-os'     \:os\       %s"
+					    "$c1          '\so+      +os+:    +os++     %s"
+					    "$c1    /\      -:-:+     +-:s+s    \os/    %s"
+					    "$c1    \oss+     o+:s+      -/os+          %s"
+					    "$c1      +os:      +:-:s     os--          %s"
+					    "$c1        :-ss:     \/      -:-           %s"
+					    "$c1          -+oo+         -+:+            %s"
+					    "$c1            -::ssssssss::-              %s"
+					    "$c1              \-.ssss.-/                %s"
+					    "$c1                                        %s"
+					    "$c1                                        %s")
 		;;
 
 		"Debian")
@@ -4072,9 +4105,14 @@ infoDisplay () {
 	#TODO: Centralize colors and use them across the board so we only change them one place.
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
+	if [[ ${myascii} == "Ubuntu" ]]; then
+		if [[ ${DE} != "Gnome" ]]; then
+			myascii="Ubuntu GNOME"
+		fi
+	fi
 	case ${myascii} in
 		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS") labelcolor=$(getColor 'light blue');;
-		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
+		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"Ubuntu GNOME") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
