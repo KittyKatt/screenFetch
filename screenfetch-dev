@@ -2396,29 +2396,29 @@ asciiText () {
 		"Ubuntu GNOME")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light cyan') # White
-				c2=$(getColor 'cyan') # Light Red
+				c2=$(getColor 'white') # Light Red
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 				startline="0"
-				fulloutput=("$c1                +                       %s"
-					    "$c1            +-sss-o                     %s"
-					    "$c1          /-ssssssso\                   %s"
-					    "$c1        /+-s      +ss-o                 %s"
-					    "$c1       -os+         -so-.               %s"
-					    "$c1      /::\    -os-    .so\+             %s"
-					    "$c1      \--\    \oss\     +sso\           %s"
-					    "$c1       +os-      +-:s+    ::oss         %s"
-					    "$c1        +:os+     '-os'     \:os\       %s"
-					    "$c1          '\so+      +os+:    +os++     %s"
-					    "$c1    /\      -:-:+     +-:s+s    \os/    %s"
-					    "$c1    \oss+     o+:s+      -/os+          %s"
-					    "$c1      +os:      +:-:s     os--          %s"
-					    "$c1        :-ss:     \/      -:-           %s"
-					    "$c1          -+oo+         -+:+            %s"
-					    "$c1            -::ssssssss::-              %s"
-					    "$c1              \-.ssss.-/                %s"
-					    "$c1                                        %s"
-					    "$c1                                        %s")
+				fulloutput=("${c1}MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM %s"
+					    "${c1}MMMMMMMMMMMMMMMM${c2}+${c1}MMMMMMMMMMMMMMMMMMMMMMM%s"
+					    "${c1}MMMMMMMMMMMM${c2}+-sss-o${c1}MMMMMMMMMMMMMMMMMMMMM%s"
+					    "${c1}MMMMMMMMMM${c2}/-ssssssso-${c1}MMMMMMMMMMMMMMMMMMM%s"
+					    "${c1}MMMMMMMM${c2}/+-s${c1}MMMMMM${c2}+ss-o${c1}MMMMMMMMMMMMMMMMM%s"
+					    "${c1}MMMMMMM${c2}-os+${c1}MMMMMMMMM${c2}-so-.${c1}MMMMMMMMMMMMMMM%s"
+					    "${c1}MMMMMM${c2}/::-${c1}MMMM${c2}-os-${c1}MMMM${c2}.so\+${c1}MMMMMMMMMMMMM%s"
+					    "${c1}MMMMMM${c2}\---${c1}MMMM${c2}\oss-${c1}MMMMM${c2}+sso-${c1}MMMMMMMMMMM%s"
+					    "${c1}MMMMMMM${c2}+os-${c1}MMMMMM${c2}+-:s+${c1}MMMM${c2}::oss${c1}MMMMMMMMM%s"
+					    "${c1}MMMMMMMM${c2}+:os+${c1}MMMMM${c2}'-os'${c1}MMMMM${c2}\:os-${c1}MMMMMMM%s"
+					    "${c1}MMMMMMMMMM${c2}'\so+${c1}MMMMMM${c2}+os+:${c1}MMMM${c2}+os++${c1}MMMMM%s"
+					    "${c1}MMMM${c2}/-${c1}MMMMMM${c2}-:-:+${c1}MMMMM${c2}+-:s+s${c1}MMMM${c2}\os/${c1}MMMM%s"
+					    "${c1}MMMM${c2}\oss+${c1}MMMMM${c2}o+:s+${c1}MMMMMM${c2}-/os+${c1}MMMMMMMMMM%s"
+					    "${c1}MMMMMM${c2}+os:${c1}MMMMMM${c2}+:-:s${c1}MMMMM${c2}os--${c1}MMMMMMMMMM%s"
+					    "${c1}MMMMMMMM${c2}:-ss:${c1}MMMMM${c2}\/${c1}MMMMMM${c2}-:-${c1}MMMMMMMMMMM%s"
+					    "${c1}MMMMMMMMMM${c2}-+oo+${c1}MMMMMMMMM${c2}-+:+${c1}MMMMMMMMMMMM%s"
+					    "${c1}MMMMMMMMMMMM${c2}-::ssssssss::-${c1}MMMMMMMMMMMMMM%s"
+					    "${c1}MMMMMMMMMMMMMM${c2}\-.ssss.-/${c1}MMMMMMMMMMMMMMMM%s"
+					    "${c1}MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM%s")
 		;;
 
 		"Debian")
