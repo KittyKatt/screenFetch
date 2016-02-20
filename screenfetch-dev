@@ -1137,6 +1137,9 @@ detectmem () {
 		wiredmem=$(vm_stat | grep wired | awk '{ print $4 }' | sed 's/\.//')
 		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
 		compressedmem=$(vm_stat | grep occupied | awk '{ print $5 }' | sed 's/\.//')
+		if [[ ! -z "$compressedmem | tr -d" ]]; then
+			compressedmem=0
+		fi
 		usedmem=$(((${wiredmem} + ${activemem} + ${compressedmem}) * 4 / $human))
 	elif [ "$distro" == "Cygwin" ]; then
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
@@ -1250,7 +1253,7 @@ detectshell () {
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
 				shell_type=$(ps -p $PPID -o cmd --no-heading)
 			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
-				shell_type=$(ps -p $PPID -o args | tail -1)
+				shell_type=$(ps -p $PPID -o command | tail -1)
 			else
 				shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
 			fi
