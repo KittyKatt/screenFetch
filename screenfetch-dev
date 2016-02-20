@@ -845,8 +845,8 @@ detecthost () {
 
 # Kernel Version Detection - Begin
 detectkernel () {
-	kernel=( $(uname -srm) )
-	kernel="${kernel[${#kernel[@]}-1]} ${kernel[@]:0:${#kernel[@]}-1}"
+	kernel=$(uname -m && uname -sr)
+	kernel=${kernel//$'\n'/ }
 	verboseOut "Finding kernel version...found as '${kernel}'"
 }
 # Kernel Version Detection - End
