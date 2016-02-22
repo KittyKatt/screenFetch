@@ -1888,7 +1888,20 @@ detectgtk () {
 		gtkIcons="Not Applicable"
 		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
 			if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
-				gtkFont=$(str1=$(defaults read com.googlecode.iTerm2|grep -m 1 "Normal Font");echo ${str1:29:${#str1}-29-2})
+				iterm2_theme_uuid=$(defaults read com.googlecode.iTerm2 "Default Bookmark Guid")
+
+				OLD_IFS=$IFS
+				IFS=$'\n'
+				iterm2_theme_info=($(defaults read com.googlecode.iTerm2 "New Bookmarks" | grep -e Guid -e "Normal Font"))
+				IFS=$OLD_IFS
+
+				for i in $(seq 0 $((${#iterm2_theme_info[*]}/2-1))); do
+					found_uuid=$(str1=${iterm2_theme_info[$i*2]};echo ${str1:16:${#str1}-16-2})
+					if [[ $found_uuid == $iterm2_theme_uuid ]]; then
+						gtkFont=$(str2=${iterm2_theme_info[$i*2+1]};echo ${str2:25:${#str2}-25-2})
+						break
+					fi
+				done
 			fi
 		fi
 	else
