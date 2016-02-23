@@ -991,7 +991,7 @@ detectcpu () {
 			cpu="Unknown"
 		fi
 	elif [[ "$distro" == "FreeBSD" || "$distro" == "DragonflyBSD" ]]; then
-		cpu=$(sysctl -n hw.model)
+		cpu=$(dmesg | grep CPU: | head -n 1 | sed -r "s/CPU: //" | sed -e 's/([^()]*)//g')
 	elif [ "$distro" == "OpenBSD" ]; then
 		cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	elif [ "$distro" == "Haiku" ]; then
