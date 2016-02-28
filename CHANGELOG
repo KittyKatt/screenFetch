@@ -2,7 +2,7 @@
    screenFetch
     changelog
 **** **** **** ****
-        -Added Support for Netrunner Rolling
+        - Added Support for Netrunner Rolling
 v.3.6.6
 	- Fixing package detection in apt/dpkg distros
 	- Fix xmonad detection
