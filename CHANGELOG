@@ -2,6 +2,7 @@
    screenFetch
     changelog
 **** **** **** ****
+v.3.7.1
         - Added Support for Netrunner Rolling
 v.3.6.6
 	- Fixing package detection in apt/dpkg distros
