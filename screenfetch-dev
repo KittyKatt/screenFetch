@@ -1056,11 +1056,16 @@ detectcpu () {
 # GPU Detection - Begin (EXPERIMENTAL!)
 detectgpu () {
 	if [[ "${distro}" == "FreeBSD" ]]; then
-		gpu_info=$(pciconf -lv 2> /dev/null | grep -B 4 VGA)
-		gpu_info=$(grep -E 'device.*=.*' <<< "${gpu_info}")
-		gpu="${gpu_info##*device*= }"
-		gpu="${gpu//\'}"
-		# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
+        nvisettexist=$(which nvidia-settings)
+        if [ -x "$nvisettexist" ]; then
+            gpu="$(nvidia-settings -t -q gpus | grep \( | sed 's/.*(\(.*\))/\1/')"
+        else
+		    gpu_info=$(pciconf -lv 2> /dev/null | grep -B 4 VGA)
+		    gpu_info=$(grep -E 'device.*=.*' <<< "${gpu_info}")
+		    gpu="${gpu_info##*device*= }"
+		    gpu="${gpu//\'}"
+		    # gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
+        fi
 	elif [[ "${distro}" != "Mac OS X" && "${distro}" != "Haiku" ]]; then
 		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
 			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
