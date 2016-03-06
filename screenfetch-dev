@@ -786,7 +786,7 @@ detectdistro () {
 		mandriva) distro="Mandriva" ;;
 		mandrake) distro="Mandrake" ;;
 		mer) distro="Mer" ;;
-		mint) distro="Mint" ;;
+		mint|linux*mint) distro="Mint" ;;
 		nix|nix*os) distro="NixOS" ;;
 		kali*linux) distro="Kali Linux" ;;
 		lmde) distro="LMDE" ;;
