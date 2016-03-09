@@ -2110,7 +2110,15 @@ detectdroid () {
 #######################
 
 takeShot () {
-	if [[ -z $screenCommand ]]; then
+	take_screenshot="yes"
+ 	if [[ -z ${screenCommand} ]]; then
+		screenCommand="scrot -cd3"
+		if ! type -p scrot >/dev/null 2>&1; then
+			errorOut "Cannot take screenshot! \`scrot' not in \$PATH"
+			take_screenshot="no"
+		fi
+	fi
+	if [[ "${take_screenshot}" == "yes" ]]; then
 		shotfiles[1]=${shotfile}
 		if [ "$distro" == "Mac OS X" ]; then
 			displays="$(system_profiler SPDisplaysDataType | grep 'Resolution:' | wc -l | tr -d ' ')"
@@ -2120,11 +2128,7 @@ takeShot () {
 			done
 			printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
 		else
-			if type -p scrot >/dev/null 2>&1; then
-				scrot -cd3 "${shotfile}"
-			else
-				errorOut "Cannot take screenshot! \`scrot' not in \$PATH"
-			fi
+			${screenCommand} "${shotfile}"
 		fi
 		if [ -f "${shotfile}" ]; then
 			verboseOut "Screenshot saved at '${shotfiles[@]}'"
@@ -2186,12 +2190,8 @@ takeShot () {
 				fi
 			fi
 		else
-			if type -p scrot >/dev/null 2>&1; then
-				errorOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
-			fi
+			errorOut "ERROR: Problem saving screenshot to ${shotfiles[@]}"
 		fi
-	else
-		$screenCommand
 	fi
 }
 
