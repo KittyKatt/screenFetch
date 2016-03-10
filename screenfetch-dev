@@ -471,6 +471,10 @@ detectdistro () {
 				"NixOS")
 					distro="NixOS"
 					;;
+				"Ol"|"ol"|"Oracle Linux")
+					distro="Oracle Linux"
+					[ -f /etc/oracle-release ] && distro_release="$(sed 's/Oracle Linux //' /etc/oracle-release)"
+					;;
 				"LinuxMint")
 					distro="Mint"
 					if [[ "${distro_codename}" == "debian" ]]; then
@@ -587,6 +591,10 @@ detectdistro () {
 					[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
 					[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
 					[[ "${distro}" == "elementary" ]] && distro="elementary OS"
+					[[ "${distro}" == "Ol" || "${distro}" == "ol" ]] && distro="Oracle Linux"
+					if [[ "${distro}" == "Oracle Linux" ]] && [ -f /etc/oracle-release ]; then
+						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
+					fi
 				fi
 			fi
 
@@ -663,6 +671,9 @@ detectdistro () {
 							distro="Mandriva"
 						fi
 					elif [ -f /etc/NIXOS ]; then distro="NixOS"
+					elif [ -f /etc/oracle-release ]; then
+						distro="Oracle Linux"
+						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 					elif [ -f /etc/SuSE-release ]; then distro="openSUSE"
 					elif [ -f /etc/pclinuxos-release ]; then distro="PCLinuxOS"
 					elif [ -f /etc/redhat-release ]; then
@@ -738,6 +749,8 @@ detectdistro () {
 					if grep -q "Scientific Linux" /etc/system-release; then
 						distro="Scientific Linux"
 					fi
+				elif grep -q "Oracle Linux" /etc/system-release; then
+						distro="Oracle Linux"
 				elif [[ -f /etc/lsb-release ]]; then
 					if grep -q "CHROMEOS_RELEASE_NAME" /etc/lsb-release; then
 						distro="$(awk -F'=' '/^CHROMEOS_RELEASE_NAME=/ {print $2}' /etc/lsb-release)"
@@ -788,6 +801,7 @@ detectdistro () {
 		mer) distro="Mer" ;;
 		mint) distro="Mint" ;;
 		nix|nix*os) distro="NixOS" ;;
+		ol|oracle*linux) distro="Oracle Linux" ;;
 		kali*linux) distro="Kali Linux" ;;
 		lmde) distro="LMDE" ;;
 		lunar|lunar*linux) distro="Lunar Linux";;
@@ -904,7 +918,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
-		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'Red Hat Enterprise Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'Oracle Linux'|'SailfishOS'|'PCLinuxOS'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
@@ -4076,7 +4090,7 @@ infoDisplay () {
 		"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"NixOS"|"SailfishOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
-		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
+		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"oracle Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
