@@ -56,15 +56,15 @@ display_logo="no"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm )
-denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin icewm pekwm fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm)
+denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder deepin)
 
 # Screenshot Settings
 # This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
 screenshot=
 # This setting lets the script know if you want to upload the screenshot to a filehost. 1=Yes 0=No
 upload=
-# This setting lest the script know where you would like to upload the file to. Valid hosts are: teknik, mediacrush, pomf, imgur, hmp, and a configurable local.
+# This setting lets the script know where you would like to upload the file to. Valid hosts are: teknik, mediacrush, pomf, imgur, hmp, and a configurable local.
 uploadLoc=
 # You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
@@ -458,6 +458,16 @@ detectdistro () {
 				"ManjaroLinux")
 					distro="Manjaro"
 					;;
+				"Mer")
+					distro="Mer"
+					if [[ -f /etc/os-release ]]; then
+						if grep -q 'SailfishOS' /etc/os-release; then
+							distro="SailfishOS"
+							distro_codename="$(grep 'VERSION=' /etc/os-release | cut -d '(' -f2 | cut -d ')' -f1)"
+							distro_release="$(awk -F'=' '/^VERSION=/ {print $2}' /etc/os-release)"
+						fi
+					fi
+					;;
 				"NixOS")
 					distro="NixOS"
 					;;
@@ -495,6 +505,13 @@ detectdistro () {
 					;;
 				"Sabayon")
 					distro="Sabayon"
+					;;
+				"SailfishOS")
+					distro="SailfishOS"
+					if [[ -f /etc/os-release ]]; then
+						distro_codename="$(grep 'VERSION=' /etc/os-release | cut -d '(' -f2 | cut -d ')' -f1)"
+						distro_release="$(awk -F'=' '/^VERSION=/ {print $2}' /etc/os-release)"
+					fi
 					;;
 				"Solus")
 					distro="Solus"
@@ -731,9 +748,9 @@ detectdistro () {
 				if [[ -f /etc/system-release ]]; then
 					if grep -q "Scientific Linux" /etc/system-release; then
 						distro="Scientific Linux"
-					elif grep -q "Oracle Linux" /etc/system-release; then
-						distro="Oracle Linux"
 					fi
+				elif grep -q "Oracle Linux" /etc/system-release; then
+						distro="Oracle Linux"
 				elif [[ -f /etc/lsb-release ]]; then
 					if grep -q "CHROMEOS_RELEASE_NAME" /etc/lsb-release; then
 						distro="$(awk -F'=' '/^CHROMEOS_RELEASE_NAME=/ {print $2}' /etc/lsb-release)"
@@ -781,8 +798,10 @@ detectdistro () {
 		mageia) distro="Mageia" ;;
 		mandriva) distro="Mandriva" ;;
 		mandrake) distro="Mandrake" ;;
+		mer) distro="Mer" ;;
 		mint) distro="Mint" ;;
 		nix|nix*os) distro="NixOS" ;;
+		ol|oracle*linux) distro="Oracle Linux" ;;
 		kali*linux) distro="Kali Linux" ;;
 		lmde) distro="LMDE" ;;
 		lunar|lunar*linux) distro="Lunar Linux";;
@@ -797,7 +816,6 @@ detectdistro () {
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		netbsd) distro="NetBSD" ;;
 		red*hat*) distro="Red Hat Enterprise Linux" ;;
-		ol|oracle*linux) distro="Oracle Linux" ;;
 		crunchbang) distro="CrunchBang" ;;
 		gentoo) distro="Gentoo" ;;
 		funtoo) distro="Funtoo" ;;
@@ -806,6 +824,7 @@ detectdistro () {
 		frugalware) distro="Frugalware" ;;
 		pclinuxos|pclos) distro="PCLinuxOS" ;;
 		peppermint) distro="Peppermint" ;;
+		sailfish|sailfish*os) distro="SailfishOS" ;;
 		solus) distro="Solus" ;;
 		trisquel) distro="Trisquel";;
 		parabolagnu|parabolagnu/linux-libre|'parabola gnu/linux-libre'|parabola) distro="Parabola GNU/Linux-libre" ;;
@@ -920,6 +939,10 @@ detectpkgs () {
 				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
 				pkgs=$((${pkgs} + ${brew_pkgs}))
 			fi
+			if type -p pkgin >/dev/null 2>&1; then
+				pkgsrc_pkgs=$(pkgin list 2>/dev/null | wc -l)
+				pkgs=$((${pkgs} + ${pkgsrc_pkgs}))
+			fi
 		;;
 		'OpenBSD')
 			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
@@ -931,6 +954,9 @@ detectpkgs () {
 		'FreeBSD')
 			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
 				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | awk '{sub(" ", "");print $1}'; fi)
+		;;
+		'NetBSD')
+			pkgs=$(pkg_info | wc -l | tr -d ' ')
 		;;
 		'Cygwin')
 			cygfix=2
@@ -994,7 +1020,7 @@ detectcpu () {
 			fi
 		fi
 	else
-		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | sed 's/ @/\n/' | head -1)
+		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | awk 'BEGIN{FS=" @"; OFS="\n"} { print $1; exit }')
 		cpun=$(grep "physical id" /proc/cpuinfo | sort | uniq | wc -l)
 		if [ -z "$cpu" ]; then
 			cpu=$(awk 'BEGIN{FS=":"} /Hardware/ { print $2; exit }' /proc/cpuinfo)
@@ -1237,7 +1263,7 @@ detectshell () {
 		else
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
 				shell_type=$(ps -p $PPID -o cmd --no-heading)
-			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" ]]; then
+			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
 				shell_type=$(ps -p $PPID -o args | tail -1)
 			else
 				shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
@@ -1377,7 +1403,7 @@ detectde () {
 						KDE)
 							DE=KDE;
 							;;
-						LUMINA)
+						LUMINA|Lumina)
 							DE=Lumina;
 							;;
 						LXDE)
@@ -1417,6 +1443,9 @@ detectde () {
 					gnome|gnome-fallback|gnome-fallback-compiz )
 						DE=Gnome
 						;;
+					deepin)
+						DE=Deepin
+						;;
 				esac
 
 				if [ x"$DE" = x"" ]; then
@@ -1425,7 +1454,7 @@ detectde () {
 						gnome)
 							DE=Gnome;
 							;;
-						LUMINA)
+						LUMINA|Lumina)
 							DE=Lumina;
 							;;
 						LXDE|Lubuntu)
@@ -1534,6 +1563,11 @@ detectde () {
 						DEver=$(unity --version)
 						DE="${DE} ${DEver//* }"
 					fi
+				elif [[ ${DE} == "Deepin" ]]; then
+					if [[ -f /etc/deepin-version ]]; then
+						DEver="$(awk -F '=' '/Version/ {print $2}' /etc/deepin-version)"
+						DE="${DE} ${DEver//* }"
+					fi
 				fi
 			fi
 
@@ -1587,6 +1621,7 @@ detectwm () {
 						'chromeos-wm') WM="chromeos-wm";;
 						'cinnamon') WM="Muffin";;
 						'compiz') WM="Compiz";;
+						'deepin-wm') WM="deepin-wm";;
 						'dminiwm') WM="dminiwm";;
 						'dwm') WM="dwm";;
 						'dtwm') WM="dtwm";;
@@ -1661,6 +1696,7 @@ detectwm () {
 					'cinnamon') WM="Cinnamon";;
 					'chromeos-wm') WM="chromeos-wm";;
 					'compiz') WM="Compiz";;
+					'deepin-wm') WM="Deepin WM";;
 					'dminiwm') WM="dminiwm";;
 					'dwm') WM="dwm";;
 					'e16') WM="E16";;
@@ -1741,6 +1777,12 @@ detectwmtheme () {
 				Win_theme=${Win_theme//"'"}
 			elif type -p gconftool-2 >/dev/null 2>&1; then
 				Win_theme=$(gconftool-2 -g /apps/metacity/general/theme)
+			fi
+		;;
+		'Deepin WM')
+			if type -p gsettings >/dev/null 2>&1; then
+				Win_theme="$(gsettings get com.deepin.wrap.gnome.desktop.wm.preferences theme)"
+				Win_theme=${Win_theme//"'"}
 			fi
 		;;
 		'dminiwm') Win_theme="Not Applicable";;
@@ -2810,7 +2852,7 @@ asciiText () {
 
 		"NetBSD")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'light red') # Light Red
+				c1=$(getColor 'orange') # Orange
 				c2=$(getColor 'white') # White
 			fi
 			startline="0"
@@ -3800,33 +3842,58 @@ asciiText () {
 "${c1}                -~\"|{*l}*|\"\"~                  %s")
 		;;
 
-		"NixOS")
+    "NixOS")
+      if [[ "$no_color" != "1" ]]; then
+        c1=$(getColor 'blue')
+        c2=$(getColor 'light blue')
+      fi
+      if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+      startline="0"
+      fulloutput=("${c1}          ::::.    ${c2}':::::     ::::'          %s"
+"${c1}          ':::::    ${c2}':::::.  ::::'           %s"
+"${c1}            :::::     ${c2}'::::.:::::            %s"
+"${c1}      .......:::::..... ${c2}::::::::             %s"
+"${c1}     ::::::::::::::::::. ${c2}::::::    ${c1}::::.     %s"
+"${c1}    ::::::::::::::::::::: ${c2}:::::.  ${c1}.::::'     %s"
+"${c2}           .....           ::::' ${c1}:::::'      %s"
+"${c2}          :::::            '::' ${c1}:::::'       %s"
+"${c2} ........:::::               ' ${c1}:::::::::::.  %s"
+"${c2}:::::::::::::                 ${c1}:::::::::::::  %s"
+"${c2} ::::::::::: ${c1}..              ${c1}:::::           %s"
+"${c2}     .::::: ${c1}.:::            ${c1}:::::            %s"
+"${c2}    .:::::  ${c1}:::::          ${c1}'''''    ${c2}.....    %s"
+"${c2}    :::::   ${c1}':::::.  ${c2}......:::::::::::::'    %s"
+"${c2}     :::     ${c1}::::::. ${c2}':::::::::::::::::'     %s"
+"${c1}            .:::::::: ${c2}'::::::::::            %s"
+"${c1}           .::::''::::.     ${c2}'::::.           %s"
+"${c1}          .::::'   ::::.     ${c2}'::::.          %s"
+"${c1}         .::::      ::::      ${c2}'::::.         %s")
+    ;;
+
+		"SailfishOS")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'purple')
-				c2=$(getColor 'light blue')
+				c1=$(getColor 'blue') # Blue
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
-			fulloutput=("${c2}                  .:.                   %s"
-"${c2}                  :::                  %s"
-"${c2}          ...     :::      ${c1}.:.         %s"
-"${c2}          ':::::. :::      ${c1}:::         %s"
-"${c1}  ...         ${c2}'::::::      ${c1}:::     ..  %s"
-"${c1}   ::::.       ..${c2}':::::.   ${c1}:::  .::::' %s"
-"${c1}     ''::::..::::''  ${c2}'':::.${c1}::::::''    %s"
-"${c1}       .::::${c2}.${c1}''          ${c2}':${c1}:::'        %s"
-"${c1}    .:::::${c2}:::              ${c1}:::         %s"
-"${c1}  .:::'   ${c2}:::              ${c1}:::  ${c2}..:::  %s"
-"${c1}  ''      ${c2}:::              ${c1}:${c2}.:::::''   %s"
-"${c2}         .:::${c1}:.          ${c2}.:::::'       %s"
-"${c2}     ..::::::${c1}'::::.  ${c2}.:::::''::::..    %s"
-"${c2}   ::::'  :::   ${c1}'::::${c2}':'        ${c2}'::::. %s"
-"${c2}  '''     :::     ${c1}:::::::.         ${c2}''' %s"
-"${c2}          :::     ${c1}:::  ':::::.         %s"
-"${c2}          :::     ${c1}:::      '''         %s"
-"${c2}           '      ${c1}:::                  %s"
-"${c1}                  :::                  %s"
-"${c1}                   '                   %s")
+			fulloutput=("${c1}              .+eWWW             %s"
+"${c1}          .+ee+++eee      e.    %s"
+"${c1}       .ee++eeeeeeee    +e.     %s"
+"${c1}     .e++ee++eeeeeee+eee+e+     %s"
+"${c1}    ee.e+.ee+eee++eeeeee+       %s"
+"${c1}   W.+e.e+.e++ee+eee            %s"
+"${c1}  W.+e.W.ee.W++ee'              %s"
+"${c1} +e.W W.e+.W.W+                 %s"
+"${c1} W.e.+e.W W W.                  %s"
+"${c1} e e e +e.W.W                   %s"
+"${c1}       .W W W.                  %s"
+"${c1}        W.+e.W.                 %s"
+"${c1}         W++e.ee+.              %s"
+"${c1}          ++ +ee++eeeee++.      %s"
+"${c1}          '     '+++e   'ee.    %s"
+"${c1}                           ee   %s"
+"${c1}                            ee  %s"
+"${c1}                             e  %s")
 		;;
 
 		*)
@@ -4060,9 +4127,11 @@ infoDisplay () {
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
 			elif [[ "$distro" == "Cygwin" ]]; then
-				distro=$(wmic os get name | head -2 | tail -1)
-				distro=$(expr match "$distro" '\(Microsoft Windows [A-Za-z0-9.]\+\)')
-				sysArch=$(wmic os get OSArchitecture | head -2 | tail -1 | tr -d '\r ')
+				distro="$(wmic os get caption | sed 's/\r//g; s/[ \t]*$//g; 2!d')"
+				if [[ "$(wmic os get version | grep -o '^10\.')" == "10." ]]; then
+					distro="$distro (v$(wmic os get version | grep '^10\.' | tr -d ' '))"
+				fi
+				sysArch=$(wmic os get OSArchitecture | sed 's/\r//g; s/[ \t]*$//g; 2!d')
 				mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch")
 			else
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more")
