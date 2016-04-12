@@ -6,6 +6,7 @@ then hit: "sudo pacman -S screenfetch-netrunner" without the quotes.
 It takes around 10 minutes, after update, to be uploaded. Thanks.
 
 If you like my work, hit the DONATE button and send me a beer. Thank You!
+
 https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AVFTJ4N9M9AE2
 
 # screenFetch - The Bash Screenshot Information Tool
