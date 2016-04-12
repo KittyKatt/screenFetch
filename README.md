@@ -1,3 +1,14 @@
+PS: Arch Linux, Netrunner, Manjaro and other Arch-based distros can use the repo: 
+http://download.tuxfamily.org/gericom/README.html
+
+then hit: "sudo pacman -S screenfetch-netrunner" without the quotes.
+
+It takes around 10 minutes, after update, to be uploaded. Thanks.
+
+If you like my work, hit the DONATE button and send me a beer. Thank You!
+
+https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AVFTJ4N9M9AE2
+
 # screenFetch - The Bash Screenshot Information Tool
 
 ## What is screenFetch?
@@ -12,6 +23,10 @@ screenshot upon displaying info, and even customizing the screenshot
 command! This script is very easy to add to and can easily be extended.
 
 ## How do I get screenFetch?
+
+### Netrunner Rolling
+
+1. Install `screenfetch-netrunner` from the official repositories. That's it!
 
 ### Arch Linux
 
@@ -94,5 +109,4 @@ specified on the command line, and those are shown below or by executing `screen
 
 If you would like to suggest something new, inform me of an issue in the
 script, become part of the project, or talk to me about anything else,
-you can either email me at `zeldarealm@gmail.com` or you can connect
-to Rizon and reach me at `irc://irc.rizon.net/screenFetch`
+you can either email me at `gericom.hummer@gmail.com` or hangouts.
