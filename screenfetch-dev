@@ -3882,6 +3882,34 @@ asciiText () {
 "${c1}                             e  %s")
 		;;
 
+
+		"PCLinuxOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'blue') # blue 
+			 	c2=$(getColor 'light grey') # White
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("$c1                                                   %s"
+"${c1}                                             <NNN>%s"
+"${c1}                                           <NNY   %s"
+"${c1}                 <ooooo>--.               ((      %s"
+"${c1}               Aoooooooooooo>--.           \\\\\\     %s"
+"${c1}              AooodNNNNNNNNNNNNNNNN>--.     ))    %s"
+"${c1}          "${c2}"("${c1}"  AoodNNNNNNNNNNNNNNNNNNNNNNN>-///'    %s"
+"${c1}          "${c2}"\\\\\\\\"${c1}"AodNNNNNNNNNNNNNNNNNNNNNNNNNNNY/      %s"
+"${c1}           AodNNNNNNNNNNNNNNNNNNNNNNNNNNNNN       %s"
+"${c1}          AdNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNA       %s"
+"${c1}         ("${c2}"/)"${c1}"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNA      %s"
+"${c1}         "${c2}"//"${c1}"<NNNNNNNNNNNNNNNNNY'   YNNY YNNNN      %s"
+"${c1} "${c2}",====#Y//"${c1}"   \`<NNNNNNNNNNNY       ANY     YNA     %s"
+"${c1}               ANY<NNNNYYN       .NY        YN.   %s"
+"${c1}             (NNY       NN      (NND       (NND   %s"
+"${c1}                      (NNU                        %s"
+"${c1}                                                         %s")
+		;;
+
+
 		*)
 			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -4081,6 +4109,7 @@ infoDisplay () {
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
 		"NetBSD") labelcolor=$(getColor 'orange');;
+		"PCLinuxOS") labelcolor=$(getColor 'blue');;
 		"CentOS"|*) labelcolor=$(getColor 'yellow');;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
