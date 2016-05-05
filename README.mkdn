@@ -17,6 +17,10 @@ command! This script is very easy to add to and can easily be extended.
 
 1. Install `screenfetch` from the official repositories or `screenfetch-git` from the AUR. That's it!
 
+### Netrunner Rolling
+
+1. Install `screenfetch-netrunner` from the official repositories.
+
 ### Mageia
 
 1. Install screenfetch from the official repositories with urpmi or rpmdrake.
