@@ -3747,7 +3747,7 @@ asciiText () {
 "${c2}     ..                     ..        %s"
 "${c2}        ..               ..           %s"
 "${c2}          ...............             %s")
-                ;;
+		;;
 
 
                 "KaOS")
@@ -3759,22 +3759,22 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c1} ████████ ████████             %s"
-"${c1}   ██████ ██████              %s"
-"${c1}     ████ ████                %s"
-"${c1}        █ █                   %s"
-"${c1}         █                    %s"
-"${c1}         █ ${c2}  ████████ ████████%s"
-"${c1}         █ ${c2}    ██████ ██████  %s"
-"${c1}         █ ${c2}      ████ ████    %s"
-"${c1}         █ ${c2}         █ █       %s"
-"${c1}         █ ${c2}          █        %s"
-"${c1}       ${c3}███████ ███████        %s"
-"${c1}       ${c3}  █████ █████${c2} █        %s"
-"${c1}         █${c3} ███ ███  ${c2} █        %s"
-"${c1}         █  ${c3}  █     ${c2} █        %s"
-"${c1}         █    ${c3}█     ${c2} █        %s"
-"${c1}         █    ${c3}█     ${c2} █        %s")
+"${c1}                     ..            %s"
+"${c1}  .....         ..OSSAAAAAAA..     %s"
+"${c1} .KKKKSS.     .SSAAAAAAAAAAA.      %s"
+"${c1}.KKKKKSO.    .SAAAAAAAAAA...       %s"
+"${c1}KKKKKKS.   .OAAAAAAAA.             %s"
+"${c1}KKKKKKS.  .OAAAAAA.                %s"
+"${c1}KKKKKKS. .SSAA..                   %s"
+"${c1}.KKKKKS..OAAAAAAAAAAAA........     %s"
+"${c1} DKKKKO.=AA=========A===AASSSO..   %s"
+"${c1}  AKKKS.==========AASSSSAAAAAASS.  %s"
+"${c1}  .=KKO..========ASS.....SSSSASSSS.%s"
+"${c1}    .KK.       .ASS..O.. =SSSSAOSS:%s"
+"${c1}     .OK.      .ASSSSSSSO...=A.SSA.%s"
+"${c1}       .K      ..SSSASSSS.. ..SSA. %s"
+"${c1}                 .SSS.AAKAKSSKA.   %s"
+"${c1}                    .SSS....S..    %s")
 		;;
 
 
