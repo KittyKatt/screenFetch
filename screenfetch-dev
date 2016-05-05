@@ -1094,7 +1094,7 @@ detectgpu () {
 		gpu="${gpu_info##*device*= }"
 		gpu="${gpu//\'}"
 		# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
-	elif [[ "${distro}" != "Mac OS X" && "${distro}" != "Haiku" ]]; then
+	elif [[ "${distro}" != "Mac OS X" && "${distro}" != "Haiku" && "${distro}" != "OpenBSD" ]]; then
 		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
 			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
 		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p glxinfo)" && -z "${gpu}" ]]; then
@@ -1106,6 +1106,8 @@ detectgpu () {
 			gpu_info=$($(PATH="/usr/bin:$PATH" type -p lspci | cut -f1) 2> /dev/null | grep VGA)
 			gpu=$(grep -oE '\[.*\]' <<< "${gpu_info}" | sed 's/\[//;s/\]//' | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
 		fi
+	elif [[ "${distro}" == "OpenBSD" ]]; then
+		gpu=$(glxinfo | grep 'OpenGL renderer string' | sed 's/OpenGL renderer string: //')
 	elif [[ "${distro}" == "Mac OS X" ]]; then
 		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
@@ -1199,8 +1201,8 @@ detectmem () {
 		used_mem=$(($round_mem - $avail_mem))
 		usedmem=$(($used_mem / ($human * $human) ))
 	elif [ "$distro" == "OpenBSD" ]; then
-		totalmem=$(($(sysctl -n hw.physmem) / 1048576))
-		usedmem=$(top -1 1 | awk '/Real:/ {print $3}' | sed 's/M.*//')
+		totalmem=$(($(sysctl -n hw.physmem) / $human / $human))
++		usedmem=$(($(vmstat | sed -n 3p | cut -d' ' -f5) / $human))
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${phys_mem} / $human))
