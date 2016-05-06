@@ -441,6 +441,10 @@ detectdistro () {
 					;;
 				"Kali"|"Debian Kali Linux")
 					distro="Kali Linux"
+					if [[ "${distro_codename}" =~ "kali-rolling" ]]; then
+						distro_codename="n/a"
+						distro_release="n/a"
+					fi
 					;;
 				"Kogaion")
 					distro="Kogaion"
