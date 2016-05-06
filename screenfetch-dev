@@ -189,7 +189,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+Msys."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE and RazorQt."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -664,6 +664,7 @@ detectdistro () {
 						fi
 					elif [ -f /etc/dragora-version ]; then distro="Dragora" && distro_more="$(cut -d, -f1 /etc/dragora-version)"
 					elif [ -f /etc/evolveos-release ]; then distro="Evolve OS"
+					elif [ -f /etc/exherbo-release ]; then distro="Exherbo"
 					elif [ -f /etc/fedora-release ]; then
 						if grep -q "Korora" /etc/fedora-release; then
 							distro="Korora"
@@ -821,6 +822,7 @@ detectdistro () {
 		dragora) distro="Dragora" ;;
 		elementary|'elementary os') distro="elementary OS";;
 		evolveos) distro="Evolve OS" ;;
+		exherbo|exherbo*linux) distro="Exherbo" ;;
 		fedora) distro="Fedora" ;;
 		freebsd) distro="FreeBSD" ;;
 		freebsd*old) distro="FreeBSD - Old" ;;
@@ -955,6 +957,11 @@ detectpkgs () {
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
 		'Lunar Linux') pkgs=$(lvu installed | wc -l) ;;
 		'TinyCore') pkgs=$(tce-status -i | wc -l) ;;
+		'Exherbo')
+			xpkgs=$(ls -d -1 /var/db/paludis/repositories/cross-installed/*/data/* | wc -l)
+			pkgs=$(ls -d -1 /var/db/paludis/repositories/installed/data/* | wc -l)
+			pkgs=$((${pkgs} + ${xpkgs}))
+		;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -v "\(../Cellar/\|brew\)" | wc -l)
@@ -4177,6 +4184,38 @@ asciiText () {
 "${c1}             (NNY       NN      (NND       (NND   %s"
 "${c1}                      (NNU                        %s"
 "${c1}                                                         %s")
+		;;
+
+		"Exherbo")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'dark grey')  # Black
+				c2=$(getColor 'light blue') # Blue
+				c3=$(getColor 'light red')  # Beige
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c1}  ,                                           %s"
+"${c1}  OXo.                                        %s"
+"${c1}  NXdX0:    .cok0KXNNXXK0ko:.                 %s"
+"${c1}  KX  '0XdKMMK;.xMMMk, .0MMMMMXx;  ...        %s"
+"${c1}  'NO..xWkMMx   kMMM    cMMMMMX,NMWOxOXd.     %s"
+"${c1}    cNMk  NK    .oXM.   OMMMMO. 0MMNo  kW.    %s"
+"${c1}    lMc   o:       .,   .oKNk;   ;NMMWlxW'    %s"
+"${c1}   ;Mc    ..   .,,'    .0M${c2}g;${c1}WMN'dWMMMMMMO     %s"
+"${c1}   XX        ,WMMMMW.  cM${c2}cfli${c1}WMKlo.   .kMk    %s"
+"${c1}  .Mo        .WM${c2}GD${c1}MW.   XM${c2}WO0${c1}MMk        oMl   %s"
+"${c1}  ,M:         ,XMMWx::,''oOK0x;          NM.  %s"
+"${c1}  'Ml      ,kNKOxxxxxkkO0XXKOd:.         oMk  %s"
+"${c1}   NK    .0Nxc${c3}:::::::::::::::${c1}fkKNk,      .MW  %s"
+"${c1}   ,Mo  .NXc${c3}::${c1}qXWXb${c3}::::::::::${c1}oo${c3}::${c1}lNK.    .MW  %s"
+"${c1}    ;Wo oMd${c3}:::${c1}oNMNP${c3}::::::::${c1}oWMMMx${c3}:${c1}c0M;   lMO  %s"
+"${c1}     'NO;W0c${c3}:::::::::::::::${c1}dMMMMO${c3}::${c1}lMk  .WM'  %s"
+"${c1}       xWONXdc${c3}::::::::::::::${c1}oOOo${c3}::${c1}lXN. ,WMd   %s"
+"${c1}        'KWWNXXK0Okxxo,${c3}:::::::${c1},lkKNo  xMMO    %s"
+"${c1}          :XMNxl,';:lodxkOO000Oxc. .oWMMo     %s"
+"${c1}            'dXMMXkl;,.        .,o0MMNo'      %s"
+"${c1}               ':d0XWMMMMWNNNNMMMNOl'         %s"
+"${c1}                     ':okKXWNKkl'             %s")
 		;;
 
 		*)
