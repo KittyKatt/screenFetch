@@ -4000,14 +4000,14 @@ asciiText () {
 "${c1}                -~\"|{*l}*|\"\"~                  %s")
 		;;
 
-    "NixOS")
-      if [[ "$no_color" != "1" ]]; then
-        c1=$(getColor 'blue')
-        c2=$(getColor 'light blue')
-      fi
-      if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-      startline="0"
-      fulloutput=("${c1}          ::::.    ${c2}':::::     ::::'          %s"
+		"NixOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'blue')
+				c2=$(getColor 'light blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c1}          ::::.    ${c2}':::::     ::::'         %s"
 "${c1}          ':::::    ${c2}':::::.  ::::'           %s"
 "${c1}            :::::     ${c2}'::::.:::::            %s"
 "${c1}      .......:::::..... ${c2}::::::::             %s"
@@ -4026,7 +4026,68 @@ asciiText () {
 "${c1}           .::::''::::.     ${c2}'::::.           %s"
 "${c1}          .::::'   ::::.     ${c2}'::::.          %s"
 "${c1}         .::::      ::::      ${c2}'::::.         %s")
-    ;;
+		;;
+
+		"BunsenLabs")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="5"
+			fulloutput=(\
+"${c1}            HC]"
+"${c1}          H]]]]"
+"${c1}        H]]]]]]4"
+"${c1}      @C]]]]]]]]*"
+"${c1}     @]]]]]]]]]]xd"
+"${c1}    @]]]]]]]]]]]]]d      %s"
+"${c1}   0]]]]]]]]]]]]]]]]     %s"
+"${c1}   kx]]]]]]x]]x]]]]]%%    %s"
+"${c1}  #x]]]]]]]]]]]]]x]]]d   %s"
+"${c1}  #]]]]]]qW  x]]x]]]]]4  %s"
+"${c1}  k]x]]xg     %%x]]]]]]%%  %s"
+"${c1}  Wx]]]W       x]]]]]]]  %s"
+"${c1}  #]]]4         xx]]x]]  %s"
+"${c1}   px]           ]]]]]x  %s"
+"${c1}   Wx]           x]]x]]  %s"
+"${c1}    &x           x]]]]   %s"
+"${c1}     m           x]]]]   %s"
+"${c1}                 x]x]    %s"
+"${c1}                 x]]]    %s"
+"${c1}                ]]]]"
+"${c1}                x]x"
+"${c1}               x]q"
+"${c1}               ]g"
+"${c1}              q")
+		;;
+
+		"SteamOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'grey') # Gray
+				c2=$(getColor 'purple') # Dark Purple
+				c3=$(getColor 'light purple') # Light Purple
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("${c2}               .,,,,.                %s"
+"${c2}         .,'onNMMMMMNNnn',.          %s"
+"${c2}      .'oNM${c3}ANK${c2}MMMMMMMMMMMNNn'.       %s"
+"${c3}    .'ANMMMMMMMXK${c2}NNWWWPFFWNNMNn.     %s"
+"${c3}   ;NNMMMMMMMMMMNWW'' ${c2},.., ${c2}'WMMM,    %s"
+"${c3}  ;NMMMMV+##+VNWWW' ${c3}.+;'':+, ${c3}'WM${c2}W,   %s"
+"${c3} ,VNNWP+${c1}######${c3}+WW,  ${c1}+:    ${c3}:+, ${c3}+MMM,  %s"
+"${c3} '${c1}+#############,   +.    ,+' ${c3}+NMMM  %s"
+"${c1}   '*#########*'     '*,,*' ${c3}.+NMMMM. %s"
+"${c1}      \`'*###*'          ,.,;###${c3}+WNM, %s"
+"${c1}          .,;;,      .;##########${c3}+W  %s"
+"${c1} ,',.         ';  ,+##############'  %s"
+"${c1}  '###+. :,. .,; ,###############'   %s"
+"${c1}   '####.. \`'' .,###############'    %s"
+"${c1}     '#####+++################'      %s"
+"${c1}       '*##################*'        %s"
+"${c1}          ''*##########*''           %s"
+"${c1}               ''''''                ")
+		;;
 
 		"BunsenLabs")
 			if [[ "$no_color" != "1" ]]; then
@@ -4114,6 +4175,61 @@ asciiText () {
 "${c1}                            ee  %s"
 "${c1}                             e  %s")
 
+		;;
+
+		"Qubes OS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'cyan')
+				c2=$(getColor 'blue')
+				c3=$(getColor 'light blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(
+"$c1      $c3                ####                     %s"
+"$c1        $c3            ########                   %s"
+"$c1          $c3        ############                 %s"
+"$c1            $c3    #######  #######               %s"
+"$c1              #$c3######      ######$c2#             %s"
+"$c1            ####$c3###          ###$c2####           %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1          ######        $c2        ######         %s"
+"$c1            #######     $c2     #######           %s"
+"$c1              #######   $c2   #########           %s"
+"$c1                ####### $c2 ##############        %s"
+"$c1                  ######$c2######  ######         %s"
+"$c1                    ####$c2####     ###           %s"
+"$c1                      ##$c2##                     %s"
+"$c1                                                  %s")
+		;;
+
+		"PCLinuxOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'blue') # Blue
+				c2=$(getColor 'light grey') # White
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=("$c1                                                  %s"
+"${c1}                                             <NNN>%s"
+"${c1}                                           <NNY   %s"
+"${c1}                 <ooooo>--.               ((      %s"
+"${c1}               Aoooooooooooo>--.           \\\\\\     %s"
+"${c1}              AooodNNNNNNNNNNNNNNNN>--.     ))    %s"
+"${c1}          "${c2}"("${c1}"  AoodNNNNNNNNNNNNNNNNNNNNNNN>-///'    %s"
+"${c1}          "${c2}"\\\\\\\\"${c1}"AodNNNNNNNNNNNNNNNNNNNNNNNNNNNY/      %s"
+"${c1}           AodNNNNNNNNNNNNNNNNNNNNNNNNNNNNN       %s"
+"${c1}          AdNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNA       %s"
+"${c1}         ("${c2}"/)"${c1}"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNA      %s"
+"${c1}         "${c2}"//"${c1}"<NNNNNNNNNNNNNNNNNY'   YNNY YNNNN      %s"
+"${c1} "${c2}",====#Y//"${c1}"   \`<NNNNNNNNNNNY       ANY     YNA     %s"
+"${c1}               ANY<NNNNYYN       .NY        YN.   %s"
+"${c1}             (NNY       NN      (NND       (NND   %s"
+"${c1}                      (NNU                        %s"
+"${c1}                                                         %s")
 		;;
 
 		"Qubes OS")
