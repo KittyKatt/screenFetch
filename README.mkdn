@@ -60,6 +60,10 @@ command! This script is very easy to add to and can easily be extended.
 1. If using 13.2 or earlier, add "utilities" repo: `zypper ar -r http://download.opensuse.org/repositories/utilities/openSUSE_$(lsb_release -rs)/utilities.repo`
 2. Install it with zypper running: `zypper install screenfetch`
 
+### MSYS2
+
+1. Install screenfetch from the official repositories: `pacman -S screenfetch`
+
 ### Others
 
 1. Download the latest source at https://github.com/KittyKatt/screenFetch
