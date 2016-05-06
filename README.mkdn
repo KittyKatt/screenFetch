@@ -17,6 +17,10 @@ command! This script is very easy to add to and can easily be extended.
 
 1. Install `screenfetch` from the official repositories or `screenfetch-git` from the AUR. That's it!
 
+### Netrunner Rolling
+
+1. Install `screenfetch-netrunner` from the official repositories.
+
 ### Mageia
 
 1. Install screenfetch from the official repositories with urpmi or rpmdrake.
@@ -38,11 +42,23 @@ command! This script is very easy to add to and can easily be extended.
 
 ### FreeBSD
 
-1. screenfetch can be installed by using the ports system.
+1. screenfetch can be installed by using the [ports](https://freshports.org/sysutils/screenfetch/) system: `cd /usr/ports/sysutils/screenfetch/ && make install clean`
+2. Or it can be installed as a binary package using `pkg install screenFetch`
+3. If screenfetch doesn't work as expected, try to (re-)install bash from the ports (instead of the binary packages): `cd /usr/ports/shells/bash/ && make install clean`
 
 ### Fedora (21 or later)
 
 1. Install it with yum running: `yum install screenfetch`
+
+### KaOS
+
+1. Install screenfetch from the official repositories with octopi or pacman.
+   e.g.: `pacman -S screenfetch`
+
+### openSUSE
+
+1. If using 13.2 or earlier, add "utilities" repo: `zypper ar -r http://download.opensuse.org/repositories/utilities/openSUSE_$(lsb_release -rs)/utilities.repo`
+2. Install it with zypper running: `zypper install screenfetch`
 
 ### Others
 
@@ -62,11 +78,17 @@ specified on the command line, and those are shown below or by executing `screen
       -o 'OPTIONS'       Allows for setting script variables on the
                          command line. Must be in the following format...
                          'OPTION1="OPTIONARG1";OPTION2="OPTIONARG2"'
+      -d '+var;-var;var' Allows for setting what information is displayed
+                         on the command line. You can add displays with +var,var. You
+                         can delete displays with -var,var. Setting without + or - will
+                         set display to that explicit combination. Add and delete statements
+                         may be used in conjunction by placing a ; between them as so:
+                         +var,var,var;-var,var.
       -n                 Do not display ASCII distribution logo.
       -N                 Strip all color from output.
       -t                 Truncate output based on terminal width (Experimental!).
       -p                 Output in portrait mode, with logo above info.
-      -s(m)              Using this flag tells the script that you want it
+      -s [-u IMGHOST]    Using this flag tells the script that you want it
                          to take a screenshot. Use the -m flag if you would like
                          to move it to a new location afterwards.
       -c string          You may change the outputted colors with -c. The format is

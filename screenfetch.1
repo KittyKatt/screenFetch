@@ -1,4 +1,4 @@
-.TH SCREENFETCH "1" "April 2015" "3.6.5" "User Commands"
+.TH SCREENFETCH "1" "May 2016" "3.7.0" "User Commands"
 .\" Don't remove the lines starting with ».\" @supported_« !
 .\" They're important for update-manpage.sh.
 
@@ -21,25 +21,25 @@ This script is very easy to add to and can easily be extended.
 Supported GNU/Linux Distributions:
 .IP
 .\" @supported_distros_start@
-Antergos, Arch Linux (Old and Current Logos), BLAG, CentOS, Chakra, Chapeau, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, NixOS, openSUSE, Parabola GNU/Linux-libre, PeppermintOS, Raspbian, Red Hat Enterprise Linux, Sabayon, Scientific Linux, Slackware, SolusOS, TinyCore, Trisquel, Ubuntu, Viperr and Void.
+Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void.
 .\" @supported_distros_end@
 .PP
 Other Supported Systems:
 .IP
 .\" @supported_other_start@
-Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X and Windows+Cygwin.
+Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+Msys.
 .\" @supported_other_end@
 .PP
 Supported Desktop Managers:
 .IP
 .\" @supported_dms_start@
-KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, CDE and RazorQt.
+KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE and RazorQt.
 .\" @supported_dms_end@
 .PP
 Supported Window Managers:
 .IP
 .\" @supported_wms_start@
-2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, Compiz, Deepin, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3.
+2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3.
 .\" @supported_wms_end@
 
 .SH OPTIONS
@@ -74,11 +74,11 @@ Truncate output based on terminal width (Experimental!).
 .B \-p
 Output in portrait mode, with logo above info.
 .TP
-.B \-s(u)
+.B \-s [-u IMGHOST]
 Using this flag tells the script that you want it
 to take a screenshot. Use the \fB\-u\fR flag if you would like
 to upload the screenshots to one of the pre-configured
-locations. These include: teknik, pomf, imgur, mediacrush, and hmp.
+locations. These include: teknik, imgur, mediacrush and hmp.
 .TP
 .B \-c string
 You may change the outputted colors with \fB\-c\fR. The format is
