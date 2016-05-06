@@ -886,8 +886,11 @@ detecthost () {
 
 # Kernel Version Detection - Begin
 detectkernel () {
-	kernel=( $(uname -srm) )
-	kernel="${kernel[${#kernel[@]}-1]} ${kernel[@]:0:${#kernel[@]}-1}"
+	# compatibility for older versions of OS X:
+	kernel=$(uname -m && uname -sr)
+	kernel=${kernel//$'\n'/ }
+	#kernel=( $(uname -srm) )
+	#kernel="${kernel[${#kernel[@]}-1]} ${kernel[@]:0:${#kernel[@]}-1}"
 	verboseOut "Finding kernel version...found as '${kernel}'"
 }
 # Kernel Version Detection - End
@@ -1186,6 +1189,9 @@ detectmem () {
 		wiredmem=$(vm_stat | grep wired | awk '{ print $4 }' | sed 's/\.//')
 		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
 		compressedmem=$(vm_stat | grep occupied | awk '{ print $5 }' | sed 's/\.//')
+		if [[ ! -z "$compressedmem | tr -d" ]]; then
+			compressedmem=0
+		fi
 		usedmem=$(((${wiredmem} + ${activemem} + ${compressedmem}) * 4 / $human))
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
@@ -1299,7 +1305,7 @@ detectshell () {
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
 				shell_type=$(ps -p $PPID -o cmd --no-heading)
 			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
-				shell_type=$(ps -p $PPID -o args | tail -1)
+				shell_type=$(ps -p $PPID -o command | tail -1)
 			else
 				shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
 			fi
@@ -4396,7 +4402,7 @@ infoDisplay () {
 		if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor} ${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [ "$distro" == "Mac OS X" ]; then
-				sysArch=`str1=$(ioreg -l -p IODeviceTree | grep firmware-abi);echo ${str1: -4: 2}bit`
+				sysArch=`str1=$(getconf LONG_BIT);echo ${str1}bit`
 				prodVers=`prodVers=$(sw_vers|grep ProductVersion);echo ${prodVers:15}`
 				buildVers=`buildVers=$(sw_vers|grep BuildVersion);echo ${buildVers:14}`
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
