@@ -515,7 +515,7 @@ detectdistro () {
 					distro="Peppermint"
 					distro_codename=null
 					;;
-				"CentOS")
+				"rhel"|"CentOS")
 					distro="Red Hat Enterprise Linux"
 					;;
 				"Sabayon")
@@ -622,6 +622,7 @@ detectdistro () {
 					if [[ "${distro}" == "Oracle Linux" ]] && [ -f /etc/oracle-release ]; then
 						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 					fi
+					[[ "${distro}" == "rhel" ]] && distro="Red Hat Enterprise Linux"
 				fi
 			fi
 
@@ -863,7 +864,7 @@ detectdistro () {
 		peppermint) distro="Peppermint" ;;
 		qubes) distro="Qubes OS" ;;
 		raspbian) distro="Raspbian" ;;
-		red*hat*) distro="Red Hat Enterprise Linux" ;;
+		red*hat*|rhel) distro="Red Hat Enterprise Linux" ;;
 		sabayon) distro="Sabayon" ;;
 		sailfish|sailfish*os) distro="SailfishOS" ;;
 		slackware) distro="Slackware" ;;
