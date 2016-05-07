@@ -1539,7 +1539,7 @@ detectde () {
 					esac
 				fi
 
-				if [ x"$GDMSESSION" = x"" ]; then
+				if [ x"$DE" = x"" ]; then
 					# fallback to checking $GDMSESSION
 					case "$GDMSESSION" in
 						Lumina*|LUMINA*|lumina*)
