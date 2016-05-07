@@ -4406,7 +4406,7 @@ asciiText () {
 
 	elif [[ "$display_logo" == "Yes" ]]; then
 		for ((i=0; i<${#fulloutput[*]}; i++)); do
-			printf "${fulloutput[i]}\n"
+			printf "${fulloutput[i]}$c0\n"
 		done
 
 	else
