@@ -15,7 +15,7 @@
 	- Display release version and package count on TinyCore Linux
 	- Display exact release version on Windows 10
 	- Use modern logo on Windows 10 and Windows 8
-	- Added detection for chromeos-wm, howm, sway, LXQt and Deepin [DEs/WMs]
+	- Added detection for chromeos-wm, FLWM, howm, sway, LXQt and Deepin [DEs/WMs]
 	- Added detection for Chrome OS, Chromium OS, PCLinuxOS, BunsenLabs, Kogaion, Msys, Netrunner, SteamOS, SailfishOS, Mer, Alpine, Qubes OS and Oracle Linux
 
 v3.7.0
