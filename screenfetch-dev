@@ -4593,7 +4593,7 @@ infoDisplay () {
 	if [[ "$display_type" == "ASCII" ]]; then
 		asciiText
 	else
-		if [[ "${display[@]}" =~ "host" ]]; then echo -e " $myinfo"; fi
+		if [[ "${display[@]}" =~ "host" ]]; then echo -e "$myinfo"; fi
 		if [[ "${display[@]}" =~ "distro" ]]; then echo -e "$mydistro"; fi
 		if [[ "${display[@]}" =~ "kernel" ]]; then echo -e "$mykernel"; fi
 		if [[ "${distro}" == "Android" ]]; then
@@ -4619,8 +4619,12 @@ infoDisplay () {
 				fi
 			fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
-				echo -e "$mygtk2"
-				echo -e "$mygtk3"
+				if [[ "$gtk_2line" == "yes" ]]; then
+					echo -e "$mygtk2"
+					echo -e "$mygtk3"
+				else
+					echo -e "$mygtk"
+				fi
 				echo -e "$myicons"
 				echo -e "$myfont"
 			fi
