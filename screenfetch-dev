@@ -1315,6 +1315,12 @@ detectshell () {
 	if [[ ! "${shell_type}" ]]; then
 		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
+		elif [[ "${distro}" == "TinyCore" ]]; then
+			if [[ "$(readlink "$SHELL")" == "busybox" ]]; then
+				shell_type="BusyBox"
+			else
+				shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
+			fi
 		else
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
 				shell_type=$(ps -p $PPID -o cmd --no-heading)
@@ -1331,6 +1337,9 @@ detectshell () {
 	case $shell_type in
 		bash)
 			shell_version_data=$( detectshell_ver "$shell_type" "^GNU.bash,.version" "4" )
+			;;
+		BusyBox)
+			shell_version_data=$( busybox | head -n1 | cut -d ' ' -f2 )
 			;;
 		csh)
 			shell_version_data=$( detectshell_ver "$shell_type" "$shell_type" "3" )
