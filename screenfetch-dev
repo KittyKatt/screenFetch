@@ -2159,27 +2159,28 @@ detectgtk () {
 				fi
 			;;
 			'LXDE'*)
-				if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/lxde/config ]; then
+				config_home="${XDG_CONFIG_HOME:-${HOME}/.config}"
+				if [ -f "$config_home/lxde/config" ]; then
 					lxdeconf="/lxde/config"
-				elif [ "$distro" == "Trisquel" ]; then
+				elif [ "$distro" == "Trisquel" ] || [ "$distro" == "FreeBSD" ]; then
 					lxdeconf=""
-				elif [ "$distro" == "FreeBSD" ]; then
-					lxdeconf=""
+				elif [ -f "$config_home/lxsession/Lubuntu/desktop.conf" ]; then
+					lxdeconf="/lxsession/Lubuntu/desktop.conf"
 				else
 					lxdeconf="/lxsession/LXDE/desktop.conf"
 				fi
-				# TODO: Clean me.
-				if grep -q "sNet\/ThemeName" ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
-					gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+
+				if grep -q "sNet\/ThemeName" "${config_home}${lxdeconf}" 2>/dev/null; then
+					gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' ${config_home}${lxdeconf})
 				fi
 
-				if grep -q IconThemeName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
-					gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
+				if grep -q IconThemeName "${config_home}${lxdeconf}" 2>/dev/null; then
+					gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' ${config_home}${lxdeconf})
 				fi
 
-				if grep -q FontName ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf 2>/dev/null; then
-					gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${XDG_CONFIG_HOME:-${HOME}/.config}$lxdeconf)
-				fi
+				if grep -q FontName "${config_home}${lxdeconf}" 2>/dev/null; then
+					gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' ${config_home}${lxdeconf})
+ 				fi
 			;;
 
 			# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
