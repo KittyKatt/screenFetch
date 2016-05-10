@@ -4662,25 +4662,27 @@ infoDisplay () {
 			if [[ "${display[@]}" =~ "uptime" ]]; then echo -e "$myuptime"; fi
 			if [[ "${display[@]}" =~ "pkgs" ]]; then echo -e "$mypkgs"; fi
 			if [[ "${display[@]}" =~ "shell" ]]; then echo -e "$myshell"; fi
-			if [[ "${display[@]}" =~ "res" ]]; then echo -e "$myres"; fi
+			if [[ "${display[@]}" =~ "res" ]]; then
+				test -z "$myres" || echo -e "$myres"
+			fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then echo -e "$myde"; fi
 			fi
 			if [[ "${display[@]}" =~ "wm" ]]; then
-				echo -e "$mywm"
+				test -z "$mywm" || echo -e "$mywm"
 				if [[ "${Win_theme}" != "Not Applicable" && "${Win_theme}" != "Not Found" ]]; then
-					echo -e "$mywmtheme"
+					test -z "$mywmtheme" || echo -e "$mywmtheme"
 				fi
 			fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [[ "$gtk_2line" == "yes" ]]; then
-					echo -e "$mygtk2"
-					echo -e "$mygtk3"
+					test -z "$mygtk2" || echo -e "$mygtk2"
+					test -z "$mygtk3" || echo -e "$mygtk3"
 				else
-					echo -e "$mygtk"
+					test -z "$mygtk" || echo -e "$mygtk"
 				fi
-				echo -e "$myicons"
-				echo -e "$myfont"
+				test -z "$myicons" || echo -e "$myicons"
+				test -z "$myfont" || echo -e "$myfont"
 			fi
 			if [[ "${display[@]}" =~ "disk" ]]; then echo -e "$mydisk"; fi
 			if [[ "${display[@]}" =~ "cpu" ]]; then echo -e "$mycpu"; fi
