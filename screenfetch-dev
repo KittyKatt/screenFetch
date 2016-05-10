@@ -1438,10 +1438,6 @@ detectde () {
 							de = "KDE"$NF
 							exit
 						}
-						else if ($1 ~ /^_MARCO/) {
-							de = "MATE"
-							exit
-						}
 						else if ($1 ~ /^_MUFFIN/) {
 							de = "Cinnamon"
 							exit
