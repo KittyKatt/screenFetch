@@ -949,7 +949,7 @@ detectpkgs () {
 	pkgs="Unknown"
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
-		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Msys') pkgs=$(pacman -Qq | wc -l) ;;
+		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Fuduntu'|'Ubuntu'|'Mint'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
@@ -1002,6 +1002,13 @@ detectpkgs () {
 			pkgs=$(($(cygcheck -cd | wc -l) - ${cygfix}))
 			if [ -d "/cygdrive/c/ProgramData/chocolatey/lib" ]; then
 				chocopkgs=$(( $(ls -1 /cygdrive/c/ProgramData/chocolatey/lib | wc -l) ))
+				pkgs=$((${pkgs} + ${chocopkgs}))
+			fi
+		;;
+		'Msys')
+			pkgs=$(pacman -Qq | wc -l)
+			if [ -d "/c/ProgramData/chocolatey/lib" ]; then
+				chocopkgs=$(( $(ls -1 /c/ProgramData/chocolatey/lib | wc -l) ))
 				pkgs=$((${pkgs} + ${chocopkgs}))
 			fi
 		;;
