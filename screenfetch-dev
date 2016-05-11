@@ -189,7 +189,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+Msys."
 supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -480,6 +480,16 @@ detectdistro () {
 						fi
 					fi
 					;;
+				"neon"|"KDE neon")
+					distro="KDE neon"
+					distro_codename="n/a"
+					distro_release="n/a"
+					if [[ -f /etc/issue ]]; then
+						if grep -q "^KDE neon" /etc/issue ; then
+							distro_release="$(grep '^KDE neon' /etc/issue | cut -d ' ' -f3)"
+						fi
+					fi
+					;;
 				"Netrunner")
 					distro="Netrunner"
 					;;
@@ -623,6 +633,7 @@ detectdistro () {
 						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 					fi
 					[[ "${distro}" == "rhel" ]] && distro="Red Hat Enterprise Linux"
+					[[ "${distro}" == "Neon" ]] && distro="KDE neon"
 				fi
 			fi
 
@@ -659,10 +670,15 @@ detectdistro () {
 					elif [ -f /etc/chakra-release ]; then distro="Chakra"
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
 					elif [ -f /etc/debian_version ]; then
-						if [ -f /etc/issue ] && grep -q "gNewSense" /etc/issue ; then
-							distro="gNewSense"
-						else
-							distro="Debian"
+						if [ -f /etc/issue ]; then
+							if grep -q "gNewSense" /etc/issue ; then
+								distro="gNewSense"
+							elif grep -q "^KDE neon" /etc/issue ; then
+								distro="KDE neon"
+								distro_more="$(cut -d ' ' -f3 /etc/issue)"
+							else
+								distro="Debian"
+							fi
 						fi
 						if grep -q "Kali" /etc/debian_version ; then
 							distro="Kali Linux"
@@ -839,6 +855,7 @@ detectdistro () {
 		haiku) distro="Haiku" ;;
 		kali*linux) distro="Kali Linux" ;;
 		kaos) distro="KaOS";;
+		kde*neon|neon) distro="KDE neon" ;;
 		kogaion) distro="Kogaion" ;;
 		korora) distro="Korora" ;;
 		linuxdeepin) distro="LinuxDeepin" ;;
@@ -952,7 +969,7 @@ detectpkgs () {
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Fuduntu'|'Ubuntu'|'Mint'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
+		'Fuduntu'|'Ubuntu'|'Mint'|'KDE neon'|'Debian'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS') pkgs=$(dpkg --get-selections | grep -v deinstall$ | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
