@@ -1626,12 +1626,17 @@ detectde () {
 				elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
 					if type -p kded${DE#KDE} >/dev/null 2>&1; then
 						DEver=$(kded${DE#KDE} --version)
-						for l in $(echo "${DEver// /_}"); do
-							if [[ ${l//:*} == "KDE_Development_Platform" ]]; then
-								DEver=${l//*:_}
-								DE="KDE ${DEver//_*}"
-							fi;
-						done
+						if [[ $(( $(echo "$DEver" | wc -w) )) -eq 2 ]] && [[ "$(echo "$DEver" | cut -d ' ' -f1)" == "kded${DE#KDE}" ]]; then
+							DEver=$(echo "$DEver" | cut -d ' ' -f2)
+							DE="KDE ${DEver}"
+						else
+							for l in $(echo "${DEver// /_}"); do
+								if [[ ${l//:*} == "KDE_Development_Platform" ]]; then
+									DEver=${l//*:_}
+									DE="KDE ${DEver//_*}"
+								fi
+							done
+						fi
 					fi
 				elif [[ ${DE} == "Lumina" ]]; then
 					if type -p Lumina-DE.real >/dev/null 2>&1; then
