@@ -1637,6 +1637,10 @@ detectde () {
 								fi
 							done
 						fi
+						if pgrep plasmashell >/dev/null 2>&1; then
+							DEver=$(plasmashell --version | cut -d ' ' -f2)
+							DE="$DE / Plasma $DEver"
+						fi
 					fi
 				elif [[ ${DE} == "Lumina" ]]; then
 					if type -p Lumina-DE.real >/dev/null 2>&1; then
