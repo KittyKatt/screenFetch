@@ -525,7 +525,7 @@ detectdistro () {
 					distro="Peppermint"
 					distro_codename=null
 					;;
-				"rhel"|"CentOS")
+				"rhel")
 					distro="Red Hat Enterprise Linux"
 					;;
 				"Sabayon")
