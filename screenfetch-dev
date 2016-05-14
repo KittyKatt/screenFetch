@@ -350,6 +350,10 @@ detectdistro () {
 			fi
 
 			case "${distro_detect}" in
+				"CentOS"|"Chapeau"|"Deepin"|"Fedora"|"gNewSense"|"Jiyuu Linux"|"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Raspbian"|"Sabayon"|"Solus"|"SteamOS"|"Trisquel"|"Ubuntu")
+					# no need to fix $distro/$distro_codename/$distro_release
+					distro="${distro_detect}"
+					;;
 				"archlinux"|"Arch Linux"|"arch"|"Arch"|"archarm")
 					distro="Arch Linux"
 					distro_release="n/a"
@@ -369,10 +373,6 @@ detectdistro () {
 				"Chakra")
 					distro="Chakra"
 					distro_release=""
-					;;
-				"CentOS") distro="CentOS"
-					;;
-				"Chapeau") distro="Chapeau"
 					;;
 				"BunsenLabs")
 					distro=$(source /etc/lsb-release; echo "$DISTRIB_ID")
@@ -395,9 +395,6 @@ detectdistro () {
 						distro="Debian"
 					fi
 					;;
-				"Raspbian")
-					distro="Raspbian"
-					;;
 				"elementary"|"elementary OS")
 					distro="elementary OS"
 					;;
@@ -406,9 +403,6 @@ detectdistro () {
 					;;
 				"KaOS"|"kaos")
 					distro="KaOS"
-					;;
-				"Fedora")
-					distro="Fedora"
 					;;
 				"frugalware")
 					distro="Frugalware"
@@ -426,18 +420,9 @@ detectdistro () {
 						distro="Gentoo"
 					fi
 					;;
-				"gNewSense")
-					distro="gNewSense"
-					;;
-				"Jiyuu Linux")
-					distro="Jiyuu Linux"
-					;;
 				"LinuxDeepin")
 					distro="LinuxDeepin"
 					distro_codename=null
-					;;
-				"Deepin")
-					distro="Deepin"
 					;;
 				"Kali"|"Debian Kali Linux")
 					distro="Kali Linux"
@@ -446,17 +431,8 @@ detectdistro () {
 						distro_release="n/a"
 					fi
 					;;
-				"Kogaion")
-					distro="Kogaion"
-					;;
-				"Korora")
-					distro="Korora"
-					;;
 				"Lunar Linux"|"lunar")
 					distro="Lunar Linux"
-					;;
-				"Mageia")
-					distro="Mageia"
 					;;
 				"MandrivaLinux")
 					distro="Mandriva"
@@ -490,12 +466,6 @@ detectdistro () {
 						fi
 					fi
 					;;
-				"Netrunner")
-					distro="Netrunner"
-					;;
-				"NixOS")
-					distro="NixOS"
-					;;
 				"Ol"|"ol"|"Oracle Linux")
 					distro="Oracle Linux"
 					[ -f /etc/oracle-release ] && distro_release="$(sed 's/Oracle Linux //' /etc/oracle-release)"
@@ -528,27 +498,12 @@ detectdistro () {
 				"rhel")
 					distro="Red Hat Enterprise Linux"
 					;;
-				"Sabayon")
-					distro="Sabayon"
-					;;
 				"SailfishOS")
 					distro="SailfishOS"
 					if [[ -f /etc/os-release ]]; then
 						distro_codename="$(grep 'VERSION=' /etc/os-release | cut -d '(' -f2 | cut -d ')' -f1)"
 						distro_release="$(awk -F'=' '/^VERSION=/ {print $2}' /etc/os-release)"
 					fi
-					;;
-				"Solus")
-					distro="Solus"
-					;;
-				"SteamOS")
-					distro="SteamOS"
-					;;
-				"Trisquel")
-					distro="Trisquel"
-					;;
-				"Ubuntu")
-					distro="Ubuntu"
 					;;
 				"Viperr")
 					distro="Viperr"
@@ -620,12 +575,11 @@ detectdistro () {
 					fi
 
 					# Hotfixes
-					[[ "${distro}" == "Void" || "${distro}" == "void" ]] && distro="Void"
+					[[ "${distro}" == "void" ]] && distro="Void"
 					[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
-					[[ "${distro}" == "antergos" || "${distro}" == "Antergos" ]] && distro="Antergos"
-					[[ "${distro}" == "logos" || "${distro}" == "Logos" ]] && distro="Logos"
-					[[ "${distro}" == "Arch" ]] && distro="Arch Linux"
-					[[ "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
+					[[ "${distro}" == "antergos" ]] && distro="Antergos"
+					[[ "${distro}" == "logos" ]] && distro="Logos"
+					[[ "${distro}" == "Arch" || "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
 					[[ "${distro}" == "elementary" ]] && distro="elementary OS"
 					[[ "${distro}" == "Fedora" && -d /etc/qubes-rpc ]] && distro="qubes" # Inner VM
 					[[ "${distro}" == "Ol" || "${distro}" == "ol" ]] && distro="Oracle Linux"
