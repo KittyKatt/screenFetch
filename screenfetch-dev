@@ -478,8 +478,11 @@ detectdistro () {
 						distro_release="n/a"
 					fi
 					;;
-				"SUSE LINUX"|"openSUSE project")
+				"openSUSE"|"openSUSE project"|"SUSE LINUX")
 					distro="openSUSE"
+					if [[ "${distro_codename}" == "Tumbleweed" ]]; then
+						distro_release="n/a"
+					fi
 					;;
 				"Parabola GNU/Linux-libre"|"Parabola")
 					distro="Parabola GNU/Linux-libre"
