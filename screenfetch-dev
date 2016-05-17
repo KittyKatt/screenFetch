@@ -1130,7 +1130,15 @@ detectgpu () {
 			gpu="${gpu//\'}"
 			# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
 		fi
-	elif [[ "${distro}" != "Mac OS X" && "${distro}" != "Haiku" && "${distro}" != "OpenBSD" ]]; then
+	elif [[ "${distro}" == "OpenBSD" ]]; then
+		gpu=$(glxinfo | grep 'OpenGL renderer string' | sed 's/OpenGL renderer string: //')
+	elif [[ "${distro}" == "Mac OS X" ]]; then
+		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
+		gpu=$(wmic path Win32_VideoController get caption | sed -n '2p')
+	elif [[ "${distro}" == "Haiku" ]]; then
+		gpu="$(listdev | grep -A2 -e 'device Display controller' | tail -n1 | sed 's/  device ....: //')"
+	else
 		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
 			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
 		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p glxinfo)" && -z "${gpu}" ]]; then
@@ -1142,15 +1150,6 @@ detectgpu () {
 			gpu_info=$($(PATH="/usr/bin:$PATH" type -p lspci | cut -f1) 2> /dev/null | grep VGA)
 			gpu=$(grep -oE '\[.*\]' <<< "${gpu_info}" | sed 's/\[//;s/\]//' | sed -n '1h;2,$H;${g;s/\n/, /g;p}')
 		fi
-	elif [[ "${distro}" == "OpenBSD" ]]; then
-		gpu=$(glxinfo | grep 'OpenGL renderer string' | sed 's/OpenGL renderer string: //')
-	elif [[ "${distro}" == "Mac OS X" ]]; then
-		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
-	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
-		gpu=$(wmic path Win32_VideoController get caption)
-		gpu=$(tail -1 <<< ${gpu})
-	elif [[ "${distro}" == "Haiku" ]]; then
-		gpu="$(listdev | grep -A2 -e 'device Display controller' | tail -n1 | sed 's/  device ....: //')"
 	fi
 
 	if [ -n "$gpu" ];then
@@ -1391,17 +1390,7 @@ detectres () {
 			xResolution=$(echo $xResolution | tr "\\n" "," | sed 's/\(.*\),/\1/')
 		fi
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
-		width=($(wmic desktopmonitor get screenwidth | grep -vE '[a-z]+' | tr '\r\n' ' '))
-		height=($(wmic desktopmonitor get screenheight | grep -vE '[a-z]+' | tr '\r\n' ' '))
-
-		xResolution=""
-		len=${#width[@]}
-
-		delim=" "
-		for ((i=0;i<len;i++)); do
-			xResolution="${xResolution}${delim}${width[i]}x${height[i]}"
-		done
-		xResolution=$(echo $xResolution | sed "s/^$delim//")
+		xResolution=$(wmic path Win32_VideoController get CurrentHorizontalResolution,CurrentVerticalResolution | awk 'NR==2 {print $1"x"$2}')
 	elif [[ "${distro}" == "Haiku" ]]; then
 		width=$(screenmode | cut -d ' ' -f2)
 		height=$(screenmode | cut -d ' ' -f3 | tr -d ',')
