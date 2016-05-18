@@ -1499,12 +1499,12 @@ detectde () {
 					esac
 				fi
 
-				if [ x"$DE" = x"" ]; then
+				if [ -n "$DE" ]; then
 					# classic fallbacks
-					if [ x"$KDE_FULL_SESSION" != x"" ]; then DE=KDE;
-					elif [ x"$TDE_FULL_SESSION" != x"" ]; then DE=Trinity;
-					elif [ x"$GNOME_DESKTOP_SESSION_ID" != x"" ]; then DE=Gnome;
-					elif [ x"$MATE_DESKTOP_SESSION_ID" != x"" ]; then DE=MATE;
+					if [ -n "$KDE_FULL_SESSION" ]; then DE=KDE;
+					elif [ -n "$TDE_FULL_SESSION" ]; then DE=Trinity;
+					elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then DE=Gnome;
+					elif [ -n "$MATE_DESKTOP_SESSION_ID" ]; then DE=MATE;
 					elif `dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1` ; then DE=Gnome;
 					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=XFCE;
 					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then DE=XFCE
@@ -1521,7 +1521,7 @@ detectde () {
 						;;
 				esac
 
-				if [ x"$DE" = x"" ]; then
+				if [ -n "$DE" ]; then
 					# fallback to checking $DESKTOP_SESSION
 					case "$DESKTOP_SESSION" in
 						gnome)
@@ -1551,7 +1551,7 @@ detectde () {
 					esac
 				fi
 
-				if [ x"$DE" = x"" ]; then
+				if [ -n "$DE" ]; then
 					# fallback to checking $GDMSESSION
 					case "$GDMSESSION" in
 						Lumina*|LUMINA*|lumina*)
@@ -1582,16 +1582,13 @@ detectde () {
 						elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
 							DE="KDE4"
 						fi
-					elif [[ -n ${KDE_FULL_SESSION} ]]; then
-						if [[ ${KDE_FULL_SESSION} == 'true' ]]; then
-							DE="KDE"
-							DEver_data=$( kded --version 2>/dev/null )
-							DEver=$( grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}' )
-						fi
+					elif [[ "x${KDE_FULL_SESSION}" == "xtrue" ]]; then
+						DE="KDE"
+						DEver_data=$(kded --version 2>/dev/null)
+						DEver=$(grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}')
 					fi
 				fi
 			fi
-
 
 			if [[ ${DE} != "Not Present" ]]; then
 				if [[ ${DE} == "Cinnamon" ]]; then
@@ -1632,7 +1629,7 @@ detectde () {
 					elif type -p Lumina-DE >/dev/null 2>&1; then
 						lumina="$(type -p Lumina-DE)"
 					fi
-					if [[ x"$lumina" != x ]]; then
+					if [ -n "$lumina" ]; then
 						if grep -e '--version' "$lumina" >/dev/null; then
 							DEver=$("$lumina" --version 2>&1 | tr -d \")
 							DE="${DE} ${DEver}"
