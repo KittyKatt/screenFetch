@@ -520,6 +520,11 @@ detectdistro () {
 					distro_codename=null
 					;;
 				*)
+					if [ "x$(printf "${distro_detect}" | od -t x1 | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
+						distro="Red Star OS"
+						distro_codename="n/a"
+						distro_release=$(printf "${distro_release}" | grep -o '[0-9.]' | tr -d '\n')
+					fi
 					;;
 			esac
 			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then distro="Red Hat Enterprise Linux"; fi
@@ -702,11 +707,19 @@ detectdistro () {
 							distro_release="n/a"
 						fi
 					elif [ -f /etc/pclinuxos-release ]; then distro="PCLinuxOS"
+					elif [ -f /etc/redstar-release ]; then
+						distro="Red Star OS"
+						distro_codename="n/a"
+						distro_release=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
 					elif [ -f /etc/redhat-release ]; then
 						if grep -q "CentOS" /etc/redhat-release; then
 							distro="CentOS"
 						elif grep -q "PCLinuxOS" /etc/redhat-release; then
 							distro="PCLinuxOS"
+						elif [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
+							distro="Red Star OS"
+							distro_codename="n/a"
+							distro_release=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
 						else
 							distro="Red Hat Enterprise Linux"
 						fi
@@ -862,6 +875,7 @@ detectdistro () {
 		qubes) distro="Qubes OS" ;;
 		raspbian) distro="Raspbian" ;;
 		red*hat*|rhel) distro="Red Hat Enterprise Linux" ;;
+		red*star|red*star*os) distro="Red Star OS" ;;
 		sabayon) distro="Sabayon" ;;
 		sailfish|sailfish*os) distro="SailfishOS" ;;
 		slackware) distro="Slackware" ;;
@@ -954,7 +968,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
-		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
@@ -4528,7 +4542,7 @@ infoDisplay () {
 		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
-		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
+		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
