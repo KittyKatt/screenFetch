@@ -702,18 +702,14 @@ detectdistro () {
 						if [ -f /etc/os-release ]; then
 							if [[ "$(cat /etc/os-release)" =~ "SUSE Linux Enterprise" ]]; then
 								distro="SUSE Linux Enterprise"
-								distro_codename="n/a"
-								distro_release=$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')
+								distro_more=$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')
 							fi
 						fi
-						if [[ "${distro_codename}" == "Tumbleweed" ]]; then
-							distro_release="n/a"
-						fi
+						if [[ "${distro_more}" =~ "Tumbleweed" ]]; then distro_more="Tumbleweed"; fi
 					elif [ -f /etc/pclinuxos-release ]; then distro="PCLinuxOS"
 					elif [ -f /etc/redstar-release ]; then
 						distro="Red Star OS"
-						distro_codename="n/a"
-						distro_release=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
+						distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
 					elif [ -f /etc/redhat-release ]; then
 						if grep -q "CentOS" /etc/redhat-release; then
 							distro="CentOS"
@@ -721,8 +717,7 @@ detectdistro () {
 							distro="PCLinuxOS"
 						elif [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
 							distro="Red Star OS"
-							distro_codename="n/a"
-							distro_release=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
+							distro_more=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
 						else
 							distro="Red Hat Enterprise Linux"
 						fi
