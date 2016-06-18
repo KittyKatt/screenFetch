@@ -1075,7 +1075,7 @@ detectcpu () {
 	elif [ "$distro" == "Haiku" ]; then
 		cpu=$(sysinfo -cpu | grep 'CPU #0' | cut -d'"' -f2 | awk 'BEGIN{FS=" @"; OFS="\n"} { print $1; exit }')
 		cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
-		if [ $(echo $cpu_mhz) -gt 999 ];then
+		if [ $(echo $cpu_mhz) -gt 999 ]; then
 			cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
 			cpufreq="${cpu_ghz}GHz"
 		else
@@ -1103,15 +1103,17 @@ detectcpu () {
 			cpu="${model}${cpu}"
 		fi
 		loc="/sys/devices/system/cpu/cpu0/cpufreq"
-		if [ -f ${loc}/bios_limit ];then
-			cpu_mhz=$(awk '{print $1/1000}' "${loc}/bios_limit")
-		elif [ -f $loc/scaling_max_freq ];then
-			cpu_mhz=$(awk '{print $1/1000}' "${loc}/scaling_max_freq")
+		bl="${loc}/bios_limit"
+		smf="${loc}/scaling_max_freq"
+		if [ -f "$bl" ] && [ -r "$bl" ]; then
+			cpu_mhz=$(awk '{print $1/1000}' "$bl")
+		elif [ -f "$smf" ] && [ -r "$smf" ]; then
+			cpu_mhz=$(awk '{print $1/1000}' "$smf")
 		else
 			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2+.5) }' /proc/cpuinfo | head -n 1)
 		fi
-		if [ -n "$cpu_mhz" ];then
-			if [ $(echo $cpu_mhz | cut -d. -f1) -gt 999 ];then
+		if [ -n "$cpu_mhz" ]; then
+			if [ $(echo $cpu_mhz | cut -d. -f1) -gt 999 ]; then
 				cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
 				cpufreq="${cpu_ghz}GHz"
 			else
