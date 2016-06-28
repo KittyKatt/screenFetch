@@ -888,7 +888,14 @@ detectdistro () {
 		suse*linux*enterprise) distro="SUSE Linux Enterprise" ;;
 		tinycore|tinycore*linux) distro="TinyCore" ;;
 		trisquel) distro="Trisquel";;
-		ubuntu) distro="Ubuntu" ;;
+		ubuntu)
+			distro="Ubuntu"
+			if grep -q 'Microsoft' /proc/version 2>/dev/null || \
+			   grep -q 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
+			then
+				uow=$(echo -e "$(getColor 'yellow') [Ubuntu on Windows 10]")
+			fi
+			;;
 		viperr) distro="Viperr" ;;
 		void) distro="Void" ;;
 	esac
@@ -4618,7 +4625,7 @@ infoDisplay () {
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
 			fi
-			out_array=( "${out_array[@]}" "$mydistro" )
+			out_array=( "${out_array[@]}" "$mydistro$uow" )
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "kernel" ]]; then mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" ); ((display_index++)); fi
