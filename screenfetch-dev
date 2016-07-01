@@ -4355,7 +4355,7 @@ asciiText () {
 				c2=$(getColor 'light blue') # Blue
 				c3=$(getColor 'light red')  # Beige
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
 "${c1}  ,                                           %s"
@@ -4380,6 +4380,34 @@ asciiText () {
 "${c1}            'dXMMXkl;,.        .,o0MMNo'      %s"
 "${c1}               ':d0XWMMMMWNNNNMMMNOl'         %s"
 "${c1}                     ':okKXWNKkl'             %s")
+		;;
+
+		"Red Star OS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light red')  # Red
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(
+"${c1}                      ..                     %s"
+"${c1}                    .oK0l                    %s"
+"${c1}                   :0KKKKd.                  %s"
+"${c1}                 .xKO0KKKKd                  %s"
+"${c1}                ,Od' .d0000l                 %s"
+"${c1}               .c;.   .'''...           ..'. %s"
+"${c1}  .,:cloddxxxkkkkOOOOkkkkkkkkxxxxxxxxxkkkx:  %s"
+"${c1}  ;kOOOOOOOkxOkc'...',;;;;,,,'',;;:cllc:,.   %s"
+"${c1}   .okkkkd,.lko  .......',;:cllc:;,,'''''.   %s"
+"${c1}     .cdo. :xd' cd:.  ..';'',,,'',,;;;,'.    %s"
+"${c1}        . .ddl.;doooc'..;oc;'..';::;,'.      %s"
+"${c1}          coo;.oooolllllllcccc:'.  .         %s"
+"${c1}         .ool''lllllccccccc:::::;.           %s"
+"${c1}         ;lll. .':cccc:::::::;;;;'           %s"
+"${c1}         :lcc:'',..';::::;;;;;;;,,.          %s"
+"${c1}         :cccc::::;...';;;;;,,,,,,.          %s"
+"${c1}         ,::::::;;;,'.  ..',,,,'''.          %s"
+"${c1}          ........          ......           %s"
+"${c1}                                             %s")
 		;;
 
 		*)
