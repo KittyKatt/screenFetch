@@ -190,8 +190,8 @@ detectColors() {
 }
 
 supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SteamOS, SUSE Linux Enterprise, TinyCore, Trisquel, Ubuntu, Viperr and Void."
-supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+Msys."
-supported_dms="KDE, Gnome, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
+supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS."
+supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
 displayHelp() {
@@ -1475,7 +1475,7 @@ detectde () {
 			fi
 
 			if [[ ${DE} == "Not Present" ]]; then
-				# Lets use xdg-open code for Gnome/Enlightment/KDe/Lxde/Mate/XFCE detection
+				# Let's use xdg-open code for GNOME/Enlightment/KDE/LXDE/MATE/XFCE detection
 				# http://bazaar.launchpad.net/~vcs-imports/xdg-utils/master/view/head:/scripts/xdg-utils-common.in#L251
 				if [ -n "${XDG_CURRENT_DESKTOP}" ]; then
 					case "${XDG_CURRENT_DESKTOP}" in
@@ -1483,7 +1483,7 @@ detectde () {
 							DE=Enlightenment;
 							;;
 						GNOME)
-							DE=Gnome;
+							DE=GNOME;
 							;;
 						KDE)
 							DE=KDE;
@@ -1495,7 +1495,7 @@ detectde () {
 							DE=LXDE;
 							;;
 						MATE)
-							DE=Mate;
+							DE=MATE;
 							;;
 						XFCE)
 							DE=XFCE
@@ -1516,9 +1516,9 @@ detectde () {
 					# classic fallbacks
 					if [ -n "$KDE_FULL_SESSION" ]; then DE=KDE;
 					elif [ -n "$TDE_FULL_SESSION" ]; then DE=Trinity;
-					elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then DE=Gnome;
+					elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then DE=GNOME;
 					elif [ -n "$MATE_DESKTOP_SESSION_ID" ]; then DE=MATE;
-					elif `dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1` ; then DE=Gnome;
+					elif `dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1` ; then DE=GNOME;
 					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=XFCE;
 					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then DE=XFCE
 					elif echo $DESKTOP | grep -q '^Enlightenment'; then DE=Enlightenment;
@@ -1527,7 +1527,7 @@ detectde () {
 
 				case "$DESKTOP_SESSION" in
 					gnome|gnome-fallback|gnome-fallback-compiz )
-						DE=Gnome
+						DE=GNOME
 						;;
 					deepin)
 						DE=Deepin
@@ -1538,7 +1538,7 @@ detectde () {
 					# fallback to checking $DESKTOP_SESSION
 					case "$DESKTOP_SESSION" in
 						gnome)
-							DE=Gnome;
+							DE=GNOME;
 							;;
 						LUMINA|Lumina)
 							DE=Lumina;
@@ -1576,7 +1576,7 @@ detectde () {
 					esac
 				fi
 
-				if [[ ${DE} == "Gnome" ]]; then
+				if [[ ${DE} == "GNOME" ]]; then
 					if type -p xprop >/dev/null 2>&1; then
 						if xprop -name "unity-launcher" >/dev/null 2>&1; then
 							DE="Unity"
@@ -1609,7 +1609,7 @@ detectde () {
 						DEver=$(cinnamon --version)
 						DE="${DE} ${DEver//* }"
 					fi
-				elif [[ ${DE} == "Gnome" || ${DE} == "GNOME" ]]; then
+				elif [[ ${DE} == "GNOME" || ${DE} == "GNOME" ]]; then
 					if type -p gnome-session >/dev/null 2>&1; then
 						DEver=$(gnome-session --version 2> /dev/null)
 						DE="${DE} ${DEver//* }"
@@ -2141,7 +2141,7 @@ detectgtk () {
 					if [ "$background_detect" == "1" ]; then gtkBackground=$(gsettings get org.gnome.desktop.background picture-uri); fi
 				fi
 			;;
-			'GNOME'*|'Gnome'*|'Unity'*|'Budgie') # Desktop Environment found as "GNOME"
+			'GNOME'*|'Unity'*|'Budgie') # Desktop Environment found as "GNOME"
 				if type -p gsettings >/dev/null 2>&1; then
 					gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
 					gtk3Theme=${gtk3Theme//"'"}
