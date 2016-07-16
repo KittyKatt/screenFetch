@@ -905,8 +905,9 @@ detectdistro () {
 
 # Host and User detection - Begin
 detecthost () {
+	myIP=( $(curl -sS ipinfo.io | grep ip | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b") )
 	myUser=${USER}
-	myHost=${HOSTNAME}
+	myHost="${HOSTNAME} $(getColor 'light green')($myIP)"
 	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
 	verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
 }
