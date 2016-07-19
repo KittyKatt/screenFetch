@@ -349,7 +349,7 @@ detectdistro () {
 				done
 			fi
 			case "${distro_detect}" in
-				"CentOS"|"Chapeau"|"Deepin"|"Fedora"|"gNewSense"|"Jiyuu Linux"|"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Raspbian"|"Sabayon"|"Solus"|"SteamOS"|"Trisquel"|"Ubuntu")
+				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"Fedora"|"gNewSense"|"Jiyuu Linux"|"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Raspbian"|"Sabayon"|"Solus"|"SteamOS"|"Trisquel"|"Ubuntu")
 					# no need to fix $distro/$distro_codename/$distro_release
 					distro="${distro_detect}"
 					;;
@@ -393,9 +393,6 @@ detectdistro () {
 					else
 						distro="Debian"
 					fi
-					;;
-				"Devuan")
-					distro="Devuan"
 					;;
 				"elementary"|"elementary OS")
 					distro="elementary OS"
