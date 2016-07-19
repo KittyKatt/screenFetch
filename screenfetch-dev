@@ -1248,7 +1248,7 @@ detectmem () {
 		free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
 		used_mem=$((${total_mem} - ${free_mem}))
 		usedmem=$((${used_mem} / $human))
-	elif [ "$distro" == "FreeBSD" ]; then
+	elif [[ "$distro" == "FreeBSD"  || "$distro" == "DragonFlyBSD" ]]; then
 		phys_mem=$(sysctl -n hw.physmem)
 		size_mem=$phys_mem
 		size_chip=1
