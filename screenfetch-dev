@@ -929,7 +929,7 @@ detectkernel () {
 # Uptime Detection - Begin
 detectuptime () {
 	unset uptime
-	if [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "DragonFlyBSD" ]]; then
 		boot=$(sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1)
 		now=$(date +%s)
 		uptime=$(($now-$boot))
