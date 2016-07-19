@@ -1150,7 +1150,7 @@ detectcpu () {
 
 # GPU Detection - Begin (EXPERIMENTAL!)
 detectgpu () {
-	if [[ "${distro}" == "FreeBSD" ]]; then
+	if [[ "${distro}" == "FreeBSD" || "${distro}" == "DragonFlyBSD" ]]; then
 		nvisettexist=$(which nvidia-settings)
 		if [ -x "$nvisettexist" ]; then
 			gpu="$(nvidia-settings -t -q gpus | grep \( | sed 's/.*(\(.*\))/\1/')"
