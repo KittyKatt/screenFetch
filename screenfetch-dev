@@ -929,7 +929,7 @@ detectkernel () {
 # Uptime Detection - Begin
 detectuptime () {
 	unset uptime
-	if [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "DragonFlyBSD" ]]; then
 		boot=$(sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1)
 		now=$(date +%s)
 		uptime=$(($now-$boot))
@@ -1010,6 +1010,10 @@ detectpkgs () {
 				pkgs=$((${pkgs} + ${pkgsrc_pkgs}))
 			fi
 		;;
+		'DragonFlyBSD')
+			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
+				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | tr -d ' '; fi)
+		;;
 		'OpenBSD')
 			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
 		;;
@@ -1075,7 +1079,7 @@ detectcpu () {
 		fi
 	elif [ "$distro" == "FreeBSD" ]; then
 		cpu=$(dmesg | grep 'CPU:' | head -n 1 | sed -r 's/CPU: //' | sed -e 's/([^()]*)//g')
-	elif [ "$distro" == "DragonflyBSD" ]; then
+	elif [ "$distro" == "DragonFlyBSD" ]; then
 		cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then
 		cpu=$(sysctl -n hw.model | sed 's/@.*//')
@@ -1146,7 +1150,7 @@ detectcpu () {
 
 # GPU Detection - Begin (EXPERIMENTAL!)
 detectgpu () {
-	if [[ "${distro}" == "FreeBSD" ]]; then
+	if [[ "${distro}" == "FreeBSD" || "${distro}" == "DragonFlyBSD" ]]; then
 		nvisettexist=$(which nvidia-settings)
 		if [ -x "$nvisettexist" ]; then
 			gpu="$(nvidia-settings -t -q gpus | grep \( | sed 's/.*(\(.*\))/\1/')"
@@ -1244,7 +1248,7 @@ detectmem () {
 		free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
 		used_mem=$((${total_mem} - ${free_mem}))
 		usedmem=$((${used_mem} / $human))
-	elif [ "$distro" == "FreeBSD" ]; then
+	elif [[ "$distro" == "FreeBSD"  || "$distro" == "DragonFlyBSD" ]]; then
 		phys_mem=$(sysctl -n hw.physmem)
 		size_mem=$phys_mem
 		size_chip=1
@@ -1355,7 +1359,7 @@ detectshell () {
 		else
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
 				shell_type=$(ps -p $PPID -o cmd --no-heading)
-			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
+			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "DragonFlyBSD" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
 				shell_type=$(ps -p $PPID -o command | tail -1)
 			else
 				shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
