@@ -1887,7 +1887,10 @@ detectwmtheme () {
 		;;
 		'Compiz'|'Mutter'*|'GNOME Shell'|'Gala')
 			if type -p gsettings >/dev/null 2>&1; then
-				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
+                Win_theme="$(gsettings get org.gnome.shell.extensions.user-theme name)"
+                if [[ -z "$Win_theme" ]]; then
+				    Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
+                fi
 				Win_theme=${Win_theme//"'"}
 			elif type -p gconftool-2 >/dev/null 2>&1; then
 				Win_theme=$(gconftool-2 -g /apps/metacity/general/theme)
