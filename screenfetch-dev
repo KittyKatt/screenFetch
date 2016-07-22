@@ -1613,7 +1613,7 @@ detectde () {
 						DEver=$(cinnamon --version)
 						DE="${DE} ${DEver//* }"
 					fi
-				elif [[ ${DE} == "GNOME" || ${DE} == "GNOME" ]]; then
+				elif [[ ${DE} == "GNOME" ]]; then
 					if type -p gnome-session >/dev/null 2>&1; then
 						DEver=$(gnome-session --version 2> /dev/null)
 						DE="${DE} ${DEver//* }"
