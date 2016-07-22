@@ -1391,6 +1391,9 @@ detectshell () {
 		zsh)
 			shell_version_data=$( detectshell_ver "$shell_type" "^zsh" "2" )
 			;;
+		fish)
+			shell_version_data=$( fish --version | awk '{print $3}' )
+			;;
 	esac
 
 	if [[ -n $shell_version_data ]];then
