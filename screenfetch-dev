@@ -1109,7 +1109,31 @@ detectcpu () {
 			elif [[ "$(cat /proc/cpuinfo)" =~ "BCM2708" ]]; then
 				model="Broadcom BCM2835 ARM1176JZF-S"
 			else
-				model="IBM PowerPC G3 "
+				arch=$(uname -m)
+				if [ "$arch" = "s390x" ] || [ "$arch" = "s390" ]; then
+					cpu=""
+					args=$(grep 'machine' /proc/cpuinfo | sed 's/^.*://g; s/ //g; s/,/\n/g' | grep '^machine=.*')
+					eval $args
+					case "$machine" in
+						# information taken from https://github.com/SUSE/s390-tools/blob/master/cputype
+						2064) model="IBM eServer zSeries 900" ;;
+						2066) model="IBM eServer zSeries 800" ;;
+						2084) model="IBM eServer zSeries 990" ;;
+						2086) model="IBM eServer zSeries 890" ;;
+						2094) model="IBM System z9 Enterprise Class" ;;
+						2096) model="IBM System z9 Business Class" ;;
+						2097) model="IBM System z10 Enterprise Class" ;;
+						2098) model="IBM System z10 Business Class" ;;
+						2817) model="IBM zEnterprise 196" ;;
+						2818) model="IBM zEnterprise 114" ;;
+						2827) model="IBM zEnterprise EC12" ;;
+						2828) model="IBM zEnterprise BC12" ;;
+						2964) model="IBM z13" ;;
+						*) model="IBM S/390 machine type $machine" ;;
+					esac
+				else
+					model="Unkown"
+				fi
 			fi
 			cpu="${model}${cpu}"
 		fi
