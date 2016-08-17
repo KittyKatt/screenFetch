@@ -104,26 +104,29 @@ getColor() {
 			tmp_color="$(tr '[:upper:]' '[:lower:]' <<< ${1})"
 		fi
 		case "${tmp_color}" in
-			'black')		color_ret='\033[0m\033[30m';;
-			'red')			color_ret='\033[0m\033[31m';;
-			'green')		color_ret='\033[0m\033[32m';;
-			'brown')		color_ret='\033[0m\033[33m';;
-			'blue')			color_ret='\033[0m\033[34m';;
-			'purple')		color_ret='\033[0m\033[35m';;
-			'cyan')			color_ret='\033[0m\033[36m';;
-			'light grey')	color_ret='\033[0m\033[37m';;
+			'black')	color_ret='\033[0m\033[30m';;
+			'red')		color_ret='\033[0m\033[31m';;
+			'green')	color_ret='\033[0m\033[32m';;
+			'brown')	color_ret='\033[0m\033[33m';;
+			'blue')		color_ret='\033[0m\033[34m';;
+			'purple')	color_ret='\033[0m\033[35m';;
+			'cyan')		color_ret='\033[0m\033[36m';;
+			'yellow')	color_ret='\033[0m\033[1;33m';;
+			'white')	color_ret='\033[0m\033[1;37m';;
+			
 			'dark grey')	color_ret='\033[0m\033[1;30m';;
 			'light red')	color_ret='\033[0m\033[1;31m';;
 			'light green')	color_ret='\033[0m\033[1;32m';;
-			'yellow')		color_ret='\033[0m\033[1;33m';;
 			'light blue')	color_ret='\033[0m\033[1;34m';;
 			'light purple')	color_ret='\033[0m\033[1;35m';;
 			'light cyan')	color_ret='\033[0m\033[1;36m';;
-			'white')		color_ret='\033[0m\033[1;37m';;
+			'light grey')	color_ret='\033[0m\033[37m';;
 			# Some 256 colors
 			'orange') color_ret="$(colorize '202')";;
 			# HaikuOS
 			'black_haiku') color_ret="$(colorize '7')";;
+			#ROSA color
+			'rosa_blue') color_ret='\033[01;38;05;25m';;
 		esac
 		[[ -n "${color_ret}" ]] && echo "${color_ret}"
 	else
@@ -189,7 +192,7 @@ detectColors() {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -507,6 +510,11 @@ detectdistro () {
 				"rhel")
 					distro="Red Hat Enterprise Linux"
 					;;
+				"RosaDesktopFresh")
+					distro="ROSA"
+					distro_release=$(grep 'VERSION=' /etc/os-release | cut -d ' ' -f3 | cut -d "\"" -f1)
+					distro_codename=$(grep 'PRETTY_NAME=' /etc/os-release | cut -d ' ' -f4,4)
+					;;
 				"SailfishOS")
 					distro="SailfishOS"
 					if [[ -f /etc/os-release ]]; then
@@ -721,6 +729,7 @@ detectdistro () {
 						else
 							distro="Red Hat Enterprise Linux"
 						fi
+					elif [ -f /etc/rosa-release ]; then distro="ROSA"
 					elif [ -f /etc/slackware-version ]; then distro="Slackware"
 					elif [ -f /usr/share/doc/tc/release.txt ]; then
 						distro="TinyCore"
@@ -879,6 +888,7 @@ detectdistro () {
 		qubes) distro="Qubes OS" ;;
 		raspbian) distro="Raspbian" ;;
 		red*hat*|rhel) distro="Red Hat Enterprise Linux" ;;
+		rosa) distro="ROSA" ;;
 		red*star|red*star*os) distro="Red Star OS" ;;
 		sabayon) distro="Sabayon" ;;
 		sailfish|sailfish*os) distro="SailfishOS" ;;
@@ -979,7 +989,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
-		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
@@ -3285,6 +3295,35 @@ asciiText () {
 "$c1                 ::::::::::::")
 		;;
 
+		"ROSA")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'rosa_blue') # special blue color from ROSA
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="3"
+			fulloutput=(
+"$c1            ROSAROSAROSAROSAR            "
+"$c1         ROSA               AROS         "
+"$c1       ROS   SAROSAROSAROSAR   AROS      "
+"$c1     RO   ROSAROSAROSAROSAROSAR   RO     %s"
+"$c1   ARO  AROSAROSAROSARO      AROS  ROS   %s"
+"$c1  ARO  ROSAROS         OSAR   ROSA  ROS  %s"
+"$c1  RO  AROSA   ROSAROSAROSA    ROSAR  RO  %s"
+"$c1 RO  ROSAR  ROSAROSAROSAR  R  ROSARO  RO %s"
+"$c1 RO  ROSA  AROSAROSAROSA  AR  ROSARO  AR %s"
+"$c1 RO AROS  ROSAROSAROSA   ROS  AROSARO AR %s"
+"$c1 RO AROS  ROSAROSARO   ROSARO  ROSARO AR %s"
+"$c1 RO  ROS  AROSAROS   ROSAROSA AROSAR  AR %s"
+"$c1 RO  ROSA  ROS     ROSAROSAR  ROSARO  RO %s"
+"$c1  RO  ROS     AROSAROSAROSA  ROSARO  AR  %s"
+"$c1  ARO  ROSA   ROSAROSAROS   AROSAR  ARO  %s"
+"$c1   ARO  OROSA      R      ROSAROS  ROS   %s"
+"$c1     RO   AROSAROS   AROSAROSAR   RO     %s"
+"$c1      AROS   AROSAROSAROSARO   AROS      %s"
+"$c1         ROSA               SARO         %s"
+"$c1            ROSAROSAROSAROSAR            %s")
+		;;
+
 		"Red Hat Enterprise Linux")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -4641,6 +4680,7 @@ infoDisplay () {
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS") labelcolor=$(getColor 'light red');;
+		"ROSA") labelcolor=$(getColor 'white');;
 		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
