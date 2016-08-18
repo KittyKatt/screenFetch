@@ -16,7 +16,7 @@
 	- Display exact release version on Windows 10
 	- Use modern logo on Windows 10 and Windows 8
 	- Added detection for Trinity/TWin, chromeos-wm, FLWM, howm, sway, LXQt and Deepin [DEs/WMs]
-	- Added detection for Alpine, BunsenLabs, Chrome OS, Chromium OS, Devuan, KDE neon, Kogaion, Mer, Msys, Netrunner, Oracle Linux, PCLinuxOS, Qubes OS , Red Star OS, SailfishOS, SteamOS and SUSE Linux Enterprise
+	- Added detection for Alpine, BunsenLabs, Chrome OS, Chromium OS, Devuan, KDE neon, Kogaion, Mer, Msys, Netrunner, Oracle Linux, PCLinuxOS, Qubes OS , Red Star OS, ROSA, SailfishOS, SteamOS and SUSE Linux Enterprise
 
 v3.7.0
 	- Show RAM in IEC units (MiB instead of MB)
