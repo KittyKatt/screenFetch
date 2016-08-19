@@ -1734,8 +1734,10 @@ detectde () {
 		fi
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		# https://msdn.microsoft.com/en-us/library/ms724832%28VS.85%29.aspx
-		if [ "$(wmic os get version | grep -o '^\(6\|10\)')" ]; then
+		if [ "$(wmic os get version | grep -o '^\(6\.[01]\)')" ]; then
 			DE='Aero'
+		elif [ "$(wmic os get version | grep -o '^\(6\.[23]\|10\)')" ]; then
+			DE='Mordern UI/Metro'
 		else
 			DE='Luna'
 		fi
@@ -1894,7 +1896,7 @@ detectwm () {
 		wind=$(tasklist | grep -o 'Windawesome' | tr -d '\r \n')
 		if [ "$bugn" = "bugn" ]; then WM="bug.n"
 		elif [ "$wind" = "Windawesome" ]; then WM="Windawesome"
-		else WM="DWM"; fi
+		else WM="DWM/Explorer"; fi
 	fi
 	verboseOut "Finding window manager...found as '$WM'"
 }
