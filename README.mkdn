@@ -26,6 +26,10 @@ command! This script is very easy to add to and can easily be extended.
 1. Install screenfetch from the official repositories with urpmi or rpmdrake.
    e.g.: `urpmi screenfetch`
 
+### Crux Linux
+
+1. Install screenfetch from either [6c37/crux-ports](https://github.com/6c37/crux-ports) or [6c37/crux-ports-git](https://github.com/6c37/crux-ports-git).
+
 ### Mac
 
 1. Run `brew install screenfetch` after installing [Homebrew](http://brew.sh)
