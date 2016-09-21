@@ -77,31 +77,31 @@ verbosity=
 # The below function will allow you to add custom lines of text to the screenfetch output.
 # It will automatically be executed at the right moment if use_customlines is set to 1.
 use_customlines=
-function customlines {
-	
+customlines () {
 	# The following line can serve as an example.
 	# feel free to let the computer generate the output: e. g. using $(cat /etc/motd) or $(upower -d | grep THISORTHAT)
 	# In the example cutom0 line replace <YOUR LABEL> and <your text> with options specified by you.
 	# Also make sure the $custom0 variable in out_array=... matches the one at the beginning of the line
 	#
 	custom0=$(echo -e "$labelcolor YOUR LABEL:$textcolor your text"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
-	
 
 	# Battery percentage and time to full/empty:
-	# (uncomment both lines to use)
+	# (uncomment lines below to use)
 	#
 	#custom1=$(echo -e "$labelcolor Battery:$textcolor $(upower -d | grep percentage | head -n1 | cut -d ' ' -f 15-)"); out_array=( "${out_array[@]}" "$custom1" ); ((display_index++));
-	#if [ "$(upower -d | grep time)" ]; then	custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor $(upower -d | grep time | head -n1 | cut -d ' ' -f 14-) $(upower -d | grep time | head -n1 | cut -d ' ' -f 6-7 | cut -d ':' -f1)"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++)); else custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor power supply plugged in"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++));	fi
-
+	#if [ "$(upower -d | grep time)" ]; then
+	#	battery_time="$(upower -d | grep time | head -n1 | cut -d ' ' -f 14-) $(upower -d | grep time | head -n1 | cut -d ' ' -f 6-7 | cut -d ':' -f1)"
+	#else
+	#	battery_time="power supply plugged in"
+	#fi
+	#custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor $battery_time"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++));
 
 	###########################################
 	##	MY CUSTOM LINES
 	###########################################
-	
+
 	#custom3=...
-
 }
-
 
 
 #############################################
@@ -123,7 +123,7 @@ gtk_2line="no"
 colorize () {
 	printf "\033[38;5;$1m"
 }
-getColor() {
+getColor () {
 	if [[ -n "$1" ]]; then
 		if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
 			if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
@@ -165,16 +165,16 @@ getColor() {
 	fi
 }
 
-verboseOut() {
+verboseOut () {
 	if [[ "$verbosity" -eq "1" ]]; then
 		printf "\033[1;31m:: \033[0m$1\n"
 	fi
 }
 
-errorOut() {
+errorOut () {
 	printf "\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m$1\n"
 }
-stderrOut() {
+stderrOut () {
 	while IFS='' read -r line; do printf "\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m${line}\n"; done
 }
 
@@ -183,7 +183,7 @@ stderrOut() {
 #  Color Defines
 ####################
 
-colorNumberToCode() {
+colorNumberToCode () {
 	number="$1"
 	if [[ "${number}" == "na" ]]; then
 		unset code
@@ -214,7 +214,7 @@ colorNumberToCode() {
 }
 
 
-detectColors() {
+detectColors () {
 	my_colors=$(sed 's/^,/na,/;s/,$/,na/;s/,/ /' <<< "${OPTARG}")
 	my_lcolor=$(awk -F' ' '{print $1}' <<< "${my_colors}")
 	my_lcolor=$(colorNumberToCode "${my_lcolor}")
@@ -228,7 +228,7 @@ supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin an
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
-displayHelp() {
+displayHelp () {
 	printf "${underline}Usage${c0}:\n"
 	printf "  ${0} [OPTIONAL FLAGS]\n\n"
 	printf "screenFetch - a CLI Bash script to show system/theme info in screenshots.\n\n"
@@ -287,7 +287,7 @@ displayHelp() {
 }
 
 
-displayVersion() {
+displayVersion () {
 	printf ${underline}"screenFetch"${c0}" - Version ${scriptVersion}\n"
 	printf "Created by and licensed to Brett Bohnenkamper <kittykatt@kittykatt.us>\n"
 	printf "OS X porting done almost solely by shrx (https://github.com/shrx) and John D. Duncan, III (https://github.com/JohnDDuncanIII).\n\n"
