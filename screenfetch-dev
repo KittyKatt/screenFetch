@@ -97,7 +97,7 @@ customlines () {
 	#custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor $battery_time"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++));
 
 	# Display public IP:
-  	#custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip)"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
+	#custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip)"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
 
 	###########################################
 	##	MY CUSTOM LINES
@@ -1771,7 +1771,7 @@ detectde () {
 		if [ "$(wmic os get version | grep -o '^\(6\.[01]\)')" ]; then
 			DE='Aero'
 		elif [ "$(wmic os get version | grep -o '^\(6\.[23]\|10\)')" ]; then
-			DE='Mordern UI/Metro'
+			DE='Modern UI/Metro'
 		else
 			DE='Luna'
 		fi
