@@ -73,6 +73,37 @@ shotfile=$(printf "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
 
+
+# The below function will allow you to add custom lines of text to the screenfetch output.
+# It will automatically be executed at the right moment if use_customlines is set to 1.
+use_customlines=
+function customlines {
+	
+	# The following line can serve as an example.
+	# feel free to let the computer generate the output: e. g. using $(cat /etc/motd) or $(upower -d | grep THISORTHAT)
+	# In the example cutom0 line replace <YOUR LABEL> and <your text> with options specified by you.
+	# Also make sure the $custom0 variable in out_array=... matches the one at the beginning of the line
+	#
+	custom0=$(echo -e "$labelcolor YOUR LABEL:$textcolor your text"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
+	
+
+	# Battery percentage and time to full/empty:
+	# (uncomment both lines to use)
+	#
+	#custom1=$(echo -e "$labelcolor Battery:$textcolor $(upower -d | grep percentage | head -n1 | cut -d ' ' -f 15-)"); out_array=( "${out_array[@]}" "$custom1" ); ((display_index++));
+	#if [ "$(upower -d | grep time)" ]; then	custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor $(upower -d | grep time | head -n1 | cut -d ' ' -f 14-) $(upower -d | grep time | head -n1 | cut -d ' ' -f 6-7 | cut -d ':' -f1)"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++)); else custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor power supply plugged in"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++));	fi
+
+
+	###########################################
+	##	MY CUSTOM LINES
+	###########################################
+	
+	#custom3=...
+
+}
+
+
+
 #############################################
 #### CODE No need to edit past here CODE ####
 #############################################
@@ -4821,6 +4852,7 @@ infoDisplay () {
 		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
+		if [[ "$use_customlines" = 1 ]]; then customlines; fi
 	fi
 	if [[ "$display_type" == "ASCII" ]]; then
 		asciiText
