@@ -3,6 +3,7 @@
     changelog
 **** **** **** ****
 
+	- Enable easily addable custom lines through customlines() function
 	- Fix issue with extra space and host variable
 	- Improvements to OS X font detection
 	- Fixed package count, shell detection and colors on NetBSD
