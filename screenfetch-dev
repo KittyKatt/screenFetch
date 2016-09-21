@@ -97,7 +97,7 @@ customlines () {
 	#custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor $battery_time"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++));
 
 	# Display public IP:
-	#custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip)"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
+	#custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip)"); out_array=( "${out_array[@]}" "$custom3" ); ((display_index++));
 
 	###########################################
 	##	MY CUSTOM LINES
