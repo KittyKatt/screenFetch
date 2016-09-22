@@ -2572,7 +2572,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(
-"${c1}                   -\`                 %s"
+"${c1}                   -\`                 "
 "${c1}                  .o+\`                %s"
 "${c1}                 \`ooo/                %s"
 "${c1}                \`+oooo:               %s"
@@ -2824,7 +2824,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(""
-"${c1}          odddd            %s"
+"${c1}          odddd            "
 "${c1}       oddxkkkxxdoo        %s"
 "${c1}      ddcoddxxxdoool       %s"
 "${c1}      xdclodod  olol       %s"
@@ -3161,9 +3161,9 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; c5="${my_lcolor}"; fi
 			startline="3"
 			fulloutput=(
-"${c3}                                        _   %s"
-"${c3}                                       (_)  %s"
-"${c1}              |    .                        %s"
+"${c3}                                        _   "
+"${c3}                                       (_)  "
+"${c1}              |    .                        "
 "${c1}          .   |L  /|   .         ${c3} _         %s"
 "${c1}      _ . |\ _| \--+._/| .       ${c3}(_)        %s"
 "${c1}     / ||\| Y J  )   / |/| ./               %s"
@@ -3310,7 +3310,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(
-"${c1}                   :::::::                    %s"
+"${c1}                   :::::::                    "
 "${c1}             :::::::::::::::::::              %s"
 "${c1}          :::::::::::::::::::::::::           %s"
 "${c1}        ::::::::${c2}cllcccccllllllll${c1}::::::        %s"
@@ -3340,9 +3340,9 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="3"
 			fulloutput=(
-"${c1}            ROSAROSAROSAROSAR            %s"
-"${c1}         ROSA               AROS         %s"
-"${c1}       ROS   SAROSAROSAROSAR   AROS      %s"
+"${c1}            ROSAROSAROSAROSAR            "
+"${c1}         ROSA               AROS         "
+"${c1}       ROS   SAROSAROSAROSAR   AROS      "
 "${c1}     RO   ROSAROSAROSAROSAROSAR   RO     %s"
 "${c1}   ARO  AROSAROSAROSARO      AROS  ROS   %s"
 "${c1}  ARO  ROSAROS         OSAR   ROSA  ROS  %s"
@@ -3398,9 +3398,9 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="3"
 			fulloutput=(
-"${c2}          \`++/::-.\`                               %s"
-"${c2}         /o+++++++++/::-.\`                        %s"
-"${c2}        \`o+++++++++++++++o++/::-.\`                %s"
+"${c2}          \`++/::-.\`                               "
+"${c2}         /o+++++++++/::-.\`                        "
+"${c2}        \`o+++++++++++++++o++/::-.\`                "
 "${c2}        /+++++++++++++++++++++++oo++/:-.\`\`        %s"
 "${c2}       .o+ooooooooooooooooooosssssssso++oo++/:-\`  %s"
 "${c2}       ++osoooooooooooosssssssssssssyyo+++++++o:  %s"
@@ -3657,7 +3657,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(
-"${c1}       \`dwoapfjsod\`${c2}           \`dwoapfjsod\`       %s"
+"${c1}       \`dwoapfjsod\`${c2}           \`dwoapfjsod\`       "
 "${c1}    \`xdwdsfasdfjaapz\`${c2}       \`dwdsfasdfjaapzx\`    %s"
 "${c1}  \`wadladfladlafsozmm\`${c2}     \`wadladfladlafsozmm\`  %s"
 "${c1} \`aodowpwafjwodisosoaas\`${c2} \`odowpwafjwodisosoaaso\` %s"
@@ -4010,8 +4010,8 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="2"
 			fulloutput=(
-"${c2}       ╲ ▁▂▂▂▁ ╱        %s"
-"${c2}       ▄███████▄        %s"
+"${c2}       ╲ ▁▂▂▂▁ ╱        "
+"${c2}       ▄███████▄        "
 "${c2}      ▄██${c1} ${c2}███${c1} ${c2}██▄       %s"
 "${c2}     ▄███████████▄      %s"
 "${c2}  ▄█ ▄▄▄▄▄▄▄▄▄▄▄▄▄ █▄   %s"
@@ -4034,7 +4034,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(
-"${c1}                  =/;;/-                    %s"
+"${c1}                  =/;;/-                    "
 "${c1}                 +:    //                   %s"
 "${c1}                /;      /;                  %s"
 "${c1}               -X        H.                 %s"
@@ -4064,7 +4064,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(
-"${c1}..............                                  %s"
+"${c1}..............                                  "
 "${c1}            ..,;:ccc,.                          %s"
 "${c1}          ......''';lxO.                        %s"
 "${c1}.....''''..........,:ld;                        %s"
@@ -4095,7 +4095,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(
-"${c1}..............                                  %s"
+"${c1}..............                                  "
 "${c1}            ..,;:ccc,.                          %s"
 "${c1}          ......''';lxO.                        %s"
 "${c1}.....''''..........,:ld;                        %s"
@@ -4237,7 +4237,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="1"
 			fulloutput=(
-"${c1}               \`.-/::/-\`\`                %s"
+"${c1}               \`.-/::/-\`\`                "
 "${c1}            .-/osssssssso/.              %s"
 "${c1}           :osyysssssssyyys+-            %s"
 "${c1}        \`.+yyyysssssssssyyyyy+.          %s"
@@ -4323,11 +4323,11 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="5"
 			fulloutput=(
-"${c1}            HC]          %s"
-"${c1}          H]]]]          %s"
-"${c1}        H]]]]]]4         %s"
-"${c1}      @C]]]]]]]]*        %s"
-"${c1}     @]]]]]]]]]]xd       %s"
+"${c1}            HC]          "
+"${c1}          H]]]]          "
+"${c1}        H]]]]]]4         "
+"${c1}      @C]]]]]]]]*        "
+"${c1}     @]]]]]]]]]]xd       "
 "${c1}    @]]]]]]]]]]]]]d      %s"
 "${c1}   0]]]]]]]]]]]]]]]]     %s"
 "${c1}   kx]]]]]]x]]x]]]]]%%    %s"
