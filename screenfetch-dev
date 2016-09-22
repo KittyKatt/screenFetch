@@ -3690,9 +3690,9 @@ asciiText () {
 				c6=$(getColor 'blue') # Blue
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; c5="${my_lcolor}"; c6="${my_lcolor}"; fi
-			startline="0"
+			startline="1"
 			fulloutput=(
-"${c1}                               %s"
+"${c1}                               "
 "${c1}                 -/+:.         %s"
 "${c1}                :++++.         %s"
 "${c1}               /+++/.          %s"
@@ -3720,9 +3720,9 @@ asciiText () {
 				c4=$(getColor 'dark grey') # Dark Ggray
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; fi
-			startline="0"
+			startline="1"
 			fulloutput=(
-"${c3}                                       %s"
+"${c3}                                       "
 "${c3}                        ..             %s"
 "${c3}                       dWc             %s"
 "${c3}                     ,X0'              %s"
