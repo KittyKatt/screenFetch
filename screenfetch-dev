@@ -4759,6 +4759,18 @@ asciiText () {
 		done
 
 	else
+		availablespace=$(($(tput cols) - ${logowidth} + 16)) #I dont know why 16 but it works
+		new_out_array=("${out_array[0]}")
+		for ((i=1; i<${#out_array[@]}; i++)); do
+			lines=$(echo ${out_array[i]} | fmt -w $availablespace)
+			IFS=$'\n' read -rd '' -a splitlines <<<"$lines"
+			new_out_array+=("${splitlines[0]}")
+			for ((j=1; j<${#splitlines[*]}; j++)); do
+				line=$(echo -e "$labelcolor $textcolor  ${splitlines[j]}")
+				new_out_array=( "${new_out_array[@]}" "$line" );
+			done
+		done
+		out_array=("${new_out_array[@]}")
 		missinglines=$((${#out_array[*]} + ${startline} - ${#fulloutput[*]}))
 		for ((i=0; i<${missinglines}; i++)); do
 			fulloutput+=("${c1}$(printf '%*s' "$logowidth")%s")
