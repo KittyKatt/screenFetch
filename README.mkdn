@@ -71,7 +71,7 @@ command! This script is very easy to add to and can easily be extended.
 ### ChromeOS/ChromiumOS
 
 0. Requires Developer Mode to be enabled. Instructions to enable it and enter the CLI are here - https://www.chromium.org/chromium-os/poking-around-your-chrome-os-device.
-1. Download the executable file and put it under the `/usr/local/bin/` directory: wget -P /usr/local/bin/ https://raw.githubusercontent.com/KittyKatt/screenFetch/master/screenfetch-dev
+1. Download the executable file and put it under the `/usr/local/bin/` directory: `wget -P /usr/local/bin/ https://raw.githubusercontent.com/KittyKatt/screenFetch/master/screenfetch-dev`
 2. Make the file executable by doing the following: `chmod +x /usr/local/bin/screenfetch-dev`
 
 ### Others
