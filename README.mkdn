@@ -76,7 +76,7 @@ command! This script is very easy to add to and can easily be extended.
 
 ### Others
 
-1. Download the latest source at https://github.com/KittyKatt/screenFetch
+1. Download the latest source at https://github.com/KittyKatt/screenFetch: `wget -P /path/to/screenfetch/ https://raw.githubusercontent.com/KittyKatt/screenFetch/master/screenfetch-dev`
 2. In a terminal, make the file executable by doing the following: `chmod +x /path/to/screenfetch/screenfetch-dev`
 3. Then, either keep it there, or move it to somewhere in your $PATH to make it available without having to use the full path to the script.
 
