@@ -1212,7 +1212,14 @@ detectcpu () {
 	else
 		cpu="$cpu @ ${cpun}${cpufreq}"
 	fi
-	cpu=$(sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor//g' <<< "${cpu}" | xargs)
+	thermal="/sys/class/hwmon/hwmon0/temp1_input"
+	if [ -e $thermal ]; then
+		temp=$(bc <<< "scale=1; $(cat $thermal)/1000")
+	fi
+	if [ -n "$temp" ]; then
+		cpu="$cpu [${temp}°C]"
+	fi
+	cpu=$(sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor|CPU//g' <<< "${cpu}" | xargs)
 	verboseOut "Finding current CPU...found as '$cpu'"
 }
 # CPU Detection - End
