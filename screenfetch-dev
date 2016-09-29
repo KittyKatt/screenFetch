@@ -261,6 +261,7 @@ displayHelp () {
 	printf "   ${bold}-n${c0}                 Do not display ASCII distribution logo.\n"
 	printf "   ${bold}-L${c0}                 Display ASCII distribution logo only.\n"
 	printf "   ${bold}-N${c0}                 Strip all color from output.\n"
+	printf "   ${bold}-w${c0}                 Wrap long lines.\n"
 	printf "   ${bold}-t${c0}                 Truncate output based on terminal width (Experimental!).\n"
 	printf "   ${bold}-p${c0}                 Portrait output.\n"
 	printf "   ${bold}-s [-u IMGHOST]${c0}    Using this flag tells the script that you want it\n"
@@ -308,7 +309,7 @@ case $1 in
 esac
 
 
-while getopts ":hsu:evVEnLNtlS:A:D:o:Bc:d:pa:" flags; do
+while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w" flags; do
 	case $flags in
 		h) displayHelp; exit 0 ;;
 		s) screenshot='1' ;;
@@ -328,6 +329,7 @@ while getopts ":hsu:evVEnLNtlS:A:D:o:Bc:d:pa:" flags; do
 		N) no_color='1' ;;
 		p) portraitSet='Yes' ;;
 		a) art="${OPTARG}" ;;
+		w) lineWrap='Yes' ;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1 ;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1 ;;
 		*) errorOut "Error"; exit 1 ;;
@@ -4759,18 +4761,20 @@ asciiText () {
 		done
 
 	else
-		availablespace=$(($(tput cols) - ${logowidth} + 16)) #I dont know why 16 but it works
-		new_out_array=("${out_array[0]}")
-		for ((i=1; i<${#out_array[@]}; i++)); do
-			lines=$(echo ${out_array[i]} | fmt -w $availablespace)
-			IFS=$'\n' read -rd '' -a splitlines <<<"$lines"
-			new_out_array+=("${splitlines[0]}")
-			for ((j=1; j<${#splitlines[*]}; j++)); do
-				line=$(echo -e "$labelcolor $textcolor  ${splitlines[j]}")
-				new_out_array=( "${new_out_array[@]}" "$line" );
+		if [[ "$lineWrap" = "Yes" ]]; then
+			availablespace=$(($(tput cols) - ${logowidth} + 16)) #I dont know why 16 but it works
+			new_out_array=("${out_array[0]}")
+			for ((i=1; i<${#out_array[@]}; i++)); do
+				lines=$(echo ${out_array[i]} | fmt -w $availablespace)
+				IFS=$'\n' read -rd '' -a splitlines <<<"$lines"
+				new_out_array+=("${splitlines[0]}")
+				for ((j=1; j<${#splitlines[*]}; j++)); do
+					line=$(echo -e "$labelcolor $textcolor  ${splitlines[j]}")
+					new_out_array=( "${new_out_array[@]}" "$line" );
+				done
 			done
-		done
-		out_array=("${new_out_array[@]}")
+			out_array=("${new_out_array[@]}")
+		fi
 		missinglines=$((${#out_array[*]} + ${startline} - ${#fulloutput[*]}))
 		for ((i=0; i<${missinglines}; i++)); do
 			fulloutput+=("${c1}$(printf '%*s' "$logowidth")%s")
