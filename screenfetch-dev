@@ -3497,30 +3497,31 @@ asciiText () {
 		"Solus")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
-				c2=$(getColor 'dark grey') # Light Gray
+				c2=$(getColor 'blue') # Blue
+				c3=$(getColor 'black') # Black
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			logowidth="31"
+			logowidth="36"
 			fulloutput=(
-"${c1}               e         e     %s"
-"${c1}             eee       ee      %s"
-"${c1}            eeee     eee       %s"
-"${c2}        wwwwwwwww${c1}eeeeee        %s"
-"${c2}     wwwwwwwwwwwwwww${c1}eee        %s"
-"${c2}   wwwwwwwwwwwwwwwwwww${c1}eeeeeeee %s"
-"${c2}  wwwww     ${c1}eeeee${c2}wwwwww${c1}eeee    %s"
-"${c2} www          ${c1}eeee${c2}wwwwww${c1}e      %s"
-"${c2} ww             ${c1}ee${c2}wwwwww       %s"
-"${c2} w                 wwwww       %s"
-"${c2}                   wwwww       %s"
-"${c2}                  wwwww        %s"
-"${c2}                 wwwww         %s"
-"${c2}                wwww           %s"
-"${c2}               wwww            %s"
-"${c2}             wwww              %s"
-"${c2}           www                 %s"
-"${c2}         ww                    %s")
+"${c3}             ......               %s"
+"${c3}         .'${c1}D${c3}lddddddddddd'.          %s"
+"${c3}      .'ddd${c1}XM${c3}xdddddddddddddd.       %s"
+"${c3}    .dddddx${c1}MMM0${c3};dddddddddddddd.     %s"
+"${c3}   'dddddl${c1}MMMMMN${c3}cddddddddddddddd.   %s"
+"${c3}  ddddddc${c1}WMMMMMMW${c3}lddddddddddddddd.  %s"
+"${c3} ddddddc${c1}WMMMMMMMMO${c3}ddoddddddddddddd. %s"
+"${c3}.ddddd:${c1}NMMMMMMMMMK${c3}dd${c1}NX${c3}od;c${c1}lxl${c3}dddddd %s"
+"${c3}dddddc${c1}WMMMMMMMMMMNN${c3}dd${c1}MMXl${c3};d${c1}00xl;${c3}ddd.%s"
+"${c3}ddddl${c1}WMMMMMMMMMMMMM${c3}d;${c1}MMMM0${c3}:dl${c1}XMMXk:${c3}'%s"
+"${c3}dddo${c1}WMMMMMMMMMMMMMM${c3}dd${c1}MMMMMW${c3}od${c3};${c1}XMMMOd%s"
+"${c3}.dd${c1}MMMMMMMMMMMMMMMM${c3}d:${c1}MMMMMMM${c3}kd${c1}lMKll %s"
+"${c3}.;dk0${c1}KXNWWMMMMMMMMM${c3}dx${c1}MMMMMMM${c3}Xl;lxK; %s"
+"${c3}  'dddddddd;:cclodcddxddolloxO0O${c1}d'  %s"
+"${c1}   ckkxxxddddddddxxkOOO000Okdool.   %s"
+"${c2}    .lddddxxxxxxddddooooooooood     %s"
+"${c2}      .:oooooooooooooooooooc'       %s"
+"${c2}         .,:looooooooooc;.  %s")
 		;;
 
 		"Mageia")
@@ -4822,12 +4823,12 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun") labelcolor=$(getColor 'light blue');;
+		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Solus") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS") labelcolor=$(getColor 'light red');;
 		"ROSA") labelcolor=$(getColor 'white');;
-		"CrunchBang"|"Solus"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
+		"CrunchBang"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
 		"NetBSD") labelcolor=$(getColor 'orange');;
