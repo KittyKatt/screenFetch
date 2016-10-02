@@ -2125,7 +2125,7 @@ detectgtk () {
 		gtk3Theme="Not Applicable"
 		gtkIcons="Not Applicable"
 		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
-			if [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
+			if [[ ${TERM_PROGRAM} == "iTerm.app" ]] && [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
 				# iTerm2
 
 				iterm2_theme_uuid=$(defaults read com.googlecode.iTerm2 "Default Bookmark Guid")
