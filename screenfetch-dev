@@ -1434,7 +1434,7 @@ detectshell () {
 				shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 			fi
 		else
-			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
+			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "linux-musl" ]]; then
 				shell_type=$(ps -p $PPID -o cmd --no-heading)
 			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "DragonFlyBSD" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
 				shell_type=$(ps -p $PPID -o command | tail -1)
