@@ -5100,9 +5100,7 @@ for i in "${display[@]}"; do
 			if [[ "${display[*]}" =~ "$i" ]]; then
 				if [[ "$errorSuppress" == "1" ]]; then detect${i} 2>/dev/null
 				else
-					exec 3> >(stderrOut)
-					detect${i} 2>&3
-					exec 3>&-
+					detect${i} 2
 				fi
 			fi
 		fi
