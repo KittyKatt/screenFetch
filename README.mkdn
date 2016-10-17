@@ -48,7 +48,6 @@ command! This script is very easy to add to and can easily be extended.
 
 1. Install screenfetch using the [ports](https://freshports.org/sysutils/screenfetch/) system: `cd /usr/ports/sysutils/screenfetch/ && make install clean`
 2. Install screenfetch as a binary package: `pkg install screenFetch`
-3. If screenfetch doesn't work as expected, try to (re-)install bash: `cd /usr/ports/shells/bash/ && make install clean` or `pkg install bash`
 
 ### Fedora (21 or later)
 
