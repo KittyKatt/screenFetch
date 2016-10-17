@@ -1937,8 +1937,10 @@ detectwm () {
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		bugn=$(tasklist | grep -o 'bugn' | tr -d '\r \n')
 		wind=$(tasklist | grep -o 'Windawesome' | tr -d '\r \n')
+		blackbox=$(tasklist | grep -o 'blackbox' | tr -d '\r \n')
 		if [ "$bugn" = "bugn" ]; then WM="bug.n"
 		elif [ "$wind" = "Windawesome" ]; then WM="Windawesome"
+		elif [ "$blackbox" = "blackbox" ]; then WM="Blackbox"
 		else WM="DWM/Explorer"; fi
 	fi
 	verboseOut "Finding window manager...found as '$WM'"
@@ -2101,12 +2103,22 @@ detectwmtheme () {
 			Win_theme="Graphite"
 		fi
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
-		if [[ "${distro}" == "Msys" ]]; then
-			themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' //v 'CurrentTheme')"
+		if [ "${WM}" == "Blackbox" ]; then
+			if [ "${distro}" == "Msys" ]; then
+				Blackbox_loc=$(reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\WinLogon' //v 'Shell')
+			else
+				Blackbox_loc=$(reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\WinLogon' /v 'Shell')
+			fi
+			Blackbox_loc="$(echo ${Blackbox_loc} | sed 's/.*REG_SZ//' | sed -e 's/^[ \t]*//' | sed 's/.\{4\}$//')"
+			Win_theme=$(cat "${Blackbox_loc}.rc" | grep "session.styleFile" | sed 's/ //g' | sed 's/session\.styleFile://g' | sed 's/.*\\//g')
 		else
-			themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme')"
+			if [[ "${distro}" == "Msys" ]]; then
+				themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' //v 'CurrentTheme')"
+			else
+				themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme')"
+			fi
+			Win_theme=$(echo $themeFile| awk -F"\\" '{print $NF}' | sed 's|\.theme$||')
 		fi
-		Win_theme=$(echo $themeFile| awk -F"\\" '{print $NF}' | sed 's|\.theme$||')
 	fi
 
 	verboseOut "Finding window manager theme...found as '$Win_theme'"
