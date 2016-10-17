@@ -5098,9 +5098,10 @@ for i in "${display[@]}"; do
 			 ! [[ $Win_theme ]] && detectwmtheme;
 		else
 			if [[ "${display[*]}" =~ "$i" ]]; then
-				if [[ "$errorSuppress" == "1" ]]; then detect${i} 2>/dev/null
+				if [[ "$errorSuppress" == "1" ]]; then
+					detect${i} 2>/dev/null
 				else
-					detect${i} 2
+					detect${i}
 				fi
 			fi
 		fi
