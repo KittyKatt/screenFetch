@@ -930,6 +930,7 @@ detectdistro () {
 		sailfish|sailfish*os) distro="SailfishOS" ;;
 		slackware) distro="Slackware" ;;
 		solus) distro="Solus" ;;
+		sparky|sparky*linux) distro="SparkyLinux" ;;
 		steam|steam*os) distro="SteamOS" ;;
 		suse*linux*enterprise) distro="SUSE Linux Enterprise" ;;
 		tinycore|tinycore*linux) distro="TinyCore" ;;
@@ -4613,6 +4614,36 @@ asciiText () {
 "${c1}                                             %s")
 		;;
 
+		"SparkyLinux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light gray') # Gray
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			logowidth="48"
+			fulloutput=(
+"${c1}             .            \`-:-\`                %s"
+"${c1}            .o\`       .-///-\`                  %s"
+"${c1}           \`oo\`    .:/++:.                     %s"
+"${c1}           os+\`  -/+++:\` \`\`.........\`\`\`        %s"
+"${c1}          /ys+\`./+++/-.-::::::----......\`\`     %s"
+"${c1}         \`syyo\`++o+--::::-::/+++/-\`\`           %s"
+"${c1}         -yyy+.+o+\`:/:-:sdmmmmmmmmdy+-\`        %s"
+"${c1}  ::-\`   :yyy/-oo.-+/\`ymho++++++oyhdmdy/\`      %s"
+"${c1}  \`/yy+-\`.syyo\`+o..o--h..osyhhddhs+//osyy/\`    %s"
+"${c1}    -ydhs+-oyy/.+o.-: \` \`  :/::+ydhy+\`\`\`-os-   %s"
+"${c1}     .sdddy::syo--/:.     \`.:dy+-ohhho    ./:  %s"
+"${c1}       :yddds/:+oo+//:-\`- /+ +hy+.shhy:     \`\` %s"
+"${c1}        \`:ydmmdysooooooo-.ss\`/yss--oyyo        %s"
+"${c1}          \`./ossyyyyo+:-/oo:.osso- .oys        %s"
+"${c1}         \`\`..-------::////.-oooo/   :so        %s"
+"${c1}      \`...----::::::::--.\`/oooo:    .o:        %s"
+"${c1}             \`\`\`\`\`\`\`     ++o+:\`     \`:\`        %s"
+"${c1}                       ./+/-\`        \`         %s"
+"${c1}                     \`-:-.                     %s"
+"${c1}                     \`\`                        %s")
+		;;
+
 		*)
 			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -4838,7 +4869,7 @@ infoDisplay () {
 		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Solus") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
-		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS") labelcolor=$(getColor 'light red');;
+		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"|"SparkyLinux") labelcolor=$(getColor 'light red');;
 		"ROSA") labelcolor=$(getColor 'white');;
 		"CrunchBang"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan") labelcolor=$(getColor 'light purple');;
