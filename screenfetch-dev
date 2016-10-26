@@ -954,6 +954,7 @@ detectdistro () {
 detecthost () {
 	myUser=${USER}
 	myHost=${HOSTNAME}
+	if [[ -z "$USER" ]]; then myUser=$(whoami); fi
 	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
 	verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
 }
@@ -1426,17 +1427,13 @@ detectshell_ver () {
 }
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
-		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" || "${OSTYPE}" == "gnu" ]]; then
+		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" || "${OSTYPE}" == "gnu" || "${distro}" == "TinyCore" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
-		elif [[ "${distro}" == "TinyCore" ]]; then
-			if [[ "$(readlink "$SHELL")" == "busybox" ]]; then
-				shell_type="BusyBox"
-			else
-				shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
-			fi
+		elif readlink -f "$SHELL" | grep -q "busybox"; then
+			shell_type="BusyBox"
 		else
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "linux-musl" ]]; then
-				shell_type=$(ps -p $PPID -o cmd --no-heading)
+				shell_type=$(cat /proc/$PPID/cmdline|tr '\0' '\n'|head -n 1)
 			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "DragonFlyBSD" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
 				shell_type=$(ps -p $PPID -o command | tail -1)
 			else
