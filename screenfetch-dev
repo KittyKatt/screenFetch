@@ -1245,7 +1245,7 @@ detectgpu () {
 			# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
 		fi
 	elif [[ "${distro}" == "OpenBSD" ]]; then
-		gpu=$(glxinfo | grep 'OpenGL renderer string' | sed 's/OpenGL renderer string: //')
+		gpu=$(glxinfo 2> /dev/null | grep 'OpenGL renderer string' | sed 's/OpenGL renderer string: //')
 	elif [[ "${distro}" == "Mac OS X" ]]; then
 		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
