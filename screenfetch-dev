@@ -28,9 +28,10 @@
 #                        curl (screenshot uploading)
 
 
-LANG=C
-LANGUAGE=C
-LC_ALL=C
+#LANG=C
+#LANGUAGE=C
+#LC_ALL=C
+
 
 scriptVersion="3.7.0"
 
