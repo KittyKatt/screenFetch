@@ -587,9 +587,14 @@ detectdistro () {
 		# Existing File Check
 		if [ "$distro" == "Unknown" ]; then
 			if [ $(uname -o 2>/dev/null) ]; then
-				case "$(uname -o)" in
-					"Cygwin")
-						distro="Cygwin"
+				os="$(uname -o)"
+				case "$os" in
+					"Cygwin"|"FreeBSD"|"OpenBSD"|"NetBSD")
+						distro="$os"
+						fake_distro="${distro}"
+					;;
+					"DragonFly")
+						distro="DragonFlyBSD"
 						fake_distro="${distro}"
 					;;
 					"Msys")
