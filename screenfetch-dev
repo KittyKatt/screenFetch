@@ -1319,24 +1319,21 @@ detectdisk () {
 
 # Memory Detection - Begin
 detectmem () {
-	hw_mem=0
-	free_mem=0
-	human=1024
 	if [ "$distro" == "Mac OS X" ]; then
-		totalmem=$(echo "$(sysctl -n hw.memsize)"/${human}^2|bc)
+		totalmem=$(echo "$(sysctl -n hw.memsize)" / 1024^2 | bc)
 		wiredmem=$(vm_stat | grep wired | awk '{ print $4 }' | sed 's/\.//')
 		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
 		compressedmem=$(vm_stat | grep occupied | awk '{ print $5 }' | sed 's/\.//')
 		if [[ ! -z "$compressedmem | tr -d" ]]; then
 			compressedmem=0
 		fi
-		usedmem=$(((${wiredmem} + ${activemem} + ${compressedmem}) * 4 / $human))
+		usedmem=$(((${wiredmem} + ${activemem} + ${compressedmem}) * 4 / 1024))
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		total_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
-		totalmem=$((${total_mem}/$human))
+		totalmem=$((${total_mem} / 1024))
 		free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
 		used_mem=$((${total_mem} - ${free_mem}))
-		usedmem=$((${used_mem} / $human))
+		usedmem=$((${used_mem} / 1024))
 	elif [[ "$distro" == "FreeBSD"  || "$distro" == "DragonFlyBSD" ]]; then
 		phys_mem=$(sysctl -n hw.physmem)
 		size_mem=$phys_mem
@@ -1347,7 +1344,7 @@ detectmem () {
 			size_chip=`echo "$size_chip * 2" | bc`
 		done
 		round_mem=`echo "( $size_mem / $size_chip + 1 ) * $size_chip " | bc`
-		totalmem=$(($round_mem / ($human * $human) ))
+		totalmem=$(($round_mem / 1024^2 ))
 		pagesize=$(sysctl -n hw.pagesize)
 		inactive_count=$(sysctl -n vm.stats.vm.v_inactive_count)
 		inactive_mem=$(($inactive_count * $pagesize))
@@ -1357,49 +1354,40 @@ detectmem () {
 		free_mem=$(($free_count * $pagesize))
 		avail_mem=$(($inactive_mem + $cache_mem + $free_mem))
 		used_mem=$(($round_mem - $avail_mem))
-		usedmem=$(($used_mem / ($human * $human) ))
+		usedmem=$(($used_mem / 1024^2 ))
 	elif [ "$distro" == "OpenBSD" ]; then
-		totalmem=$(($(sysctl -n hw.physmem) / $human / $human))
-		usedmem=$(($(vmstat | sed -n 3p | awk '{ print $4 }') / $human))
+		totalmem=$(($(sysctl -n hw.physmem) / 1024^2))
+		usedmem=$(($(vmstat | sed -n 3p | awk '{ print $4 }') / 1024))
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
-		totalmem=$((${phys_mem} / $human))
+		totalmem=$((${phys_mem} / 1024))
 		if grep -q 'Cached' /proc/meminfo; then
 			cache=$(awk '/Cached/ {print $2}' /proc/meminfo)
-			usedmem=$((${cache} / $human))
+			usedmem=$((${cache} / 1024))
 		else
 			free_mem=$(awk '/MemFree/ { print $2 }' /proc/meminfo)
 			used_mem=$((${phys_mem} - ${free_mem}))
-			usedmem=$((${used_mem} / $human))
+			usedmem=$((${used_mem} / 1024))
 		fi
 	elif [ "$distro" == "Haiku" ]; then
-		totalmem=$(( $(sysinfo -mem | head -n1 | cut -d'/' -f3 | tr -d ' ' | tr -d ')') / $human / $human ))
-		usedmem=$(( $(sysinfo -mem | head -n1 | cut -d'/' -f2 | sed 's/max//; s/ //g') / $human / $human ))
+		totalmem=$(( $(sysinfo -mem | head -n1 | cut -d'/' -f3 | tr -d ' ' | tr -d ')') / 1024^2 ))
+		usedmem=$(( $(sysinfo -mem | head -n1 | cut -d'/' -f2 | sed 's/max//; s/ //g') / 1024^2 ))
 	else
+		# MemUsed = Memtotal + Shmem - MemFree - Buffers - Cached - SReclaimable
+		# Source: https://github.com/dylanaraps/neofetch/pull/391/files#diff-e863270127ca6116fd30e708cdc582fc
 		mem_info=$(</proc/meminfo)
 		mem_info=$(echo $(echo $(mem_info=${mem_info// /}; echo ${mem_info//kB/})))
 		for m in $mem_info; do
-			if [[ ${m//:*} = MemTotal ]]; then
-				memtotal=${m//*:}
-			fi
-
-			if [[ ${m//:*} = MemFree ]]; then
-				memfree=${m//*:}
-			fi
-
-			if [[ ${m//:*} = Buffers ]]; then
-				membuffer=${m//*:}
-			fi
-
-			if [[ ${m//:*} = Cached ]]; then
-				memcached=${m//*:}
-			fi
+			case ${m//:*} in
+				"MemTotal") memused=$((memused+=${m//*:})); memtotal=${m//*:} ;;
+				"ShMem") memused=$((memused+=${m//*:})) ;;
+				"MemFree"|"Buffers"|"Cached"|"SReclaimable") memused=$((memused-=${m//*:})) ;;
+			esac
 		done
-
-		usedmem="$(((($memtotal - $memfree) - $membuffer - $memcached) / $human))"
-		totalmem="$(($memtotal / $human))"
+		memused=$((memused / 1024))
+		memtotal=$((memtotal / 1024))
 	fi
-	mem="${usedmem}MiB / ${totalmem}MiB"
+	mem="${memused}MiB / ${memtotal}MiB"
 	verboseOut "Finding current RAM usage...found as '$mem'"
 }
 # Memory Detection - End
