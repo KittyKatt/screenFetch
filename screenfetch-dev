@@ -227,7 +227,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -389,7 +389,7 @@ detectdistro () {
 				done
 			fi
 			case "${distro_detect}" in
-				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"Fedora"|"gNewSense"|"Jiyuu Linux"|"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Raspbian"|"Sabayon"|"Solus"|"SteamOS"|"Trisquel"|"Ubuntu")
+				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"Fedora"|"gNewSense"|"Jiyuu Linux"|"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Pardus"|"Raspbian"|"Sabayon"|"Solus"|"SteamOS"|"Trisquel"|"Ubuntu")
 					# no need to fix $distro/$distro_codename/$distro_release
 					distro="${distro_detect}"
 					;;
@@ -760,6 +760,7 @@ detectdistro () {
 							fi
 						fi
 						if [[ "${distro_more}" =~ "Tumbleweed" ]]; then distro_more="Tumbleweed"; fi
+					elif [ -f /etc/pardus-release ]; then distro="Pardus"
 					elif [ -f /etc/pclinuxos-release ]; then distro="PCLinuxOS"
 					elif [ -f /etc/redstar-release ]; then
 						distro="Red Star OS"
@@ -929,6 +930,7 @@ detectdistro () {
 		openbsd) distro="OpenBSD" ;;
 		opensuse) distro="openSUSE" ;;
 		parabolagnu|parabolagnu/linux-libre|'parabola gnu/linux-libre'|parabola) distro="Parabola GNU/Linux-libre" ;;
+		pardus) distro="Pardus" ;;
 		pclinuxos|pclos) distro="PCLinuxOS" ;;
 		peppermint) distro="Peppermint" ;;
 		qubes) distro="Qubes OS" ;;
@@ -4637,6 +4639,37 @@ asciiText () {
 "${c1}                       ./+/-\`        \`         %s"
 "${c1}                     \`-:-.                     %s"
 "${c1}                     \`\`                        %s")
+		;;
+
+		"Pardus")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'yellow') # Light Yellow
+				c2=$(getColor 'dark grey') # Light Gray
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			logowidth="45"
+			fulloutput=(
+""
+"${c1}   .smNdy+-    \`.:/osyyso+:.\`    -+ydmNs.   %s"
+"${c1}  /Md- -/ymMdmNNdhso/::/oshdNNmdMmy/. :dM/  %s"
+"${c1}  mN.     oMdyy- -y          \`-dMo     .Nm  %s"
+"${c1}  .mN+\`  sMy hN+ -:             yMs  \`+Nm.  %s"
+"${c1}   \`yMMddMs.dy \`+\`               sMddMMy\`   %s"
+"${c1}     +MMMo  .\`  .                 oMMM+     %s"
+"${c1}     \`NM/    \`\`\`\`\`.\`    \`.\`\`\`\`\`    +MN\`     %s"
+"${c1}     yM+   \`.-:yhomy    ymohy:-.\`   +My     %s"
+"${c1}     yM:          yo    oy          :My     %s"
+"${c1}     +Ms         .N\`    \`N.      +h sM+     %s"
+"${c1}     \`MN      -   -::::::-   : :o:+\`NM\`     %s"
+"${c1}      yM/    sh   -dMMMMd-   ho  +y+My      %s"
+"${c1}      .dNhsohMh-//: /mm/ ://-yMyoshNd\`      %s"
+"${c1}        \`-ommNMm+:/. oo ./:+mMNmmo:\`        %s"
+"${c1}       \`/o+.-somNh- :yy: -hNmos-.+o/\`       %s"
+"${c1}      ./\` .s/\`s+sMdd+\`\`+ddMs+s\`/s. \`/.      %s"
+"${c1}          : -y.  -hNmddmNy.  .y- :          %s"
+"${c1}           -+       \`..\`       +-           %s"
+"%s")
 		;;
 
 		*)
