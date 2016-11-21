@@ -1,3 +1,4 @@
+
 # screenFetch - The Bash Screenshot Information Tool
 
 ## What is screenFetch?
@@ -39,10 +40,11 @@ command! This script is very easy to add to and can easily be extended.
 1. Emerge screenfetch from portage using `emerge screenfetch`
 2. Sabayon users can install screenfetch from entropy using `equo install screenfetch`
 
-### Ubuntu (>14.04) and Debian (stable/testing/unstable)
+### Ubuntu and Debian (stable/testing/unstable)
 
-1. Install: `apt-get install screenfetch`
-2. There is also a PPA for Ubuntu located at https://launchpad.net/%7Edjcj/+archive/ubuntu/screenfetch
+1. Ubuntu 16.04+: `sudo apt install screenfetch`
+2. 14.04 or Debian: `sudo apt-get install screenfetch`
+3. There is also a PPA for Ubuntu located at https://launchpad.net/%7Edjcj/+archive/ubuntu/screenfetch
 
 ### FreeBSD
 
@@ -132,3 +134,5 @@ If you would like to suggest something new, inform me of an issue in the
 script, become part of the project, or talk to me about anything else,
 you can either email me at `zeldarealm@gmail.com` or you can connect
 to Rizon and reach me at `irc://irc.rizon.net/screenFetch`
+
+
