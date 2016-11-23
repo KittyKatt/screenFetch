@@ -3,6 +3,7 @@
     changelog
 **** **** **** ****
 
+        - Added Fux logo
 	- Enable easily addable custom lines through customlines() function
 	- Line wrapping with '-w' command line option
 	- Fix issue with extra space and host variable
