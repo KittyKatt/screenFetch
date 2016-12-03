@@ -227,7 +227,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -402,6 +402,10 @@ detectdistro () {
 					fi
 					if grep -q -i 'logos' /etc/os-release; then
 						distro="Logos"
+						distro_release="n/a"
+					fi
+					if grep -q -i 'swagarch' /etc/os-release; then
+						distro="SwagArch"
 						distro_release="n/a"
 					fi
 					;;
@@ -951,6 +955,7 @@ detectdistro () {
 		sparky|sparky*linux) distro="SparkyLinux" ;;
 		steam|steam*os) distro="SteamOS" ;;
 		suse*linux*enterprise) distro="SUSE Linux Enterprise" ;;
+		swagarch) distro="SwagArch" ;;
 		tinycore|tinycore*linux) distro="TinyCore" ;;
 		trisquel) distro="Trisquel";;
 		ubuntu)
@@ -4698,6 +4703,34 @@ asciiText () {
 "${c1}          : -y.  -hNmddmNy.  .y- :          %s"
 "${c1}           -+       \`..\`       +-           %s"
 "%s")
+		;;
+
+		"SwagArch")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'white') # White
+				c2=$(getColor 'light blue') # Light Blue
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			logowidth="48"
+			fulloutput=(
+"${c1}                                               %s"
+"${c1}          .;ldkOKXXNNNNXXK0Oxoc,.              %s"
+"${c1}     ,lkXMMNK0OkkxkkOKWMMMMMMMMMM;             %s"
+"${c1}   'K0xo  ..,;:c:.     \`'lKMMMMM0              %s"
+"${c1}       .lONMMMMMM'         \`lNMk'              %s"
+"${c1}      ;WMMMMMMMMMO.              ${c2}....::...     %s"
+"${c1}      OMMMMMMMMMMMMKl.       ${c2}.,;;;;;ccccccc,   %s"
+"${c1}      \`0MMMMMMMMMMMMMM0:         ${c2}.. .ccccccc.  %s"
+"${c1}        'kWMMMMMMMMMMMMMNo.   ${c2}.,:'  .ccccccc.  %s"
+"${c1}          \`c0MMMMMMMMMMMMMN,${c2},:c;    :cccccc:   %s"
+"${c1}   ckl.      \`lXMMMMMMMMMX${c2}occcc:.. ;ccccccc.   %s"
+"${c1}  dMMMMXd,     \`OMMMMMMWk${c2}ccc;:''\` ,ccccccc:    %s"
+"${c1}  XMMMMMMMWKkxxOWMMMMMNo${c2}ccc;     .cccccccc.    %s"
+"${c1}   \`':ldxO0KXXXXXK0Okdo${c2}cccc.     :cccccccc.    %s"
+"${c2}                      :ccc:'     \`cccccccc:,   %s"
+"${c2}                                     ''        %s"
+"${c2}                                               %s")
 		;;
 
 		*)
