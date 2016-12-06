@@ -227,7 +227,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -546,6 +546,9 @@ detectdistro () {
 					distro="Parabola GNU/Linux-libre"
 					distro_codename="n/a"
 					distro_release="n/a"
+					;;
+				"Parrot"|"Parrot Security")
+					distro="Parrot Security"
 					;;
 				"PCLinuxOS")
 					distro="PCLinuxOS"
@@ -941,6 +944,7 @@ detectdistro () {
 		opensuse) distro="openSUSE" ;;
 		parabolagnu|parabolagnu/linux-libre|'parabola gnu/linux-libre'|parabola) distro="Parabola GNU/Linux-libre" ;;
 		pardus) distro="Pardus" ;;
+		parrot|parrot*security) distro="Parrot Security" ;;
 		pclinuxos|pclos) distro="PCLinuxOS" ;;
 		peppermint) distro="Peppermint" ;;
 		qubes) distro="Qubes OS" ;;
@@ -1046,7 +1050,7 @@ detectpkgs () {
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Obarun'|'SwagArch') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Fuduntu'|'Ubuntu'|'Mint'|'KDE neon'|'Debian'|'Devuan'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS') pkgs=$(dpkg -l | grep -c ^i) ;;
+		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security') pkgs=$(dpkg -l | grep -c ^i) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
@@ -4733,6 +4737,40 @@ asciiText () {
 "${c2}                                               %s")
 		;;
 
+		"Parrot Security")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') # Light Blue
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			logowidth="43"
+			fulloutput=(
+"${c1}    ,:oho/-.                              %s"
+"${c1}   mMMMMMMMMMMMNmmdhy-                    %s"
+"${c1}   dMMMMMMMMMMMMMMMMMMs.                  %s"
+"${c1}   +MMsohNMMMMMMMMMMMMMm/                 %s"
+"${c1}   .My   .+dMMMMMMMMMMMMMh.               %s"
+"${c1}    +       :NMMMMMMMMMMMMNo              %s"
+"${c1}             \`yMMMMMMMMMMMMMm:            %s"
+"${c1}               /NMMMMMMMMMMMMMy.          %s"
+"${c1}                .hMMMMMMMMMMMMMN+         %s"
+"${c1}                    \`\`-NMMMMMMMMMd-       %s"
+"${c1}                       /MMMMMMMMMMMs.     %s"
+"${c1}                        mMMMMMMMsyNMN/    %s"
+"${c1}                        +MMMMMMMo  :sNh.  %s"
+"${c1}                        \`NMMMMMMm     -o/ %s"
+"${c1}                         oMMMMMMM.        %s"
+"${c1}                         \`NMMMMMM+        %s"
+"${c1}                          +MMd/NMh        %s"
+"${c1}                           mMm -mN\`       %s"
+"${c1}                           /MM  \`h:       %s"
+"${c1}                            dM\`   .       %s"
+"${c1}                            :M-           %s"
+"${c1}                             d:           %s"
+"${c1}                             -+           %s"
+"${c1}                              -           %s")
+		;;
+
 		*)
 			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -4955,7 +4993,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Solus"|"SwagArch") labelcolor=$(getColor 'light blue');;
+		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Solus"|"SwagArch"|"Parrot Security") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"|"SparkyLinux") labelcolor=$(getColor 'light red');;
