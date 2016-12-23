@@ -389,7 +389,7 @@ detectdistro () {
 				done
 			fi
 			case "${distro_detect}" in
-				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"Fedora"|"gNewSense"|"Jiyuu Linux"|"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Pardus"|"Raspbian"|"Sabayon"|"Solus"|"SteamOS"|"Trisquel"|"Ubuntu")
+				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"Fedora"|"gNewSense"|"Jiyuu Linux"|"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Pardus"|"Raspbian"|"Sabayon"|"Solus"|"SteamOS"|"Trisquel"|"Ubuntu"|"GrombyangOS")
 					# no need to fix $distro/$distro_codename/$distro_release
 					distro="${distro_detect}"
 					;;
@@ -962,6 +962,7 @@ detectdistro () {
 		swagarch) distro="SwagArch" ;;
 		tinycore|tinycore*linux) distro="TinyCore" ;;
 		trisquel) distro="Trisquel";;
+		grombyangos) distro="GrombyangOS" ;;
 		ubuntu)
 			distro="Ubuntu"
 			if grep -q 'Microsoft' /proc/version 2>/dev/null || \
@@ -1050,7 +1051,7 @@ detectpkgs () {
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Obarun'|'SwagArch') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security') pkgs=$(dpkg -l | grep -c ^i) ;;
+		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'|'GrombyangOS') pkgs=$(dpkg -l | grep -c ^i) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
@@ -3543,6 +3544,37 @@ asciiText () {
 "${c2}           NZZZZZZZZZZZ${c1}MMMMM           %s"
 "${c2}              ZZZZZZZZZ${c1}MM              %s")
 		;;
+		
+"Grombyang"|"GrombyangOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') 
+				c2=$(getColor 'light green')
+				c3=$(getColor 'light red')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(
+"${c1}             eeeeeeeeeeee                           %s"
+"${c1}          eeeeeeeeeeeeeeeee          %s"
+"${c1}       eeeeeeeeeeeeeeeeeeeeeee       %s"
+"${c1}     eeeee       "${c2}".o+       "${c1}"eeee      %s"
+"${c1}   eeee         "${c2}"\`ooo/         "${c1}"eeee   %s"
+"${c1}  eeee         "${c2}"\`+oooo:         "${c1}"eeee  %s"
+"${c1} eee          "${c2}"\`+oooooo:          "${c1}"eee %s"
+"${c1} eee          "${c2}"-+oooooo+:         "${c1}"eee %s"
+"${c1} ee         "${c2}"\`/:oooooooo+:         "${c1}"ee %s"
+"${c1} ee        "${c2}"\`/+   +++    +:        "${c1}"ee %s"
+"${c1} ee              "${c2}"+o+\             "${c1}"ee %s"
+"${c1} eee             "${c2}"+o+\            "${c1}"eee %s"
+"${c1} eee        "${c2}"//  \\ooo/  \\\         "${c1}"eee %s"
+"${c1}  eee      "${c2}"//++++oooo++++\\\      "${c1}"eee  %s"
+"${c1}   eeee    "${c2}"::::++oooo+:::::   "${c1}"eeee   %s"
+"${c1}     eeeee   "${c3}"Grombyang OS "${c1}"  eeee     %s"
+"${c1}       eeeeeeeeeeeeeeeeeeeeeee       %s"
+"${c1}          eeeeeeeeeeeeeeeee          %s"
+"                                     %s"
+"                                     %s")	
+	;;
 
 		"Solus")
 			if [[ "$no_color" != "1" ]]; then
