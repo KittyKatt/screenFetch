@@ -992,12 +992,16 @@ detecthost () {
 
 # Kernel Version Detection - Begin
 detectkernel () {
+	if [[ "$distro" == "OpenBSD" ]]; then
+		kernel=$(sysctl kern.version|awk -F'[ =:]' 'NR==1{print $3" "$4" "$5}')
+	else
 	# compatibility for older versions of OS X:
 	kernel=$(uname -m && uname -sr)
 	kernel=${kernel//$'\n'/ }
 	#kernel=( $(uname -srm) )
 	#kernel="${kernel[${#kernel[@]}-1]} ${kernel[@]:0:${#kernel[@]}-1}"
 	verboseOut "Finding kernel version...found as '${kernel}'"
+fi
 }
 # Kernel Version Detection - End
 
@@ -1091,7 +1095,7 @@ detectpkgs () {
 				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | tr -d ' '; fi)
 		;;
 		'OpenBSD')
-			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
+			pkgs=$(pkg_info | grep -c .)
 		;;
 		'FreeBSD')
 			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
@@ -1374,8 +1378,8 @@ detectmem () {
 		used_mem=$(($round_mem - $avail_mem))
 		usedmem=$(($used_mem / 1024^2 ))
 	elif [ "$distro" == "OpenBSD" ]; then
-		totalmem=$(($(sysctl -n hw.physmem) / 1024^2))
-		usedmem=$(($(vmstat | sed -n 3p | awk '{ print $4 }') / 1024))
+		totalmem=$(($(sysctl -n hw.physmem) / 1024 / 1024))
+		usedmem=$(($(vmstat | awk '!/[a-z]/{print $4}') / 1024))
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${phys_mem} / 1024))
@@ -1397,15 +1401,15 @@ detectmem () {
 		mem_info=$(echo $(echo $(mem_info=${mem_info// /}; echo ${mem_info//kB/})))
 		for m in $mem_info; do
 			case ${m//:*} in
-				"MemTotal") memused=$((memused+=${m//*:})); memtotal=${m//*:} ;;
-				"ShMem") memused=$((memused+=${m//*:})) ;;
-				"MemFree"|"Buffers"|"Cached"|"SReclaimable") memused=$((memused-=${m//*:})) ;;
+				"MemTotal") usedmem=$((usedmem+=${m//*:})); totalmem=${m//*:} ;;
+				"ShMem") usedmem=$((usedmem+=${m//*:})) ;;
+				"MemFree"|"Buffers"|"Cached"|"SReclaimable") usedmem=$((usedmem-=${m//*:})) ;;
 			esac
 		done
-		memused=$((memused / 1024))
-		memtotal=$((memtotal / 1024))
+		usedmem=$((usedmem / 1024))
+		totalmem=$((totalmem / 1024))
 	fi
-	mem="${memused}MiB / ${memtotal}MiB"
+	mem="${usedmem}MiB / ${totalmem}MiB"
 	verboseOut "Finding current RAM usage...found as '$mem'"
 }
 # Memory Detection - End
