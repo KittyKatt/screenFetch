@@ -992,12 +992,16 @@ detecthost () {
 
 # Kernel Version Detection - Begin
 detectkernel () {
+	if [[ "$distro" == "OpenBSD" ]]; then
+		kernel=$(sysctl kern.version|awk -F'[ =]' 'NR==1{print $3" "$4}')
+	else
 	# compatibility for older versions of OS X:
 	kernel=$(uname -m && uname -sr)
 	kernel=${kernel//$'\n'/ }
 	#kernel=( $(uname -srm) )
 	#kernel="${kernel[${#kernel[@]}-1]} ${kernel[@]:0:${#kernel[@]}-1}"
 	verboseOut "Finding kernel version...found as '${kernel}'"
+fi
 }
 # Kernel Version Detection - End
 
@@ -1091,7 +1095,7 @@ detectpkgs () {
 				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | tr -d ' '; fi)
 		;;
 		'OpenBSD')
-			pkgs=$(pkg_info | wc -l | awk '{sub(" ", "");print $1}')
+			pkgs=$(pkg_info | grep -c .)
 		;;
 		'FreeBSD')
 			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
