@@ -993,7 +993,7 @@ detecthost () {
 # Kernel Version Detection - Begin
 detectkernel () {
 	if [[ "$distro" == "OpenBSD" ]]; then
-		kernel=$(sysctl kern.version|awk -F'[ =]' 'NR==1{print $3" "$4}')
+		kernel=$(sysctl kern.version|awk -F'[ =:]' 'NR==1{print $3" "$4" "$5}')
 	else
 	# compatibility for older versions of OS X:
 	kernel=$(uname -m && uname -sr)
