@@ -52,9 +52,9 @@ command! This script is very easy to add to and can easily be extended.
 2. Install screenfetch as a binary package: `pkg install screenFetch`
 3. Make sure fdescfs(5) and procfs(5) are mounted, they're required by bash(1).
 
-### Fedora (21 or later)
+### Fedora
 
-1. Install it with yum running: `yum install screenfetch`
+1. Install it with dnf running: `dnf install screenfetch`
 
 ### KaOS
 
