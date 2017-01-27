@@ -2292,16 +2292,23 @@ detectgtk () {
 				#fi
 			;;
 			'XFCE'*) # Desktop Environment found as "XFCE"
-				if type -p xfconf-query >/dev/null 2>&1; then
-					gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName)
-				fi
+				if [ "$distro" == "BunsenLabs" ] ; then
+					gtk2Theme=$(awk -F'"' '/^gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
+					gtk3Theme=$(awk -F'=' '/^gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
+					gtkIcons=$(awk -F'"' '/^gtk-icon-theme/ {print $2}' $HOME/.gtkrc-2.0)
+					gtkFont=$(awk -F'"' '/^gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
+				else
+					if type -p xfconf-query >/dev/null 2>&1; then
+						gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName)
+					fi
 
-				if type -p xfconf-query >/dev/null 2>&1; then
-					gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
-				fi
+					if type -p xfconf-query >/dev/null 2>&1; then
+						gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
+					fi
 
-				if type -p xfconf-query >/dev/null 2>&1; then
-					gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
+					if type -p xfconf-query >/dev/null 2>&1; then
+						gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
+					fi
 				fi
 			;;
 			'LXDE'*)
