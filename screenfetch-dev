@@ -409,6 +409,9 @@ detectdistro () {
 						distro_release="n/a"
 					fi
 					;;
+				"AuroraOS"|"auroraos")
+					distro="AuroraOS"
+					;;
 				"BLAG")
 					distro="BLAG"
 					distro_more="$(head -n1 /etc/fedora-release)"
@@ -708,6 +711,7 @@ detectdistro () {
 			if [[ "${distro}" == "Unknown" ]]; then
 				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
 					if [ -f /etc/arch-release ]; then distro="Arch Linux"
+					elif [ -f /etc/auroraos-release ]; then distro="AuroraOS"
 					elif [ -f /etc/chakra-release ]; then distro="Chakra"
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
 					elif [ -f /etc/debian_version ]; then
@@ -891,6 +895,7 @@ detectdistro () {
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
+		auroraos) distro="AuroraOS" ;;
 		blag) distro="BLAG" ;;
 		bunsenlabs) distro="BunsenLabs" ;;
 		centos) distro="CentOS" ;;
@@ -1055,7 +1060,7 @@ detectpkgs () {
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Obarun'|'SwagArch') pkgs=$(pacman -Qq | wc -l) ;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'|'GrombyangOS') pkgs=$(dpkg -l | grep -c ^i) ;;
+		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'|'GrombyangOS'|'AuroraOS') pkgs=$(dpkg -l | grep -c ^i) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Chrome OS'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
@@ -2635,6 +2640,34 @@ asciiText () {
 "${c2} .\`                                 \`/%s")
 		;;
 
+		"AuroraOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'white') # White
+				c2=$(getColor 'light green') # Bold Green
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			logowidth="38"
+			fulloutput=(
+"${c2}                                %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2} MMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c2}                                %s")
+
+		;;
+		
 		"Mint")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
