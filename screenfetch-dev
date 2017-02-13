@@ -3039,22 +3039,22 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c2}          --/+osssso+/--          %s" 
-"${c2}       -/oshhhhhhhhhhhhso/-       %s"
-"${c2}     :oyhhhhhso+//+oshhhhhso:     %s"
-"${c2}   -+yhhhh+.   ss+/   .+hhhhs+-   %s"
-"${c2}  :/hhhh/     shhhy/     /hhhh/:  %s"
-"${c2} ./hhhh- .++:..dhhb..:++. -hhhh/. %s"
-"${c2} +ohhh: -hoyhohhoohhohyoh- :hhho+ %s"
-"${c2} /hhhh   shhy-ohyyho-yhhs   hhhh/ %s"
-"${c2} /hhhh    shy\+hhhh+/yhs    hhhh/ %s"
-"${c2} +ohhh:  .:d. +:ys:+ .b:.  :hhho+ %s"
-"${c2} ./hhhh- do  /  oo  \  ob -hhhh/. %s"
-"${c2}  :/hhhh/   -   ss   -   /hhhh/:  %s"
-"${c2}   -+shhhh+.    //    .+hhhhs+-   %s"
-"${c2}     :oshhhhhso+//+oshhhhhso:     %s"
-"${c2}       -/oshhhhhhhhhhhhso/-       %s"
-"${c2}          --/+osssso+/--          %s")
+"${c2}           --/+osssso+/--           %s" 
+"${c2}        -/oshhhhhhhhhhhhso/-        %s"
+"${c2}      :oyhhhhhso+//+oshhhhhso:      %s"
+"${c2}    -+yhhhh+.   ss+/   .+hhhhs+-    %s"
+"${c2}   :/hhhh/     shhhy/     /hhhh/:   %s"
+"${c2}  ./hhhh- .++:..dhhb..:++. -hhhh/.  %s"
+"${c2}  +ohhh: -hoyhohhoohhohyoh- :hhho+  %s"
+"${c2}  /hhhh   shhy-ohyyho-yhhs   hhhh/  %s"
+"${c2}  /hhhh    shy\+hhhh+/yhs    hhhh/  %s"
+"${c2}  +ohhh:  .:d. +:ys:+ .b:.  :hhho+  %s"
+"${c2}  ./hhhh- do  /  oo  \  ob -hhhh/.  %s"
+"${c2}   :/hhhh/   -   ss   -   /hhhh/:   %s"
+"${c2}    -+shhhh+.    //    .+hhhhs+-    %s"
+"${c2}      :oshhhhhso+//+oshhhhhso:      %s"
+"${c2}        -/oshhhhhhhhhhhhso/-        %s"
+"${c2}           --/+osssso+/--           %s")
 		;;
 
 		"Chapeau")
