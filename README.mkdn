@@ -55,6 +55,10 @@ command! This script is very easy to add to and can easily be extended.
 
 1. Install it with yum running: `yum install screenfetch`
 
+### Fux
+
+1. Installation: `dnf install screenfetch`
+
 ### KaOS
 
 1. Install screenfetch from the official repositories with octopi or pacman.
