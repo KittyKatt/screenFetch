@@ -470,6 +470,12 @@ detectdistro () {
 					else
 						distro="Gentoo"
 					fi
+					. /etc/portage/make.conf #detecting release stable/testing/experimental
+					case $ACCEPT_KEYWORDS in
+        				[a-z]*) distro_release=stable       ;;
+        				~*)     distro_release=testing      ;;
+        				'**')   distro_release=experimental ;; #experimental usually includes git-versions.
+					esac
 					;;
 				"LinuxDeepin")
 					distro="LinuxDeepin"
