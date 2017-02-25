@@ -4354,7 +4354,7 @@ asciiText () {
 			logowidth="35"
 			fulloutput=(
 "${c1}                     ..            %s"
-W"${c1}  .....         ..OSSAAAAAAA..     %s"
+"${c1}  .....         ..OSSAAAAAAA..     %s"
 "${c1} .KKKKSS.     .SSAAAAAAAAAAA.      %s"
 "${c1}.KKKKKSO.    .SAAAAAAAAAA...       %s"
 "${c1}KKKKKKS.   .OAAAAAAAA.             %s"
@@ -5322,6 +5322,7 @@ if [[ "$overrideDisplay" ]]; then
 	done
 	IFS=$OLDIFS
 fi
+
 # Check for android
 if [ -f /system/build.prop ]; then
 	distro="Android"
@@ -5349,7 +5350,6 @@ for i in "${display[@]}"; do
 		fi
 	fi
 done
-echo $cpu
 
 if [ "$gpu" = 'Not Found' ] ; then
 DetectIntelGPU
