@@ -1329,6 +1329,36 @@ detectgpu () {
 }
 # GPU Detection - End
 
+DetectIntelGPU() #@ Detect Intel GPU  #works in dash
+{                #@ Run it only on Intel Processors
+                 #@ if GPU unknown
+gpu=$(awk '{print $2}' /proc/fb)
+
+  case $gpu in
+       *intel*) gpu=intel ;;
+  esac
+
+        if [ $gpu = intel ]
+        then
+          #Detect CPU
+          local CPU=$(uname -p | awk '{print $3}')
+          CPU=${CPU#*'-'}; #Detect CPU number
+
+          #Detect Intel GPU
+     case $CPU in
+     [3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])  gpu='Intel HD Graphics'            ;; #1st
+         2[1-5][0-3][0-2]*|2390T|2600S)     gpu='Intel HD Graphics 2000'       ;; #2nd
+         2[1-5][1-7][0-8]*|2105|2500K)      gpu='Intel HD Graphics 3000'       ;; #2nd
+         32[1-5]0*|3[4-5][5-7]0*|33[3-4]0*) gpu='Intel HD Graphics 2500'       ;; #3rd
+         3570K|3427U)                       gpu='Intel HD Graphics 4000'       ;; #3rd
+         4[3-7][0-9][0-5]*)                 gpu='Intel HD Graphics 4600'       ;; #4th Haswell
+         5[5-6]75[C-R]|5350H)               gpu='Intel Iris Pro Graphics 6200' ;; #5th Broadwell
+                                                                                  #6th Skylake
+                                                                                  #7th Kabylake
+                                                                                  #8th Cannonlake
+    esac
+        fi
+}
 
 # Disk Usage Detection - Begin
 detectdisk () {
@@ -4324,7 +4354,7 @@ asciiText () {
 			logowidth="35"
 			fulloutput=(
 "${c1}                     ..            %s"
-"${c1}  .....         ..OSSAAAAAAA..     %s"
+W"${c1}  .....         ..OSSAAAAAAA..     %s"
 "${c1} .KKKKSS.     .SSAAAAAAAAAAA.      %s"
 "${c1}.KKKKKSO.    .SAAAAAAAAAA...       %s"
 "${c1}KKKKKKS.   .OAAAAAAAA.             %s"
@@ -5250,7 +5280,6 @@ if [[ -f "$HOME/.screenfetchOR" ]]; then
 	source $HOME/.screenfetchOR
 fi
 
-
 if [[ "$overrideDisplay" ]]; then
 	verboseOut "Found 'd' flag in syntax. Overriding display..."
 	OLDIFS=$IFS
@@ -5293,7 +5322,6 @@ if [[ "$overrideDisplay" ]]; then
 	done
 	IFS=$OLDIFS
 fi
-
 # Check for android
 if [ -f /system/build.prop ]; then
 	distro="Android"
@@ -5321,6 +5349,12 @@ for i in "${display[@]}"; do
 		fi
 	fi
 done
+echo $cpu
+
+if [ "$gpu" = 'Not Found' ] ; then
+DetectIntelGPU
+fi
+
 
 infoDisplay
 [ "$screenshot" == "1" ] && takeShot
