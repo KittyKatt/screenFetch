@@ -40,11 +40,10 @@ command! This script is very easy to add to and can easily be extended.
 1. Emerge screenfetch from portage using `emerge screenfetch`
 2. Sabayon users can install screenfetch from entropy using `equo install screenfetch`
 
-### Ubuntu and Debian (stable/testing/unstable)
+### Ubuntu and Debian
 
-1. Ubuntu 16.04+: `sudo apt install screenfetch`
-2. 14.04 or Debian: `sudo apt-get install screenfetch`
-3. There is also a PPA for Ubuntu located at https://launchpad.net/%7Edjcj/+archive/ubuntu/screenfetch
+1. Install from the official repositories: `apt install screenfetch`
+2. There is also a PPA for Ubuntu located at https://launchpad.net/%7Edjcj/+archive/ubuntu/screenfetch
 
 ### FreeBSD
 
