@@ -5324,7 +5324,7 @@ if [[ "$overrideDisplay" ]]; then
 fi
 
 # Check for android
-if [ -f /system/build.prop ]; then
+if [ -f /system/build.prop ] && [ "${distro}" != "SailfishOS" ]; then
 	distro="Android"
 	detectmem
 	detectuptime
