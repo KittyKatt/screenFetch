@@ -3,7 +3,13 @@
     changelog
 **** **** **** ****
 
-        - Added Fux logo
+v3.8.0
+	- Additional Intel GPU checks
+	- Gentoo release check (whether it's stable/testing/experimental)
+	- Chromebrew detection for Chrome OS pkgs
+	- OpenBSD fixes
+	- Manjaro logo updated
+	- Added Fux logo
 	- Enable easily addable custom lines through customlines() function
 	- Line wrapping with '-w' command line option
 	- Fix issue with extra space and host variable
@@ -21,7 +27,7 @@
 	- Support for Blackbox on Windows
 	- Improve BusyBox shell detection
 	- Added detection for Trinity/TWin, chromeos-wm, FLWM, howm, sway, LXQt and Deepin [DEs/WMs]
-	- Added detection for Alpine, BunsenLabs, Chrome OS, Chromium OS, Devuan, KDE neon, Kogaion, Mer, Msys, Netrunner, Oracle Linux, PCLinuxOS, Qubes OS , Pardus, Red Star OS, ROSA, SailfishOS, SparkyLinux, SteamOS, SUSE Linux Enterprise and SwagArch
+	- Added detection for Alpine, BunsenLabs, Chrome OS, Chromium OS, Devuan, Fux, GrombyangOS, KDE neon, Kogaion, Mer, Msys, Netrunner, Oracle Linux, PCLinuxOS, Qubes OS, Parrot Security, Pardus, Red Star OS, ROSA, SailfishOS, SparkyLinux, SteamOS, SUSE Linux Enterprise and SwagArch
 
 v3.7.0
 	- Show RAM in IEC units (MiB instead of MB)
