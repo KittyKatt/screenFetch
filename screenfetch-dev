@@ -227,7 +227,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), AuroraOS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -408,6 +408,9 @@ detectdistro () {
 						distro="SwagArch"
 						distro_release="n/a"
 					fi
+					;;
+				"AuroraOS"|"auroraos")
+					distro="AuroraOS"
 					;;
 				"BLAG")
 					distro="BLAG"
@@ -714,6 +717,7 @@ detectdistro () {
 			if [[ "${distro}" == "Unknown" ]]; then
 				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
 					if [ -f /etc/arch-release ]; then distro="Arch Linux"
+					elif [ -f /etc/auroraos-release ]; then distro="AuroraOS"
 					elif [ -f /etc/chakra-release ]; then distro="Chakra"
 					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
 					elif [ -f /etc/debian_version ]; then
@@ -897,6 +901,7 @@ detectdistro () {
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
+		auroraos) distro="AuroraOS" ;;
 		blag) distro="BLAG" ;;
 		bunsenlabs) distro="BunsenLabs" ;;
 		centos) distro="CentOS" ;;
@@ -1068,7 +1073,7 @@ detectpkgs () {
 		;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'|'GrombyangOS') pkgs=$(dpkg -l | grep -c ^i) ;;
+		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'|'GrombyangOS'|'AuroraOS') pkgs=$(dpkg -l | grep -c ^i) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
@@ -2684,6 +2689,40 @@ asciiText () {
 "${c2} .\`                                 \`/%s")
 		;;
 
+		"AuroraOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'white') # White
+				c2=$(getColor 'light blue') # Light Blue
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			logowidth="38"
+			fulloutput=(
+"${c2}                                               %s"
+"${c2}               .;lddooooooddoc'                %s"
+"${c2}           .cxxl,.           .;dxd,            %s"
+"${c2}         :kx,                    .cOx.         %s"
+"${c2}       :Kc                          .xO.       %s"
+"${c2}     .0x                              'Ko      %s"
+"${c2}    ;X,                                 x0     %s"
+"${c2}   'W,                                   x0    %s"
+"${c2}   Nl                                  .,dMo   %s"
+"${c2}  :N                               .:xXXkcdW   %s"
+"${c2}  xO                           ,oONKd;.   .M'  %s"
+"${c2}  xk                      .cxKXxc'        .M'  %s"
+"${c2}  lX                 .;d0N0o,.            ;M.  %s"
+"${c2}  .M;            'ckXXkc.                 0O   %s"
+"${c2}   oN.      .;o0N0o;.                    cW.   %s"
+"${c2}    kK. .ckXNkc'                        ;N,    %s"
+"${c2}     lNWKd;.                           dX.     %s"
+"${c2}      .0O.                           :Xo       %s"
+"${c2}        ,Ok,                      .cKd.        %s"
+"${c2}          .o0kc.              .,o0k;           %s"
+"${c2}             .;okkkdlccccloxkkxc'              %s"			  
+"${c2}                                               %s")
+
+		;;
+		
 		"Mint")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
