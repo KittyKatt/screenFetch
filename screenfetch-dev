@@ -1489,7 +1489,7 @@ detectshell_ver () {
 }
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
-		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" || "${OSTYPE}" == "gnu" || "${distro}" == "TinyCore" ]]; then
+		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" || "${OSTYPE}" == "gnu" || "${distro}" == "TinyCore" || "${distro}" == "Raspbian" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		elif readlink -f "$SHELL" | grep -q "busybox"; then
 			shell_type="BusyBox"
