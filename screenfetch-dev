@@ -1605,11 +1605,11 @@ detectde () {
 							exit
 						}
 						else if ($0 ~ /"xfce4"/) {
-							de = "XFCE4"
+							de = "Xfce4"
 							exit
 						}
 						else if ($0 ~ /"xfce5"/) {
-							de = "XFCE5"
+							de = "Xfce5"
 							exit
 						}
 					} END {
@@ -1619,7 +1619,7 @@ detectde () {
 			fi
 
 			if [[ ${DE} == "Not Present" ]]; then
-				# Let's use xdg-open code for GNOME/Enlightment/KDE/LXDE/MATE/XFCE detection
+				# Let's use xdg-open code for GNOME/Enlightment/KDE/LXDE/MATE/Xfce detection
 				# http://bazaar.launchpad.net/~vcs-imports/xdg-utils/master/view/head:/scripts/xdg-utils-common.in#L251
 				if [ -n "${XDG_CURRENT_DESKTOP}" ]; then
 					case "${XDG_CURRENT_DESKTOP}" in
@@ -1642,7 +1642,7 @@ detectde () {
 							DE=MATE;
 							;;
 						XFCE)
-							DE=XFCE
+							DE=Xfce
 							;;
 						'X-Cinnamon')
 							DE=Cinnamon
@@ -1663,8 +1663,8 @@ detectde () {
 					elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then DE=GNOME;
 					elif [ -n "$MATE_DESKTOP_SESSION_ID" ]; then DE=MATE;
 					elif `dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1` ; then DE=GNOME;
-					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=XFCE;
-					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then DE=XFCE
+					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=Xfce;
+					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then DE=Xfce
 					elif echo $DESKTOP | grep -q '^Enlightenment'; then DE=Enlightenment;
 					fi
 				fi
@@ -1694,7 +1694,7 @@ detectde () {
 							DE=MATE;
 							;;
 						xfce|xfce4|'Xfce Session')
-							DE=XFCE;
+							DE=Xfce;
 							;;
 						'budgie-desktop')
 							DE=Budgie
@@ -2333,7 +2333,7 @@ detectgtk () {
 				gtkFont=${gtkFont//"'"}
 				#fi
 			;;
-			'XFCE'*) # Desktop Environment found as "XFCE"
+			'Xfce'*) # Desktop Environment found as "Xfce"
 				if [ "$distro" == "BunsenLabs" ] ; then
 					gtk2Theme=$(awk -F'"' '/^gtk-theme/ {print $2}' $HOME/.gtkrc-2.0)
 					gtk3Theme=$(awk -F'=' '/^gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
