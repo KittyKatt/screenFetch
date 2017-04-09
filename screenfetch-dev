@@ -3627,7 +3627,7 @@ asciiText () {
 "${c2}              ZZZZZZZZZ${c1}MM              %s")
 		;;
 
-"Grombyang"|"GrombyangOS")
+		"Grombyang"|"GrombyangOS")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue')
 				c2=$(getColor 'light green')
@@ -4080,7 +4080,7 @@ asciiText () {
 "${c2}                ████▄   ██▄▄▄  ███    %s"
 "${c2}                 █████▄   ▀▀  ▄██     %s"
 "${c2}                   ██████▄▄▄████      %s"
-"${c2}												█████▀▀       %s")
+"${c2}			      █████▀▀       %s")
 		;;
 
 		"Manjaro")
