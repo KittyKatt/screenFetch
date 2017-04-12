@@ -1381,6 +1381,11 @@ detectdisk () {
 }
 # Disk Usage Detection - End
 
+# Root Usage Detection - Begin
+detectrootusage(){
+ root=$(df -hT -xdevtmpfs -xtmpfs|sed -n 2p|awk '{print $4 "/" $3 " " $2}')
+}
+# Root Usage Detection - End
 
 # Memory Detection - Begin
 detectmem () {
@@ -5218,10 +5223,12 @@ infoDisplay () {
 				if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
 			fi
 		fi
+#HERE DELETE THIS LINE
 		[[ "${fake_distro}" != "Cygwin" && "${fake_distro}" != "Msys" && "${fake_distro}" != "Windows - Modern" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
 		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
+		myroot=$(echo -e "$lablelcolor Root:$textcolor $root"); out_array=( "${out_array[@]}" "$myroot" )
 		if [[ "$use_customlines" = 1 ]]; then customlines; fi
 	fi
 	if [[ "$display_type" == "ASCII" ]]; then
@@ -5354,8 +5361,7 @@ done
 if [ "$gpu" = 'Not Found' ] ; then
 DetectIntelGPU
 fi
-
-
+detectrootusage
 infoDisplay
 [ "$screenshot" == "1" ] && takeShot
 [ "$exportTheme" == "1" ] && themeExport
