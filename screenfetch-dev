@@ -1383,7 +1383,7 @@ detectdisk () {
 
 # Root Usage Detection - Begin
 detectrootusage(){
- root=$(df -hT|sed -n 2p|awk '{print $4 "/" $3 " " $2}')
+df -T 2>/dev/zero 1>/dev/zero && root=$(df -hT|sed -n 2p|awk '{print $4 "/" $3 " " $2}') || root=$(df -h|sed -n 2p|awk '{print $4 "/" $3}')
 }
 # Root Usage Detection - End
 
