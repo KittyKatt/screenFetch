@@ -1712,6 +1712,9 @@ detectde () {
 				if [ -n "$DE" ]; then
 					# fallback to checking $GDMSESSION
 					case "$GDMSESSION" in
+						gnome|gnome-fallback|gnome-fallback-compiz)
+							DE=Gnome;
+							;;
 						Lumina*|LUMINA*|lumina*)
 							DE=Lumina
 							;;
