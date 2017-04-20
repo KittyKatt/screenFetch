@@ -1339,7 +1339,9 @@ detectgpu () {
 # Detect Intel GPU  #works in dash
 # Run it only on Intel Processors if GPU is unknown
 DetectIntelGPU() {
-	gpu=$(awk '{print $2}' /proc/fb)
+	if [ -r /proc/fb ]; then
+		gpu=$(awk '{print $2}' /proc/fb)
+	fi
 
 	case $gpu in
 		*intel*) gpu=intel ;;
@@ -5411,7 +5413,7 @@ for i in "${display[@]}"; do
 done
 
 if [ "$gpu" = 'Not Found' ] ; then
-DetectIntelGPU
+	DetectIntelGPU
 fi
 
 
