@@ -721,7 +721,9 @@ detectdistro () {
 						      pardus pclinuxos redhat redstar rosa SuSe; do
 						if [ -f /etc/$di-release ]; then distro=$di && break; fi
 					done
-					if [[ "${distro}" == "gentoo" ]]; then
+					if [[ "${distro}" == "crunchbang-lsb" ]]; then
+						distro == "Crunchbang"
+					elif [[ "${distro}" == "gentoo" ]]; then
 						grep -q "Funtoo" /etc/gentoo-release && distro="Funtoo"
 					elif [[ "${distro}" == "mandrake" ]] || [[ "${distro}" == "mandriva" ]]; then
 						grep -q "PCLinuxOS" /etc/${distro}-release && distro="PCLinuxOS"
