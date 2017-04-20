@@ -157,7 +157,8 @@ getColor () {
 			'light cyan')	color_ret='\033[0m\033[1;36m';;
 			'light grey')	color_ret='\033[0m\033[37m';;
 			# Some 256 colors
-			'orange') color_ret="$(colorize '202')";;
+			'orange') color_ret="$(colorize '202')";;       #DarkOrange
+			'light orange') color_ret="$(colorize '214')";; #Orange1
 			# HaikuOS
 			'black_haiku') color_ret="$(colorize '7')";;
 			#ROSA color
@@ -227,7 +228,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -431,7 +432,7 @@ detectdistro () {
 						if [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
 							distro="Raspbian"
 							distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
-            fi
+            					fi
 						if [[ "$(cat /etc/os-release)" =~ "BlankOn" ]]; then
 							distro="BlankOn"
 							distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
@@ -631,6 +632,9 @@ detectdistro () {
 						if type -p nixos-version >/dev/null 2>&1; then
 							distro="NixOS"
 							distro_more="$(nixos-version)"
+						fi
+						if (type -p guix && type -p herd) >/dev/nulll 2>&1; then
+							distro="GuixSD"
 						fi
 					;;
 				esac
@@ -924,6 +928,7 @@ detectdistro () {
 		fux) distro="Fux" ;;
 		gentoo) distro="Gentoo" ;;
 		gnewsense) distro="gNewSense" ;;
+		guixsd) distro="GuixSD" ;;
 		haiku) distro="Haiku" ;;
 		kali*linux) distro="Kali Linux" ;;
 		kaos) distro="KaOS";;
@@ -1073,6 +1078,7 @@ detectpkgs () {
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
+		'GuixSD') pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
 		'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
@@ -1347,7 +1353,7 @@ DetectIntelGPU() {
           	#Detect Intel GPU
 	  	case $CPU in
 	  	[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])  gpu='Intel HD Graphics'            ;; #1st
-	            2[1-5][0-3][0-2]*|2390T|2600S)     gpu='Intel HD Graphics 2000'       ;; #2nd
+		    2[1-5][0-3][0-2]*|2390T|2600S)     gpu='Intel HD Graphics 2000'       ;; #2nd
 		    2[1-5][1-7][0-8]*|2105|2500K)      gpu='Intel HD Graphics 3000'       ;; #2nd
 		    32[1-5]0*|3[4-5][5-7]0*|33[3-4]0*) gpu='Intel HD Graphics 2500'       ;; #3rd
 		    3570K|3427U)                       gpu='Intel HD Graphics 4000'       ;; #3rd
@@ -4549,6 +4555,31 @@ asciiText () {
 "${c1}         .::::      ::::      ${c2}'::::.         %s")
 		;;
 
+		"GuixSD")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'orange')
+				c2=$(getColor 'light orange')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			logowidth="40"
+			fulloutput=(
+"${c1} +                                    ? %s"
+"${c1} ??                                  ?I %s"
+"${c1}  ??I?   I??N              ${c2}???    ${c1}????  %s"
+"${c1}   ?III7${c2}???????          ??????${c1}7III?Z   %s"
+"${c1}     OI77\$${c2}?????         ?????${c1}$77II      %s"
+"${c1}           ?????        ${c2}????            %s"
+"${c1}            ???ID      ${c2}????             %s"
+"${c1}             IIII     ${c2}+????             %s"
+"${c1}             IIIII    ${c2}????              %s"
+"${c1}              IIII   ${c2}?????              %s"
+"${c1}              IIIII  ${c2}????               %s"
+"${c1}               II77 ${c2}????$               %s"
+"${c1}               7777+${c2}????                %s"
+"${c1}                77++?${c2}??$                %s"
+"${c1}                N?+???${c2}?                 %s")
+			;;
 		"BunsenLabs")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'blue')
