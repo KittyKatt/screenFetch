@@ -715,12 +715,45 @@ detectdistro () {
 				fi
 			fi
 
+			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
+					for di in arch chakra crunchbang-lsb evolveos exherbo fedora \
+						      frugalware fux gentoo kogaion mageia obarun oracle \
+						      pardus pclinuxos redhat redstar rosa SuSe; do
+						if [ -f /etc/$di-release ]; then distro=$di && break; fi
+					done
+					if [[ "${distro}" == "gentoo" ]]; then
+						grep -q "Funtoo" /etc/gentoo-release && distro="Funtoo"
+					elif [[ "${distro}" == "mandrake" ]] || [[ "${distro}" == "mandriva" ]]; then
+						grep -q "PCLinuxOS" /etc/${distro}-release && distro="PCLinuxOS"
+					elif [[ "${distro}" == "fedora" ]]; then
+						grep -q "Korora" /etc/fedora-release && distro="Korora"
+						grep -q "BLAG" /etc/fedora-release && distro="BLAG" && distro_more="$(head -n1 /etc/fedora-release)"
+					elif [[ "${distro}" == "oracle" ]]; then
+						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
+					elif [[ "${distro}" == "SuSe" ]]; then
+						if [ -f /etc/os-release ]; then
+							if [[ "$(cat /etc/os-release)" =~ "SUSE Linux Enterprise" ]]; then
+								distro="SUSE Linux Enterprise"
+								distro_more=$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')
+							fi
+						fi
+						if [[ "${distro_more}" =~ "Tumbleweed" ]]; then
+							distro_more="Tumbleweed"
+						fi
+					elif [[ "${distro}" == "redstar" ]]; then
+						distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
+					elif [[ "${distro}" == "redhat" ]]; then
+						grep -q "CentOS" /etc/redhat-release && distro="CentOS"
+						grep -q "PCLinuxOS" /etc/redhat-release && distro="PCLinuxOS"
+						elif [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
+							distro="Red Star OS"
+							distro_more=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
+					fi
+			fi
+
 			if [[ "${distro}" == "Unknown" ]]; then
 				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
-					if [ -f /etc/arch-release ]; then distro="Arch Linux"
-					elif [ -f /etc/chakra-release ]; then distro="Chakra"
-					elif [ -f /etc/crunchbang-lsb-release ]; then distro="CrunchBang"
-					elif [ -f /etc/debian_version ]; then
+					if [ -f /etc/debian_version ]; then
 						if [ -f /etc/issue ]; then
 							if grep -q "gNewSense" /etc/issue ; then
 								distro="gNewSense"
@@ -734,76 +767,16 @@ detectdistro () {
 						if grep -q "Kali" /etc/debian_version ; then
 							distro="Kali Linux"
 						fi
-					elif [ -f /etc/dragora-version ]; then distro="Dragora" && distro_more="$(cut -d, -f1 /etc/dragora-version)"
-					elif [ -f /etc/evolveos-release ]; then distro="Evolve OS"
-					elif [ -f /etc/exherbo-release ]; then distro="Exherbo"
-					elif [ -f /etc/fedora-release ]; then
-						if grep -q "Korora" /etc/fedora-release; then
-							distro="Korora"
-						elif grep -q "BLAG" /etc/fedora-release; then
-							distro="BLAG"
-							distro_more="$(head -n1 /etc/fedora-release)"
-						else
-							distro="Fedora"
-						fi
-					elif [ -f /etc/frugalware-release ]; then distro="Frugalware"
-					elif [ -f /etc/fux-release ]; then distro="Fux"
-					elif [ -f /etc/gentoo-release ]; then
-						if grep -q "Funtoo" /etc/gentoo-release ; then
-							distro="Funtoo"
-						else
-							distro="Gentoo"
-						fi
-					elif [ -f /etc/kogaion-release ]; then distro="Kogaion"
-					elif [ -f /etc/mageia-release ]; then distro="Mageia"
-					elif [ -f /etc/mandrake-release ]; then
-						if grep -q "PCLinuxOS" /etc/mandrake-release ; then
-							distro="PCLinuxOS"
-						else
-							distro="Mandrake"
-						fi
-					elif [ -f /etc/mandriva-release ]; then
-						if grep -q "PCLinuxOS" /etc/mandriva-release ; then
-							distro="PCLinuxOS"
-						else
-							distro="Mandriva"
-						fi
 					elif [ -f /etc/NIXOS ]; then distro="NixOS"
-					elif [ -f /etc/obarun-release ]; then distro="Obarun"
-					elif [ -f /etc/oracle-release ]; then
-						distro="Oracle Linux"
-						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
-					elif [ -f /etc/SuSE-release ]; then
-						distro="openSUSE"
-						if [ -f /etc/os-release ]; then
-							if [[ "$(cat /etc/os-release)" =~ "SUSE Linux Enterprise" ]]; then
-								distro="SUSE Linux Enterprise"
-								distro_more=$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')
-							fi
-						fi
-						if [[ "${distro_more}" =~ "Tumbleweed" ]]; then distro_more="Tumbleweed"; fi
-					elif [ -f /etc/pardus-release ]; then distro="Pardus"
-					elif [ -f /etc/pclinuxos-release ]; then distro="PCLinuxOS"
-					elif [ -f /etc/redstar-release ]; then
-						distro="Red Star OS"
-						distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
-					elif [ -f /etc/redhat-release ]; then
-						if grep -q "CentOS" /etc/redhat-release; then
-							distro="CentOS"
-						elif grep -q "PCLinuxOS" /etc/redhat-release; then
-							distro="PCLinuxOS"
-						elif [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
-							distro="Red Star OS"
-							distro_more=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
-						else
-							distro="Red Hat Enterprise Linux"
-						fi
-					elif [ -f /etc/rosa-release ]; then distro="ROSA"
+					elif [ -f /etc/dragora-version ]; then
+						distro="Dragora"
+						distro_more="$(cut -d, -f1 /etc/dragora-version)"
 					elif [ -f /etc/slackware-version ]; then distro="Slackware"
 					elif [ -f /usr/share/doc/tc/release.txt ]; then
 						distro="TinyCore"
 						distro_more="$(cat /usr/share/doc/tc/release.txt)"
-					elif [ -f /etc/sabayon-edition ]; then distro="Sabayon"; fi
+					elif [ -f /etc/sabayon-edition ]; then distro="Sabayon"
+					fi
 				else
 					if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null; then
 						distro="Mac OS X"
