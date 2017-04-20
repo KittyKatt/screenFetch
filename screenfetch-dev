@@ -633,7 +633,7 @@ detectdistro () {
 							distro="NixOS"
 							distro_more="$(nixos-version)"
 						fi
-						if (type -p guix && type -p herd) >/dev/nulll 2>&1; then
+						if (type -p guix && type -p herd) >/dev/null 2>&1; then
 							distro="GuixSD"
 						fi
 					;;
