@@ -45,7 +45,7 @@ scriptVersion="3.7.0"
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 #display="distro host kernel uptime pkgs shell res de wm wmtheme gtk disk cpu gpu mem"
 valid_display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk disk root cpu gpu mem )
-display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk cpu gpu mem disk root )
+display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk cpu gpu mem )
 # Display Type: ASCII or Text
 display_type="ASCII"
 # Plain logo
@@ -1389,7 +1389,7 @@ detectroot(){
 		if [[ ! ${distro} == 'Mac OS X' ]]; then
 			root=$(df -hT|awk '$7=="/" {print $4 " / " $3 " ("$6") "$2}')
 		else
-			root=$(df -h|awk '$6=="/" {print $3 " / " $2 " ("$4")}')
+			root=$(df -h|awk '$6=="/" {print $3 " / " $2 " ("$4")"}')
 			#root+=$(diskutil listFilesystems|....) #someone with a Mac should complete this
 		fi
 	fi
