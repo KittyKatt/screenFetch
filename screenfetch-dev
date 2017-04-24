@@ -1364,6 +1364,7 @@ DetectIntelGPU() {
 		                                                                             #6th Skylake
                                                                                              #7th Kabylake
                                                                                              #8th Cannonlake
+		*) gpu='Unknown'
 	   	esac
         fi
 }
