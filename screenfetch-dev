@@ -3729,31 +3729,30 @@ asciiText () {
 
 		"Parabola GNU/Linux-libre")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'light purple') # Light Purple
-				c2=$(getColor 'white') # White
+				c1=$(getColor 'purple') # Purple
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			logowidth="33"
 			fulloutput=(
-"${c1}                                 %s"
-"${c1}              eeeeeeeee          %s"
-"${c1}          eeeeeeeeeeeeeee        %s"
-"${c1}       eeeeee${c2}//////////${c1}eeeee     %s"
-"${c1}     eeeee${c2}///////////////${c1}eeeee   %s"
-"${c1}   eeeee${c2}///           ////${c1}eeee   %s"
-"${c1}  eeee${c2}//              ///${c1}eeeee   %s"
-"${c1} eee                 ${c2}///${c1}eeeee    %s"
-"${c1}ee                  ${c2}//${c1}eeeeee     %s"
-"${c1}e                  ${c2}/${c1}eeeeeee      %s"
-"${c1}                  eeeeeee        %s"
-"${c1}                 eeeeee          %s"
-"${c1}                eeeeee           %s"
-"${c1}               eeeee             %s"
-"${c1}              eeee               %s"
-"${c1}            eee                  %s"
-"${c1}           ee                    %s"
-"${c1}          e                      %s")
+"${c1}                                       %s"
+"${c1}                          _,,     _    %s"
+"${c1}                   _,   ,##'    ,##;   %s"
+"${c1}             _, ,##'  ,##'    ,#####;  %s"
+"${c1}         _,;#',##'  ,##'    ,#######'  %s"
+"${c1}     _,#**^'         \`    ,#########   %s"
+"${c1} .-^\`                    \`#########    %s"
+"${c1}                          ########     %s"
+"${c1}                          ;######      %s"
+"${c1}                          ;####*       %s"
+"${c1}                          ####'        %s"
+"${c1}                         ;###          %s"
+"${c1}                        ,##'           %s"
+"${c1}                        ##             %s"
+"${c1}                       #'              %s"
+"${c1}                      /                %s"
+"${c1}                     '                 %s"
+"${c1}                                       %s")
 		;;
 
 		"Viperr")
