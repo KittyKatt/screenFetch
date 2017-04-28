@@ -410,7 +410,7 @@ detectdistro () {
 						distro_release="n/a"
 					fi
 					;;
-				"blackPantherOS")
+				"blackPantherOS"|"blackPanther"|"blackpanther"|"blackpantheros")
 					distro=$(source /etc/lsb-release; echo "$DISTRIB_ID")
 					distro_release=$(source /etc/lsb-release; echo "$DISTRIB_RELEASE")
 					distro_codename=$(source /etc/lsb-release; echo "$DISTRIB_CODENAME")
@@ -2709,12 +2709,12 @@ asciiText () {
 				c4=$(getColor 'dark grey')
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; fi
-			startline="2"
+			startline="0"
 			logowidth="38"
 			fulloutput=(
 "${c4}                oxoo              %s"
 "${c4}           ooooooxxxxxxxx         %s"
-"${c4}      oooooxxxxxxxxxx${c3}O${c1}o${c4}xxx        %s"
+"${c4}      oooooxxxxxxxxxx${c3}O${c1}o.${c4}xx        %s"
 "${c4}    oo# ###xxxxxxxxxxx###xxx      %s"
 "${c4}  oo .oooooxxxxxxxxx##   #oxx     %s"
 "${c4} o  ##xxxxxxxxx###x##   .o###     %s"
