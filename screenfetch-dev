@@ -1125,8 +1125,7 @@ detectpkgs () {
 			pkgs=$(pkg_info | grep -c .)
 		;;
 		'FreeBSD')
-			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
-				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | awk '{sub(" ", "");print $1}'; fi)
+			pkgs=$(pkg info | wc -l | awk '{sub(" ", ""); print $1}';)
 		;;
 		'NetBSD')
 			pkgs=$(pkg_info | wc -l | tr -d ' ')
