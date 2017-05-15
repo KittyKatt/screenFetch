@@ -57,7 +57,7 @@ display_logo="no"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin twin icewm pekwm flwm flwm_topside fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm howm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm sway )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin twin icewm pekwm flwm flwm_topside fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm howm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm sway mwm )
 denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder deepin )
 
 # Screenshot Settings
@@ -1903,6 +1903,7 @@ detectwm () {
 						'metacity') WM="Metacity";;
 						'monsterwm') WM="monsterwm";;
 						'musca') WM="Musca";;
+						'mwm') WM="MWM";;
 						'notion') WM="Notion";;
 						'openbox') WM="OpenBox";;
 						'pekwm') WM="PekWM";;
@@ -1986,6 +1987,7 @@ detectwm () {
 					'muffin') WM="Muffin";;
 					'musca') WM="Musca";;
 					'mutter'*) WM="Mutter";;
+					'mwm') WM="MWM";;
 					'notion') WM="Notion";;
 					'openbox') WM="OpenBox";;
 					'pekwm') WM="PekWM";;
