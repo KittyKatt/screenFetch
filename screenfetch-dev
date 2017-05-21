@@ -593,6 +593,11 @@ detectdistro () {
 					distro="Viperr"
 					distro_codename=null
 					;;
+				"Void"|"VoidLinux")
+					distro="Void Linux"
+					distro_codename=""
+					distro_release=""
+					;;
 				*)
 					if [ "x$(printf "${distro_detect}" | od -t x1 | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
 						distro="Red Star OS"
@@ -673,7 +678,7 @@ detectdistro () {
 					fi
 
 					# Hotfixes
-					[[ "${distro}" == "void" ]] && distro="Void"
+					[[ "${distro}" == "void" ]] && distro="Void Linux"
 					[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
 					[[ "${distro}" == "antergos" ]] && distro="Antergos"
 					[[ "${distro}" == "logos" ]] && distro="Logos"
@@ -991,7 +996,7 @@ detectdistro () {
 			fi
 			;;
 		viperr) distro="Viperr" ;;
-		void) distro="Void" ;;
+		void*linux) distro="Void Linux" ;;
 	esac
 	verboseOut "Finding distro...found as '${distro} ${distro_release}'"
 }
@@ -1087,7 +1092,7 @@ detectpkgs () {
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
 		'GuixSD') pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
 		'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS'|'blackPanther OS') pkgs=$(rpm -qa | wc -l) ;;
-		'Void') pkgs=$(xbps-query -l | wc -l) ;;
+		'Void Linux') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
 		'Lunar Linux') pkgs=$(lvu installed | wc -l) ;;
@@ -4537,7 +4542,7 @@ asciiText () {
 "${c1}      \`.:+ooyyddddddddddddyyso+:.\`       %s")
 		;;
 
-		"Void")
+		"Void Linux")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green')       # Dark Green
 				c2=$(getColor 'light green') # Light Green
@@ -5182,7 +5187,7 @@ infoDisplay () {
 	case ${myascii} in
 		"Alpine Linux"|"Arch Linux - Old"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Solus"|"SwagArch"|"Parrot Security") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
-		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void"|"DesaOS") labelcolor=$(getColor 'light green');;
+		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"|"SparkyLinux") labelcolor=$(getColor 'light red');;
 		"ROSA") labelcolor=$(getColor 'white');;
 		"CrunchBang"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
