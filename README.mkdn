@@ -18,6 +18,10 @@ command! This script is very easy to add to and can easily be extended.
 
 1. Install `screenfetch` from the official repositories or `screenfetch-git` from the AUR. That's it!
 
+### blackPanther OS
+
+1. Install `screenfetch` from the official repositories, e.g.: `installing screenfetch`
+
 ### Netrunner Rolling
 
 1. Install `screenfetch-netrunner` from the official repositories.

@@ -57,7 +57,7 @@ display_logo="no"
 
 # WM & DE process names
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin twin icewm pekwm flwm flwm_topside fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm howm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm sway )
+wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin twin icewm pekwm flwm flwm_topside fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm howm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm sway mwm )
 denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder deepin )
 
 # Screenshot Settings
@@ -228,7 +228,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
+supported_distros="Alpine Linux, Antergos, Arch Linux (Old and Current Logos), blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr and Void."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -409,6 +409,11 @@ detectdistro () {
 						distro="SwagArch"
 						distro_release="n/a"
 					fi
+					;;
+				"blackPantherOS"|"blackPanther"|"blackpanther"|"blackpantheros")
+					distro=$(source /etc/lsb-release; echo "$DISTRIB_ID")
+					distro_release=$(source /etc/lsb-release; echo "$DISTRIB_RELEASE")
+					distro_codename=$(source /etc/lsb-release; echo "$DISTRIB_CODENAME")
 					;;
 				"BLAG")
 					distro="BLAG"
@@ -633,7 +638,7 @@ detectdistro () {
 							distro="NixOS"
 							distro_more="$(nixos-version)"
 						fi
-						if (type -p guix && type -p herd) >/dev/nulll 2>&1; then
+						if (type -p guix && type -p herd) >/dev/null 2>&1; then
 							distro="GuixSD"
 						fi
 					;;
@@ -876,6 +881,7 @@ detectdistro () {
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
+		blackpantheros|black*panther*) distro="blackPanther OS" ;;
 		blag) distro="BLAG" ;;
 		bunsenlabs) distro="BunsenLabs" ;;
 		centos) distro="CentOS" ;;
@@ -1054,7 +1060,7 @@ detectpkgs () {
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
 		'GuixSD') pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
-		'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS'|'blackPanther OS') pkgs=$(rpm -qa | wc -l) ;;
 		'Void') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
@@ -1093,8 +1099,7 @@ detectpkgs () {
 			pkgs=$(pkg_info | grep -c .)
 		;;
 		'FreeBSD')
-			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
-				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | awk '{sub(" ", "");print $1}'; fi)
+			pkgs=$(pkg info | wc -l | awk '{sub(" ", ""); print $1}';)
 		;;
 		'NetBSD')
 			pkgs=$(pkg_info | wc -l | tr -d ' ')
@@ -1339,6 +1344,7 @@ DetectIntelGPU() {
 		                                                                             #6th Skylake
                                                                                              #7th Kabylake
                                                                                              #8th Cannonlake
+		*) gpu='Unknown'
 	   	esac
         fi
 }
@@ -1871,6 +1877,7 @@ detectwm () {
 						'metacity') WM="Metacity";;
 						'monsterwm') WM="monsterwm";;
 						'musca') WM="Musca";;
+						'mwm') WM="MWM";;
 						'notion') WM="Notion";;
 						'openbox') WM="OpenBox";;
 						'pekwm') WM="PekWM";;
@@ -1954,6 +1961,7 @@ detectwm () {
 					'muffin') WM="Muffin";;
 					'musca') WM="Musca";;
 					'mutter'*) WM="Mutter";;
+					'mwm') WM="MWM";;
 					'notion') WM="Notion";;
 					'openbox') WM="OpenBox";;
 					'pekwm') WM="PekWM";;
@@ -2668,6 +2676,40 @@ asciiText () {
 "${c2} .\`                                 \`/%s")
 		;;
 
+		"blackPanther OS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'yellow') # Light Yellow
+				c2=$(getColor 'white') # Bold Red
+				c3=$(getColor 'light red') # Light Red
+				c4=$(getColor 'dark grey')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; fi
+			startline="0"
+			logowidth="38"
+			fulloutput=(
+"${c4}                oxoo              %s"
+"${c4}           ooooooxxxxxxxx         %s"
+"${c4}      oooooxxxxxxxxxx${c3}O${c1}o.${c4}xx        %s"
+"${c4}    oo# ###xxxxxxxxxxx###xxx      %s"
+"${c4}  oo .oooooxxxxxxxxx##   #oxx     %s"
+"${c4} o  ##xxxxxxxxx###x##   .o###     %s"
+"${c4}  .oxxxxxxxx###   ox  .           %s"
+"${c4} ooxxxx#xxxxxx     o##            %s"
+"${c4}.oxx# #oxxxxx#                    %s"
+"${c4}ox#  ooxxxxxx#                  o %s"
+"${c4}x#  ooxxxxxxxx           ox     ox%s"
+"${c4}x# .oxxxxxxxxxxx        o#     oox%s"
+"${c4}#  oxxxxx##xxxxxxooooooo#      o# %s"
+"${c4}  .oxxxxxooxxxxxx######       ox# %s"
+"${c4}  oxxxxxo oxxxxxxxx         oox## %s"
+"${c4}  oxxxxxx  oxxxxxxxxxo   oooox##  %s"
+"${c4}   o#xxxxx  oxxxxxxxxxxxxxxxx##   %s"
+"${c4}    ##xxxxx  o#xxxxxxxxxxxxx##    %s"
+"${c4}      ##xxxx   o#xxxxxxxxx##      %s"
+"${c4}         ###xo.  o##xxx###        %s"
+"${c4}                                  %s")
+                ;;
+
 		"Mint")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -2728,32 +2770,30 @@ asciiText () {
 
 		"Ubuntu")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'white') # White
-				c2=$(getColor 'light red') # Light Red
-				c3=$(getColor 'yellow') # Bold Yellow
+				c1=$(getColor 'light red') # Red
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			logowidth="38"
 			fulloutput=(
-"${c2}                          ./+o+-      %s"
-"${c1}                  yyyyy- ${c2}-yyyyyy+     %s"
-"${c1}               ${c1}://+//////${c2}-yyyyyyo     %s"
-"${c3}           .++ ${c1}.:/++++++/-${c2}.+sss/\`     %s"
-"${c3}         .:++o:  ${c1}/++++++++/:--:/-     %s"
-"${c3}        o:+o+:++.${c1}\`..\`\`\`.-/oo+++++/    %s"
-"${c3}       .:+o:+o/.${c1}          \`+sssoo+/   %s"
-"${c1}  .++/+:${c3}+oo+o:\`${c1}             /sssooo.  %s"
-"${c1} /+++//+:${c3}\`oo+o${c1}               /::--:.  %s"
-"${c1} \+/+o+++${c3}\`o++o${c2}               ++////.  %s"
-"${c1}  .++.o+${c3}++oo+:\`${c2}             /dddhhh.  %s"
-"${c3}       .+.o+oo:.${c2}          \`oddhhhh+   %s"
-"${c3}        \+.++o+o\`${c2}\`-\`\`\`\`.:ohdhhhhh+    %s"
-"${c3}         \`:o+++ ${c2}\`ohhhhhhhhyo++os:     %s"
-"${c3}           .o:${c2}\`.syhhhhhhh/${c3}.oo++o\`     %s"
-"${c2}               /osyyyyyyo${c3}++ooo+++/    %s"
-"${c2}                   \`\`\`\`\` ${c3}+oo+++o\:    %s"
-"${c3}                          \`oo++.      %s")
+"${c1}                          ./+o+-      %s"
+"${c1}                  yyyyy. 'yyyyyy+     %s"
+"${c1}              .;//+/////h yyyyyyo     %s"
+"${c1}           .++ .:/++++++/-.\`sss/\`     %s"
+"${c1}         .:++o: \`\++++++++/:---:/-    %s"
+"${c1}        o:+o+:++. \`\`\`\`\`'-/ooo+++++\   %s"
+"${c1}       .:+o:+o/.          \`+sssooo+\  %s"
+"${c1}  .++/+ +oo+o:\`             \sssooo;  %s"
+"${c1} /+++//+: oo+o               \`\`\`\`\`\`\`  %s"
+"${c1} \+/+o+++ o++o               ydddhh+  %s"
+"${c1}  .++.o+ +oo+:\`             /dddhhh;  %s"
+"${c1}       .+.o+oo:.           oddhhhh+   %s"
+"${c1}        \+.++o+o\` -,,,,.:ohdhhhhh+    %s"
+"${c1}         \`:o+++  ohhhhhhhhyo++os:     %s"
+"${c1}           .o: .syhhhhhhh'.oo++o.     %s"
+"${c1}               /osyyyyyyy.oooo+++\    %s"
+"${c1}                   \`\`\`\`\` +oo+++o:/    %s"
+"${c1}                          \`oo++'\`     %s")
 		;;
 
 		"KDE neon")
@@ -3703,31 +3743,30 @@ asciiText () {
 
 		"Parabola GNU/Linux-libre")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'light purple') # Light Purple
-				c2=$(getColor 'white') # White
+				c1=$(getColor 'purple') # Purple
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			logowidth="33"
 			fulloutput=(
-"${c1}                                 %s"
-"${c1}              eeeeeeeee          %s"
-"${c1}          eeeeeeeeeeeeeee        %s"
-"${c1}       eeeeee${c2}//////////${c1}eeeee     %s"
-"${c1}     eeeee${c2}///////////////${c1}eeeee   %s"
-"${c1}   eeeee${c2}///           ////${c1}eeee   %s"
-"${c1}  eeee${c2}//              ///${c1}eeeee   %s"
-"${c1} eee                 ${c2}///${c1}eeeee    %s"
-"${c1}ee                  ${c2}//${c1}eeeeee     %s"
-"${c1}e                  ${c2}/${c1}eeeeeee      %s"
-"${c1}                  eeeeeee        %s"
-"${c1}                 eeeeee          %s"
-"${c1}                eeeeee           %s"
-"${c1}               eeeee             %s"
-"${c1}              eeee               %s"
-"${c1}            eee                  %s"
-"${c1}           ee                    %s"
-"${c1}          e                      %s")
+"${c1}                                       %s"
+"${c1}                          _,,     _    %s"
+"${c1}                   _,   ,##'    ,##;   %s"
+"${c1}             _, ,##'  ,##'    ,#####;  %s"
+"${c1}         _,;#',##'  ,##'    ,#######'  %s"
+"${c1}     _,#**^'         \`    ,#########   %s"
+"${c1} .-^\`                    \`#########    %s"
+"${c1}                          ########     %s"
+"${c1}                          ;######      %s"
+"${c1}                          ;####*       %s"
+"${c1}                          ####'        %s"
+"${c1}                         ;###          %s"
+"${c1}                        ,##'           %s"
+"${c1}                        ##             %s"
+"${c1}                       #'              %s"
+"${c1}                      /                %s"
+"${c1}                     '                 %s"
+"${c1}                                       %s")
 		;;
 
 		"Viperr")
@@ -5115,7 +5154,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Alpine Linux"|"Arch Linux - Old"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Solus"|"SwagArch"|"Parrot Security") labelcolor=$(getColor 'light blue');;
+		"Alpine Linux"|"Arch Linux - Old"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Solus"|"SwagArch"|"Parrot Security") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void"|"DesaOS") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"|"SparkyLinux") labelcolor=$(getColor 'light red');;
