@@ -1253,7 +1253,7 @@ detectcpu () {
 						*) model="IBM S/390 machine type $machine" ;;
 					esac
 				else
-					model="Unkown"
+					model="Unknown"
 				fi
 			fi
 			cpu="${model}${cpu}"
