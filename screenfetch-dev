@@ -738,6 +738,7 @@ detectdistro () {
 					elif [[ "${distro}" == "oracle" ]]; then
 						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 					elif [[ "${distro}" == "SuSe" ]]; then
+						distro="openSUSE"
 						if [ -f /etc/os-release ]; then
 							if [[ "$(cat /etc/os-release)" =~ "SUSE Linux Enterprise" ]]; then
 								distro="SUSE Linux Enterprise"
@@ -752,9 +753,10 @@ detectdistro () {
 					elif [[ "${distro}" == "redhat" ]]; then
 						grep -q "CentOS" /etc/redhat-release && distro="CentOS"
 						grep -q "PCLinuxOS" /etc/redhat-release && distro="PCLinuxOS"
-						elif [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
+						if [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
 							distro="Red Star OS"
 							distro_more=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
+						fi
 					fi
 			fi
 
