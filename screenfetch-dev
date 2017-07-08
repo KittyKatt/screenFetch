@@ -1498,13 +1498,13 @@ detectshell () {
 	if [[ ! "${shell_type}" ]]; then
 		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" || "${OSTYPE}" == "gnu" || "${distro}" == "TinyCore" || "${distro}" == "Raspbian" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
-		elif readlink -f "$SHELL" | grep -q "busybox"; then
-			shell_type="BusyBox"
 		else
 			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "linux-musl" ]]; then
 				shell_type=$(cat /proc/$PPID/cmdline|tr '\0' '\n'|head -n 1)
 			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "DragonFlyBSD" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
 				shell_type=$(ps -p $PPID -o command | tail -1)
+			elif readlink -f "$SHELL" | grep -q "busybox"; then
+            	shell_type="BusyBox"
 			else
 				shell_type=$(ps -p $(ps -p $PPID | awk '$1 !~ /PID/ {print $1}') | awk 'FNR>1 {print $1}')
 			fi
