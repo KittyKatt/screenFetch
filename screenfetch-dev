@@ -3573,7 +3573,7 @@ asciiText () {
 "${c1}         ROSA               SARO         %s"
 "${c1}            ROSAROSAROSAROSAR            %s")
 		;;
-    
+
 		"Red Hat Enterprise Linux")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -3708,7 +3708,7 @@ asciiText () {
 			startline="0"
 			logowidth="36"
 			fulloutput=(
-"${c3}             ......               %s"
+"${c3}               ......               %s"
 "${c3}         .'${c1}D${c3}lddddddddddd'.          %s"
 "${c3}      .'ddd${c1}XM${c3}xdddddddddddddd.       %s"
 "${c3}    .dddddx${c1}MMM0${c3};dddddddddddddd.     %s"
