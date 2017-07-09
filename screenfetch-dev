@@ -3708,7 +3708,7 @@ asciiText () {
 			startline="0"
 			logowidth="36"
 			fulloutput=(
-"${c3}             ......                 %s"
+"${c3}               ......               %s"
 "${c3}         .'${c1}D${c3}lddddddddddd'.          %s"
 "${c3}      .'ddd${c1}XM${c3}xdddddddddddddd.       %s"
 "${c3}    .dddddx${c1}MMM0${c3};dddddddddddddd.     %s"
