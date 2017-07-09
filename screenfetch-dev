@@ -1079,7 +1079,8 @@ detectpkgs () {
 		'GuixSD') pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
 		'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS'|'blackPanther OS') pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux') pkgs=$(xbps-query -l | wc -l) ;;
-		'Evolve OS'|'Solus') pkgs=$(pisi list-installed | wc -l) ;;
+		'Evolve OS') pkgs=$(pisi list-installed | wc -l) ;;
+		'Solus') pkgs=$(eopkg list-installed | wc -l) ;;
 		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
 		'Lunar Linux') pkgs=$(lvu installed | wc -l) ;;
 		'TinyCore') pkgs=$(tce-status -i | wc -l) ;;
