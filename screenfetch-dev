@@ -1204,6 +1204,8 @@ detectcpu () {
 				model="IBM PowerPC G3 "
 			elif [[ $cpu =~ ^74.+ ]]; then
 				model="Motorola PowerPC G4 "
+			elif [[ $cpu =~ ^POWER.* ]]; then
+				model="IBM POWER "
 			elif [[ "$(cat /proc/cpuinfo)" =~ "BCM2708" ]]; then
 				model="Broadcom BCM2835 ARM1176JZF-S"
 			else
