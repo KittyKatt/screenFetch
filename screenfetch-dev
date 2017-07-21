@@ -5008,6 +5008,32 @@ asciiText () {
 "${c1}                              -           %s")
 		;;
 
+		"Amazon Linux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light orange') # Orange
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			logowidth="40"
+			fulloutput=(
+"${c1}               .,:cc:,.              %s"
+"${c1}          .:okXWMMMMMMWXko:.         %s"
+"${c1}      .:kNMMMMMMMMMMMMMMMMMMNkc.     %s"
+"${c1}   cc,.    \`':ox0XWWXOxo:'\`    .,c;  %s"
+"${c1}   KMMMMXOdc,.    ''    .,cdOXWMMMO  %s"
+"${c1}   KMMMMMMMMMMWXO.  .OXWMMMMMMMMMMO  %s"
+"${c1}   KMMMMMMMMMMMMM,  ,MMMMMMMMMMMMMO  %s"
+"${c1}   KMMMMMMMMMMMMM,  ,MMMMMMMMMMMMMO  %s"
+"${c1}   KMMMMMMMMMMMMM,  ,MMMMMMMMMMMMMO  %s"
+"${c1}   KMMMMMMMMMMMMM,  ,MMMMMMMMMMMMMO  %s"
+"${c1}   KMMMMMMMMMMMMM,  ,MMMMMMMMMMMMMO  %s"
+"${c1}   KMMMMMMMMMMMMM,  ,MMMMMMMMMMMMMk  %s"
+"${c1}   KMMMMMMMMMMMMM,  ,MMMMMMMMMMMMMd  %s"
+"${c1}   \`:lx0WMMMMMMMM,  ,MMMMMMMMW0xl:\`  %s"
+"${c1}         \`'lx0NMM,  ,MMN0xc'\`        %s"
+"${c1}               \`''  ''\`              %s")
+		;;
+
 		*)
 			if [ "$(echo "${kernel}" | grep 'Linux' )" ]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -5238,7 +5264,7 @@ infoDisplay () {
 		"CrunchBang"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
-		"NetBSD") labelcolor=$(getColor 'orange');;
+		"NetBSD"|"Amazon Linux") labelcolor=$(getColor 'orange');;
 		"CentOS"|*) labelcolor=$(getColor 'yellow');;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
