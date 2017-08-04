@@ -228,7 +228,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, Source Mage GNU/Linux, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
+supported_distros="Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Slackware, Solus, Source Mage GNU/Linux, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -413,6 +413,9 @@ detectdistro () {
 						distro="OBRevenge"
 						distro_release="n/a"
 					fi
+					;;
+				"artixlinux"|"Artix Linux"|"artix"|"Artix"|"Artix release")
+					distro="Artix"
 					;;
 				"blackPantherOS"|"blackPanther"|"blackpanther"|"blackpantheros")
 					distro=$(source /etc/lsb-release; echo "$DISTRIB_ID")
@@ -900,6 +903,7 @@ detectdistro () {
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
+		artix|artix*linux) distro="Artix Linux" ;;
 		blackpantheros|black*panther*) distro="blackPanther OS" ;;
 		blag) distro="BLAG" ;;
 		bunsenlabs) distro="BunsenLabs" ;;
@@ -1067,7 +1071,7 @@ detectpkgs () {
 	pkgs="Unknown"
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
-		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge') pkgs=$(pacman -Qq | wc -l) ;;
+		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux') pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
 				pkgs=$(ls -l /usr/local/etc/crew/meta/*.filelist | wc -l)
@@ -2700,6 +2704,38 @@ asciiText () {
 "${c2}  \`+sso+:-\`                 \`.-/+oso: %s"
 "${c2} \`++:.                           \`-/+/%s"
 "${c2} .\`                                 \`/%s")
+		;;
+
+		"Artix Linux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light cyan') # Light
+				c2=$(getColor 'cyan') # Dark
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="2"
+			logowidth="45"
+			fulloutput=(""
+"${c1}           Ndyo+${c2}////////${c1}osydN      "
+"${c1}         ds+${c2}//////////////////${c1}+sd            %s"
+"${c1}      Ny+${c2}////////${c1}sy${c2}////${c1}ys${c2}////////${c1}+yN         %s"
+"${c1}     h/${c2}///////${c1}ohN o${c2}////${c1}o Nho${c2}////////${c1}h        %s"
+"${c1}   No${c2}////${c1}+sydN   N+${c2}////${c1}+N   Ndys+${c2}////${c1}oN      %s"
+"${c1}  N+${c2}////${c1}+oyhm    N${c2}/////${c1}+N    mhyo+${c2}////${c1}+N     %s"
+"${c1} N+${c2}///////////${c1}sd  o${c2}////${c1}o  ds${c2}///////////${c1}+N    %s"
+"${c1} y${c2}////${c1}ys${c2}////////${c1}+yy${c2}////${c1}yy+${c2}////////${c1}sy${c2}////${c1}y    %s"
+"${c1} +${c2}////${c1}s Nho${c2}////////////////////${c1}ohN s${c2}////${c1}+    %s"
+"${c1} ${c2}//////     ${c1}mhso+${c2}////////${c1}+oshm     ${c2}//////    %s"
+"${c1} ${c2}//////    ${c1}Nmhso+${c2}////////${c1}+oshm     ${c2}//////    %s"
+"${c1} +${c2}////${c1}s Nho${c2}////////////////////${c1}ohN s${c2}////${c1}+    %s"
+"${c1} y${c2}////${c1}ys${c2}////////${c1}+yy${c2}////${c1}yy+${c2}////////${c1}sy${c2}////${c1}y    %s"
+"${c1} N+${c2}///////////${c1}sd  o${c2}////${c1}o  ds///////////${c1}+N    %s"
+"${c1}  N+${c2}////${c1}+oydm    N${c2}/////${c1}+N    mdyo+${c2}////${c1}+N     %s"
+"${c1}   No${c2}////${c1}+sydN   N+${c2}////${c1}+N   Ndyo+${c2}////${c1}oN      %s"
+"${c1}    N+${c2}////////${c1}ohN o${c2}////${c1}o Nho${c2}////////${c1}h        %s"
+"${c1}     mNy+${c2}////////${c1}ss${c2}////${c1}ys${c2}////////${c1}+yN         %s"
+"${c1}         ds+${c2}//////////////////${c1}+sd            %s"
+"${c1}            Ndyo+${c2}////////${c1}+oydN               %s"
+"                                              ")
 		;;
 
 		"blackPanther OS")
@@ -5291,7 +5327,7 @@ infoDisplay () {
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
 		"Alpine Linux"|"Arch Linux - Old"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS") labelcolor=$(getColor 'light blue');;
-		"Arch Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
+		"Arch Linux"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX") labelcolor=$(getColor 'light cyan');;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS") labelcolor=$(getColor 'light green');;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"|"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux") labelcolor=$(getColor 'light red');;
 		"ROSA") labelcolor=$(getColor 'white');;
