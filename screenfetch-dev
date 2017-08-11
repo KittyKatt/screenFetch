@@ -2928,7 +2928,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
-			logowidth="38"
+			logowidth="35"
 			fulloutput=(
 "${c1}               _ass,,                %s"
 "${c1}              jmk  dm.               %s"
