@@ -977,7 +977,7 @@ detectdistro () {
 		sailfish|sailfish*os) distro="SailfishOS" ;;
 		siduction) distro="Siduction" ;;
 		slackware) distro="Slackware" ;;
-		smgl) distro="Source Mage GNU/Linux" ;;
+		smgl|source*mage|source*mage*gnu*linux) distro="Source Mage GNU/Linux" ;;
 		solus) distro="Solus" ;;
 		sparky|sparky*linux) distro="SparkyLinux" ;;
 		steam|steam*os) distro="SteamOS" ;;
@@ -5117,7 +5117,7 @@ asciiText () {
 			startline="1"
 			logowidth="40"
 			fulloutput=(
-"${c1}                              %s"
+"${c1}                              "
 "${c1}       -sdNMNds:              %s"
 "${c1} .shmNMMMMMMNNNNh.            %s"
 "${c1}  \` \':sNNNNNNNNNNm-           %s"
