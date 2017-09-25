@@ -228,7 +228,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
+supported_distros="Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -496,6 +496,11 @@ detectdistro () {
         				~*)     distro_release=testing      ;;
         				'**')   distro_release=experimental ;; #experimental usually includes git-versions.
 					esac
+					;;
+				"Hyperbola GNU/Linux-libre"|"Hyperbola")
+					distro="Hyperbola GNU/Linux-libre"
+					distro_codename="n/a"
+					distro_release="n/a"
 					;;
 				"LinuxDeepin")
 					distro="LinuxDeepin"
@@ -853,7 +858,11 @@ detectdistro () {
 						distro = "Unknown"
 					}
 					{
-						if ($0 ~ /"LinuxDeepin"/) {
+						if ($0 ~ /"Hyperbola GNU\/Linux-libre"/) {
+							distro = "Hyperbola GNU/Linux-libre"
+							exit
+						}
+						else if ($0 ~ /"LinuxDeepin"/) {
 							distro = "LinuxDeepin"
 							exit
 						}
@@ -945,6 +954,7 @@ detectdistro () {
 		gnewsense) distro="gNewSense" ;;
 		guixsd) distro="GuixSD" ;;
 		haiku) distro="Haiku" ;;
+		hyperbolagnu|hyperbolagnu/linux-libre|'hyperbola gnu/linux-libre'|hyperbola) distro="Hyperbola GNU/Linux-libre" ;;
 		kali*linux) distro="Kali Linux" ;;
 		kaos) distro="KaOS";;
 		kde*neon|neon) distro="KDE neon" ;;
@@ -1084,7 +1094,7 @@ detectpkgs () {
 	pkgs="Unknown"
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
-		'Arch Linux'|'Parabola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux') pkgs=$(pacman -Qq | wc -l) ;;
+		'Arch Linux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux') pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
 				pkgs=$(ls -l /usr/local/etc/crew/meta/*.filelist | wc -l)
@@ -3877,6 +3887,33 @@ asciiText () {
 "${c1}               .,KKKK,.          %s")
 		;;
 
+		"Hyperbola GNU/Linux-libre")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light grey') # light grey
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			logowidth="25"
+			fulloutput=(
+"${c1}                                    %s"
+"${c1}                  ..              , %s"
+"${c1}                  a;           ._#  %s"
+"${c1}                 )##        _au#?   %s"
+"${c1}                 ]##s,.__a_w##e^    %s"
+"${c1}                 :###########(      %s"
+"${c1}                  ^!#####?!^        %s"
+"${c1}                  ._                %s"
+"${c1}             _au######a,            %s"
+"${c1}           sa###########,           %s"
+"${c1}        _a##############o           %s"
+"${c1}      .a#####?!^^^^^-####_          %s"
+"${c1}     j####^           ~##i          %s"
+"${c1}   _de!^               -#i          %s"
+"${c1} _#e^                   ]+          %s"
+"${c1} ^                      ^           %s"
+"${c1}                                    %s")
+        ;;
+
 		"Parabola GNU/Linux-libre")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'purple') # Purple
@@ -5407,6 +5444,7 @@ infoDisplay () {
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"|"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux") labelcolor=$(getColor 'light red');;
 		"ROSA") labelcolor=$(getColor 'white');;
 		"CrunchBang"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
+		"Hyperbola GNU/Linux-libre"|*) labelcolor=$(getColor 'light grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
 		"NetBSD"|"Amazon Linux"|"Proxmox VE") labelcolor=$(getColor 'orange');;
