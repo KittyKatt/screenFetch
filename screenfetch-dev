@@ -228,7 +228,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
+supported_distros="ALDOS,Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
@@ -413,6 +413,9 @@ detectdistro () {
 						distro="OBRevenge"
 						distro_release="n/a"
 					fi
+					;;
+				"ALDOS"|"Aldos")
+					distro="ALDOS"
 					;;
 				"artixlinux"|"Artix Linux"|"artix"|"Artix"|"Artix release")
 					distro="Artix"
@@ -878,6 +881,10 @@ detectdistro () {
 							distro = "Solus"
 							exit
 						}
+						else if ($0 ~ /"ALDOS"/) {
+							distro = "ALDOS"
+							exit
+						}
 					} END {
 						print distro
 					}' /etc/issue)
@@ -918,6 +925,7 @@ detectdistro () {
 	fi
 
 	case $distro in
+		aldos) distro="ALDOS";;
 		alpine) distro="Alpine Linux" ;;
 		amzn|amazon|amazon*linux) distro="Amazon Linux" ;;
 		antergos) distro="Antergos" ;;
@@ -1109,7 +1117,7 @@ detectpkgs () {
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
 		'GuixSD') pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
-		'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS'|'blackPanther OS'|'Amazon Linux') pkgs=$(rpm -qa | wc -l) ;;
+		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS'|'blackPanther OS'|'Amazon Linux') pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS') pkgs=$(pisi list-installed | wc -l) ;;
 		'Solus') pkgs=$(eopkg list-installed | wc -l) ;;
@@ -2642,6 +2650,32 @@ asciiText () {
 	else myascii="${distro}"; fi
 	case ${myascii} in
 		"custom") source "$art" ;;
+
+		"ALDOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light grey') # light grey
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			logowidth="27"
+			fulloutput=(
+"${c1}                           %s"
+"${c1}           # ## #          %s"
+"${c1}        # ######## #       %s"
+"${c1}      # ### ######## #     %s"
+"${c1}     # #### ######### #    %s"
+"${c1}   # #### # # # # #### #   %s"
+"${c1}  # ##### #       ##### #  %s"
+"${c1}   # ###### ##### #### #   %s"
+"${c1}    # ############### #    %s"
+"${c1}                           %s"
+"${c2}        _ ___   ___  ___   %s"
+"${c2}   __ _| |   \ / _ \/ __|  %s"
+"${c2}  / _' | | |) | (_) \__ \  %s"
+"${c2}  \__,_|_|___/ \___/|___/  %s"
+"${c1}                           %s"
+"${c1}                           %s")
+        ;;
 
 		"Alpine Linux")
 			if [[ "$no_color" != "1" ]]; then
