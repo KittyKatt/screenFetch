@@ -416,8 +416,6 @@ detectdistro () {
 					;;
 				"ALDOS"|"Aldos")
 					distro="ALDOS"
-					distro_codename="n/a"
-					distro_release="n/a"
 					;;
 				"artixlinux"|"Artix Linux"|"artix"|"Artix"|"Artix release")
 					distro="Artix"
