@@ -4895,30 +4895,25 @@ asciiText () {
 
 		"SailfishOS")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'blue') # Blue
+				c1=$(getColor 'dark grey') # Grey
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			logowidth="32"
-			fulloutput=(
-"${c1}              .+eWWW            %s"
-"${c1}          .+ee+++eee      e.    %s"
-"${c1}       .ee++eeeeeeee    +e.     %s"
-"${c1}     .e++ee++eeeeeee+eee+e+     %s"
-"${c1}    ee.e+.ee+eee++eeeeee+       %s"
-"${c1}   W.+e.e+.e++ee+eee            %s"
-"${c1}  W.+e.W.ee.W++ee'              %s"
-"${c1} +e.W W.e+.W.W+                 %s"
-"${c1} W.e.+e.W W W.                  %s"
-"${c1} e e e +e.W.W                   %s"
-"${c1}       .W W W.                  %s"
-"${c1}        W.+e.W.                 %s"
-"${c1}         W++e.ee+.              %s"
-"${c1}          ++ +ee++eeeee++.      %s"
-"${c1}          '     '+++e   'ee.    %s"
-"${c1}                           ee   %s"
-"${c1}                            ee  %s"
-"${c1}                             e  %s")
+			fulloutput=(                          
+"${c1}                 _a@b            %s"
+"${c1}              _#b (b             %s"
+"${c1}            _@@   @_         _,  %s"
+"${c1}          _#^@ _#*^^*gg,aa@^^    %s"
+"${c1}          #- @@^  _a@^^          %s"
+"${c1}          @_  *g#b               %s"
+"${c1}          ^@_   ^@_              %s"
+"${c1}            ^@_   @              %s"
+"${c1}             @(b (b              %s"
+"${c1}            #b(b#^               %s"
+"${c1}          _@_#@^                 %s"
+"${c1}       _a@a*^                    %s"
+"${c1}   ,a@*^                         %s")                 
 		;;
 
 		"Qubes OS")
