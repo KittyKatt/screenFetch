@@ -1472,7 +1472,7 @@ detectmem () {
 		usedmem=$(($used_mem / 1024^2 ))
 	elif [ "$distro" == "OpenBSD" ]; then
 		totalmem=$(($(sysctl -n hw.physmem) / 1024 / 1024))
-		usedmem=$(($(vmstat | awk '!/[a-z]/{print $4}') / 1024))
+		usedmem=$(vmstat | awk '!/[a-z]/{gsub("M",""); print $3}')
 	elif [ "$distro" == "NetBSD" ]; then
 		phys_mem=$(awk '/MemTotal/ { print $2 }' /proc/meminfo)
 		totalmem=$((${phys_mem} / 1024))
