@@ -1307,7 +1307,14 @@ detectcpu () {
 	else
 		cpu="$cpu @ ${cpun}${cpufreq}"
 	fi
-	thermal="/sys/class/hwmon/hwmon0/temp1_input"
+	for dir in `echo $(ls /sys/class/hwmon/)`
+	do
+		if cat /sys/class/hwmon/$dir/name | grep coretemp > /dev/null
+		then
+			thermal="/sys/class/hwmon/$dir/temp1_input"
+			break
+		fi
+	done
 	if [ -e $thermal ]; then
 		temp=$(bc <<< "scale=1; $(cat $thermal)/1000")
 	fi
