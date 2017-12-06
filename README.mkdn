@@ -25,7 +25,7 @@ command! This script is very easy to add to and can easily be extended.
 ### ChromeOS/ChromiumOS
 
 0. Requires Developer Mode to be enabled. Instructions to enable it and enter the CLI are here - https://www.chromium.org/chromium-os/poking-around-your-chrome-os-device.
-1. Download the executable file and put it under the `/usr/local/bin/` directory: `wget -P /usr/local/bin/ https://raw.githubusercontent.com/KittyKatt/screenFetch/master/screenfetch-dev`
+1. Download the executable file and put it under the `/usr/local/bin/` directory: `curl -L https://git.io/vaHfR > /usr/local/bin/screenfetch-dev`
 2. Make the file executable by doing the following: `chmod +x /usr/local/bin/screenfetch-dev`
 
 ### Crux Linux
@@ -89,8 +89,8 @@ command! This script is very easy to add to and can easily be extended.
 
 ### Others
 
-1. Download the latest source at https://github.com/KittyKatt/screenFetch: `wget -P /path/to/screenfetch/ https://raw.githubusercontent.com/KittyKatt/screenFetch/master/screenfetch-dev`
-2. In a terminal, make the file executable by doing the following: `chmod +x /path/to/screenfetch/screenfetch-dev`
+1. Download the latest source at https://github.com/KittyKatt/screenFetch: `wget -O screenfetch-dev https://git.io/vaHfR`
+2. In a terminal, make the file executable by doing the following: `chmod +x screenfetch-dev`
 3. Then, either keep it there, or move it to somewhere in your $PATH to make it available without having to use the full path to the script.
 
 ## Running screenfetch
