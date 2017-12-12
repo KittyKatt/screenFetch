@@ -397,21 +397,28 @@ detectdistro () {
 				"archlinux"|"Arch Linux"|"arch"|"Arch"|"archarm")
 					distro="Arch Linux"
 					distro_release="n/a"
-					if grep -q 'antergos' /etc/os-release; then
-						distro="Antergos"
-						distro_release="n/a"
+					if [ -f /etc/os-release ]; then
+						os_release="/etc/os-release";
+					elif [ -f /usr/lib/os-release ]; then
+						os_release="/usr/lib/os-release";
 					fi
-					if grep -q -i 'logos' /etc/os-release; then
-						distro="Logos"
-						distro_release="n/a"
-					fi
-					if grep -q -i 'swagarch' /etc/os-release; then
-						distro="SwagArch"
-						distro_release="n/a"
-					fi
-					if grep -q -i 'obrevenge' /etc/os-release; then
-						distro="OBRevenge"
-						distro_release="n/a"
+					if [[ -n ${os_release} ]]; then
+						if grep -q 'antergos' /etc/os-release; then
+							distro="Antergos"
+							distro_release="n/a"
+						fi
+						if grep -q -i 'logos' /etc/os-release; then
+							distro="Logos"
+							distro_release="n/a"
+						fi
+						if grep -q -i 'swagarch' /etc/os-release; then
+							distro="SwagArch"
+							distro_release="n/a"
+						fi
+						if grep -q -i 'obrevenge' /etc/os-release; then
+							distro="OBRevenge"
+							distro_release="n/a"
+						fi
 					fi
 					;;
 				"ALDOS"|"Aldos")
@@ -454,7 +461,7 @@ detectdistro () {
 						if [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
 							distro="Raspbian"
 							distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
-            					fi
+					fi
 						if [[ "$(cat /etc/os-release)" =~ "BlankOn" ]]; then
 							distro="BlankOn"
 							distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
@@ -495,9 +502,9 @@ detectdistro () {
 					fi
 					. /etc/portage/make.conf #detecting release stable/testing/experimental
 					case $ACCEPT_KEYWORDS in
-        				[a-z]*) distro_release=stable       ;;
-        				~*)     distro_release=testing      ;;
-        				'**')   distro_release=experimental ;; #experimental usually includes git-versions.
+						[a-z]*) distro_release=stable       ;;
+						~*)     distro_release=testing      ;;
+						'**')   distro_release=experimental ;; #experimental usually includes git-versions.
 					esac
 					;;
 				"Hyperbola GNU/Linux-libre"|"Hyperbola")
@@ -686,7 +693,12 @@ detectdistro () {
 			fi
 			if [[ "${distro}" == "Unknown" ]]; then
 				if [ -f /etc/os-release ]; then
-					distrib_id=$(</etc/os-release);
+					os_release="/etc/os-release";
+				elif [ -f /usr/lib/os-release ]; then
+					os_release="/usr/lib/os-release";
+				fi
+				if [[ -n ${os_release} ]]; then
+					distrib_id=$(<${os_release});
 					for l in $(echo $distrib_id); do
 						if [[ ${l} =~ ^ID= ]]; then
 							distrib_id=${l//*=}
@@ -760,8 +772,8 @@ detectdistro () {
 
 			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
 					for di in arch chakra crunchbang-lsb evolveos exherbo fedora \
-						      frugalware fux gentoo kogaion mageia obarun oracle \
-						      pardus pclinuxos redhat redstar rosa SuSe; do
+								frugalware fux gentoo kogaion mageia obarun oracle \
+								pardus pclinuxos redhat redstar rosa SuSe; do
 						if [ -f /etc/$di-release ]; then distro=$di && break; fi
 					done
 					if [[ "${distro}" == "crunchbang-lsb" ]]; then
@@ -1308,17 +1320,17 @@ detectcpu () {
 		cpu="$cpu @ ${cpun}${cpufreq}"
 	fi
 	if [ -d '/sys/class/hwmon/' ]; then
-	    for dir in `echo $(ls /sys/class/hwmon/)`
-	    do
-	        if cat /sys/class/hwmon/$dir/name | grep coretemp > /dev/null
-	        then
-	            thermal="/sys/class/hwmon/$dir/temp1_input"
-	            break
-	        fi
-	    done
-	    if [ -e $thermal ] && [ "${thermal:+isSetToNonNull}" = 'isSetToNonNull' ]; then
-	        temperature=$(bc <<< "scale=1; $(cat $thermal)/1000")
-	    fi
+		for dir in `echo $(ls /sys/class/hwmon/)`
+		do
+			if cat /sys/class/hwmon/$dir/name | grep coretemp > /dev/null
+			then
+				thermal="/sys/class/hwmon/$dir/temp1_input"
+				break
+			fi
+		done
+		if [ -e $thermal ] && [ "${thermal:+isSetToNonNull}" = 'isSetToNonNull' ]; then
+			temperature=$(bc <<< "scale=1; $(cat $thermal)/1000")
+		fi
 	fi
 	if [ -n "$temperature" ]; then
 		cpu="$cpu [${temperature}°C]"
@@ -1397,26 +1409,26 @@ DetectIntelGPU() {
 		*intel*) gpu=intel ;;
 	esac
 
-        if [[ $gpu = intel ]]; then
+	if [[ $gpu = intel ]]; then
 		#Detect CPU
 		local CPU=$(uname -p | awk '{print $3}')
 		CPU=${CPU#*'-'}; #Detect CPU number
 
-          	#Detect Intel GPU
-	  	case $CPU in
-	  	[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])  gpu='Intel HD Graphics'            ;; #1st
-		    2[1-5][0-3][0-2]*|2390T|2600S)     gpu='Intel HD Graphics 2000'       ;; #2nd
-		    2[1-5][1-7][0-8]*|2105|2500K)      gpu='Intel HD Graphics 3000'       ;; #2nd
-		    32[1-5]0*|3[4-5][5-7]0*|33[3-4]0*) gpu='Intel HD Graphics 2500'       ;; #3rd
-		    3570K|3427U)                       gpu='Intel HD Graphics 4000'       ;; #3rd
-		    4[3-7][0-9][0-5]*)                 gpu='Intel HD Graphics 4600'       ;; #4th Haswell
-		    5[5-6]75[C-R]|5350H)               gpu='Intel Iris Pro Graphics 6200' ;; #5th Broadwell
-		                                                                             #6th Skylake
-                                                                                             #7th Kabylake
-                                                                                             #8th Cannonlake
-		*) gpu='Unknown'
-	   	esac
-        fi
+		#Detect Intel GPU
+		case $CPU in
+			[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])	gpu='Intel HD Graphics'						;; #1st
+			2[1-5][0-3][0-2]*|2390T|2600S)				gpu='Intel HD Graphics 2000'			;; #2nd
+			2[1-5][1-7][0-8]*|2105|2500K)					gpu='Intel HD Graphics 3000'			;; #2nd
+			32[1-5]0*|3[4-5][5-7]0*|33[3-4]0*)		gpu='Intel HD Graphics 2500'			;; #3rd
+			3570K|3427U)													gpu='Intel HD Graphics 4000'			;; #3rd
+			4[3-7][0-9][0-5]*)										gpu='Intel HD Graphics 4600'			;; #4th Haswell
+			5[5-6]75[C-R]|5350H)									gpu='Intel Iris Pro Graphics 6200';; #5th Broadwell
+																																								#6th Skylake
+																																								#7th Kabylake
+																																								#8th Cannonlake
+			*) gpu='Unknown'
+		esac
+	fi
 }
 
 # Disk Usage Detection - Begin
@@ -2684,7 +2696,7 @@ asciiText () {
 "${c2}  \__,_|_|___/ \___/|___/  %s"
 "${c1}                           %s"
 "${c1}                           %s")
-        ;;
+		;;
 
 		"Alpine Linux")
 			if [[ "$no_color" != "1" ]]; then
@@ -2837,7 +2849,7 @@ asciiText () {
 "${c4}      ##xxxx   o#xxxxxxxxx##      %s"
 "${c4}         ###xo.  o##xxx###        %s"
 "${c4}                                  %s")
-                ;;
+			;;
 
 		"Mint")
 			if [[ "$no_color" != "1" ]]; then
@@ -3955,7 +3967,7 @@ asciiText () {
 "${c1} _#e^                   ]+          %s"
 "${c1} ^                      ^           %s"
 "${c1}                                    %s")
-        ;;
+			;;
 
 		"Parabola GNU/Linux-libre")
 			if [[ "$no_color" != "1" ]]; then
