@@ -1024,18 +1024,16 @@ detectdistro () {
 		tinycore|tinycore*linux) distro="TinyCore" ;;
 		trisquel) distro="Trisquel";;
 		grombyangos) distro="GrombyangOS" ;;
-		ubuntu)
-			distro="Ubuntu"
-			if grep -q 'Microsoft' /proc/version 2>/dev/null || \
-			   grep -q 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
-			then
-				uow=$(echo -e "$(getColor 'yellow') [Ubuntu on Windows 10]")
-			fi
-			;;
+		ubuntu) distro="Ubuntu";;
 		viperr) distro="Viperr" ;;
 		void*linux) distro="Void Linux" ;;
 		zorin*) distro="Zorin OS" ;;
 	esac
+	if grep -q 'Microsoft' /proc/version 2>/dev/null || \
+	   grep -q 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
+	then
+	   wsl="(on the Windows Subsystem for Linux)"
+	fi
 	verboseOut "Finding distro...found as '${distro} ${distro_release}'"
 }
 # Distro Detection - End
@@ -5542,7 +5540,7 @@ infoDisplay () {
 				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more")
 				else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
 			fi
-			out_array=( "${out_array[@]}" "$mydistro$uow" )
+			out_array=( "${out_array[@]}" "$mydistro$wsl" )
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "kernel" ]]; then mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" ); ((display_index++)); fi
