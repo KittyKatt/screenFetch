@@ -1325,7 +1325,10 @@ detectcpu () {
 	if [ -d '/sys/class/hwmon/' ]; then
 		for dir in `echo $(ls /sys/class/hwmon/)`
 		do
-			if cat /sys/class/hwmon/$dir/name | grep coretemp > /dev/null
+			hwmonfile=""
+			[ -e /sys/class/hwmon/$dir/name ] && hwmonfile=/sys/class/hwmon/$dir/name
+			[ -e /sys/class/hwmon/$dir/device/name ] && hwmonfile=/sys/class/hwmon/$dir/device/name
+			[ -n "$hwmonfile" ] && if cat "$hwmonfile" | grep coretemp > /dev/null
 			then
 				thermal="/sys/class/hwmon/$dir/temp1_input"
 				break
