@@ -2418,15 +2418,18 @@ detectgtk () {
 					gtkFont=$(awk -F'"' '/^gtk-font-name/ {print $2}' $HOME/.gtkrc-2.0)
 				else
 					if type -p xfconf-query >/dev/null 2>&1; then
-						gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName)
+						gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null)
+						[ -z "$gtk2Theme" ] && gtk2Theme="Not Found"
 					fi
 
 					if type -p xfconf-query >/dev/null 2>&1; then
-						gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName)
+						gtkIcons=$(xfconf-query -c xsettings -p /Net/IconThemeName 2>/dev/null)
+						[ -z "$gtkIcons" ] && gtkIcons="Not Found"
 					fi
 
 					if type -p xfconf-query >/dev/null 2>&1; then
-						gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName)
+						gtkFont=$(xfconf-query -c xsettings -p /Gtk/FontName 2>/dev/null)
+						[ -z "$gtkFont" ] && gtkFont="Not Identified"
 					fi
 				fi
 			;;
