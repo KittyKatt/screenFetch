@@ -503,7 +503,9 @@ detectdistro () {
 				done
 			fi
 			case "${distro_detect}" in
-				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"DesaOS"|"Fedora"|"gNewSense"|"Jiyuu Linux"|"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Pardus"|"Raspbian"|"Sabayon"|"Solus"|"SteamOS"|"Trisquel"|"Ubuntu"|"GrombyangOS"|"Scientific Linux")
+				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"DesaOS"|"Fedora"|"gNewSense"|"Jiyuu Linux"| \
+				"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Pardus"|"Raspbian"|"Sabayon"|"Solus"| \
+				"SteamOS"|"Trisquel"|"Ubuntu"|"GrombyangOS"|"Scientific Linux")
 					# no need to fix $distro/$distro_codename/$distro_release
 					distro="${distro_detect}"
 					;;
@@ -1214,7 +1216,9 @@ detectuptime () {
 		fi
 	else
 		if [[ "$distro" =~ "NetBSD" ]]; then uptime=$(awk -F. '{print $1}' /proc/uptime); fi
-		if [[ "$distro" =~ "BSD" ]]; then uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}'); fi
+		if [[ "$distro" =~ "BSD" ]]; then 
+			uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}')
+		fi
 	fi
 	verboseOut "Finding current uptime...found as '${uptime}'"
 }
@@ -1226,7 +1230,8 @@ detectpkgs () {
 	pkgs="Unknown"
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
-		'Arch Linux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'|'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux') pkgs=$(pacman -Qq | wc -l) ;;
+		'Arch Linux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
+		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux') pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
 				pkgs=$(ls -l /usr/local/etc/crew/meta/*.filelist | wc -l)
@@ -1236,12 +1241,16 @@ detectpkgs () {
 		;;
 		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'|'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE') pkgs=$(dpkg -l | grep -c ^i) ;;
+		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'| \
+		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
+		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE') pkgs=$(dpkg -l | grep -c ^i) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
 		'GuixSD') pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
-		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'|'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'Red Star OS'|'blackPanther OS'|'Amazon Linux') pkgs=$(rpm -qa | wc -l) ;;
+		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
+		'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
+		'Red Star OS'|'blackPanther OS'|'Amazon Linux') pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux') pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS') pkgs=$(pisi list-installed | wc -l) ;;
 		'Solus') pkgs=$(eopkg list-installed | wc -l) ;;
@@ -1531,16 +1540,16 @@ DetectIntelGPU() {
 
 		#Detect Intel GPU
 		case $CPU in
-			[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])	gpu='Intel HD Graphics'						;; #1st
-			2[1-5][0-3][0-2]*|2390T|2600S)				gpu='Intel HD Graphics 2000'			;; #2nd
-			2[1-5][1-7][0-8]*|2105|2500K)					gpu='Intel HD Graphics 3000'			;; #2nd
+			[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])		gpu='Intel HD Graphics'					;; #1st
+			2[1-5][0-3][0-2]*|2390T|2600S)			gpu='Intel HD Graphics 2000'			;; #2nd
+			2[1-5][1-7][0-8]*|2105|2500K)				gpu='Intel HD Graphics 3000'			;; #2nd
 			32[1-5]0*|3[4-5][5-7]0*|33[3-4]0*)		gpu='Intel HD Graphics 2500'			;; #3rd
-			3570K|3427U)													gpu='Intel HD Graphics 4000'			;; #3rd
-			4[3-7][0-9][0-5]*)										gpu='Intel HD Graphics 4600'			;; #4th Haswell
-			5[5-6]75[C-R]|5350H)									gpu='Intel Iris Pro Graphics 6200';; #5th Broadwell
-																																								#6th Skylake
-																																								#7th Kabylake
-																																								#8th Cannonlake
+			3570K|3427U)								gpu='Intel HD Graphics 4000'			;; #3rd
+			4[3-7][0-9][0-5]*)							gpu='Intel HD Graphics 4600'			;; #4th Haswell
+			5[5-6]75[C-R]|5350H)						gpu='Intel Iris Pro Graphics 6200'		;; #5th Broadwell
+																										#6th Skylake
+																										#7th Kabylake
+																										#8th Cannonlake
 			*) gpu='Unknown'
 		esac
 	fi
@@ -1849,7 +1858,8 @@ detectde () {
 					elif [ -n "$TDE_FULL_SESSION" ]; then DE=Trinity;
 					elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then DE=GNOME;
 					elif [ -n "$MATE_DESKTOP_SESSION_ID" ]; then DE=MATE;
-					elif `dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1` ; then DE=GNOME;
+					elif `dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1` ; then 
+						DE=GNOME;
 					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=Xfce;
 					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then DE=Xfce
 					elif echo $DESKTOP | grep -q '^Enlightenment'; then DE=Enlightenment;
@@ -2203,8 +2213,16 @@ detectwmtheme () {
 	case $WM in
 		'2bwm') Win_theme="Not Applicable";;
 		'9wm') Win_theme="Not Applicable";;
-		'Awesome') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[^/]\+/[^/]\+.lua' -o | cut -d'/' -f1 | head -n1)"; fi;;
-		'BlackBox') if [ -f $HOME/.blackboxrc ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"; fi;;
+		'Awesome')
+			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua ]; then 
+				Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' ${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua | grep '[^/]\+/[^/]\+.lua' -o | cut -d'/' -f1 | head -n1)"
+			fi
+		;;
+		'BlackBox')
+			if [ -f $HOME/.blackboxrc ]; then
+				Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.blackboxrc)"
+			fi
+		;;
 		'Beryl') Win_theme="Not Applicable";;
 		'bspwm') Win_theme="Not Applicable";;
 		'BudgieWM')
@@ -2249,13 +2267,25 @@ detectwmtheme () {
 		#TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
 		'E17') Win_theme=${E_CONF_PROFILE};;
 		'echinus') Win_theme="Not Applicable";;
-		'Emerald') if [ -f $HOME/.emerald/theme/theme.ini ]; then Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"; fi;;
+		'Emerald')
+			if [ -f $HOME/.emerald/theme/theme.ini ]; then
+				Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"
+			fi
+		;;
 		'Finder') Win_theme="Not Applicable";;
-		'FluxBox'|'Fluxbox') if [ -f $HOME/.fluxbox/init ]; then Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"; fi;;
+		'FluxBox'|'Fluxbox')
+			if [ -f $HOME/.fluxbox/init ]; then
+				Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' $HOME/.fluxbox/init)"
+			fi
+		;;
 		'FVWM') Win_theme="Not Applicable";;
 		'howm') Win_theme="Not Applicable";;
 		'i3') Win_theme="Not Applicable";;
-		'IceWM') if [ -f $HOME/.icewm/theme ]; then Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"; fi;;
+		'IceWM')
+			if [ -f $HOME/.icewm/theme ]; then
+				Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' $HOME/.icewm/theme)"
+			fi
+		;;
 		'KWin'*)
 			if [[ -z $KDE_CONFIG_DIR ]]; then
 				if type -p kde5-config >/dev/null 2>&1; then
@@ -2304,7 +2334,11 @@ detectwmtheme () {
 			Win_theme="$(gsettings get org.mate.Marco.general theme)"
 			Win_theme=${Win_theme//"'"}
 		;;
-		'Metacity') if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"; fi ;;
+		'Metacity') 
+			if [ "`gconftool-2 -g /apps/metacity/general/theme`" ]; then
+				Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"
+			fi
+		;;
 		'monsterwm') Win_theme="Not Applicable";;
 		'Musca') Win_theme="Not Applicable";;
 		'Notion') Win_theme="Not Applicable";;
@@ -2315,7 +2349,11 @@ detectwmtheme () {
 				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml)";
 			fi
 		;;
-		'PekWM') if [ -f $HOME/.pekwm/config ]; then Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"; fi;;
+		'PekWM') 
+			if [ -f $HOME/.pekwm/config ]; then
+				Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' $HOME/.pekwm/config)"
+			fi
+		;;
 		'Ratpoison') Win_theme="Not Applicable";;
 		'Sawfish') Win_theme="$(awk -F")" '/\(quote default-frame-style/{print $2}' $HOME/.sawfish/custom | sed 's/ (quote //')";;
 		'ScrotWM') Win_theme="Not Applicable";;
@@ -2341,7 +2379,11 @@ detectwmtheme () {
 		'WindowMaker') Win_theme="Not Applicable";;
 		'WMFS') Win_theme="Not Applicable";;
 		'wmii') Win_theme="Not Applicable";;
-		'Xfwm4') if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"; fi;;
+		'Xfwm4')
+			if [ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then
+				Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"
+			fi
+		;;
 		'XMonad') Win_theme="Not Applicable";;
 	esac
 	if [[ "${distro}" == "Mac OS X" ]]; then
@@ -2909,7 +2951,12 @@ asciiText () {
 				c3=$(getColor 'green')
 				c4=$(getColor 'dark gray')
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_color}"; fi
+			if [ -n "${my_lcolor}" ]; then
+				c1="${my_lcolor}"
+				c2="${my_lcolor}"
+				c3="${my_lcolor}"
+				c4="${my_color}"
+			fi
 			startline="1"
 			logowidth="38"
 			fulloutput=(""
@@ -2942,7 +2989,12 @@ asciiText () {
 				c3=$(getColor 'light red') # Light Red
 				c4=$(getColor 'dark grey')
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then
+				c1="${my_lcolor}"
+				c2="${my_lcolor}"
+				c3="${my_lcolor}"
+				c4="${my_lcolor}"
+			fi
 			startline="0"
 			logowidth="38"
 			fulloutput=(
@@ -3298,7 +3350,13 @@ asciiText () {
 				c4=$(getColor 'light blue') # Light Blue
 				c5=$(getColor 'white') # White
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; c5="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then
+				c1="${my_lcolor}"
+				c2="${my_lcolor}"
+				c3="${my_lcolor}"
+				c4="${my_lcolor}"
+				c5="${my_lcolor}"
+			fi
 			startline="0"
 			logowidth="38"
 			fulloutput=(
@@ -3667,7 +3725,13 @@ asciiText () {
 				c4=$(getColor 'light red') # Light Red
 				c5=$(getColor 'dark grey')
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; c5="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then
+				c1="${my_lcolor}"
+				c2="${my_lcolor}"
+				c3="${my_lcolor}"
+				c4="${my_lcolor}"
+				c5="${my_lcolor}"
+			fi
 			startline="3"
 			logowidth="44"
 			fulloutput=(
@@ -4300,7 +4364,14 @@ asciiText () {
 				c5=$(getColor 'purple') # Purple
 				c6=$(getColor 'blue') # Blue
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; c4="${my_lcolor}"; c5="${my_lcolor}"; c6="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then 
+				c1="${my_lcolor}"
+				c2="${my_lcolor}"
+				c3="${my_lcolor}"
+				c4="${my_lcolor}"
+				c5="${my_lcolor}"
+				c6="${my_lcolor}"
+			fi
 			startline="1"
 			logowidth="31"
 			fulloutput=(
@@ -5633,10 +5704,16 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Alpine Linux"|"Arch Linux - Old"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"|"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"|"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS") labelcolor=$(getColor 'light blue');;
+		"Alpine Linux"|"Arch Linux - Old"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"| \
+		"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"| \
+		"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"| \
+		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS") labelcolor=$(getColor 'light blue');;
 		"Arch Linux"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"OS Elbrus") labelcolor=$(getColor 'light cyan');;
-		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS") labelcolor=$(getColor 'light green');;
-		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"|"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"|"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux") labelcolor=$(getColor 'light red');;
+		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"| \
+		"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS") labelcolor=$(getColor 'light green');;
+		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"| \
+		"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"| \
+		"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux") labelcolor=$(getColor 'light red');;
 		"ROSA") labelcolor=$(getColor 'white');;
 		"CrunchBang"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
 		"Hyperbola GNU/Linux-libre"|*) labelcolor=$(getColor 'light grey');;
@@ -5666,7 +5743,11 @@ infoDisplay () {
 		mygpu=$(echo -e "$labelcolor GPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mygpu" )
 		mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" )
 	else
-		if [[ "${display[@]}" =~ "host" ]]; then myinfo=$(echo -e "${labelcolor} ${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}"); out_array=( "${out_array[@]}" "$myinfo" ); ((display_index++)); fi
+		if [[ "${display[@]}" =~ "host" ]]; then
+			myinfo=$(echo -e "${labelcolor} ${myUser}$textcolor${bold}@${c0}${labelcolor}${myHost}")
+			out_array=( "${out_array[@]}" "$myinfo" )
+			((display_index++))
+		fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [ "$distro" == "Mac OS X" ]; then
 				sysArch=`str1=$(getconf LONG_BIT);echo ${str1}bit`
@@ -5688,31 +5769,61 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$mydistro$wsl" )
 			((display_index++))
 		fi
-		if [[ "${display[@]}" =~ "kernel" ]]; then mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel"); out_array=( "${out_array[@]}" "$mykernel" ); ((display_index++)); fi
-		if [[ "${display[@]}" =~ "uptime" ]]; then myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime"); out_array=( "${out_array[@]}" "$myuptime" ); ((display_index++)); fi
-		if [[ "${display[@]}" =~ "pkgs" ]]; then mypkgs=$(echo -e "$labelcolor Packages:$textcolor $pkgs"); out_array=( "${out_array[@]}" "$mypkgs" ); ((display_index++)); fi
-		if [[ "${display[@]}" =~ "shell" ]]; then myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell"); out_array=( "${out_array[@]}" "$myshell" ); ((display_index++)); fi
+		if [[ "${display[@]}" =~ "kernel" ]]; then 
+			mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel")
+			out_array=( "${out_array[@]}" "$mykernel" )
+			((display_index++))
+		fi
+		if [[ "${display[@]}" =~ "uptime" ]]; then 
+			myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime")
+			out_array=( "${out_array[@]}" "$myuptime" )
+			((display_index++))
+		fi
+		if [[ "${display[@]}" =~ "pkgs" ]]; then 
+			mypkgs=$(echo -e "$labelcolor Packages:$textcolor $pkgs")
+			out_array=( "${out_array[@]}" "$mypkgs" )
+			((display_index++))
+		fi
+		if [[ "${display[@]}" =~ "shell" ]]; then 
+			myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell")
+			out_array=( "${out_array[@]}" "$myshell" )
+			((display_index++))
+		fi
 		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" ]]; then
 			if [ -n "${xResolution}" ]; then
-				if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
+				if [[ "${display[@]}" =~ "res" ]]; then 
+					myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
+					out_array=( "${out_array[@]}" "$myres" )
+					((display_index++))
+				fi
 			fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
-					myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++))
+					myde=$(echo -e "$labelcolor DE:$textcolor $DE")
+					out_array=( "${out_array[@]}" "$myde" )
+					((display_index++))
 				fi
 			fi
-			if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
+			if [[ "${display[@]}" =~ "wm" ]]; then 
+				mywm=$(echo -e "$labelcolor WM:$textcolor $WM")
+				out_array=( "${out_array[@]}" "$mywm" )
+				((display_index++))
+			fi
 			if [[ "${display[@]}" =~ "wmtheme" ]]; then
 					if [[ "${Win_theme}" == "Not Applicable" || "${Win_theme}" == "Not Found" ]]; then
 						:
 					else
-						mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++)); fi
+						mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme")
+						out_array=( "${out_array[@]}" "$mywmtheme" )
+						((display_index++))
 					fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [ "$distro" == "Mac OS X" ]; then
 					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
 						if [ -n "$gtkFont" ]; then
-							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
+							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont")
+							out_array=( "${out_array[@]}" "$myfont" )
+							((display_index++))
 						fi
 					fi
 				else
@@ -5729,54 +5840,95 @@ infoDisplay () {
 						fi
 					fi
 					if [[ "$gtk_2line" == "yes" ]]; then
-						mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme"); out_array=( "${out_array[@]}" "$mygtk2" ); ((display_index++))
-						mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme"); out_array=( "${out_array[@]}" "$mygtk3" ); ((display_index++))
+						mygtk2=$(echo -e "$labelcolor GTK2 Theme:$textcolor $gtk2Theme")
+						out_array=( "${out_array[@]}" "$mygtk2" )
+						((display_index++))
+						mygtk3=$(echo -e "$labelcolor GTK3 Theme:$textcolor $gtk3Theme")
+						out_array=( "${out_array[@]}" "$mygtk3" )
+						((display_index++))
 					else
 						if [[ "$gtk2Theme" == "$gtk3Theme" ]]; then
 							if [[ "$gtk2Theme" != "Not Applicable" && "$gtk2Theme" != "Not Found" ]]; then
-								mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${gtk2Theme} [GTK2/3]"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+								mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${gtk2Theme} [GTK2/3]")
+								out_array=( "${out_array[@]}" "$mygtk" )
+								((display_index++))
 							fi
 						else
-							mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${mygtk2}${mygtk3}"); out_array=( "${out_array[@]}" "$mygtk" ); ((display_index++))
+							mygtk=$(echo -e "$labelcolor GTK Theme:$textcolor ${mygtk2}${mygtk3}")
+							out_array=( "${out_array[@]}" "$mygtk" )
+							((display_index++))
 						fi
 					fi
 					if [[ "$gtkIcons" != "Not Applicable" && "$gtkIcons" != "Not Found" ]]; then
 						if [ -n "$gtkIcons" ]; then
-							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons"); out_array=( "${out_array[@]}" "$myicons" ); ((display_index++))
+							myicons=$(echo -e "$labelcolor Icon Theme:$textcolor $gtkIcons")
+							out_array=( "${out_array[@]}" "$myicons" )
+							((display_index++))
 						fi
 					fi
 					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
 						if [ -n "$gtkFont" ]; then
-							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont"); out_array=( "${out_array[@]}" "$myfont" ); ((display_index++))
+							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont")
+							out_array=( "${out_array[@]}" "$myfont" )
+							((display_index++))
 						fi
 					fi
-					# [ "$gtkBackground" ] && mybg=$(echo -e "$labelcolor BG:$textcolor $gtkBackground"); out_array=( "${out_array[@]}" "$mybg" ); ((display_index++))
 				fi
 			fi
 		elif [[ "$fake_distro" == "Cygwin" || "$fake_distro" == "Msys" || "$fake_distro" == "Windows - Modern" ]]; then
-			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
+			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then 
+				myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
+				out_array=( "${out_array[@]}" "$myres" )
+				((display_index++))
+			fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
 					myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++))
 				fi
 			fi
-			if [[ "${display[@]}" =~ "wm" ]]; then mywm=$(echo -e "$labelcolor WM:$textcolor $WM"); out_array=( "${out_array[@]}" "$mywm" ); ((display_index++)); fi
+			if [[ "${display[@]}" =~ "wm" ]]; then
+				mywm=$(echo -e "$labelcolor WM:$textcolor $WM")
+				out_array=( "${out_array[@]}" "$mywm" )
+				((display_index++))
+			fi
 			if [[ "${display[@]}" =~ "wmtheme" ]]; then
 				if [[ "${Win_theme}" == "Not Applicable" || "${Win_theme}" == "Not Found" ]]; then
 					:
 				else
-					mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme"); out_array=( "${out_array[@]}" "$mywmtheme" ); ((display_index++))
+					mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme")
+					out_array=( "${out_array[@]}" "$mywmtheme" )
+					((display_index++))
 				fi
 			fi
 		elif [[ "$distro" == "Haiku" ]]; then
 			if [ -n "${xResolution}" ]; then
-				if [[ "${display[@]}" =~ "res" ]]; then myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution"); out_array=( "${out_array[@]}" "$myres" ); ((display_index++)); fi
+				if [[ "${display[@]}" =~ "res" ]]; then 
+					myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
+					out_array=( "${out_array[@]}" "$myres" )
+					((display_index++))
+				fi
 			fi
 		fi
-		[[ "${fake_distro}" != "Cygwin" && "${fake_distro}" != "Msys" && "${fake_distro}" != "Windows - Modern" ]] && if [[ "${display[@]}" =~ "disk" ]]; then mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage"); out_array=( "${out_array[@]}" "$mydisk" ); ((display_index++)); fi
-		if [[ "${display[@]}" =~ "cpu" ]]; then mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu"); out_array=( "${out_array[@]}" "$mycpu" ); ((display_index++)); fi
-		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu"); out_array=( "${out_array[@]}" "$mygpu" ); ((display_index++)); fi
-		if [[ "${display[@]}" =~ "mem" ]]; then mymem=$(echo -e "$labelcolor RAM:$textcolor $mem"); out_array=( "${out_array[@]}" "$mymem" ); ((display_index++)); fi
+		[[ "${fake_distro}" != "Cygwin" && "${fake_distro}" != "Msys" && "${fake_distro}" != "Windows - Modern" ]] && if [[ "${display[@]}" =~ "disk" ]]; then
+			mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage")
+			out_array=( "${out_array[@]}" "$mydisk" )
+			((display_index++))
+		fi
+		if [[ "${display[@]}" =~ "cpu" ]]; then 
+			mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu")
+			out_array=( "${out_array[@]}" "$mycpu" )
+			((display_index++))
+		fi
+		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then 
+			mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu")
+			out_array=( "${out_array[@]}" "$mygpu" )
+			((display_index++))
+		fi
+		if [[ "${display[@]}" =~ "mem" ]]; then 
+			mymem=$(echo -e "$labelcolor RAM:$textcolor $mem")
+			out_array=( "${out_array[@]}" "$mymem" )
+			((display_index++))
+		fi
 		if [[ "$use_customlines" = 1 ]]; then customlines; fi
 	fi
 	if [[ "$display_type" == "ASCII" ]]; then
