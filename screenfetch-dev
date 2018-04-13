@@ -42,32 +42,130 @@ scriptVersion="3.8.0"
 # This setting controls what ASCII logo is displayed.
 # distro="Linux"
 
-# This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
-#display="distro host kernel uptime pkgs shell res de wm wmtheme gtk disk cpu gpu mem"
-valid_display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk disk cpu gpu mem )
-display=( distro host kernel uptime pkgs shell res de wm wmtheme gtk cpu gpu mem )
+# This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. 
+# To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
+valid_display=(
+		'distro'
+		'host'
+		'kernel'
+		'uptime'
+		'pkgs'
+		'shell'
+		'res'
+		'de'
+		'wm'
+		'wmtheme'
+		'gtk'
+		'disk'
+		'cpu'
+		'gpu'
+		'mem'
+)
+display=(
+		'distro'
+		'host'
+		'kernel'
+		'uptime'
+		'pkgs'
+		'shell'
+		'res'
+		'de'
+		'wm'
+		'wmtheme'
+		'gtk'
+		'cpu'
+		'gpu'
+		'mem'
+)
 # Display Type: ASCII or Text
 display_type="ASCII"
 # Plain logo
 display_logo="no"
 
-# Colors to use for the information found. These are set below according to distribution. If you would like to set your OWN color scheme for these, uncomment the lines below and edit them to your heart's content.
+# Colors to use for the information found. These are set below according to distribution.
+# If you would like to set your OWN color scheme for these, uncomment the lines below and edit them to your heart's content.
 # textcolor="\e[0m"
 # labelcolor="\e[1;34m"
 
-# WM & DE process names
+# Array: WM Process Names
+# Order matters!
 # Removed WM's: compiz
-wmnames=( fluxbox openbox blackbox xfwm4 metacity kwin twin icewm pekwm flwm flwm_topside fvwm dwm awesome wmaker stumpwm musca xmonad.* i3 ratpoison scrotwm spectrwm wmfs wmii beryl subtle e16 enlightenment sawfish emerald monsterwm dminiwm compiz Finder herbstluftwm howm notion bspwm cinnamon 2bwm echinus swm budgie-wm dtwm 9wm chromeos-wm deepin-wm sway mwm )
-denames=( gnome-session xfce-mcs-manage xfce4-session xfconfd ksmserver lxsession lxqt-session gnome-settings-daemon mate-session mate-settings-daemon Finder deepin )
+wmnames=(
+		'fluxbox'
+		'openbox'
+		'blackbox'
+		'xfwm4'
+		'metacity'
+		'kwin'
+		'twin'
+		'icewm'
+		'pekwm'
+		'flwm'
+		'flwm_topside'
+		'fvwm'
+		'dwm'
+		'awesome'
+		'wmaker'
+		'stumpwm'
+		'musca'
+		'xmonad.*'
+		'i3'
+		'ratpoison'
+		'scrotwm'
+		'spectrwm'
+		'wmfs'
+		'wmii'
+		'beryl'
+		'subtle'
+		'e16'
+		'enlightenment'
+		'sawfish'
+		'emerald'
+		'monsterwm'
+		'dminiwm'
+		'compiz'
+		'Finder'
+		'herbstluftwm'
+		'howm'
+		'notion'
+		'bspwm'
+		'cinnamon'
+		'2bwm'
+		'echinus'
+		'swm'
+		'budgie-wm'
+		'dtwm'
+		'9wm'
+		'chromeos-wm'
+		'deepin-wm'
+		'sway'
+		'mwm'
+)
+denames=( 
+		'gnome-session'
+		'xfce-mcs-manage'
+		'xfce4-session'
+		'xfconfd'
+		'ksmserver'
+		'lxsession'
+		'lxqt-session'
+		'gnome-settings-daemon'
+		'mate-session'
+		'mate-settings-daemon'
+		'Finder'
+		'deepin'
+)
 
 # Screenshot Settings
 # This setting lets the script know if you want to take a screenshot or not. 1=Yes 0=No
 screenshot=
 # This setting lets the script know if you want to upload the screenshot to a filehost. 1=Yes 0=No
 upload=
-# This setting lets the script know where you would like to upload the file to. Valid hosts are: teknik, mediacrush, imgur, hmp, and a configurable local.
+# This setting lets the script know where you would like to upload the file to. 
+# Valid hosts are: teknik, mediacrush, imgur, hmp, and a configurable local.
 uploadLoc=
-# You can specify a custom screenshot command here. Just uncomment and edit. Otherwise, we'll be using the default command: scrot -cd3.
+# You can specify a custom screenshot command here. Just uncomment and edit. 
+# Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
 shotfile=$(printf "screenFetch-`date +'%Y-%m-%d_%H-%M-%S'`.png")
 
@@ -139,30 +237,31 @@ getColor () {
 			tmp_color="$(tr '[:upper:]' '[:lower:]' <<< ${1})"
 		fi
 		case "${tmp_color}" in
-			'black')	color_ret='\033[0m\033[30m';;
-			'red')		color_ret='\033[0m\033[31m';;
-			'green')	color_ret='\033[0m\033[32m';;
-			'brown')	color_ret='\033[0m\033[33m';;
-			'blue')		color_ret='\033[0m\033[34m';;
-			'purple')	color_ret='\033[0m\033[35m';;
-			'cyan')		color_ret='\033[0m\033[36m';;
-			'yellow')	color_ret='\033[0m\033[1;33m';;
-			'white')	color_ret='\033[0m\033[1;37m';;
-
+			# Standards
+			'black')					color_ret='\033[0m\033[30m';;
+			'red')						color_ret='\033[0m\033[31m';;
+			'green')					color_ret='\033[0m\033[32m';;
+			'brown')					color_ret='\033[0m\033[33m';;
+			'blue')						color_ret='\033[0m\033[34m';;
+			'purple')					color_ret='\033[0m\033[35m';;
+			'cyan')						color_ret='\033[0m\033[36m';;
+			'yellow')					color_ret='\033[0m\033[1;33m';;
+			'white')					color_ret='\033[0m\033[1;37m';;
+			# Bolds
 			'dark grey'|'dark gray')	color_ret='\033[0m\033[1;30m';;
-			'light red')	color_ret='\033[0m\033[1;31m';;
-			'light green')	color_ret='\033[0m\033[1;32m';;
-			'light blue')	color_ret='\033[0m\033[1;34m';;
-			'light purple')	color_ret='\033[0m\033[1;35m';;
-			'light cyan')	color_ret='\033[0m\033[1;36m';;
+			'light red')					color_ret='\033[0m\033[1;31m';;
+			'light green')				color_ret='\033[0m\033[1;32m';;
+			'light blue')				color_ret='\033[0m\033[1;34m';;
+			'light purple')				color_ret='\033[0m\033[1;35m';;
+			'light cyan')				color_ret='\033[0m\033[1;36m';;
 			'light grey'|'light gray')	color_ret='\033[0m\033[37m';;
 			# Some 256 colors
-			'orange') color_ret="$(colorize '202')";;       #DarkOrange
-			'light orange') color_ret="$(colorize '214')";; #Orange1
+			'orange')					color_ret="$(colorize '202')";;	#DarkOrange
+			'light orange') 			color_ret="$(colorize '214')";; 	#Orange1
 			# HaikuOS
-			'black_haiku') color_ret="$(colorize '7')";;
+			'black_haiku') 			color_ret="$(colorize '7')";;
 			#ROSA color
-			'rosa_blue') color_ret='\033[01;38;05;25m';;
+			'rosa_blue') 				color_ret='\033[01;38;05;25m';;
 		esac
 		[[ -n "${color_ret}" ]] && echo "${color_ret}"
 	else
@@ -228,10 +327,20 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="ALDOS,Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
+supported_distros="ALDOS,Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, \
+blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
+Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
+Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
+LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
+OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, Qubes OS, \
+Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
+SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
-supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
+supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, \
+dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, \
+Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, \
+StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
 displayHelp () {
 	printf "${underline}Usage${c0}:\n"
