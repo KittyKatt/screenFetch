@@ -1951,11 +1951,14 @@ detectde () {
 						DE="${DE} ${DEver//* }"
 					fi
 				elif [[ ${DE} == "GNOME" ]]; then
-					if type -p gnome-session >/dev/null 2>&1; then
-						DEver=$(gnome-session --version 2> /dev/null)
+					if type -p gnome-control-center>/dev/null 2>&1; then
+						DEver=$(gnome-control-center --version 2> /dev/null)
 						DE="${DE} ${DEver//* }"
 					elif type -p gnome-session-properties >/dev/null 2>&1; then
 						DEver=$(gnome-session-properties --version 2> /dev/null)
+						DE="${DE} ${DEver//* }"
+					elif type -p gnome-session >/dev/null 2>&1; then
+						DEver=$(gnome-session --version 2> /dev/null)
 						DE="${DE} ${DEver//* }"
 					fi
 				elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
