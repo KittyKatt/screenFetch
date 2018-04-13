@@ -5810,13 +5810,14 @@ infoDisplay () {
 				((display_index++))
 			fi
 			if [[ "${display[@]}" =~ "wmtheme" ]]; then
-					if [[ "${Win_theme}" == "Not Applicable" || "${Win_theme}" == "Not Found" ]]; then
-						:
-					else
-						mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme")
-						out_array=( "${out_array[@]}" "$mywmtheme" )
-						((display_index++))
-					fi
+				if [[ "${Win_theme}" == "Not Applicable" || "${Win_theme}" == "Not Found" ]]; then
+					:
+				else
+					mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme")
+					out_array=( "${out_array[@]}" "$mywmtheme" )
+					((display_index++))
+				fi
+			fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
 				if [ "$distro" == "Mac OS X" ]; then
 					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
