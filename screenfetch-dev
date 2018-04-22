@@ -2670,7 +2670,7 @@ detectgtk () {
 				# EXPERIMENTAL gtk3 Theme detection
 				if [ -f "$HOME/.config/gtk-3.0/settings.ini" ]; then
 					if grep -q gtk-theme-name $HOME/.config/gtk-3.0/settings.ini; then
-						gtk3Theme=$(awk -F'=' '/^gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
+						gtk3Theme=$(awk -F'=\t*' '/^gtk-theme-name/ {print $2}' $HOME/.config/gtk-3.0/settings.ini)
 					fi
 				fi
 
