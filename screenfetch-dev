@@ -1604,7 +1604,7 @@ detectmem () {
 			size_chip=`echo "$size_chip * 2" | bc`
 		done
 		round_mem=`echo "( $size_mem / $size_chip + 1 ) * $size_chip " | bc`
-		totalmem=$(($round_mem / 1024^2 ))
+		totalmem=$(($round_mem / 1024 / 1024 ))
 		pagesize=$(sysctl -n hw.pagesize)
 		inactive_count=$(sysctl -n vm.stats.vm.v_inactive_count)
 		inactive_mem=$(($inactive_count * $pagesize))
@@ -1614,7 +1614,7 @@ detectmem () {
 		free_mem=$(($free_count * $pagesize))
 		avail_mem=$(($inactive_mem + $cache_mem + $free_mem))
 		used_mem=$(($round_mem - $avail_mem))
-		usedmem=$(($used_mem / 1024^2 ))
+		usedmem=$(($used_mem / 1024 / 1024 ))
 	elif [ "$distro" == "OpenBSD" ]; then
 		totalmem=$(($(sysctl -n hw.physmem) / 1024 / 1024))
 		usedmem=$(vmstat | awk '!/[a-z]/{gsub("M",""); print $3}')
