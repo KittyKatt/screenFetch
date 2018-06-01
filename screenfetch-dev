@@ -1283,8 +1283,7 @@ detectpkgs () {
 			pkgs=$(pkg_info | wc -l | tr -d ' ')
 		;;
 		'Cygwin')
-			cygfix=2
-			pkgs=$(($(cygcheck -cd | wc -l) - cygfix))
+			pkgs=$(($(cygcheck -cd | wc -l) - 2))
 			if [ -d "/cygdrive/c/ProgramData/chocolatey/lib" ]; then
 				chocopkgs=$(( $(ls -1 /cygdrive/c/ProgramData/chocolatey/lib | wc -l) ))
 				pkgs=$((pkgs + chocopkgs))
