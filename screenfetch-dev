@@ -313,12 +313,12 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="ALDOS,Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, \
+supported_distros="ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
 Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
-OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, Qubes OS, \
+OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
 SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
@@ -492,7 +492,7 @@ detectdistro () {
 			case "${distro_detect}" in
 				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"DesaOS"|"Fedora"|"gNewSense"|"Jiyuu Linux"| \
 				"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Pardus"|"Raspbian"|"Sabayon"|"Solus"| \
-				"SteamOS"|"Trisquel"|"Ubuntu"|"GrombyangOS"|"Scientific Linux")
+				"SteamOS"|"Trisquel"|"Ubuntu"|"GrombyangOS"|"Scientific Linux"|"PureOS")
 					# no need to fix $distro/$distro_codename/$distro_release
 					distro="${distro_detect}"
 					;;
@@ -1109,6 +1109,7 @@ detectdistro () {
 		pclinuxos|pclos) distro="PCLinuxOS" ;;
 		peppermint) distro="Peppermint" ;;
 		proxmox|proxmox*ve) distro="Proxmox VE" ;;
+		pureos) distro="PureOS" ;;
 		qubes) distro="Qubes OS" ;;
 		raspbian) distro="Raspbian" ;;
 		red*hat*|rhel) distro="Red Hat Enterprise Linux" ;;
@@ -1229,7 +1230,7 @@ detectpkgs () {
 		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
-		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE') pkgs=$(dpkg -l | grep -c ^i) ;;
+		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS') pkgs=$(dpkg -l | grep -c ^i) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
@@ -5451,7 +5452,7 @@ asciiText () {
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="1"
-			logowidth="32"
+			logowidth="33"
 			fulloutput=(""
 "${c1}   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   %s"
 "${c1}   ██▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀██   %s"
@@ -5468,6 +5469,30 @@ asciiText () {
 "${c1}   ██                       ██   %s"
 "${c1}   ███████████████████████████   %s"
 "                                 %s")
+		;;
+
+		"PureOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'dark grey') # "Black"
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			logowidth="44"
+			fulloutput=(""
+"                                            %s"
+"${c1}  dmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmd  %s"
+"${c1}  dNm//////////////////////////////////mNd  %s"
+"${c1}  dNd                                  dNd  %s"
+"${c1}  dNd                                  dNd  %s"
+"${c1}  dNd                                  dNd  %s"
+"${c1}  dNd                                  dNd  %s"
+"${c1}  dNd                                  dNd  %s"
+"${c1}  dNd                                  dNd  %s"
+"${c1}  dNd                                  dNd  %s"
+"${c1}  dNd                                  dNd  %s"
+"${c1}  dNm//////////////////////////////////mNd  %s"
+"${c1}  dmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmd  %s"
+"                                            %s")
 		;;
 
 		*)
@@ -5704,11 +5729,11 @@ infoDisplay () {
 		"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux") labelcolor=$(getColor 'light red');;
 		"ROSA") labelcolor=$(getColor 'white');;
 		"CrunchBang"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
-		"Hyperbola GNU/Linux-libre"|*) labelcolor=$(getColor 'light grey');;
+		"Hyperbola GNU/Linux-libre"|"PureOS"|*) labelcolor=$(getColor 'light grey');;
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan") labelcolor=$(getColor 'light purple');;
 		"Haiku") labelcolor=$(getColor 'green');;
 		"NetBSD"|"Amazon Linux"|"Proxmox VE") labelcolor=$(getColor 'orange');;
-		"CentOS"|*) labelcolor=$(getColor 'yellow');;
+		"CentOS") labelcolor=$(getColor 'yellow');;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
 	if [[ "$art" ]]; then source "$art"; fi
