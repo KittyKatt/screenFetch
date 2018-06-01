@@ -1408,7 +1408,7 @@ detectcpu () {
 			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2+.5) }' /proc/cpuinfo | head -n 1)
 		fi
 		if [ -n "$cpu_mhz" ]; then
-			if [ "$(echo "$cpu_mhz" | cut -d. -f1)" -gt 999 ]; then
+			if [ "${cpu_mhz%.*}" -gt 999 ]; then
 				cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
 				cpufreq="${cpu_ghz}GHz"
 			else
