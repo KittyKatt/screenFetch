@@ -1655,17 +1655,20 @@ detectmem () {
 	else
 		# MemUsed = Memtotal + Shmem - MemFree - Buffers - Cached - SReclaimable
 		# Source: https://github.com/dylanaraps/neofetch/pull/391/files#diff-e863270127ca6116fd30e708cdc582fc
-		mem_info=$(</proc/meminfo)
-		mem_info=$(echo $(echo $(mem_info=${mem_info// /}; echo ${mem_info//kB/})))
-		for m in $mem_info; do
-			case ${m//:*} in
-				"MemTotal") usedmem=$((usedmem+=${m//*:})); totalmem=${m//*:} ;;
-				"Shmem") usedmem=$((usedmem+=${m//*:})) ;;
-				"MemFree"|"Buffers"|"Cached"|"SReclaimable") usedmem=$((usedmem-=${m//*:})) ;;
-			esac
-		done
-		usedmem=$((usedmem / 1024))
-		totalmem=$((totalmem / 1024))
+		#mem_info=$(</proc/meminfo)
+		#mem_info=$(echo $(echo $(mem_info=${mem_info// /}; echo ${mem_info//kB/})))
+		#for m in $mem_info; do
+		#	case ${m//:*} in
+		#		"MemTotal") usedmem=$((usedmem+=${m//*:})); totalmem=${m//*:} ;;
+		#		"Shmem") usedmem=$((usedmem+=${m//*:})) ;;
+		#		"MemFree"|"Buffers"|"Cached"|"SReclaimable") usedmem=$((usedmem-=${m//*:})) ;;
+		#	esac
+		#done
+		#usedmem=$((usedmem / 1024))
+		#totalmem=$((totalmem / 1024))
+		mem=$(free -b | awk 'NR==2{print $2"-"$7}')
+		usedmem=$((mem / 1024 / 1024))
+		totalmem=$((${mem//-*} / 1024 / 1024))
 	fi
 	mem="${usedmem}MiB / ${totalmem}MiB"
 	verboseOut "Finding current RAM usage...found as '$mem'"
