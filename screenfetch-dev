@@ -469,29 +469,32 @@ detectdistro () {
 			fi
 		elif type -p lsb_release >/dev/null 2>&1; then
 			# read distro_detect distro_release distro_codename <<< $(lsb_release -sirc)
-			OLD_IFS=$IFS
-			IFS=" "
-			read -r -a distro_detect <<< "$(lsb_release -sirc)"
-			IFS=$OLD_IFS
-			if [[ ${#distro_detect[@]} -eq 3 ]]; then
-				distro_codename=${distro_detect[2]}
-				distro_release=${distro_detect[1]}
-				distro_detect=${distro_detect[0]}
-			else
-				for i in "${!distro_detect[@]}"; do
-					if [[ ${distro_detect[$i]} =~ ^[[:digit:]]+((.[[:digit:]]+|[[:digit:]]+|)+)$ ]]; then
-						distro_release=${distro_detect[$i]}
-						distro_codename=${distro_detect[*]:$((i+1))}
-						distro_detect=${distro_detect[*]:0:${i}}
-						break 1
-					elif [[ ${distro_detect[$i]} =~ [Nn]/[Aa] || ${distro_detect[$i]} == "rolling" ]]; then
-						distro_release=${distro_detect[$i]}
-						distro_codename=${distro_detect[*]:$((i+1))}
-						distro_detect=${distro_detect[*]:0:${i}}
-						break 1
-					fi
-				done
-			fi
+			#OLD_IFS=$IFS
+			#IFS=" "
+			#read -r -a distro_detect <<< "$(lsb_release -sirc)"
+			#IFS=$OLD_IFS
+			#if [[ ${#distro_detect[@]} -eq 3 ]]; then
+			#	distro_codename=${distro_detect[2]}
+			#	distro_release=${distro_detect[1]}
+			#	distro_detect=${distro_detect[0]}
+			#else
+			#	for i in "${!distro_detect[@]}"; do
+			#		if [[ ${distro_detect[$i]} =~ ^[[:digit:]]+((.[[:digit:]]+|[[:digit:]]+|)+)$ ]]; then
+			#			distro_release=${distro_detect[$i]}
+			#			distro_codename=${distro_detect[*]:$((i+1))}
+			#			distro_detect=${distro_detect[*]:0:${i}}
+			#			break 1
+			#		elif [[ ${distro_detect[$i]} =~ [Nn]/[Aa] || ${distro_detect[$i]} == "rolling" ]]; then
+			#			distro_release=${distro_detect[$i]}
+			#			distro_codename=${distro_detect[*]:$((i+1))}
+			#			distro_detect=${distro_detect[*]:0:${i}}
+			#			break 1
+			#		fi
+			#	done
+			#fi
+			distro_detect="$(lsb_release -si)"
+			distro_release="$(lsb_release -sr)"
+			distro_codename="$(lsb_release -sc)"
 			case "${distro_detect}" in
 				"archlinux"|"Arch Linux"|"arch"|"Arch"|"archarm")
 					distro="Arch Linux"
