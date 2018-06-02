@@ -196,6 +196,12 @@ customlines () {
 #### CODE No need to edit past here CODE ####
 #############################################
 
+# https://github.com/KittyKatt/screenFetch/issues/549
+if [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
+	# issue seems to affect Ubuntu; add LSB directories if it appears on other distros too
+	export GIO_EXTRA_MODULES="/usr/lib/x86_64-linux-gnu/gio/modules:/usr/lib/i686-linux-gnu/gio/modules:$GIO_EXTRA_MODULES"
+fi
+
 #########################################
 # Static Variables and Common Functions #
 #########################################
@@ -2336,18 +2342,24 @@ detectwmtheme () {
 					KDE_CONFIG_DIR=${KDE_CONFIG_DIR%/}
 					if [[ -f $KDE_CONFIG_DIR/share/config/kwinrc ]]; then
 						Win_theme="$(awk '/PluginLib=kwin3_/{gsub(/PluginLib=kwin3_/,"",$0); print $0; exit}' "$KDE_CONFIG_DIR/share/config/kwinrc")"
-						if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
+						if [[ -z "$Win_theme" ]]; then
+							Win_theme="Not Applicable"
+						fi
 					fi
 					if [[ "$Win_theme" == "Not Applicable" ]]; then
 						if [[ -f $KDE_CONFIG_DIR/share/config/kdebugrc ]]; then
 							Win_theme="$(awk '/(decoration)/ {gsub(/\[/,"",$1); print $1; exit}' "$KDE_CONFIG_DIR/share/config/kdebugrc")"
-							if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
+							if [[ -z "$Win_theme" ]]; then
+								Win_theme="Not Applicable"
+							fi
 						fi
 					fi
 					if [[ "$Win_theme" == "Not Applicable" ]]; then
 						if [[ -f $KDE_CONFIG_DIR/share/config/kdeglobals ]]; then
 							Win_theme="$(awk '/\[General\]/ {flag=1;next} /^$/{flag=0} flag {print}' "$KDE_CONFIG_DIR/share/config/kdeglobals" | grep -oP 'Name=\K.*')"
-							if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
+							if [[ -z "$Win_theme" ]]; then
+								Win_theme="Not Applicable"
+							fi
 						fi
 					fi
 					if [[ "$Win_theme" != "Not Applicable" ]]; then
