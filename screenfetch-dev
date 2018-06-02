@@ -557,12 +557,11 @@ detectdistro () {
 						distro="Proxmox VE"
 						distro_more="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
 					elif [[ -f /etc/os-release ]]; then
-						if [[ "$(cat /etc/os-release)" =~ "Raspbian" ]]; then
+						if grep -q -i 'Raspbian' /etc/os-release ; then
 							distro="Raspbian"
 							distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
-					fi
-						if [[ "$(cat /etc/os-release)" =~ "BlankOn" ]]; then
-							distro="BlankOn"
+						elif grep -q -i 'BlankOn' /etc/os-release ; then
+							distro='BlankOn'
 							distro_release=$(awk -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
 						else
 							distro="Debian"
@@ -652,7 +651,7 @@ detectdistro () {
 					distro_codename="n/a"
 					distro_release="n/a"
 					if [[ -f /etc/issue ]]; then
-						if grep -q "^KDE neon" /etc/issue ; then
+						if grep -q '^KDE neon' /etc/issue ; then
 							distro_release="$(grep '^KDE neon' /etc/issue | cut -d ' ' -f3)"
 						fi
 					fi
@@ -672,7 +671,7 @@ detectdistro () {
 				"openSUSE"|"openSUSE project"|"SUSE LINUX")
 					distro="openSUSE"
 					if [ -f /etc/os-release ]; then
-						if [[ "$(cat /etc/os-release)" =~ "SUSE Linux Enterprise" ]]; then
+						if grep -q -i 'SUSE Linux Enterprise' /etc/os-release ; then
 							distro="SUSE Linux Enterprise"
 							distro_codename="n/a"
 							distro_release=$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')
@@ -887,18 +886,18 @@ detectdistro () {
 				if [[ "${distro}" == "crunchbang-lsb" ]]; then
 					distro="Crunchbang"
 				elif [[ "${distro}" == "gentoo" ]]; then
-					grep -q "Funtoo" /etc/gentoo-release && distro="Funtoo"
+					grep -q -i 'Funtoo' /etc/gentoo-release && distro="Funtoo"
 				elif [[ "${distro}" == "mandrake" ]] || [[ "${distro}" == "mandriva" ]]; then
-					grep -q "PCLinuxOS" /etc/${distro}-release && distro="PCLinuxOS"
+					grep -q -i 'PCLinuxOS' /etc/${distro}-release && distro="PCLinuxOS"
 				elif [[ "${distro}" == "fedora" ]]; then
-					grep -q "Korora" /etc/fedora-release && distro="Korora"
-					grep -q "BLAG" /etc/fedora-release && distro="BLAG" && distro_more="$(head -n1 /etc/fedora-release)"
+					grep -q -i 'Korora' /etc/fedora-release && distro="Korora"
+					grep -q -i 'BLAG' /etc/fedora-release && distro="BLAG" && distro_more="$(head -n1 /etc/fedora-release)"
 				elif [[ "${distro}" == "oracle" ]]; then
 					distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 				elif [[ "${distro}" == "SuSe" ]]; then
 					distro="openSUSE"
 					if [ -f /etc/os-release ]; then
-						if [[ "$(cat /etc/os-release)" =~ "SUSE Linux Enterprise" ]]; then
+						if grep -q -i 'SUSE Linux Enterprise' /etc/os-release ; then
 							distro="SUSE Linux Enterprise"
 							distro_more=$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')
 						fi
@@ -909,8 +908,8 @@ detectdistro () {
 				elif [[ "${distro}" == "redstar" ]]; then
 					distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
 				elif [[ "${distro}" == "redhat" ]]; then
-					grep -q "CentOS" /etc/redhat-release && distro="CentOS"
-					grep -q "PCLinuxOS" /etc/redhat-release && distro="PCLinuxOS"
+					grep -q -i 'CentOS' /etc/redhat-release && distro="CentOS"
+					grep -q -i 'PCLinuxOS' /etc/redhat-release && distro="PCLinuxOS"
 					if [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
 						distro="Red Star OS"
 						distro_more=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
@@ -922,16 +921,16 @@ detectdistro () {
 				if [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
 					if [ -f /etc/debian_version ]; then
 						if [ -f /etc/issue ]; then
-							if grep -q "gNewSense" /etc/issue ; then
+							if grep -q -i 'gNewSense' /etc/issue ; then
 								distro="gNewSense"
-							elif grep -q "^KDE neon" /etc/issue ; then
+							elif grep -q -i 'KDE neon' /etc/issue ; then
 								distro="KDE neon"
 								distro_more="$(cut -d ' ' -f3 /etc/issue)"
 							else
 								distro="Debian"
 							fi
 						fi
-						if grep -q "Kali" /etc/debian_version ; then
+						if grep -q -i 'Kali' /etc/debian_version ; then
 							distro="Kali Linux"
 						fi
 					elif [ -f /etc/NIXOS ]; then distro="NixOS"
@@ -945,7 +944,7 @@ detectdistro () {
 					elif [ -f /etc/sabayon-edition ]; then distro="Sabayon"
 					fi
 				else
-					if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i "Mac OS X" >/dev/null; then
+					if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i 'Mac OS X' >/dev/null; then
 						distro="Mac OS X"
 					elif [[ -f /var/run/dmesg.boot ]]; then
 						distro=$(awk 'BEGIN {
@@ -1013,13 +1012,13 @@ detectdistro () {
 
 			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
 				if [[ -f /etc/system-release ]]; then
-					if grep -q "Scientific Linux" /etc/system-release; then
+					if grep -q -i 'Scientific Linux' /etc/system-release; then
 						distro="Scientific Linux"
-					elif grep -q "Oracle Linux" /etc/system-release; then
+					elif grep -q -i 'Oracle Linux' /etc/system-release; then
 						distro="Oracle Linux"
 					fi
 				elif [[ -f /etc/lsb-release ]]; then
-					if grep -q "CHROMEOS_RELEASE_NAME" /etc/lsb-release; then
+					if grep -q -i 'CHROMEOS_RELEASE_NAME' /etc/lsb-release; then
 						distro="$(awk -F'=' '/^CHROMEOS_RELEASE_NAME=/ {print $2}' /etc/lsb-release)"
 						distro_more="$(awk -F'=' '/^CHROMEOS_RELEASE_VERSION=/ {print $2}' /etc/lsb-release)"
 					fi
@@ -1139,8 +1138,8 @@ detectdistro () {
 		void*linux) distro="Void Linux" ;;
 		zorin*) distro="Zorin OS" ;;
 	esac
-	if grep -q 'Microsoft' /proc/version 2>/dev/null || \
-		grep -q 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
+	if grep -q -i 'Microsoft' /proc/version 2>/dev/null || \
+		grep -q -i 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
 	then
 		wsl="(on the Windows Subsystem for Linux)"
 	fi
@@ -1364,7 +1363,7 @@ detectcpu () {
 			cpu="Unknown"
 		fi
 	elif [ "$distro" == "FreeBSD" ]; then
-		cpu=$(dmesg | grep 'CPU:' | head -n 1 | sed -r 's/CPU: //' | sed -e 's/([^()]*)//g')
+		cpu=$(dmesg | grep 'CPU:' | head -1 | sed -r 's/CPU: //' | sed -e 's/([^()]*)//g')
 	elif [ "$distro" == "DragonFlyBSD" ]; then
 		cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then
@@ -1394,11 +1393,11 @@ detectcpu () {
 				model="Motorola PowerPC G4 "
 			elif [[ $cpu =~ ^POWER.* ]]; then
 				model="IBM POWER "
-			elif [[ "$(cat /proc/cpuinfo)" =~ "BCM2708" ]]; then
+			elif grep -q -i 'BCM2708' /proc/cpuinfo ; then
 				model="Broadcom BCM2835 ARM1176JZF-S"
 			else
 				arch=$(uname -m)
-				if [ "$arch" = "s390x" ] || [ "$arch" = "s390" ]; then
+				if [[ "$arch" == "s390x" || "$arch" == "s390" ]]; then
 					cpu=""
 					args=$(grep 'machine' /proc/cpuinfo | sed 's/^.*://g; s/ //g; s/,/\n/g' | grep '^machine=.*')
 					eval "$args"
@@ -1459,7 +1458,7 @@ detectcpu () {
 			hwmonfile=""
 			[ -e "$dir/name" ] && hwmonfile=$dir/name
 			[ -e "$dir/device/name" ] && hwmonfile=$dir/device/name
-			[ -n "$hwmonfile" ] && if grep -q coretemp "$hwmonfile"; then
+			[ -n "$hwmonfile" ] && if grep -q 'coretemp' "$hwmonfile"; then
 				thermal="$dir/temp1_input"
 				break
 			fi
@@ -1513,13 +1512,13 @@ detectgpu () {
 	fi
 
 	if [ -n "$gpu" ];then
-		if grep -q nvidia <<< "${gpu_info}";then
+		if grep -q -i 'nvidia' <<< "${gpu_info}"; then
 			gpu_info="NVidia "
-		elif grep -q intel <<< "${gpu_info}";then
+		elif grep -q -i 'intel' <<< "${gpu_info}"; then
 			gpu_info="Intel "
-		elif grep -q amd <<< "${gpu_info}";then
+		elif grep -q -i 'amd' <<< "${gpu_info}"; then
 			gpu_info="AMD "
-		elif grep -q ati <<< "${gpu_info}" || grep -q radeon <<< "${gpu_info}"; then
+		elif grep -q -i 'ati' <<< "${gpu_info}" || grep -q -i 'radeon' <<< "${gpu_info}"; then
 			gpu_info="ATI "
 		else
 			gpu_info=$(cut -d ':' -f2 <<< "${gpu_info}")
@@ -1700,11 +1699,11 @@ detectshell () {
 		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" ||
 			"${distro}" == "TinyCore" || "${distro}" == "Raspbian" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
-		elif readlink -f "$SHELL" 2>&1 | grep -q "busybox"; then
+		elif readlink -f "$SHELL" 2>&1 | grep -q -i 'busybox'; then
 			shell_type="BusyBox"
 		else
 			if [[ "${OSTYPE}" =~ "linux" ]]; then
-				shell_type=$(cat /proc/$PPID/cmdline|tr '\0' '\n'|head -n 1)
+				shell_type=$(tr '\0' '\n' </proc/$PPID/cmdline | head -1)
 			elif [[ "${distro}" == "Mac OS X" || "${distro}" =~ "BSD" ]]; then
 				shell_type=$(ps -p $PPID -o command | tail -1)
 			else
@@ -1887,11 +1886,11 @@ detectde () {
 				elif dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus \
 					org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager >/dev/null 2>&1 ; then
 					DE="GNOME"
-				elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then
+				elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep -q -i ' = \"xfce4\"$'; then
 					DE="Xfce"
-				elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then
+				elif xprop -root 2> /dev/null | grep -q -i '^xfce_desktop_window'; then
 					DE="Xfce"
-				elif echo "$DESKTOP" | grep -q '^Enlightenment'; then
+				elif echo "$DESKTOP" | grep -q -i '^Enlightenment'; then
 					DE="Enlightenment"
 				fi
 			fi
@@ -2010,7 +2009,7 @@ detectde () {
 					lumina="$(type -p Lumina-DE)"
 				fi
 				if [ -n "$lumina" ]; then
-					if grep -e '--version' "$lumina" >/dev/null; then
+					if grep -q '--version' "$lumina"; then
 						DEver=$("$lumina" --version 2>&1 | tr -d \")
 						DE="${DE} ${DEver}"
 					fi
@@ -2237,7 +2236,7 @@ detectwmtheme () {
 				Blackbox_loc=$(reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\WinLogon' /v 'Shell')
 			fi
 			Blackbox_loc="$(echo "${Blackbox_loc}" | sed 's/.*REG_SZ//' | sed -e 's/^[ \t]*//' | sed 's/.\{4\}$//')"
-			Win_theme=$(cat "${Blackbox_loc}.rc" | grep "session.styleFile" | sed 's/ //g' | sed 's/session\.styleFile://g' | sed 's/.*\\//g')
+			Win_theme=$(grep 'session.styleFile' "${Blackbox_loc}.rc" | sed 's/ //g' | sed 's/session\.styleFile://g' | sed 's/.*\\//g')
 		else
 			if [[ "${distro}" == "Msys" ]]; then
 				themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' //v 'CurrentTheme')"
@@ -2254,7 +2253,7 @@ detectwmtheme () {
 			;;
 			'Awesome')
 				if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" ]; then
-					Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" | grep '[^/]\+/[^/]\+.lua' -o | cut -d'/' -f1 | head -n1)"
+					Win_theme="$(grep '^[^-].*\(theme\|beautiful\).*lua' "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" | grep '[^/]\+/[^/]\+.lua' -o | cut -d'/' -f1 | head -1)"
 				fi
 			;;
 			'BlackBox')
@@ -2431,7 +2430,7 @@ detectgtk () {
 
 				OLD_IFS=$IFS
 				IFS=$'\n'
-				iterm2_theme_info=($(defaults read com.googlecode.iTerm2 "New Bookmarks" | grep -e Guid -e "Normal Font"))
+				iterm2_theme_info=($(defaults read com.googlecode.iTerm2 "New Bookmarks" | grep -e 'Guid' -e 'Normal Font'))
 				IFS=$OLD_IFS
 
 				for i in $(seq 0 $((${#iterm2_theme_info[*]}/2-1))); do
@@ -2448,7 +2447,7 @@ detectgtk () {
 
 				OLD_IFS=$IFS
 				IFS=$'\n'
-				termapp_theme_info=($(defaults read com.apple.Terminal "Window Settings" | grep -e "name = " -e "Font = "))
+				termapp_theme_info=($(defaults read com.apple.Terminal "Window Settings" | grep -e 'name = ' -e 'Font = '))
 				IFS=$OLD_IFS
 
 				for i in $(seq 0 $((${#termapp_theme_info[*]}/2-1))); do
@@ -2488,17 +2487,17 @@ detectgtk () {
 				fi
 
 				if [[ -n ${KDE_CONFIG_FILE} ]]; then
-					if grep -q "widgetStyle=" "${KDE_CONFIG_FILE}"; then
+					if grep -q 'widgetStyle=' "${KDE_CONFIG_FILE}"; then
 						gtk2Theme=$(awk -F"=" '/widgetStyle=/ {print $2}' "${KDE_CONFIG_FILE}")
-					elif grep -q "colorScheme=" "${KDE_CONFIG_FILE}"; then
+					elif grep -q 'colorScheme=' "${KDE_CONFIG_FILE}"; then
 						gtk2Theme=$(awk -F"=" '/colorScheme=/ {print $2}' "${KDE_CONFIG_FILE}")
 					fi
 
-					if grep -q "Theme=" "${KDE_CONFIG_FILE}"; then
+					if grep -q 'Theme=' "${KDE_CONFIG_FILE}"; then
 						gtkIcons=$(awk -F"=" '/Theme=/ {print $2}' "${KDE_CONFIG_FILE}")
 					fi
 
-					if grep -q "Font=" "${KDE_CONFIG_FILE}"; then
+					if grep -q 'Font=' "${KDE_CONFIG_FILE}"; then
 						gtkFont=$(awk -F"=" '/font=/ {print $2}' "${KDE_CONFIG_FILE}")
 					fi
 				fi
@@ -2595,15 +2594,15 @@ detectgtk () {
 					lxdeconf="/lxsession/LXDE/desktop.conf"
 				fi
 
-				if grep -q "sNet\/ThemeName" "${config_home}${lxdeconf}" 2>/dev/null; then
+				if grep -q 'sNet\/ThemeName' "${config_home}${lxdeconf}" 2>/dev/null; then
 					gtk2Theme=$(awk -F'=' '/sNet\/ThemeName/ {print $2}' "${config_home}${lxdeconf}")
 				fi
 
-				if grep -q IconThemeName "${config_home}${lxdeconf}" 2>/dev/null; then
+				if grep -q 'IconThemeName' "${config_home}${lxdeconf}" 2>/dev/null; then
 					gtkIcons=$(awk -F'=' '/sNet\/IconThemeName/ {print $2}' "${config_home}${lxdeconf}")
 				fi
 
-				if grep -q FontName "${config_home}${lxdeconf}" 2>/dev/null; then
+				if grep -q 'FontName' "${config_home}${lxdeconf}" 2>/dev/null; then
 					gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' "${config_home}${lxdeconf}")
  				fi
 			;;
@@ -2612,15 +2611,15 @@ detectgtk () {
 
 			*)	# Lightweight or No DE Found
 				if [ -f "$HOME/.gtkrc-2.0" ]; then
-					if grep -q gtk-theme "$HOME/.gtkrc-2.0"; then
+					if grep -q 'gtk-theme' "$HOME/.gtkrc-2.0"; then
 						gtk2Theme=$(awk -F'"' '/^gtk-theme/ {print $2}' "$HOME/.gtkrc-2.0")
 					fi
 
-					if grep -q icon-theme "$HOME/.gtkrc-2.0"; then
+					if grep -q 'icon-theme' "$HOME/.gtkrc-2.0"; then
 						gtkIcons=$(awk -F'"' '/^gtk-icon-theme/ {print $2}' "$HOME/.gtkrc-2.0")
 					fi
 
-					if grep -q font "$HOME/.gtkrc-2.0"; then
+					if grep -q 'font' "$HOME/.gtkrc-2.0"; then
 						gtkFont=$(awk -F'"' '/^gtk-font-name/ {print $2}' "$HOME/.gtkrc-2.0")
 					fi
 				fi
@@ -2631,30 +2630,30 @@ detectgtk () {
 					minegtkrc="$HOME/.gtkrc-2.0.mine"
 				fi
 				if [ -f "$minegtkrc" ]; then
-					if grep -q "^include" "$minegtkrc"; then
+					if grep -q '^include' "$minegtkrc"; then
 						gtk2Theme=$(grep '^include.*gtkrc' "$minegtkrc" | awk -F "/" '{ print $5 }')
 					fi
-					if grep -q "^gtk-icon-theme-name" "$minegtkrc"; then
+					if grep -q '^gtk-icon-theme-name' "$minegtkrc"; then
 						gtkIcons=$(grep '^gtk-icon-theme-name' "$minegtkrc" | awk -F '"' '{print $2}')
 					fi
 				fi
 				# /etc/gtk-2.0/gtkrc compatability
 				if [[ -f /etc/gtk-2.0/gtkrc && ! -f "$HOME/.gtkrc-2.0" && ! -f "$HOME/.gtkrc.mine" && ! -f "$HOME/.gtkrc-2.0.mine" ]]; then
-					if grep -q gtk-theme-name /etc/gtk-2.0/gtkrc; then
+					if grep -q 'gtk-theme-name' /etc/gtk-2.0/gtkrc; then
 						gtk2Theme=$(awk -F'"' '/^gtk-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 					fi
-					if grep -q gtk-fallback-theme-name /etc/gtk-2.0/gtkrc  && ! [ "x$gtk2Theme" = "x" ]; then
+					if grep -q 'gtk-fallback-theme-name' /etc/gtk-2.0/gtkrc  && ! [ "x$gtk2Theme" = "x" ]; then
 						gtk2Theme=$(awk -F'"' '/^gtk-fallback-theme-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 					fi
 
-					if grep -q icon-theme /etc/gtk-2.0/gtkrc; then
+					if grep -q 'icon-theme' /etc/gtk-2.0/gtkrc; then
 						gtkIcons=$(awk -F'"' '/^icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 					fi
-					if  grep -q gtk-fallback-icon-theme /etc/gtk-2.0/gtkrc  && ! [ "x$gtkIcons" = "x" ]; then
+					if  grep -q 'gtk-fallback-icon-theme' /etc/gtk-2.0/gtkrc  && ! [ "x$gtkIcons" = "x" ]; then
 						gtkIcons=$(awk -F'"' '/^gtk-fallback-icon-theme/ {print $2}' /etc/gtk-2.0/gtkrc)
 					fi
 
-					if grep -q font /etc/gtk-2.0/gtkrc; then
+					if grep -q 'font' /etc/gtk-2.0/gtkrc; then
 						gtkFont=$(awk -F'"' '/^gtk-font-name/ {print $2}' /etc/gtk-2.0/gtkrc)
 					fi
 				fi
@@ -2667,7 +2666,7 @@ detectgtk () {
 
 				# EXPERIMENTAL gtk3 Theme detection
 				if [[ -z "$gtk3Theme" && -f "$HOME/.config/gtk-3.0/settings.ini" ]]; then
-					if grep -q gtk-theme-name "$HOME/.config/gtk-3.0/settings.ini"; then
+					if grep -q 'gtk-theme-name' "$HOME/.config/gtk-3.0/settings.ini"; then
 						gtk3Theme=$(awk -F'=' '/^gtk-theme-name/ {print $2}' "$HOME/.config/gtk-3.0/settings.ini")
 					fi
 				fi
@@ -2775,7 +2774,7 @@ takeShot () {
 							baseurl='https://mediacru.sh'
 							uploadurl='https://mediacru.sh/api/upload/file'
 							ret=$(curl -sf -F file="@${shotfiles[*]};type=image/png" ${uploadurl})
-							filehash=$(echo "${ret}" | grep "hash" | cut -d '"' -f4)
+							filehash=$(echo "${ret}" | grep 'hash' | cut -d '"' -f4)
 							desturl="${baseurl}/${filehash}"
 						;;
 						'imgur')
@@ -5509,7 +5508,7 @@ asciiText () {
 		;;
 
 		*)
-			if echo "${kernel}" | grep -q 'Linux'; then
+			if [[ "${kernel}" =~ "Linux" ]]; then
 				if [[ "$no_color" != "1" ]]; then
 					c1=$(getColor 'white') # White
 					c2=$(getColor 'dark grey') # Light Gray
@@ -5538,7 +5537,7 @@ asciiText () {
 "${c2}                            %s"
 "${c2}                            %s")
 
-			elif [[ "$(echo "${kernel}" | grep 'GNU' )" || "$(echo "${kernel}" | grep 'Hurd' )" || "${OSTYPE}" == "gnu" ]]; then
+			elif [[ "${kernel}" =~ "Hurd" || "${kernel}" =~ "GNU" || "${OSTYPE}" == "gnu" ]]; then
 				if [[ "$no_color" != "1" ]]; then
 					c1=$(getColor 'dark grey') # Light Gray
 				fi
@@ -5806,9 +5805,11 @@ infoDisplay () {
 		fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [ "$distro" == "Mac OS X" ]; then
-				sysArch=$(str1=$(getconf LONG_BIT);echo "${str1}bit")
-				prodVers=$(prodVers=$(sw_vers|grep ProductVersion);echo "${prodVers:16}")
-				buildVers=$(buildVers=$(sw_vers|grep BuildVersion);echo "${buildVers:14}")
+				sysArch="$(getconf LONG_BIT)bit"
+				prodVers=$(sw_vers | grep 'ProductVersion')
+				prodVers=${prodVers:16}
+				buildVers=$(sw_vers |grep 'BuildVersion')
+				buildVers=${buildVers:14}
 				if [ -n "$distro_more" ]; then
 					mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 				else
