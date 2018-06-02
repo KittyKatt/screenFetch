@@ -218,6 +218,7 @@ colorize () {
 	printf $'\033[38;5;%sm' "$1"
 }
 getColor () {
+	local tmp_color=""
 	if [[ -n "$1" ]]; then
 		if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
 			if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
@@ -269,7 +270,9 @@ errorOut () {
 	printf '\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m%s\n' "$1"
 }
 stderrOut () {
-	while IFS='' read -r line; do printf '\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m%s\n' "$line"; done
+	while IFS='' read -r line; do
+		printf '\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m%s\n' "$line"
+	done
 }
 
 
@@ -278,7 +281,7 @@ stderrOut () {
 ####################
 
 colorNumberToCode () {
-	number="$1"
+	local number="$1"
 	if [[ "${number}" == "na" ]]; then
 		unset code
 	elif [[ $(tput colors) -eq "256" ]]; then
@@ -312,7 +315,6 @@ detectColors () {
 	my_colors=$(sed 's/^,/na,/;s/,$/,na/;s/,/ /' <<< "${OPTARG}")
 	my_lcolor=$(awk -F' ' '{print $1}' <<< "${my_colors}")
 	my_lcolor=$(colorNumberToCode "${my_lcolor}")
-
 	my_hcolor=$(awk -F' ' '{print $2}' <<< "${my_colors}")
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
@@ -464,6 +466,7 @@ fi
 
 # Distro Detection - Begin
 detectdistro () {
+	local distro_detect=""
 	if [[ -z "${distro}" ]]; then
 		distro="Unknown"
 		# LSB Release or MCST Version Check
@@ -1234,7 +1237,7 @@ detectuptime () {
 # Package Count - Begin
 detectpkgs () {
 	pkgs="Unknown"
-	offset=0
+	local offset=0
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
@@ -1359,7 +1362,7 @@ detectpkgs () {
 
 # CPU Detection - Begin
 detectcpu () {
-	REGEXP="-r"
+	local REGEXP="-r"
 	if [ "$distro" == "Mac OS X" ]; then
 		cpu=$(machine)
 		if [[ $cpu == "ppc750" ]]; then
@@ -5680,7 +5683,6 @@ asciiText () {
 				out_array=( "${out_array[@]}" )
 			fi
 		done
-
 	elif [[ "$portraitSet" = "Yes" ]]; then
 		for i in "${!fulloutput[@]}"; do
 			printf "${fulloutput[$i]}$c0\n"
@@ -5699,7 +5701,6 @@ asciiText () {
 		for i in "${!fulloutput[@]}"; do
 			printf "${fulloutput[i]}$c0\n"
 		done
-
 	else
 		if [[ "$lineWrap" = "Yes" ]]; then
 			availablespace=$(($(tput cols) - logowidth + 16)) #I dont know why 16 but it works
