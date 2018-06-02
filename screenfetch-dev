@@ -235,23 +235,21 @@ getColor () {
 			'white')					color_ret='\033[0m\033[1;37m';;
 			# Bolds
 			'dark grey'|'dark gray')	color_ret='\033[0m\033[1;30m';;
-			'light red')					color_ret='\033[0m\033[1;31m';;
+			'light red')				color_ret='\033[0m\033[1;31m';;
 			'light green')				color_ret='\033[0m\033[1;32m';;
 			'light blue')				color_ret='\033[0m\033[1;34m';;
 			'light purple')				color_ret='\033[0m\033[1;35m';;
 			'light cyan')				color_ret='\033[0m\033[1;36m';;
 			'light grey'|'light gray')	color_ret='\033[0m\033[37m';;
 			# Some 256 colors
-			'orange')					color_ret="$(colorize '202')";;	#DarkOrange
-			'light orange') 			color_ret="$(colorize '214')";; 	#Orange1
+			'orange')					color_ret="$(colorize '202')";; #DarkOrange
+			'light orange') 			color_ret="$(colorize '214')";; #Orange1
 			# HaikuOS
-			'black_haiku') 			color_ret="$(colorize '7')";;
+			'black_haiku') 				color_ret="$(colorize '7')";;
 			#ROSA color
 			'rosa_blue') 				color_ret='\033[01;38;05;25m';;
 		esac
 		[[ -n "${color_ret}" ]] && echo "${color_ret}"
-	else
-		:
 	fi
 }
 
@@ -321,8 +319,11 @@ LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, N
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
 SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
+
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
+
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
+
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, \
 dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, \
 Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, \
@@ -447,7 +448,7 @@ done
 
 if [[ "$overrideOpts" ]]; then
 	verboseOut "Found 'o' flag in syntax. Overriding some script variables..."
-		eval "${overrideOpts}"
+	eval "${overrideOpts}"
 fi
 
 
@@ -852,69 +853,69 @@ detectdistro () {
 			fi
 
 			if [[ "${distro}" == "Unknown" && "${OSTYPE}" =~ "linux" && -f /etc/lsb-release ]]; then
-						LSB_RELEASE=$(</etc/lsb-release)
-						distro=$(echo "${LSB_RELEASE}" | awk 'BEGIN {
-							distro = "Unknown"
-						}
-						{
-							if ($0 ~ /[Uu][Bb][Uu][Nn][Tt][Uu]/) {
-								distro = "Ubuntu"
-								exit
-							}
-							else if ($0 ~ /[Mm][Ii][Nn][Tt]/ && $0 ~ /[Dd][Ee][Bb][Ii][Aa][Nn]/) {
-								distro = "LMDE"
-								exit
-							}
-							else if ($0 ~ /[Mm][Ii][Nn][Tt]/) {
-								distro = "Mint"
-								exit
-							}
-						} END {
-							print distro
-						}')
+				LSB_RELEASE=$(</etc/lsb-release)
+				distro=$(echo "${LSB_RELEASE}" | awk 'BEGIN {
+					distro = "Unknown"
+				}
+				{
+					if ($0 ~ /[Uu][Bb][Uu][Nn][Tt][Uu]/) {
+						distro = "Ubuntu"
+						exit
+					}
+					else if ($0 ~ /[Mm][Ii][Nn][Tt]/ && $0 ~ /[Dd][Ee][Bb][Ii][Aa][Nn]/) {
+						distro = "LMDE"
+						exit
+					}
+					else if ($0 ~ /[Mm][Ii][Nn][Tt]/) {
+						distro = "Mint"
+						exit
+					}
+				} END {
+					print distro
+				}')
 			fi
 
 			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
-					for di in arch chakra crunchbang-lsb evolveos exherbo fedora \
-								frugalware fux gentoo kogaion mageia obarun oracle \
-								pardus pclinuxos redhat redstar rosa SuSe; do
-						if [ -f /etc/$di-release ]; then
-							distro=$di
-							break
-						fi
-					done
-					if [[ "${distro}" == "crunchbang-lsb" ]]; then
-						distro="Crunchbang"
-					elif [[ "${distro}" == "gentoo" ]]; then
-						grep -q "Funtoo" /etc/gentoo-release && distro="Funtoo"
-					elif [[ "${distro}" == "mandrake" ]] || [[ "${distro}" == "mandriva" ]]; then
-						grep -q "PCLinuxOS" /etc/${distro}-release && distro="PCLinuxOS"
-					elif [[ "${distro}" == "fedora" ]]; then
-						grep -q "Korora" /etc/fedora-release && distro="Korora"
-						grep -q "BLAG" /etc/fedora-release && distro="BLAG" && distro_more="$(head -n1 /etc/fedora-release)"
-					elif [[ "${distro}" == "oracle" ]]; then
-						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
-					elif [[ "${distro}" == "SuSe" ]]; then
-						distro="openSUSE"
-						if [ -f /etc/os-release ]; then
-							if [[ "$(cat /etc/os-release)" =~ "SUSE Linux Enterprise" ]]; then
-								distro="SUSE Linux Enterprise"
-								distro_more=$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')
-							fi
-						fi
-						if [[ "${distro_more}" =~ "Tumbleweed" ]]; then
-							distro_more="Tumbleweed"
-						fi
-					elif [[ "${distro}" == "redstar" ]]; then
-						distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
-					elif [[ "${distro}" == "redhat" ]]; then
-						grep -q "CentOS" /etc/redhat-release && distro="CentOS"
-						grep -q "PCLinuxOS" /etc/redhat-release && distro="PCLinuxOS"
-						if [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
-							distro="Red Star OS"
-							distro_more=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
+				for di in arch chakra crunchbang-lsb evolveos exherbo fedora \
+							frugalware fux gentoo kogaion mageia obarun oracle \
+							pardus pclinuxos redhat redstar rosa SuSe; do
+					if [ -f /etc/$di-release ]; then
+						distro=$di
+						break
+					fi
+				done
+				if [[ "${distro}" == "crunchbang-lsb" ]]; then
+					distro="Crunchbang"
+				elif [[ "${distro}" == "gentoo" ]]; then
+					grep -q "Funtoo" /etc/gentoo-release && distro="Funtoo"
+				elif [[ "${distro}" == "mandrake" ]] || [[ "${distro}" == "mandriva" ]]; then
+					grep -q "PCLinuxOS" /etc/${distro}-release && distro="PCLinuxOS"
+				elif [[ "${distro}" == "fedora" ]]; then
+					grep -q "Korora" /etc/fedora-release && distro="Korora"
+					grep -q "BLAG" /etc/fedora-release && distro="BLAG" && distro_more="$(head -n1 /etc/fedora-release)"
+				elif [[ "${distro}" == "oracle" ]]; then
+					distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
+				elif [[ "${distro}" == "SuSe" ]]; then
+					distro="openSUSE"
+					if [ -f /etc/os-release ]; then
+						if [[ "$(cat /etc/os-release)" =~ "SUSE Linux Enterprise" ]]; then
+							distro="SUSE Linux Enterprise"
+							distro_more=$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')
 						fi
 					fi
+					if [[ "${distro_more}" =~ "Tumbleweed" ]]; then
+						distro_more="Tumbleweed"
+					fi
+				elif [[ "${distro}" == "redstar" ]]; then
+					distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
+				elif [[ "${distro}" == "redhat" ]]; then
+					grep -q "CentOS" /etc/redhat-release && distro="CentOS"
+					grep -q "PCLinuxOS" /etc/redhat-release && distro="PCLinuxOS"
+					if [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
+						distro="Red Star OS"
+						distro_more=$(grep -o '[0-9.]' /etc/redhat-release | tr -d '\n')
+					fi
+				fi
 			fi
 
 			if [[ "${distro}" == "Unknown" ]]; then
@@ -1139,9 +1140,9 @@ detectdistro () {
 		zorin*) distro="Zorin OS" ;;
 	esac
 	if grep -q 'Microsoft' /proc/version 2>/dev/null || \
-	   grep -q 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
+		grep -q 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
 	then
-	   wsl="(on the Windows Subsystem for Linux)"
+		wsl="(on the Windows Subsystem for Linux)"
 	fi
 	verboseOut "Finding distro...found as '${distro} ${distro_release}'"
 }
@@ -1416,7 +1417,7 @@ detectcpu () {
 						2827) model="IBM zEnterprise EC12" ;;
 						2828) model="IBM zEnterprise BC12" ;;
 						2964) model="IBM z13" ;;
-						*) model="IBM S/390 machine type $machine" ;;
+						   *) model="IBM S/390 machine type $machine" ;;
 					esac
 				else
 					model="Unknown"
@@ -1454,8 +1455,7 @@ detectcpu () {
 		cpu="$cpu @ ${cpun}${cpufreq}"
 	fi
 	if [ -d '/sys/class/hwmon/' ]; then
-		for dir in /sys/class/hwmon/*
-		do
+		for dir in /sys/class/hwmon/* ; do
 			hwmonfile=""
 			[ -e "$dir/name" ] && hwmonfile=$dir/name
 			[ -e "$dir/device/name" ] && hwmonfile=$dir/device/name
@@ -1552,16 +1552,16 @@ DetectIntelGPU() {
 
 		#Detect Intel GPU
 		case $CPU in
-			[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])		gpu='Intel HD Graphics'					;; #1st
+			[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])	gpu='Intel HD Graphics'					;; #1st
 			2[1-5][0-3][0-2]*|2390T|2600S)			gpu='Intel HD Graphics 2000'			;; #2nd
-			2[1-5][1-7][0-8]*|2105|2500K)				gpu='Intel HD Graphics 3000'			;; #2nd
+			2[1-5][1-7][0-8]*|2105|2500K)			gpu='Intel HD Graphics 3000'			;; #2nd
 			32[1-5]0*|3[4-5][5-7]0*|33[3-4]0*)		gpu='Intel HD Graphics 2500'			;; #3rd
-			3570K|3427U)								gpu='Intel HD Graphics 4000'			;; #3rd
-			4[3-7][0-9][0-5]*)							gpu='Intel HD Graphics 4600'			;; #4th Haswell
-			5[5-6]75[C-R]|5350H)						gpu='Intel Iris Pro Graphics 6200'		;; #5th Broadwell
-																										#6th Skylake
-																										#7th Kabylake
-																										#8th Cannonlake
+			3570K|3427U)							gpu='Intel HD Graphics 4000'			;; #3rd
+			4[3-7][0-9][0-5]*)						gpu='Intel HD Graphics 4600'			;; #4th Haswell
+			5[5-6]75[C-R]|5350H)					gpu='Intel Iris Pro Graphics 6200'		;; #5th Broadwell
+																								#6th Skylake
+																								#7th Kabylake
+																								#8th Cannonlake
 			*) gpu='Unknown'
 		esac
 	fi
@@ -1766,14 +1766,12 @@ detectres () {
 		width=$(screenmode | cut -d ' ' -f2)
 		height=$(screenmode | cut -d ' ' -f3 | tr -d ',')
 		xResolution="${width}x${height}"
-	else
-		if [[ -n ${DISPLAY} ]]; then
-			if type -p xdpyinfo >/dev/null 2>&1; then
-				if [[ "$distro" =~ "BSD" ]]; then
-					xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
-				else
-					xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
-				fi
+	elif [[ -n ${DISPLAY} ]]; then
+		if type -p xdpyinfo >/dev/null 2>&1; then
+			if [[ "$distro" =~ "BSD" ]]; then
+				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
+			else
+				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
 			fi
 		fi
 	fi
@@ -1798,263 +1796,261 @@ detectde () {
 		else
 			DE="Luna"
 		fi
-	else
-		if [[ -n ${DISPLAY} ]]; then
-			if type -p xprop >/dev/null 2>&1;then
-				xprop_root="$(xprop -root 2>/dev/null)"
-				if [[ -n ${xprop_root} ]]; then
-					DE=$(echo "${xprop_root}" | awk 'BEGIN {
-						de = "Not Present"
+	elif [[ -n ${DISPLAY} ]]; then
+		if type -p xprop >/dev/null 2>&1;then
+			xprop_root="$(xprop -root 2>/dev/null)"
+			if [[ -n ${xprop_root} ]]; then
+				DE=$(echo "${xprop_root}" | awk 'BEGIN {
+					de = "Not Present"
+				}
+				{
+					if ($1 ~ /^_DT_SAVE_MODE/) {
+						de = $NF
+						gsub(/\"/,"",de)
+						de = toupper(de)
+						exit
 					}
-					{
-						if ($1 ~ /^_DT_SAVE_MODE/) {
-							de = $NF
-							gsub(/\"/,"",de)
-							de = toupper(de)
-							exit
-						}
-						else if ($1 ~/^KDE_SESSION_VERSION/) {
-							de = "KDE"$NF
-							exit
-						}
-						else if ($1 ~ /^_MUFFIN/) {
-							de = "Cinnamon"
-							exit
-						}
-						else if ($1 ~ /^TDE_FULL_SESSION/) {
-							de = "Trinity"
-							exit
-						}
-						else if ($0 ~ /"xfce4"/) {
-							de = "Xfce4"
-							exit
-						}
-						else if ($0 ~ /"xfce5"/) {
-							de = "Xfce5"
-							exit
-						}
-					} END {
-						print de
-					}')
-				fi
+					else if ($1 ~/^KDE_SESSION_VERSION/) {
+						de = "KDE"$NF
+						exit
+					}
+					else if ($1 ~ /^_MUFFIN/) {
+						de = "Cinnamon"
+						exit
+					}
+					else if ($1 ~ /^TDE_FULL_SESSION/) {
+						de = "Trinity"
+						exit
+					}
+					else if ($0 ~ /"xfce4"/) {
+						de = "Xfce4"
+						exit
+					}
+					else if ($0 ~ /"xfce5"/) {
+						de = "Xfce5"
+						exit
+					}
+				} END {
+					print de
+				}')
 			fi
+		fi
 
-			if [[ ${DE} == "Not Present" ]]; then
-				# Let's use xdg-open code for GNOME/Enlightment/KDE/LXDE/MATE/Xfce detection
-				# http://bazaar.launchpad.net/~vcs-imports/xdg-utils/master/view/head:/scripts/xdg-utils-common.in#L251
-				if [ -n "${XDG_CURRENT_DESKTOP}" ]; then
-					case "${XDG_CURRENT_DESKTOP,,}" in
-						'enlightenment')
-							DE="Enlightenment"
-							;;
-						'gnome')
-							DE="GNOME"
-							;;
-						'kde')
-							DE="KDE"
-							;;
-						'lumina')
-							DE="Lumina"
-							;;
-						'lxde')
-							DE="LXDE"
-							;;
-						'mate')
-							DE="MATE"
-							;;
-						'xfce')
-							DE="Xfce"
-							;;
-						'x-cinnamon')
-							DE="Cinnamon"
-							;;
-						'unity')
-							DE="Unity"
-							;;
-						'lxqt')
-							DE="LXQt"
-							;;
-					esac
-				fi
-
-				if [ -n "$DE" ]; then
-					# classic fallbacks
-					if [ -n "$KDE_FULL_SESSION" ]; then
-						DE="KDE"
-					elif [ -n "$TDE_FULL_SESSION" ]; then
-						DE="Trinity"
-					elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then
-						DE="GNOME"
-					elif [ -n "$MATE_DESKTOP_SESSION_ID" ]; then
-						DE="MATE"
-					elif dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus \
-						org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager >/dev/null 2>&1 ; then
-						DE="GNOME"
-					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then
-						DE="Xfce"
-					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then
-						DE="Xfce"
-					elif echo "$DESKTOP" | grep -q '^Enlightenment'; then
+		if [[ ${DE} == "Not Present" ]]; then
+			# Let's use xdg-open code for GNOME/Enlightment/KDE/LXDE/MATE/Xfce detection
+			# http://bazaar.launchpad.net/~vcs-imports/xdg-utils/master/view/head:/scripts/xdg-utils-common.in#L251
+			if [ -n "${XDG_CURRENT_DESKTOP}" ]; then
+				case "${XDG_CURRENT_DESKTOP,,}" in
+					'enlightenment')
 						DE="Enlightenment"
-					fi
-				fi
-
-				if [ -n "$DE" ]; then
-					# fallback to checking $DESKTOP_SESSION
-					case "${DESKTOP_SESSION,,}" in
-						'gnome'*)
-							DE="GNOME"
-							;;
-						'deepin')
-							DE="Deepin"
-							;;
-						'lumina')
-							DE="Lumina"
-							;;
-						'lxde'|'lubuntu')
-							DE="LXDE"
-							;;
-						'mate')
-							DE="MATE"
-							;;
-						'xfce'*)
-							DE="Xfce"
-							;;
-						'budgie-desktop')
-							DE="Budgie"
-							;;
-						'cinnamon')
-							DE="Cinnamon"
-							;;
-						'trinity')
-							DE="Trinity"
-							;;
-					esac
-				fi
-
-				if [ -n "$DE" ]; then
-					# fallback to checking $GDMSESSION
-					case "${GDMSESSION,,}" in
-						'lumina'*)
-							DE="Lumina"
-							;;
-						'mate')
-							DE="MATE"
-							;;
-					esac
-				fi
-
-				if [[ ${DE} == "GNOME" ]]; then
-					if type -p xprop >/dev/null 2>&1; then
-						if xprop -name "unity-launcher" >/dev/null 2>&1; then
-							DE="Unity"
-						elif xprop -name "launcher" >/dev/null 2>&1 &&
-							xprop -name "panel" >/dev/null 2>&1; then
-							DE="Unity"
-						fi
-					fi
-				fi
-
-				if [[ ${DE} == "KDE" ]]; then
-					if [[ -n ${KDE_SESSION_VERSION} ]]; then
-						if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
-							DE="KDE5"
-						elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
-							DE="KDE4"
-						fi
-					elif [[ ${KDE_FULL_SESSION} == 'true' ]]; then
+						;;
+					'gnome')
+						DE="GNOME"
+						;;
+					'kde')
 						DE="KDE"
-						DEver_data=$(kded --version 2>/dev/null)
-						DEver=$(grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}')
+						;;
+					'lumina')
+						DE="Lumina"
+						;;
+					'lxde')
+						DE="LXDE"
+						;;
+					'mate')
+						DE="MATE"
+						;;
+					'xfce')
+						DE="Xfce"
+						;;
+					'x-cinnamon')
+						DE="Cinnamon"
+						;;
+					'unity')
+						DE="Unity"
+						;;
+					'lxqt')
+						DE="LXQt"
+						;;
+				esac
+			fi
+
+			if [ -n "$DE" ]; then
+				# classic fallbacks
+				if [ -n "$KDE_FULL_SESSION" ]; then
+					DE="KDE"
+				elif [ -n "$TDE_FULL_SESSION" ]; then
+					DE="Trinity"
+				elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then
+					DE="GNOME"
+				elif [ -n "$MATE_DESKTOP_SESSION_ID" ]; then
+					DE="MATE"
+				elif dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus \
+					org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager >/dev/null 2>&1 ; then
+					DE="GNOME"
+				elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then
+					DE="Xfce"
+				elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then
+					DE="Xfce"
+				elif echo "$DESKTOP" | grep -q '^Enlightenment'; then
+					DE="Enlightenment"
+				fi
+			fi
+
+			if [ -n "$DE" ]; then
+				# fallback to checking $DESKTOP_SESSION
+				case "${DESKTOP_SESSION,,}" in
+					'gnome'*)
+						DE="GNOME"
+						;;
+					'deepin')
+						DE="Deepin"
+						;;
+					'lumina')
+						DE="Lumina"
+						;;
+					'lxde'|'lubuntu')
+						DE="LXDE"
+						;;
+					'mate')
+						DE="MATE"
+						;;
+					'xfce'*)
+						DE="Xfce"
+						;;
+					'budgie-desktop')
+						DE="Budgie"
+						;;
+					'cinnamon')
+						DE="Cinnamon"
+						;;
+					'trinity')
+						DE="Trinity"
+						;;
+				esac
+			fi
+
+			if [ -n "$DE" ]; then
+				# fallback to checking $GDMSESSION
+				case "${GDMSESSION,,}" in
+					'lumina'*)
+						DE="Lumina"
+						;;
+					'mate')
+						DE="MATE"
+						;;
+				esac
+			fi
+
+			if [[ ${DE} == "GNOME" ]]; then
+				if type -p xprop >/dev/null 2>&1; then
+					if xprop -name "unity-launcher" >/dev/null 2>&1; then
+						DE="Unity"
+					elif xprop -name "launcher" >/dev/null 2>&1 &&
+						xprop -name "panel" >/dev/null 2>&1; then
+						DE="Unity"
 					fi
 				fi
 			fi
 
-			if [[ ${DE} != "Not Present" ]]; then
-				if [[ ${DE} == "Cinnamon" ]]; then
-					if type -p >/dev/null 2>&1; then
-						DEver=$(cinnamon --version)
-						DE="${DE} ${DEver//* }"
+			if [[ ${DE} == "KDE" ]]; then
+				if [[ -n ${KDE_SESSION_VERSION} ]]; then
+					if [[ ${KDE_SESSION_VERSION} == '5' ]]; then
+						DE="KDE5"
+					elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
+						DE="KDE4"
 					fi
-				elif [[ ${DE} == "GNOME" ]]; then
-					if type -p gnome-control-center>/dev/null 2>&1; then
-						DEver=$(gnome-control-center --version 2> /dev/null)
-						DE="${DE} ${DEver//* }"
-					elif type -p gnome-session-properties >/dev/null 2>&1; then
-						DEver=$(gnome-session-properties --version 2> /dev/null)
-						DE="${DE} ${DEver//* }"
-					elif type -p gnome-session >/dev/null 2>&1; then
-						DEver=$(gnome-session --version 2> /dev/null)
-						DE="${DE} ${DEver//* }"
-					fi
-				elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
-					if type -p kded${DE#KDE} >/dev/null 2>&1; then
-						DEver=$(kded${DE#KDE} --version)
-						if [[ $(( $(echo "$DEver" | wc -w) )) -eq 2 ]] && [[ "$(echo "$DEver" | cut -d ' ' -f1)" == "kded${DE#KDE}" ]]; then
-							DEver=$(echo "$DEver" | cut -d ' ' -f2)
-							DE="KDE ${DEver}"
-						else
-							for l in $(echo "${DEver// /_}"); do
-								if [[ ${l//:*} == "KDE_Development_Platform" ]]; then
-									DEver=${l//*:_}
-									DE="KDE ${DEver//_*}"
-								fi
-							done
-						fi
-						if pgrep -U ${UID} plasmashell >/dev/null 2>&1; then
-							DEver=$(plasmashell --version | cut -d ' ' -f2)
-							DE="$DE / Plasma $DEver"
-						fi
-					fi
-				elif [[ ${DE} == "Lumina" ]]; then
-					if type -p Lumina-DE.real >/dev/null 2>&1; then
-						lumina="$(type -p Lumina-DE.real)"
-					elif type -p Lumina-DE >/dev/null 2>&1; then
-						lumina="$(type -p Lumina-DE)"
-					fi
-					if [ -n "$lumina" ]; then
-						if grep -e '--version' "$lumina" >/dev/null; then
-							DEver=$("$lumina" --version 2>&1 | tr -d \")
-							DE="${DE} ${DEver}"
-						fi
-					fi
-				elif [[ ${DE} == "MATE" ]]; then
-					if type -p mate-session >/dev/null 2>&1; then
-						DEver=$(mate-session --version)
-						DE="${DE} ${DEver//* }"
-					fi
-				elif [[ ${DE} == "Unity" ]]; then
-					if type -p unity >/dev/null 2>&1; then
-						DEver=$(unity --version)
-						DE="${DE} ${DEver//* }"
-					fi
-				elif [[ ${DE} == "Deepin" ]]; then
-					if [[ -f /etc/deepin-version ]]; then
-						DEver="$(awk -F '=' '/Version/ {print $2}' /etc/deepin-version)"
-						DE="${DE} ${DEver//* }"
-					fi
-				elif [[ ${DE} == "Trinity" ]]; then
-					if type -p tde-config >/dev/null 2>&1; then
-						DEver="$(tde-config --version | awk -F ' ' '/TDE:/ {print $2}')"
-						DE="${DE} ${DEver//* }"
-					fi
+				elif [[ ${KDE_FULL_SESSION} == 'true' ]]; then
+					DE="KDE"
+					DEver_data=$(kded --version 2>/dev/null)
+					DEver=$(grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}')
 				fi
 			fi
+		fi
 
-			if [[ "${DE}" == "Not Present" ]]; then
-				if pgrep -U ${UID} lxsession >/dev/null 2>&1; then
-					DE="LXDE"
-					if type -p lxpanel >/dev/null 2>&1; then
-						DEver=$(lxpanel -v)
-						DE="${DE} $DEver"
-					fi
-				elif pgrep -U ${UID} lxqt-session >/dev/null 2>&1; then
-					DE="LXQt"
-				elif pgrep -U ${UID} razor-session >/dev/null 2>&1; then
-					DE="RazorQt"
-				elif pgrep -U ${UID} dtsession >/dev/null 2>&1; then
-					DE="CDE"
+		if [[ ${DE} != "Not Present" ]]; then
+			if [[ ${DE} == "Cinnamon" ]]; then
+				if type -p >/dev/null 2>&1; then
+					DEver=$(cinnamon --version)
+					DE="${DE} ${DEver//* }"
 				fi
+			elif [[ ${DE} == "GNOME" ]]; then
+				if type -p gnome-control-center>/dev/null 2>&1; then
+					DEver=$(gnome-control-center --version 2> /dev/null)
+					DE="${DE} ${DEver//* }"
+				elif type -p gnome-session-properties >/dev/null 2>&1; then
+					DEver=$(gnome-session-properties --version 2> /dev/null)
+					DE="${DE} ${DEver//* }"
+				elif type -p gnome-session >/dev/null 2>&1; then
+					DEver=$(gnome-session --version 2> /dev/null)
+					DE="${DE} ${DEver//* }"
+				fi
+			elif [[ ${DE} == "KDE4" || ${DE} == "KDE5" ]]; then
+				if type -p kded${DE#KDE} >/dev/null 2>&1; then
+					DEver=$(kded${DE#KDE} --version)
+					if [[ $(( $(echo "$DEver" | wc -w) )) -eq 2 ]] && [[ "$(echo "$DEver" | cut -d ' ' -f1)" == "kded${DE#KDE}" ]]; then
+						DEver=$(echo "$DEver" | cut -d ' ' -f2)
+						DE="KDE ${DEver}"
+					else
+						for l in $(echo "${DEver// /_}"); do
+							if [[ ${l//:*} == "KDE_Development_Platform" ]]; then
+								DEver=${l//*:_}
+								DE="KDE ${DEver//_*}"
+							fi
+						done
+					fi
+					if pgrep -U ${UID} plasmashell >/dev/null 2>&1; then
+						DEver=$(plasmashell --version | cut -d ' ' -f2)
+						DE="$DE / Plasma $DEver"
+					fi
+				fi
+			elif [[ ${DE} == "Lumina" ]]; then
+				if type -p Lumina-DE.real >/dev/null 2>&1; then
+					lumina="$(type -p Lumina-DE.real)"
+				elif type -p Lumina-DE >/dev/null 2>&1; then
+					lumina="$(type -p Lumina-DE)"
+				fi
+				if [ -n "$lumina" ]; then
+					if grep -e '--version' "$lumina" >/dev/null; then
+						DEver=$("$lumina" --version 2>&1 | tr -d \")
+						DE="${DE} ${DEver}"
+					fi
+				fi
+			elif [[ ${DE} == "MATE" ]]; then
+				if type -p mate-session >/dev/null 2>&1; then
+					DEver=$(mate-session --version)
+					DE="${DE} ${DEver//* }"
+				fi
+			elif [[ ${DE} == "Unity" ]]; then
+				if type -p unity >/dev/null 2>&1; then
+					DEver=$(unity --version)
+					DE="${DE} ${DEver//* }"
+				fi
+			elif [[ ${DE} == "Deepin" ]]; then
+				if [[ -f /etc/deepin-version ]]; then
+					DEver="$(awk -F '=' '/Version/ {print $2}' /etc/deepin-version)"
+					DE="${DE} ${DEver//* }"
+				fi
+			elif [[ ${DE} == "Trinity" ]]; then
+				if type -p tde-config >/dev/null 2>&1; then
+					DEver="$(tde-config --version | awk -F ' ' '/TDE:/ {print $2}')"
+					DE="${DE} ${DEver//* }"
+				fi
+			fi
+		fi
+
+		if [[ "${DE}" == "Not Present" ]]; then
+			if pgrep -U ${UID} lxsession >/dev/null 2>&1; then
+				DE="LXDE"
+				if type -p lxpanel >/dev/null 2>&1; then
+					DEver=$(lxpanel -v)
+					DE="${DE} $DEver"
+				fi
+			elif pgrep -U ${UID} lxqt-session >/dev/null 2>&1; then
+				DE="LXQt"
+			elif pgrep -U ${UID} razor-session >/dev/null 2>&1; then
+				DE="RazorQt"
+			elif pgrep -U ${UID} dtsession >/dev/null 2>&1; then
+				DE="CDE"
 			fi
 		fi
 	fi
@@ -2080,146 +2076,143 @@ detectwm () {
 		else
 			WM="DWM/Explorer"
 		fi
-	else
-		if [[ -n ${DISPLAY} ]]; then
-			for each in "${wmnames[@]}"; do
-				PID="$(pgrep -U ${UID} "^$each$")"
-				if [ "$PID" ]; then
-					case $each in
-						'2bwm') WM="2bwm";;
-						'9wm') WM="9wm";;
-						'awesome') WM="Awesome";;
-						'beryl') WM="Beryl";;
-						'blackbox') WM="BlackBox";;
-						'bspwm') WM="bspwm";;
-						'budgie-wm') WM="BudgieWM";;
-						'chromeos-wm') WM="chromeos-wm";;
-						'cinnamon') WM="Muffin";;
-						'compiz') WM="Compiz";;
-						'deepin-wm') WM="deepin-wm";;
-						'dminiwm') WM="dminiwm";;
-						'dtwm') WM="dtwm";;
-						'dwm') WM="dwm";;
-						'e16') WM="E16";;
-						'emerald') WM="Emerald";;
-						'enlightenment') WM="E17";;
-						'fluxbox') WM="FluxBox";;
-						'flwm'|'flwm_topside') WM="FLWM";;
-						'fvwm') WM="FVWM";;
-						'herbstluftwm') WM="herbstluftwm";;
-						'howm') WM="howm";;
-						'i3') WM="i3";;
-						'icewm') WM="IceWM";;
-						'kwin') WM="KWin";;
-						'metacity') WM="Metacity";;
-						'monsterwm') WM="monsterwm";;
-						'musca') WM="Musca";;
-						'mwm') WM="MWM";;
-						'notion') WM="Notion";;
-						'openbox') WM="OpenBox";;
-						'pekwm') WM="PekWM";;
-						'ratpoison') WM="Ratpoison";;
-						'sawfish') WM="Sawfish";;
-						'scrotwm') WM="ScrotWM";;
-						'spectrwm') WM="SpectrWM";;
-						'stumpwm') WM="StumpWM";;
-						'subtle') WM="subtle";;
-						'sway') WM="sway";;
-						'swm') WM="swm";;
-						'twin') WM="TWin";;
-						'wmaker') WM="WindowMaker";;
-						'wmfs') WM="WMFS";;
-						'wmii') WM="wmii";;
-						'xfwm4') WM="Xfwm4";;
-						'xmonad.*') WM="XMonad";;
-					esac
-				fi
+	elif [[ -n ${DISPLAY} ]]; then
+		for each in "${wmnames[@]}"; do
+			PID="$(pgrep -U ${UID} "^$each$")"
+			if [ "$PID" ]; then
+				case $each in
+					'2bwm') WM="2bwm";;
+					'9wm') WM="9wm";;
+					'awesome') WM="Awesome";;
+					'beryl') WM="Beryl";;
+					'blackbox') WM="BlackBox";;
+					'bspwm') WM="bspwm";;
+					'budgie-wm') WM="BudgieWM";;
+					'chromeos-wm') WM="chromeos-wm";;
+					'cinnamon') WM="Muffin";;
+					'compiz') WM="Compiz";;
+					'deepin-wm') WM="deepin-wm";;
+					'dminiwm') WM="dminiwm";;
+					'dtwm') WM="dtwm";;
+					'dwm') WM="dwm";;
+					'e16') WM="E16";;
+					'emerald') WM="Emerald";;
+					'enlightenment') WM="E17";;
+					'fluxbox') WM="FluxBox";;
+					'flwm'|'flwm_topside') WM="FLWM";;
+					'fvwm') WM="FVWM";;
+					'herbstluftwm') WM="herbstluftwm";;
+					'howm') WM="howm";;
+					'i3') WM="i3";;
+					'icewm') WM="IceWM";;
+					'kwin') WM="KWin";;
+					'metacity') WM="Metacity";;
+					'monsterwm') WM="monsterwm";;
+					'musca') WM="Musca";;
+					'mwm') WM="MWM";;
+					'notion') WM="Notion";;
+					'openbox') WM="OpenBox";;
+					'pekwm') WM="PekWM";;
+					'ratpoison') WM="Ratpoison";;
+					'sawfish') WM="Sawfish";;
+					'scrotwm') WM="ScrotWM";;
+					'spectrwm') WM="SpectrWM";;
+					'stumpwm') WM="StumpWM";;
+					'subtle') WM="subtle";;
+					'sway') WM="sway";;
+					'swm') WM="swm";;
+					'twin') WM="TWin";;
+					'wmaker') WM="WindowMaker";;
+					'wmfs') WM="WMFS";;
+					'wmii') WM="wmii";;
+					'xfwm4') WM="Xfwm4";;
+					'xmonad.*') WM="XMonad";;
+				esac
+			fi
+			if [[ ${WM} != "Not Found" ]]; then
+				break 1
+			fi
+		done
 
-				if [[ ${WM} != "Not Found" ]]; then
-					break 1
-				fi
-			done
-
-			if [[ ${WM} == "Not Found" ]]; then
-				if type -p xprop >/dev/null 2>&1; then
-					WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
-					if [[ "$WM" =~ 'not found' ]]; then
-						WM="Not Found"
-					elif [[ "$WM" =~ 'Not found' ]]; then
-						WM="Not Found"
-					elif [[ "$WM" =~ '[Ii]nvalid window id format' ]]; then
-						WM="Not Found"
-					elif [[ "$WM" =~ "no such" ]]; then
-						WM="Not Found"
-					else
-						WM=${WM//* }
-						WM=$(xprop -id "${WM}" 8s _NET_WM_NAME)
-						WM=$(echo "$(WM=${WM//*= }; echo "${WM//\"}")")
-					fi
+		if [[ ${WM} == "Not Found" ]]; then
+			if type -p xprop >/dev/null 2>&1; then
+				WM=$(xprop -root _NET_SUPPORTING_WM_CHECK)
+				if [[ "$WM" =~ 'not found' ]]; then
+					WM="Not Found"
+				elif [[ "$WM" =~ 'Not found' ]]; then
+					WM="Not Found"
+				elif [[ "$WM" =~ '[Ii]nvalid window id format' ]]; then
+					WM="Not Found"
+				elif [[ "$WM" =~ "no such" ]]; then
+					WM="Not Found"
+				else
+					WM=${WM//* }
+					WM=$(xprop -id "${WM}" 8s _NET_WM_NAME)
+					WM=$(echo "$(WM=${WM//*= }; echo "${WM//\"}")")
 				fi
 			fi
-			
-			# Proper format WM names that need it.
-			if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
-				if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
-					WM_lower=${WM,,}
-				else
-					WM_lower="$(tr '[:upper:]' '[:lower:]' <<< "${WM}")"
-				fi
+		fi
+
+		# Proper format WM names that need it.
+		if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
+			if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
+				WM_lower=${WM,,}
 			else
 				WM_lower="$(tr '[:upper:]' '[:lower:]' <<< "${WM}")"
 			fi
-			case ${WM_lower} in
-				*'gala'*) WM="Gala";;
-				'2bwm') WM="2bwm";;
-				'awesome') WM="Awesome";;
-				'beryl') WM="Beryl";;
-				'blackbox') WM="BlackBox";;
-				'budgiewm') WM="BudgieWM";;
-				'chromeos-wm') WM="chromeos-wm";;
-				'cinnamon') WM="Cinnamon";;
-				'compiz') WM="Compiz";;
-				'deepin-wm') WM="Deepin WM";;
-				'dminiwm') WM="dminiwm";;
-				'dwm') WM="dwm";;
-				'e16') WM="E16";;
-				'echinus') WM="echinus";;
-				'emerald') WM="Emerald";;
-				'enlightenment') WM="E17";;
-				'fluxbox') WM="FluxBox";;
-				'flwm'|'flwm_topside') WM="FLWM";;
-				'fvwm') WM="FVWM";;
-				'gnome shell'*) WM="Mutter";;
-				'herbstluftwm') WM="herbstluftwm";;
-				'howm') WM="howm";;
-				'i3') WM="i3";;
-				'icewm') WM="IceWM";;
-				'kwin') WM="KWin";;
-				'metacity') WM="Metacity";;
-				'monsterwm') WM="monsterwm";;
-				'muffin') WM="Muffin";;
-				'musca') WM="Musca";;
-				'mutter'*) WM="Mutter";;
-				'mwm') WM="MWM";;
-				'notion') WM="Notion";;
-				'openbox') WM="OpenBox";;
-				'pekwm') WM="PekWM";;
-				'ratpoison') WM="Ratpoison";;
-				'sawfish') WM="Sawfish";;
-				'scrotwm') WM="ScrotWM";;
-				'spectrwm') WM="SpectrWM";;
-				'stumpwm') WM="StumpWM";;
-				'subtle') WM="subtle";;
-				'sway') WM="sway";;
-				'swm') WM="swm";;
-				'twin') WM="TWin";;
-				'wmaker') WM="WindowMaker";;
-				'wmfs') WM="WMFS";;
-				'wmii') WM="wmii";;
-				'xfwm4') WM="Xfwm4";;
-				'xmonad') WM="XMonad";;
-			esac
+		else
+			WM_lower="$(tr '[:upper:]' '[:lower:]' <<< "${WM}")"
 		fi
+		case ${WM_lower} in
+			*'gala'*) WM="Gala";;
+			'2bwm') WM="2bwm";;
+			'awesome') WM="Awesome";;
+			'beryl') WM="Beryl";;
+			'blackbox') WM="BlackBox";;
+			'budgiewm') WM="BudgieWM";;
+			'chromeos-wm') WM="chromeos-wm";;
+			'cinnamon') WM="Cinnamon";;
+			'compiz') WM="Compiz";;
+			'deepin-wm') WM="Deepin WM";;
+			'dminiwm') WM="dminiwm";;
+			'dwm') WM="dwm";;
+			'e16') WM="E16";;
+			'echinus') WM="echinus";;
+			'emerald') WM="Emerald";;
+			'enlightenment') WM="E17";;
+			'fluxbox') WM="FluxBox";;
+			'flwm'|'flwm_topside') WM="FLWM";;
+			'fvwm') WM="FVWM";;
+			'gnome shell'*) WM="Mutter";;
+			'herbstluftwm') WM="herbstluftwm";;
+			'howm') WM="howm";;
+			'i3') WM="i3";;
+			'icewm') WM="IceWM";;
+			'kwin') WM="KWin";;
+			'metacity') WM="Metacity";;
+			'monsterwm') WM="monsterwm";;
+			'muffin') WM="Muffin";;
+			'musca') WM="Musca";;
+			'mutter'*) WM="Mutter";;
+			'mwm') WM="MWM";;
+			'notion') WM="Notion";;
+			'openbox') WM="OpenBox";;
+			'pekwm') WM="PekWM";;
+			'ratpoison') WM="Ratpoison";;
+			'sawfish') WM="Sawfish";;
+			'scrotwm') WM="ScrotWM";;
+			'spectrwm') WM="SpectrWM";;
+			'stumpwm') WM="StumpWM";;
+			'subtle') WM="subtle";;
+			'sway') WM="sway";;
+			'swm') WM="swm";;
+			'twin') WM="TWin";;
+			'wmaker') WM="WindowMaker";;
+			'wmfs') WM="WMFS";;
+			'wmii') WM="wmii";;
+			'xfwm4') WM="Xfwm4";;
+			'xmonad') WM="XMonad";;
+		esac
 	fi
 	verboseOut "Finding window manager...found as '$WM'"
 }
@@ -2254,168 +2247,166 @@ detectwmtheme () {
 			Win_theme=$(echo "$themeFile" | awk -F"\\" '{print $NF}' | sed 's|\.theme$||')
 		fi
 	else
-
-	case $WM in
-		'2bwm'|'9wm'|'Beryl'|'bspwm'|'dminiwm'|'dwm'|'echinus'|'FVWM'|'howm'|'i3'|'monsterwm'|'Musca'|\
-		'Notion'|'Ratpoison'|'ScrotWM'|'SpectrWM'|'swm'|'subtle'|'WindowMaker'|'WMFS'|'wmii'|'XMonad')
-			Win_theme="Not Applicable"
-		;;
-		'Awesome')
-			if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" ]; then
-				Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" | grep '[^/]\+/[^/]\+.lua' -o | cut -d'/' -f1 | head -n1)"
-			fi
-		;;
-		'BlackBox')
-			if [ -f "$HOME/.blackboxrc" ]; then
-				Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' "$HOME/.blackboxrc")"
-			fi
-		;;
-		'BudgieWM')
-			Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
-			Win_theme="${Win_theme//\'}"
-		;;
-		'Cinnamon'|'Muffin')
-			de_theme="$(gsettings get org.cinnamon.theme name)"
-			de_theme=${de_theme//"'"}
-			win_theme="$(gsettings get org.cinnamon.desktop.wm.preferences theme)"
-			win_theme=${win_theme//"'"}
-			Win_theme="${de_theme} (${win_theme})"
-		;;
-		'Compiz'|'Mutter'*|'GNOME Shell'|'Gala')
-			if type -p gsettings >/dev/null 2>&1; then
-				Win_theme="$(gsettings get org.gnome.shell.extensions.user-theme name 2>/dev/null)"
-				if [[ -z "$Win_theme" ]]; then
-					Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
-				fi
-				Win_theme=${Win_theme//"'"}
-			elif type -p gconftool-2 >/dev/null 2>&1; then
-				Win_theme=$(gconftool-2 -g /apps/metacity/general/theme)
-			fi
-		;;
-		'Deepin WM')
-			if type -p gsettings >/dev/null 2>&1; then
-				Win_theme="$(gsettings get com.deepin.wrap.gnome.desktop.wm.preferences theme)"
-				Win_theme=${Win_theme//"'"}
-			fi
-		;;
-		'E16')
-			Win_theme="$(awk -F"= " '/theme.name/ {print $2}' "$HOME/.e16/e_config--0.0.cfg")"
-		;;
-		'E17'|'Enlightenment')
-			if [ "$(which eet 2>/dev/null)" ]; then
-				econfig="$(eet -d "$HOME/.e/e/config/standard/e.cfg" config | awk '/value \"file\" string.*.edj/{ print $4 }')"
-				econfigend="${econfig##*/}"
-				Win_theme=${econfigend%.*}
-			elif [ -n "${E_CONF_PROFILE}" ]; then
-				#E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
-				#TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
-				Win_theme="${E_CONF_PROFILE}"
-			fi
-		;;
-		'Emerald')
-			if [ -f "$HOME/.emerald/theme/theme.ini" ]; then
-				Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"
-			fi
-		;;
-		'FluxBox'|'Fluxbox')
-			if [ -f "$HOME/.fluxbox/init" ]; then
-				Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' "$HOME/.fluxbox/init")"
-			fi
-		;;
-		'IceWM')
-			if [ -f "$HOME/.icewm/theme" ]; then
-				Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' "$HOME/.icewm/theme")"
-			fi
-		;;
-		'KWin'*)
-			if [[ -z $KDE_CONFIG_DIR ]]; then
-				if type -p kde5-config >/dev/null 2>&1; then
-					KDE_CONFIG_DIR=$(kde5-config --localprefix)
-				elif type -p kde4-config >/dev/null 2>&1; then
-					KDE_CONFIG_DIR=$(kde4-config --localprefix)
-				elif type -p kde-config >/dev/null 2>&1; then
-					KDE_CONFIG_DIR=$(kde-config --localprefix)
-				fi
-			fi
-			if [[ -n $KDE_CONFIG_DIR ]]; then
+		case $WM in
+			'2bwm'|'9wm'|'Beryl'|'bspwm'|'dminiwm'|'dwm'|'echinus'|'FVWM'|'howm'|'i3'|'monsterwm'|'Musca'|\
+			'Notion'|'Ratpoison'|'ScrotWM'|'SpectrWM'|'swm'|'subtle'|'WindowMaker'|'WMFS'|'wmii'|'XMonad')
 				Win_theme="Not Applicable"
-				KDE_CONFIG_DIR=${KDE_CONFIG_DIR%/}
-				if [[ -f $KDE_CONFIG_DIR/share/config/kwinrc ]]; then
-					Win_theme="$(awk '/PluginLib=kwin3_/{gsub(/PluginLib=kwin3_/,"",$0); print $0; exit}' "$KDE_CONFIG_DIR/share/config/kwinrc")"
-					if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
+			;;
+			'Awesome')
+				if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" ]; then
+					Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" | grep '[^/]\+/[^/]\+.lua' -o | cut -d'/' -f1 | head -n1)"
 				fi
-				if [[ "$Win_theme" == "Not Applicable" ]]; then
-					if [[ -f $KDE_CONFIG_DIR/share/config/kdebugrc ]]; then
-						Win_theme="$(awk '/(decoration)/ {gsub(/\[/,"",$1); print $1; exit}' "$KDE_CONFIG_DIR/share/config/kdebugrc")"
-						if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
+			;;
+			'BlackBox')
+				if [ -f "$HOME/.blackboxrc" ]; then
+					Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' "$HOME/.blackboxrc")"
+				fi
+			;;
+			'BudgieWM')
+				Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
+				Win_theme="${Win_theme//\'}"
+			;;
+			'Cinnamon'|'Muffin')
+				de_theme="$(gsettings get org.cinnamon.theme name)"
+				de_theme=${de_theme//"'"}
+				win_theme="$(gsettings get org.cinnamon.desktop.wm.preferences theme)"
+				win_theme=${win_theme//"'"}
+				Win_theme="${de_theme} (${win_theme})"
+			;;
+			'Compiz'|'Mutter'*|'GNOME Shell'|'Gala')
+				if type -p gsettings >/dev/null 2>&1; then
+					Win_theme="$(gsettings get org.gnome.shell.extensions.user-theme name 2>/dev/null)"
+					if [[ -z "$Win_theme" ]]; then
+						Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
+					fi
+					Win_theme=${Win_theme//"'"}
+				elif type -p gconftool-2 >/dev/null 2>&1; then
+					Win_theme=$(gconftool-2 -g /apps/metacity/general/theme)
+				fi
+			;;
+			'Deepin WM')
+				if type -p gsettings >/dev/null 2>&1; then
+					Win_theme="$(gsettings get com.deepin.wrap.gnome.desktop.wm.preferences theme)"
+					Win_theme=${Win_theme//"'"}
+				fi
+			;;
+			'E16')
+				Win_theme="$(awk -F"= " '/theme.name/ {print $2}' "$HOME/.e16/e_config--0.0.cfg")"
+			;;
+			'E17'|'Enlightenment')
+				if [ "$(which eet 2>/dev/null)" ]; then
+					econfig="$(eet -d "$HOME/.e/e/config/standard/e.cfg" config | awk '/value \"file\" string.*.edj/{ print $4 }')"
+					econfigend="${econfig##*/}"
+					Win_theme=${econfigend%.*}
+				elif [ -n "${E_CONF_PROFILE}" ]; then
+					#E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
+					#TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
+					Win_theme="${E_CONF_PROFILE}"
+				fi
+			;;
+			'Emerald')
+				if [ -f "$HOME/.emerald/theme/theme.ini" ]; then
+					Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"
+				fi
+			;;
+			'FluxBox'|'Fluxbox')
+				if [ -f "$HOME/.fluxbox/init" ]; then
+					Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' "$HOME/.fluxbox/init")"
+				fi
+			;;
+			'IceWM')
+				if [ -f "$HOME/.icewm/theme" ]; then
+					Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' "$HOME/.icewm/theme")"
+				fi
+			;;
+			'KWin'*)
+				if [[ -z $KDE_CONFIG_DIR ]]; then
+					if type -p kde5-config >/dev/null 2>&1; then
+						KDE_CONFIG_DIR=$(kde5-config --localprefix)
+					elif type -p kde4-config >/dev/null 2>&1; then
+						KDE_CONFIG_DIR=$(kde4-config --localprefix)
+					elif type -p kde-config >/dev/null 2>&1; then
+						KDE_CONFIG_DIR=$(kde-config --localprefix)
 					fi
 				fi
-				if [[ "$Win_theme" == "Not Applicable" ]]; then
-					if [[ -f $KDE_CONFIG_DIR/share/config/kdeglobals ]]; then
-						Win_theme="$(awk '/\[General\]/ {flag=1;next} /^$/{flag=0} flag {print}' "$KDE_CONFIG_DIR/share/config/kdeglobals" | grep -oP 'Name=\K.*')"
+				if [[ -n $KDE_CONFIG_DIR ]]; then
+					Win_theme="Not Applicable"
+					KDE_CONFIG_DIR=${KDE_CONFIG_DIR%/}
+					if [[ -f $KDE_CONFIG_DIR/share/config/kwinrc ]]; then
+						Win_theme="$(awk '/PluginLib=kwin3_/{gsub(/PluginLib=kwin3_/,"",$0); print $0; exit}' "$KDE_CONFIG_DIR/share/config/kwinrc")"
 						if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
 					fi
-				fi
-				if [[ "$Win_theme" != "Not Applicable" ]]; then
-					if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
-						if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
-							Win_theme="${Win_theme^}"
+					if [[ "$Win_theme" == "Not Applicable" ]]; then
+						if [[ -f $KDE_CONFIG_DIR/share/config/kdebugrc ]]; then
+							Win_theme="$(awk '/(decoration)/ {gsub(/\[/,"",$1); print $1; exit}' "$KDE_CONFIG_DIR/share/config/kdebugrc")"
+							if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
+						fi
+					fi
+					if [[ "$Win_theme" == "Not Applicable" ]]; then
+						if [[ -f $KDE_CONFIG_DIR/share/config/kdeglobals ]]; then
+							Win_theme="$(awk '/\[General\]/ {flag=1;next} /^$/{flag=0} flag {print}' "$KDE_CONFIG_DIR/share/config/kdeglobals" | grep -oP 'Name=\K.*')"
+							if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
+						fi
+					fi
+					if [[ "$Win_theme" != "Not Applicable" ]]; then
+						if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
+							if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
+								Win_theme="${Win_theme^}"
+							else
+								Win_theme="$(tr '[:lower:]' '[:upper:]' <<< "${Win_theme:0:1}")${Win_theme:1}"
+							fi
 						else
 							Win_theme="$(tr '[:lower:]' '[:upper:]' <<< "${Win_theme:0:1}")${Win_theme:1}"
 						fi
-					else
-						Win_theme="$(tr '[:lower:]' '[:upper:]' <<< "${Win_theme:0:1}")${Win_theme:1}"
 					fi
 				fi
-			fi
-		;;
-		'Marco'|'Metacity (Marco)')
-			Win_theme="$(gsettings get org.mate.Marco.general theme)"
-			Win_theme=${Win_theme//"'"}
-		;;
-		'Metacity') 
-			if [ "$(gconftool-2 -g /apps/metacity/general/theme)" ]; then
-				Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"
-			fi
-		;;
-		'OpenBox'|'Openbox')
-			if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml" ]; then
-				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml")";
-			elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then
-				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml")";
-			fi
-		;;
-		'PekWM') 
-			if [ -f "$HOME/.pekwm/config" ]; then
-				Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' "$HOME/.pekwm/config")"
-			fi
-		;;
-		'Sawfish')
-			Win_theme="$(awk -F")" '/\(quote default-frame-style/{print $2}' "$HOME/.sawfish/custom" | sed 's/ (quote //')"
-		;;
-		'TWin')
-			if [[ -z $TDE_CONFIG_DIR ]]; then
-				if type -p tde-config >/dev/null 2>&1; then
-					TDE_CONFIG_DIR=$(tde-config --localprefix)
+			;;
+			'Marco'|'Metacity (Marco)')
+				Win_theme="$(gsettings get org.mate.Marco.general theme)"
+				Win_theme=${Win_theme//"'"}
+			;;
+			'Metacity')
+				if [ "$(gconftool-2 -g /apps/metacity/general/theme)" ]; then
+					Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"
 				fi
-			fi
-			if [[ -n $TDE_CONFIG_DIR ]]; then
-				TDE_CONFIG_DIR=${TDE_CONFIG_DIR%/}
-				if [[ -f $TDE_CONFIG_DIR/share/config/kcmthememanagerrc ]]; then
-					Win_theme=$(awk '/CurrentTheme=/ {gsub(/CurrentTheme=/,"",$0); print $0; exit}' "$TDE_CONFIG_DIR/share/config/kcmthememanagerrc")
+			;;
+			'OpenBox'|'Openbox')
+				if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml" ]; then
+					Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml")";
+				elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then
+					Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml")";
 				fi
-				if [[ -z $Win_theme ]]; then
-					Win_theme="Not Applicable"
+			;;
+			'PekWM')
+				if [ -f "$HOME/.pekwm/config" ]; then
+					Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' "$HOME/.pekwm/config")"
 				fi
-			fi
-		;;
-		'Xfwm4')
-			if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" ]; then
-				Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"
-			fi
-		;;
-	esac
-
+			;;
+			'Sawfish')
+				Win_theme="$(awk -F")" '/\(quote default-frame-style/{print $2}' "$HOME/.sawfish/custom" | sed 's/ (quote //')"
+			;;
+			'TWin')
+				if [[ -z $TDE_CONFIG_DIR ]]; then
+					if type -p tde-config >/dev/null 2>&1; then
+						TDE_CONFIG_DIR=$(tde-config --localprefix)
+					fi
+				fi
+				if [[ -n $TDE_CONFIG_DIR ]]; then
+					TDE_CONFIG_DIR=${TDE_CONFIG_DIR%/}
+					if [[ -f $TDE_CONFIG_DIR/share/config/kcmthememanagerrc ]]; then
+						Win_theme=$(awk '/CurrentTheme=/ {gsub(/CurrentTheme=/,"",$0); print $0; exit}' "$TDE_CONFIG_DIR/share/config/kcmthememanagerrc")
+					fi
+					if [[ -z $Win_theme ]]; then
+						Win_theme="Not Applicable"
+					fi
+				fi
+			;;
+			'Xfwm4')
+				if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" ]; then
+					Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"
+				fi
+			;;
+		esac
 	fi
 	verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
@@ -2717,28 +2708,23 @@ detectgtk () {
 	verboseOut "Finding GTK3 theme...found as '$gtk3Theme'"
 	verboseOut "Finding icon theme...found as '$gtkIcons'"
 	verboseOut "Finding user font...found as '$gtkFont'"
-	[[ $gtkBackground ]] && verboseOut "Finding background...found as '$gtkBackground'"
+	if [[ -n "$gtkBackground" ]]; then
+		verboseOut "Finding background...found as '$gtkBackground'"
+	fi
 }
 # GTK Theme\Icon\Font Detection - END
 
 # Android-specific detections
 detectdroid () {
 	distro_ver=$(getprop ro.build.version.release)
-
 	hostname=$(getprop net.hostname)
-
-	_device=$(getprop ro.product.device)
-	_model=$(getprop ro.product.model)
-	device="${_model} (${_device})"
-
+	device="$(getprop ro.product.model) ($(getprop ro.product.device))"
 	if [[ $(getprop ro.build.host) == "cyanogenmod" ]]; then
 		rom=$(getprop ro.cm.version)
 	else
 		rom=$(getprop ro.build.display.id)
 	fi
-
 	baseband=$(getprop ro.baseband)
-
 	cpu=$(grep '^Processor' /proc/cpuinfo)
 	cpu=$(echo "$cpu" | sed 's/Processor.*: //')
 }
@@ -2749,7 +2735,9 @@ detectdroid () {
 #######################
 
 takeShot () {
-	if [[ -z $screenCommand ]]; then
+	if [[ -n "$screenCommand" ]]; then
+		$screenCommand
+	else
 		shotfiles[1]=${shotfile}
 		if [ "$distro" == "Mac OS X" ]; then
 			displays="$(system_profiler SPDisplaysDataType | grep -c 'Resolution:' | tr -d ' ')"
@@ -2825,8 +2813,6 @@ takeShot () {
 				errorOut "ERROR: Problem saving screenshot to ${shotfiles[*]}"
 			fi
 		fi
-	else
-		$screenCommand
 	fi
 }
 
@@ -2834,10 +2820,15 @@ takeShot () {
 
 asciiText () {
 # Distro logos and ASCII outputs
-	if [[ "$asc_distro" ]]; then myascii="${asc_distro}"
-	elif [[ "$art" ]]; then myascii="custom"
-	elif [[ "$fake_distro" ]]; then myascii="${fake_distro}"
-	else myascii="${distro}"; fi
+	if [[ "$asc_distro" ]]; then
+		myascii="${asc_distro}"
+	elif [[ "$art" ]]; then
+		myascii="custom"
+	elif [[ "$fake_distro" ]]; then
+		myascii="${fake_distro}"
+	else
+		myascii="${distro}"
+	fi
 	case ${myascii} in
 		"custom")
 			source "$art"
@@ -5708,21 +5699,19 @@ asciiText () {
 			# echo "${out_array[@]}"
 			case $(awk 'BEGIN{srand();print int(rand()*(1000-1))+1 }') in
 				411|188|15|166|609)
-
-				f_size=${#fulloutput[*]}
-				o_size=${#out_array[*]}
-				f_max=$(( 32768 / f_size * f_size ))
-				#o_max=$(( 32768 / o_size * o_size ))
-				for ((a=f_size-1; a>0; a--)); do
-					while (( (rand=RANDOM) >= f_max )); do :; done
-					rand=$(( rand % (a+1) ))
-					tmp=${fulloutput[a]} fulloutput[a]=${fulloutput[rand]} fulloutput[rand]=$tmp
-				done
-				for ((b=o_size-1; b>0; b--)); do
-					rand=$(( rand % (b+1) ))
-					tmp=${out_array[b]} out_array[b]=${out_array[rand]} out_array[rand]=$tmp
-				done
-
+					f_size=${#fulloutput[*]}
+					o_size=${#out_array[*]}
+					f_max=$(( 32768 / f_size * f_size ))
+					#o_max=$(( 32768 / o_size * o_size ))
+					for ((a=f_size-1; a>0; a--)); do
+						while (( (rand=RANDOM) >= f_max )); do :; done
+						rand=$(( rand % (a+1) ))
+						tmp=${fulloutput[a]} fulloutput[a]=${fulloutput[rand]} fulloutput[rand]=$tmp
+					done
+					for ((b=o_size-1; b>0; b--)); do
+						rand=$(( rand % (b+1) ))
+						tmp=${out_array[b]} out_array[b]=${out_array[rand]} out_array[rand]=$tmp
+					done
 				;;
 			esac
 			printf "${fulloutput[i]}$c0\n" "${out_array[0]}"
