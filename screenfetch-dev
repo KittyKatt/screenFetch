@@ -463,7 +463,9 @@ detectdistro () {
 		if [[ -e "/etc/mcst_version" ]]; then
 			distro="OS Elbrus"
 			distro_release="$(tail -n 1 /etc/mcst_version)"
-			if [[ -n ${distro_release} ]]; then distro_more="$distro_release"; fi
+			if [[ -n ${distro_release} ]]; then
+				distro_more="$distro_release"
+			fi
 		elif type -p lsb_release >/dev/null 2>&1; then
 			# read distro_detect distro_release distro_codename <<< $(lsb_release -sirc)
 			OLD_IFS=$IFS
@@ -490,12 +492,6 @@ detectdistro () {
 				done
 			fi
 			case "${distro_detect}" in
-				"CentOS"|"Chapeau"|"Deepin"|"Devuan"|"DesaOS"|"Fedora"|"gNewSense"|"Jiyuu Linux"| \
-				"Kogaion"|"Korora"|"Mageia"|"Netrunner"|"NixOS"|"Pardus"|"Raspbian"|"Sabayon"|"Solus"| \
-				"SteamOS"|"Trisquel"|"Ubuntu"|"GrombyangOS"|"Scientific Linux"|"PureOS")
-					# no need to fix $distro/$distro_codename/$distro_release
-					distro="${distro_detect}"
-					;;
 				"archlinux"|"Arch Linux"|"arch"|"Arch"|"archarm")
 					distro="Arch Linux"
 					distro_release="n/a"
@@ -738,13 +734,23 @@ detectdistro () {
 						distro="Red Star OS"
 						distro_codename="n/a"
 						distro_release=$(printf "${distro_release}" | grep -o '[0-9.]' | tr -d '\n')
+					else
+						distro="${distro_detect}"
 					fi
 					;;
 			esac
-			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then distro="Red Hat Enterprise Linux"; fi
-			if [[ "${distro_detect}" =~ "SUSELinuxEnterprise" ]]; then distro="SUSE Linux Enterprise"; fi
-			if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then distro_more="$distro_release"; fi
-			if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then distro_more="$distro_more $distro_codename"; fi
+			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then
+				distro="Red Hat Enterprise Linux"
+			fi
+			if [[ "${distro_detect}" =~ "SUSELinuxEnterprise" ]]; then
+				distro="SUSE Linux Enterprise"
+			fi
+			if [[ -n ${distro_release} && ${distro_release} != "n/a" ]]; then
+				distro_more="$distro_release"
+			fi
+			if [[ -n ${distro_codename} && ${distro_codename} != "n/a" ]]; then
+				distro_more="$distro_more $distro_codename"
+			fi
 		fi
 
 		# Existing File Check
@@ -829,25 +835,23 @@ detectdistro () {
 					[[ "${distro}" == "elementary" ]] && distro="elementary OS"
 					[[ "${distro}" == "Fedora" && -d /etc/qubes-rpc ]] && distro="qubes" # Inner VM
 					[[ "${distro}" == "Ol" || "${distro}" == "ol" ]] && distro="Oracle Linux"
-					if [[ "${distro}" == "Oracle Linux" ]] && [ -f /etc/oracle-release ]; then
+					if [[ "${distro}" == "Oracle Linux" && -f /etc/oracle-release ]]; then
 						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 					fi
 					[[ "${distro}" == "rhel" ]] && distro="Red Hat Enterprise Linux"
 					[[ "${distro}" == "Neon" ]] && distro="KDE neon"
 					[[ "${distro}" == "SLED" || "${distro}" == "sled" || "${distro}" == "SLES" || "${distro}" == "sles" ]] && distro="SUSE Linux Enterprise"
-					if [[ "${distro}" == "SUSE Linux Enterprise" ]] && [ -f /etc/os-release ]; then
+					if [[ "${distro}" == "SUSE Linux Enterprise" && -f /etc/os-release ]]; then
 						distro_more="$(awk -F'=' '/^VERSION_ID=/ {print $2}' /etc/os-release | tr -d '"')"
 					fi
-					if [[ "${distro}" == "Debian" ]] && [ -f /usr/bin/pveversion ]; then
+					if [[ "${distro}" == "Debian" && -f /usr/bin/pveversion ]]; then
 						distro="Proxmox VE"
 						distro_more="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
 					fi
 				fi
 			fi
 
-			if [[ "${distro}" == "Unknown" ]]; then
-				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" ]]; then
-					if [ -f /etc/lsb-release ]; then
+			if [[ "${distro}" == "Unknown" && "${OSTYPE}" =~ "linux" && -f /etc/lsb-release ]]; then
 						LSB_RELEASE=$(</etc/lsb-release)
 						distro=$(echo "${LSB_RELEASE}" | awk 'BEGIN {
 							distro = "Unknown"
@@ -868,15 +872,16 @@ detectdistro () {
 						} END {
 							print distro
 						}')
-					fi
-				fi
 			fi
 
-			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
+			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
 					for di in arch chakra crunchbang-lsb evolveos exherbo fedora \
 								frugalware fux gentoo kogaion mageia obarun oracle \
 								pardus pclinuxos redhat redstar rosa SuSe; do
-						if [ -f /etc/$di-release ]; then distro=$di && break; fi
+						if [ -f /etc/$di-release ]; then
+							distro=$di
+							break
+						fi
 					done
 					if [[ "${distro}" == "crunchbang-lsb" ]]; then
 						distro="Crunchbang"
@@ -913,7 +918,7 @@ detectdistro () {
 			fi
 
 			if [[ "${distro}" == "Unknown" ]]; then
-				if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
+				if [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
 					if [ -f /etc/debian_version ]; then
 						if [ -f /etc/issue ]; then
 							if grep -q "gNewSense" /etc/issue ; then
@@ -969,7 +974,7 @@ detectdistro () {
 				fi
 			fi
 
-			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
+			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
 				if [[ -f /etc/issue ]]; then
 					distro=$(awk 'BEGIN {
 						distro = "Unknown"
@@ -1005,7 +1010,7 @@ detectdistro () {
 				fi
 			fi
 
-			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "gnu" ]]; then
+			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
 				if [[ -f /etc/system-release ]]; then
 					if grep -q "Scientific Linux" /etc/system-release; then
 						distro="Scientific Linux"
@@ -1146,8 +1151,12 @@ detectdistro () {
 detecthost () {
 	myUser=${USER}
 	myHost=${HOSTNAME}
-	if [[ -z "$USER" ]]; then myUser=$(whoami); fi
-	if [[ "${distro}" == "Mac OS X" ]]; then myHost=${myHost/.local}; fi
+	if [[ -z "$USER" ]]; then
+		myUser=$(whoami)
+	fi
+	if [[ "${distro}" == "Mac OS X" ]]; then
+		myHost=${myHost/.local}
+	fi
 	verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
 }
 
@@ -1202,8 +1211,9 @@ detectuptime () {
 			uptime="${days}d ${uptime}"
 		fi
 	else
-		if [[ "$distro" =~ "NetBSD" ]]; then uptime=$(awk -F. '{print $1}' /proc/uptime); fi
-		if [[ "$distro" =~ "BSD" ]]; then 
+		if [[ "$distro" =~ "NetBSD" ]]; then
+			uptime=$(awk -F. '{print $1}' /proc/uptime)
+		elif [[ "$distro" =~ "BSD" ]]; then
 			uptime=$(uptime | awk '{$1=$2=$(NF-6)=$(NF-5)=$(NF-4)=$(NF-3)=$(NF-2)=$(NF-1)=$NF=""; sub(" days","d");sub(",","");sub(":","h ");sub(",","m"); print}')
 		fi
 	fi
@@ -1218,7 +1228,8 @@ detectpkgs () {
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
-		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux') pkgs=$(pacman -Qq | wc -l) ;;
+		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux')
+			pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
 				pkgs=$(ls -l /usr/local/etc/crew/meta/*.filelist | wc -l)
@@ -1226,25 +1237,40 @@ detectpkgs () {
 				pkgs=$(ls -d /var/db/pkg/*/* | wc -l)
 			fi
 		;;
-		'Dragora') pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
-		'Frugalware') pkgs=$(pacman-g2 -Q | wc -l) ;;
+		'Dragora')
+			pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
+		'Frugalware')
+			pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
-		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS') pkgs=$(dpkg -l | grep -c ^i) ;;
-		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
-		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
-		'NixOS') pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
-		'GuixSD') pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
+		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS')
+			pkgs=$(dpkg -l | grep -c ^i) ;;
+		'Slackware')
+			pkgs=$(ls -1 /var/log/packages | wc -l) ;;
+		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion')
+			pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
+		'NixOS')
+			pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
+		'GuixSD')
+			pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
 		'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
-		'Red Star OS'|'blackPanther OS'|'Amazon Linux') pkgs=$(rpm -qa | wc -l) ;;
-		'Void Linux') pkgs=$(xbps-query -l | wc -l) ;;
-		'Evolve OS') pkgs=$(pisi list-installed | wc -l) ;;
-		'Solus') pkgs=$(eopkg list-installed | wc -l) ;;
-		'Source Mage GNU/Linux') pkgs=$(gaze installed | wc -l) ;;
-		'CRUX') pkgs=$(pkginfo -i | wc -l) ;;
-		'Lunar Linux') pkgs=$(lvu installed | wc -l) ;;
-		'TinyCore') pkgs=$(tce-status -i | wc -l) ;;
+		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
+			pkgs=$(rpm -qa | wc -l) ;;
+		'Void Linux')
+			pkgs=$(xbps-query -l | wc -l) ;;
+		'Evolve OS')
+			pkgs=$(pisi list-installed | wc -l) ;;
+		'Solus')
+			pkgs=$(eopkg list-installed | wc -l) ;;
+		'Source Mage GNU/Linux')
+			pkgs=$(gaze installed | wc -l) ;;
+		'CRUX')
+			pkgs=$(pkginfo -i | wc -l) ;;
+		'Lunar Linux')
+			pkgs=$(lvu installed | wc -l) ;;
+		'TinyCore')
+			pkgs=$(tce-status -i | wc -l) ;;
 		'Exherbo')
 			xpkgs=$(ls -d -1 /var/db/paludis/repositories/cross-installed/*/data/* | wc -l)
 			pkgs=$(ls -d -1 /var/db/paludis/repositories/installed/data/* | wc -l)
@@ -1255,12 +1281,10 @@ detectpkgs () {
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -cv "\(../Cellar/\|brew\)")
 				pkgs=$((loc_pkgs -1));
 			fi
-
 			if type -p port >/dev/null 2>&1; then
 				port_pkgs=$(port installed 2>/dev/null | wc -l)
 				pkgs=$((pkgs + (port_pkgs -1)))
 			fi
-
 			if type -p brew >/dev/null 2>&1; then
 				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
 				pkgs=$((pkgs + brew_pkgs))
@@ -1271,8 +1295,11 @@ detectpkgs () {
 			fi
 		;;
 		'DragonFlyBSD')
-			pkgs=$(if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
-				pkg info | wc -l | awk '{print $1}'; else pkg_info | wc -l | tr -d ' '; fi)
+			if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
+				pkgs=$(pkg info | wc -l | awk '{print $1}')
+			else
+				pkgs=$(pkg_info | wc -l | tr -d ' ')
+			fi
 		;;
 		'OpenBSD')
 			pkgs=$(pkg_info | grep -c .)
@@ -1344,7 +1371,7 @@ detectcpu () {
 	elif [ "$distro" == "Haiku" ]; then
 		cpu=$(sysinfo -cpu | grep 'CPU #0' | cut -d'"' -f2 | awk 'BEGIN{FS=" @"; OFS="\n"} { print $1; exit }')
 		cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
-		if [ "$cpu_mhz" -gt 999 ]; then
+		if [ "${cpu_mhz%.*}" -ge 1000 ]; then
 			cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
 			cpufreq="${cpu_ghz}GHz"
 		else
@@ -1408,7 +1435,7 @@ detectcpu () {
 			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2+.5) }' /proc/cpuinfo | head -n 1)
 		fi
 		if [ -n "$cpu_mhz" ]; then
-			if [ "${cpu_mhz%.*}" -gt 999 ]; then
+			if [ "${cpu_mhz%.*}" -ge 1000 ]; then
 				cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
 				cpufreq="${cpu_ghz}GHz"
 			else
@@ -1569,7 +1596,7 @@ detectmem () {
 		wiredmem=$(vm_stat | grep wired | awk '{ print $4 }' | sed 's/\.//')
 		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
 		compressedmem=$(vm_stat | grep occupied | awk '{ print $5 }' | sed 's/\.//')
-		if [[ ! -z "$compressedmem | tr -d" ]]; then
+		if [[ ! -z "$compressedmem | tr -d" ]]; then  # FIXME: is this line correct?
 			compressedmem=0
 		fi
 		usedmem=$(((wiredmem + activemem + compressedmem) * 4 / 1024))
@@ -1670,14 +1697,15 @@ detectshell_ver () {
 }
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
-		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" || "${OSTYPE}" == "gnu" || "${distro}" == "TinyCore" || "${distro}" == "Raspbian" ]]; then
+		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" ||
+			"${distro}" == "TinyCore" || "${distro}" == "Raspbian" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		elif readlink -f "$SHELL" 2>&1 | grep -q "busybox"; then
 			shell_type="BusyBox"
 		else
-			if [[ "${OSTYPE}" == "linux-gnu" || "${OSTYPE}" == "linux" || "${OSTYPE}" == "linux-musl" ]]; then
+			if [[ "${OSTYPE}" =~ "linux" ]]; then
 				shell_type=$(cat /proc/$PPID/cmdline|tr '\0' '\n'|head -n 1)
-			elif [[ "${distro}" == "Mac OS X" || "${distro}" == "DragonFlyBSD" || "${distro}" == "FreeBSD" || "${distro}" == "OpenBSD" || "${distro}" == "NetBSD" ]]; then
+			elif [[ "${distro}" == "Mac OS X" || "${distro}" =~ "BSD" ]]; then
 				shell_type=$(ps -p $PPID -o command | tail -1)
 			else
 				shell_type=$(ps -p "$(ps -p $PPID | awk '$1 !~ /PID/ {print $1}')" | awk 'FNR>1 {print $1}')
@@ -1726,17 +1754,8 @@ detectshell () {
 
 # Resolution Detection - Begin
 detectres () {
-	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" && "${distro}" != "Msys" && ${distro} != "Haiku" ]]; then
-		if [[ -n ${DISPLAY} ]]; then
-			if type -p xdpyinfo >/dev/null 2>&1; then
-				if [[ "$distro" =~ "BSD" ]]; then
-					xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
-				else
-					xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
-				fi
-			fi
-		fi
-	elif [[ ${distro} == "Mac OS X" ]]; then
+	xResolution="No X Server"
+	if [[ ${distro} == "Mac OS X" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
 		if [[ "$(echo "$xResolution" | wc -l)" -ge 1 ]]; then
 			xResolution=$(echo "$xResolution" | tr "\\n" "," | sed 's/\(.*\),/\1/')
@@ -1748,7 +1767,15 @@ detectres () {
 		height=$(screenmode | cut -d ' ' -f3 | tr -d ',')
 		xResolution="${width}x${height}"
 	else
-		xResolution="No X Server"
+		if [[ -n ${DISPLAY} ]]; then
+			if type -p xdpyinfo >/dev/null 2>&1; then
+				if [[ "$distro" =~ "BSD" ]]; then
+					xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
+				else
+					xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
+				fi
+			fi
+		fi
 	fi
 	verboseOut "Finding current resolution(s)...found as '$xResolution'"
 }
@@ -1758,7 +1785,20 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
-	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" && "${distro}" != "Msys" ]]; then
+	if [[ "${distro}" == "Mac OS X" ]]; then
+		if ps -U "${USER}" | grep -q -i 'finder'; then
+			DE="Aqua"
+		fi
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
+		# https://msdn.microsoft.com/en-us/library/ms724832%28VS.85%29.aspx
+		if wmic os get version | grep -q '^\(6\.[01]\)'; then
+			DE="Aero"
+		elif wmic os get version | grep -q '^\(6\.[23]\|10\)'; then
+			DE="Modern UI/Metro"
+		else
+			DE="Luna"
+		fi
+	else
 		if [[ -n ${DISPLAY} ]]; then
 			if type -p xprop >/dev/null 2>&1;then
 				xprop_root="$(xprop -root 2>/dev/null)"
@@ -1803,101 +1843,103 @@ detectde () {
 				# Let's use xdg-open code for GNOME/Enlightment/KDE/LXDE/MATE/Xfce detection
 				# http://bazaar.launchpad.net/~vcs-imports/xdg-utils/master/view/head:/scripts/xdg-utils-common.in#L251
 				if [ -n "${XDG_CURRENT_DESKTOP}" ]; then
-					case "${XDG_CURRENT_DESKTOP}" in
-						ENLIGHTENMENT)
-							DE=Enlightenment;
+					case "${XDG_CURRENT_DESKTOP,,}" in
+						'enlightenment')
+							DE="Enlightenment"
 							;;
-						GNOME)
-							DE=GNOME;
+						'gnome')
+							DE="GNOME"
 							;;
-						KDE)
-							DE=KDE;
+						'kde')
+							DE="KDE"
 							;;
-						LUMINA|Lumina)
-							DE=Lumina;
+						'lumina')
+							DE="Lumina"
 							;;
-						LXDE)
-							DE=LXDE;
+						'lxde')
+							DE="LXDE"
 							;;
-						MATE)
-							DE=MATE;
+						'mate')
+							DE="MATE"
 							;;
-						XFCE)
-							DE=Xfce
+						'xfce')
+							DE="Xfce"
 							;;
-						'X-Cinnamon')
-							DE=Cinnamon
+						'x-cinnamon')
+							DE="Cinnamon"
 							;;
-						Unity)
-							DE=Unity
+						'unity')
+							DE="Unity"
 							;;
-						LXQt)
-							DE=LXQt
+						'lxqt')
+							DE="LXQt"
 							;;
 					esac
 				fi
 
 				if [ -n "$DE" ]; then
 					# classic fallbacks
-					if [ -n "$KDE_FULL_SESSION" ]; then DE=KDE;
-					elif [ -n "$TDE_FULL_SESSION" ]; then DE=Trinity;
-					elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then DE=GNOME;
-					elif [ -n "$MATE_DESKTOP_SESSION_ID" ]; then DE=MATE;
-					elif $(dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager > /dev/null 2>&1) ; then 
-						DE=GNOME;
-					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then DE=Xfce;
-					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then DE=Xfce
-					elif echo "$DESKTOP" | grep -q '^Enlightenment'; then DE=Enlightenment;
+					if [ -n "$KDE_FULL_SESSION" ]; then
+						DE="KDE"
+					elif [ -n "$TDE_FULL_SESSION" ]; then
+						DE="Trinity"
+					elif [ -n "$GNOME_DESKTOP_SESSION_ID" ]; then
+						DE="GNOME"
+					elif [ -n "$MATE_DESKTOP_SESSION_ID" ]; then
+						DE="MATE"
+					elif dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus \
+						org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager >/dev/null 2>&1 ; then
+						DE="GNOME"
+					elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep ' = \"xfce4\"$' >/dev/null 2>&1; then
+						DE="Xfce"
+					elif xprop -root 2> /dev/null | grep -i '^xfce_desktop_window' >/dev/null 2>&1; then
+						DE="Xfce"
+					elif echo "$DESKTOP" | grep -q '^Enlightenment'; then
+						DE="Enlightenment"
 					fi
 				fi
 
-				case "$DESKTOP_SESSION" in
-					gnome|gnome-fallback|gnome-fallback-compiz )
-						DE=GNOME
-						;;
-					deepin)
-						DE=Deepin
-						;;
-				esac
-
 				if [ -n "$DE" ]; then
 					# fallback to checking $DESKTOP_SESSION
-					case "$DESKTOP_SESSION" in
-						gnome)
-							DE=GNOME;
+					case "${DESKTOP_SESSION,,}" in
+						'gnome'*)
+							DE="GNOME"
 							;;
-						LUMINA|Lumina)
-							DE=Lumina;
+						'deepin')
+							DE="Deepin"
 							;;
-						LXDE|Lubuntu)
-							DE=LXDE;
+						'lumina')
+							DE="Lumina"
 							;;
-						MATE)
-							DE=MATE;
+						'lxde'|'lubuntu')
+							DE="LXDE"
 							;;
-						xfce|xfce4|'Xfce Session')
-							DE=Xfce;
+						'mate')
+							DE="MATE"
+							;;
+						'xfce'*)
+							DE="Xfce"
 							;;
 						'budgie-desktop')
-							DE=Budgie
+							DE="Budgie"
 							;;
-						Cinnamon)
-							DE=Cinnamon
+						'cinnamon')
+							DE="Cinnamon"
 							;;
-						trinity)
-							DE=Trinity
+						'trinity')
+							DE="Trinity"
 							;;
 					esac
 				fi
 
 				if [ -n "$DE" ]; then
 					# fallback to checking $GDMSESSION
-					case "$GDMSESSION" in
-						Lumina*|LUMINA*|lumina*)
-							DE=Lumina
+					case "${GDMSESSION,,}" in
+						'lumina'*)
+							DE="Lumina"
 							;;
-						MATE|mate)
-							DE=MATE
+						'mate')
+							DE="MATE"
 							;;
 					esac
 				fi
@@ -1908,7 +1950,6 @@ detectde () {
 							DE="Unity"
 						elif xprop -name "launcher" >/dev/null 2>&1 &&
 							xprop -name "panel" >/dev/null 2>&1; then
-
 							DE="Unity"
 						fi
 					fi
@@ -1921,7 +1962,7 @@ detectde () {
 						elif [[ ${KDE_SESSION_VERSION} == '4' ]]; then
 							DE="KDE4"
 						fi
-					elif [[ "x${KDE_FULL_SESSION}" == "xtrue" ]]; then
+					elif [[ ${KDE_FULL_SESSION} == 'true' ]]; then
 						DE="KDE"
 						DEver_data=$(kded --version 2>/dev/null)
 						DEver=$(grep -si '^KDE:' <<< "$DEver_data" | awk '{print $2}')
@@ -1960,7 +2001,7 @@ detectde () {
 								fi
 							done
 						fi
-						if pgrep plasmashell >/dev/null 2>&1; then
+						if pgrep -U ${UID} plasmashell >/dev/null 2>&1; then
 							DEver=$(plasmashell --version | cut -d ' ' -f2)
 							DE="$DE / Plasma $DEver"
 						fi
@@ -2016,19 +2057,6 @@ detectde () {
 				fi
 			fi
 		fi
-	elif [[ "${distro}" == "Mac OS X" ]]; then
-		if ps -U ${USER} | grep [F]inder >/dev/null 2>&1; then
-			DE="Aqua"
-		fi
-	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
-		# https://msdn.microsoft.com/en-us/library/ms724832%28VS.85%29.aspx
-		if wmic os get version | grep -q '^\(6\.[01]\)'; then
-			DE='Aero'
-		elif wmic os get version | grep -q '^\(6\.[23]\|10\)'; then
-			DE='Modern UI/Metro'
-		else
-			DE='Luna'
-		fi
 	fi
 	verboseOut "Finding desktop environment...found as '$DE'"
 }
@@ -2038,7 +2066,21 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [[ ${distro} != "Mac OS X" && ${distro} != "Cygwin" && "${distro}" != "Msys" ]]; then
+	if [[ ${distro} == "Mac OS X" && "${WM}" == "Not Found" ]]; then
+		if ps -U "${USER}" | grep -q -i 'finder'; then
+			WM="Quartz Compositor"
+		fi
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
+		if [ "$(tasklist | grep -o 'bugn' | tr -d '\r \n')" = "bugn" ]; then
+			WM="bug.n"
+		elif [ "$(tasklist | grep -o 'Windawesome' | tr -d '\r \n')" = "Windawesome" ]; then
+			WM="Windawesome"
+		elif [ "$(tasklist | grep -o 'blackbox' | tr -d '\r \n')" = "blackbox" ]; then
+			WM="Blackbox"
+		else
+			WM="DWM/Explorer"
+		fi
+	else
 		if [[ -n ${DISPLAY} ]]; then
 			for each in "${wmnames[@]}"; do
 				PID="$(pgrep -U ${UID} "^$each$")"
@@ -2178,18 +2220,6 @@ detectwm () {
 				'xmonad') WM="XMonad";;
 			esac
 		fi
-	elif [[ ${distro} == "Mac OS X" && "${WM}" == "Not Found" ]]; then
-		if ps -U "${USER}" | grep Finder >/dev/null 2>&1; then
-			WM="Quartz Compositor"
-		fi
-	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
-		bugn=$(tasklist | grep -o 'bugn' | tr -d '\r \n')
-		wind=$(tasklist | grep -o 'Windawesome' | tr -d '\r \n')
-		blackbox=$(tasklist | grep -o 'blackbox' | tr -d '\r \n')
-		if [ "$bugn" = "bugn" ]; then WM="bug.n"
-		elif [ "$wind" = "Windawesome" ]; then WM="Windawesome"
-		elif [ "$blackbox" = "blackbox" ]; then WM="Blackbox"
-		else WM="DWM/Explorer"; fi
 	fi
 	verboseOut "Finding window manager...found as '$WM'"
 }
@@ -2199,11 +2229,39 @@ detectwm () {
 # WM Theme Detection - BEGIN
 detectwmtheme () {
 	Win_theme="Not Found"
+	if [[ "${distro}" == "Mac OS X" ]]; then
+		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant 2>/dev/null)"
+		if [ "${themeNumber}" == "1" ] || [ "${themeNumber}x" == "x" ]; then
+			Win_theme="Blue"
+		else
+			Win_theme="Graphite"
+		fi
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
+		if [ "${WM}" == "Blackbox" ]; then
+			if [ "${distro}" == "Msys" ]; then
+				Blackbox_loc=$(reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\WinLogon' //v 'Shell')
+			else
+				Blackbox_loc=$(reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\WinLogon' /v 'Shell')
+			fi
+			Blackbox_loc="$(echo "${Blackbox_loc}" | sed 's/.*REG_SZ//' | sed -e 's/^[ \t]*//' | sed 's/.\{4\}$//')"
+			Win_theme=$(cat "${Blackbox_loc}.rc" | grep "session.styleFile" | sed 's/ //g' | sed 's/session\.styleFile://g' | sed 's/.*\\//g')
+		else
+			if [[ "${distro}" == "Msys" ]]; then
+				themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' //v 'CurrentTheme')"
+			else
+				themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme')"
+			fi
+			Win_theme=$(echo "$themeFile" | awk -F"\\" '{print $NF}' | sed 's|\.theme$||')
+		fi
+	else
+
 	case $WM in
-		'2bwm') Win_theme="Not Applicable";;
-		'9wm') Win_theme="Not Applicable";;
+		'2bwm'|'9wm'|'Beryl'|'bspwm'|'dminiwm'|'dwm'|'echinus'|'FVWM'|'howm'|'i3'|'monsterwm'|'Musca'|\
+		'Notion'|'Ratpoison'|'ScrotWM'|'SpectrWM'|'swm'|'subtle'|'WindowMaker'|'WMFS'|'wmii'|'XMonad')
+			Win_theme="Not Applicable"
+		;;
 		'Awesome')
-			if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" ]; then 
+			if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" ]; then
 				Win_theme="$(grep -e '^[^-].*\(theme\|beautiful\).*lua' "${XDG_CONFIG_HOME:-${HOME}/.config}/awesome/rc.lua" | grep '[^/]\+/[^/]\+.lua' -o | cut -d'/' -f1 | head -n1)"
 			fi
 		;;
@@ -2212,8 +2270,6 @@ detectwmtheme () {
 				Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' "$HOME/.blackboxrc")"
 			fi
 		;;
-		'Beryl') Win_theme="Not Applicable";;
-		'bspwm') Win_theme="Not Applicable";;
 		'BudgieWM')
 			Win_theme="$(gsettings get org.gnome.desktop.wm.preferences theme)"
 			Win_theme="${Win_theme//\'}"
@@ -2242,34 +2298,30 @@ detectwmtheme () {
 				Win_theme=${Win_theme//"'"}
 			fi
 		;;
-		'dminiwm') Win_theme="Not Applicable";;
-		'dwm') Win_theme="Not Applicable";;
-		'E16') Win_theme="$(awk -F"= " '/theme.name/ {print $2}' "$HOME/.e16/e_config--0.0.cfg")";;
+		'E16')
+			Win_theme="$(awk -F"= " '/theme.name/ {print $2}' "$HOME/.e16/e_config--0.0.cfg")"
+		;;
 		'E17'|'Enlightenment')
 			if [ "$(which eet 2>/dev/null)" ]; then
 				econfig="$(eet -d "$HOME/.e/e/config/standard/e.cfg" config | awk '/value \"file\" string.*.edj/{ print $4 }')"
 				econfigend="${econfig##*/}"
 				Win_theme=${econfigend%.*}
+			elif [ -n "${E_CONF_PROFILE}" ]; then
+				#E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
+				#TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
+				Win_theme="${E_CONF_PROFILE}"
 			fi
 		;;
-		#E17 doesn't store cfg files in text format so for now get the profile as opposed to theme. atyoung
-		#TODO: Find a way to extract and read E17 .cfg files ( google seems to have nothing ). atyoung
-		'E17') Win_theme=${E_CONF_PROFILE};;
-		'echinus') Win_theme="Not Applicable";;
 		'Emerald')
 			if [ -f "$HOME/.emerald/theme/theme.ini" ]; then
 				Win_theme="$(for a in /usr/share/emerald/themes/* $HOME/.emerald/themes/*; do cmp "$HOME/.emerald/theme/theme.ini" "$a/theme.ini" &>/dev/null && basename "$a"; done)"
 			fi
 		;;
-		'Finder') Win_theme="Not Applicable";;
 		'FluxBox'|'Fluxbox')
 			if [ -f "$HOME/.fluxbox/init" ]; then
 				Win_theme="$(awk -F"/" '/styleFile/ {print $NF}' "$HOME/.fluxbox/init")"
 			fi
 		;;
-		'FVWM') Win_theme="Not Applicable";;
-		'howm') Win_theme="Not Applicable";;
-		'i3') Win_theme="Not Applicable";;
 		'IceWM')
 			if [ -f "$HOME/.icewm/theme" ]; then
 				Win_theme="$(awk -F"[\",/]" '!/#/ {print $2}' "$HOME/.icewm/theme")"
@@ -2285,7 +2337,6 @@ detectwmtheme () {
 					KDE_CONFIG_DIR=$(kde-config --localprefix)
 				fi
 			fi
-
 			if [[ -n $KDE_CONFIG_DIR ]]; then
 				Win_theme="Not Applicable"
 				KDE_CONFIG_DIR=${KDE_CONFIG_DIR%/}
@@ -2305,7 +2356,6 @@ detectwmtheme () {
 						if [[ -z "$Win_theme" ]]; then Win_theme="Not Applicable"; fi
 					fi
 				fi
-
 				if [[ "$Win_theme" != "Not Applicable" ]]; then
 					if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
 						if [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VERSINFO[1]} -gt 1 ]] || [[ ${BASH_VERSINFO[0]} -gt 4 ]]; then
@@ -2319,7 +2369,7 @@ detectwmtheme () {
 				fi
 			fi
 		;;
-		'Marco')
+		'Marco'|'Metacity (Marco)')
 			Win_theme="$(gsettings get org.mate.Marco.general theme)"
 			Win_theme=${Win_theme//"'"}
 		;;
@@ -2328,9 +2378,6 @@ detectwmtheme () {
 				Win_theme="$(gconftool-2 -g /apps/metacity/general/theme)"
 			fi
 		;;
-		'monsterwm') Win_theme="Not Applicable";;
-		'Musca') Win_theme="Not Applicable";;
-		'Notion') Win_theme="Not Applicable";;
 		'OpenBox'|'Openbox')
 			if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml" ]; then
 				Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml")";
@@ -2343,12 +2390,9 @@ detectwmtheme () {
 				Win_theme="$(awk -F"/" '/Theme/ {gsub(/\"/,""); print $NF}' "$HOME/.pekwm/config")"
 			fi
 		;;
-		'Ratpoison') Win_theme="Not Applicable";;
-		'Sawfish') Win_theme="$(awk -F")" '/\(quote default-frame-style/{print $2}' "$HOME/.sawfish/custom" | sed 's/ (quote //')";;
-		'ScrotWM') Win_theme="Not Applicable";;
-		'SpectrWM') Win_theme="Not Applicable";;
-		'swm') Win_theme="Not Applicable";;
-		'subtle') Win_theme="Not Applicable";;
+		'Sawfish')
+			Win_theme="$(awk -F")" '/\(quote default-frame-style/{print $2}' "$HOME/.sawfish/custom" | sed 's/ (quote //')"
+		;;
 		'TWin')
 			if [[ -z $TDE_CONFIG_DIR ]]; then
 				if type -p tde-config >/dev/null 2>&1; then
@@ -2365,42 +2409,14 @@ detectwmtheme () {
 				fi
 			fi
 		;;
-		'WindowMaker') Win_theme="Not Applicable";;
-		'WMFS') Win_theme="Not Applicable";;
-		'wmii') Win_theme="Not Applicable";;
 		'Xfwm4')
 			if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" ]; then
 				Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"
 			fi
 		;;
-		'XMonad') Win_theme="Not Applicable";;
 	esac
-	if [[ "${distro}" == "Mac OS X" ]]; then
-		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant 2>/dev/null)"
-		if [ "${themeNumber}" == "1" ] || [ "${themeNumber}x" == "x" ]; then
-			Win_theme="Blue"
-		else
-			Win_theme="Graphite"
-		fi
-	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
-		if [ "${WM}" == "Blackbox" ]; then
-			if [ "${distro}" == "Msys" ]; then
-				Blackbox_loc=$(reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\WinLogon' //v 'Shell')
-			else
-				Blackbox_loc=$(reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\WinLogon' /v 'Shell')
-			fi
-			Blackbox_loc="$(echo "${Blackbox_loc}" | sed 's/.*REG_SZ//' | sed -e 's/^[ \t]*//' | sed 's/.\{4\}$//')"
-			Win_theme=$(cat "${Blackbox_loc}.rc" | grep "session.styleFile" | sed 's/ //g' | sed 's/session\.styleFile://g' | sed 's/.*\\//g')
-		else
-			if [[ "${distro}" == "Msys" ]]; then
-				themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' //v 'CurrentTheme')"
-			else
-				themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme')"
-			fi
-			Win_theme=$(echo "$themeFile" | awk -F"\\" '{print $NF}' | sed 's|\.theme$||')
-		fi
-	fi
 
+	fi
 	verboseOut "Finding window manager theme...found as '$Win_theme'"
 }
 # WM Theme Detection - END
@@ -2416,7 +2432,7 @@ detectgtk () {
 		gtk2Theme="Not Applicable"
 		gtk3Theme="Not Applicable"
 		gtkIcons="Not Applicable"
-		if ps -U "${USER}" | grep [F]inder >/dev/null 2>&1; then
+		if ps -U "${USER}" | grep -q -i 'finder'; then
 			if [[ ${TERM_PROGRAM} == "iTerm.app" ]] && [ -f ~/Library/Preferences/com.googlecode.iterm2.plist ]; then
 				# iTerm2
 
@@ -2543,15 +2559,15 @@ detectgtk () {
 				fi
 			;;
 			'MATE'*) # MATE desktop environment
-				#if type -p gsettings >/dev/null 2&>1; then
-				gtk3Theme=$(gsettings get org.mate.interface gtk-theme)
-				# gtk3Theme=${gtk3Theme//"'"}
-				gtk2Theme=${gtk3Theme}
-				gtkIcons=$(gsettings get org.mate.interface icon-theme)
-				gtkIcons=${gtkIcons//"'"}
-				gtkFont=$(gsettings get org.mate.interface font-name)
-				gtkFont=${gtkFont//"'"}
-				#fi
+				if type -p gsettings >/dev/null 2>&1; then
+					gtk3Theme=$(gsettings get org.mate.interface gtk-theme)
+					gtk3Theme=${gtk3Theme//"'"}
+					gtk2Theme=${gtk3Theme}
+					gtkIcons=$(gsettings get org.mate.interface icon-theme)
+					gtkIcons=${gtkIcons//"'"}
+					gtkFont=$(gsettings get org.mate.interface font-name)
+					gtkFont=${gtkFont//"'"}
+				fi
 			;;
 			'Xfce'*) # Desktop Environment found as "Xfce"
 				if [ "$distro" == "BunsenLabs" ] ; then
@@ -2652,18 +2668,18 @@ detectgtk () {
 					fi
 				fi
 
+				# Proper gtk3 Theme detection
+				if type -p gsettings >/dev/null 2>&1; then
+					gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null)
+					gtk3Theme=${gtk3Theme//"'"}
+				fi
+
 				# EXPERIMENTAL gtk3 Theme detection
-				if [ -f "$HOME/.config/gtk-3.0/settings.ini" ]; then
+				if [[ -z "$gtk3Theme" && -f "$HOME/.config/gtk-3.0/settings.ini" ]]; then
 					if grep -q gtk-theme-name "$HOME/.config/gtk-3.0/settings.ini"; then
 						gtk3Theme=$(awk -F'=' '/^gtk-theme-name/ {print $2}' "$HOME/.config/gtk-3.0/settings.ini")
 					fi
 				fi
-
-				# Proper gtk3 Theme detection
-				#if type -p gsettings >/dev/null 2>&1; then
-				#	gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null)
-				#	gtk3Theme=${gtk3Theme//"'"}
-				#fi
 
 				# ROX-Filer icon detect only
 				if [ -a "${XDG_CONFIG_HOME:-${HOME}/.config}/rox.sourceforge.net/ROX-Filer/Options" ]; then
@@ -2741,7 +2757,11 @@ takeShot () {
 			do
 				shotfiles[$i]="$(echo ${shotfile} | sed "s/\(.*\)\./\1_${i}./")"
 			done
-			printf "Taking shot in 3.. "; sleep 1; printf "2.. "; sleep 1; printf "1.. "; sleep 1; printf "0.\n"; screencapture -x ${shotfiles[@]} &> /dev/null
+			printf "Taking shot in 3.. "; sleep 1
+			printf "2.. "; sleep 1
+			printf "1.. "; sleep 1
+			printf "0.\n"
+			screencapture -x ${shotfiles[@]} &> /dev/null
 		else
 			if type -p scrot >/dev/null 2>&1; then
 				scrot -cd3 "${shotfile}"
@@ -2819,7 +2839,9 @@ asciiText () {
 	elif [[ "$fake_distro" ]]; then myascii="${fake_distro}"
 	else myascii="${distro}"; fi
 	case ${myascii} in
-		"custom") source "$art" ;;
+		"custom")
+			source "$art"
+		;;
 
 		"ALDOS")
 			if [[ "$no_color" != "1" ]]; then
@@ -5684,8 +5706,9 @@ asciiText () {
 		#n=${#fulloutput[*]}
 		for ((i=0; i<${#fulloutput[*]}; i++)); do
 			# echo "${out_array[@]}"
-			febreeze=$(awk 'BEGIN{srand();print int(rand()*(1000-1))+1 }')
-			if [[ "${febreeze}" == "411" || "${febreeze}" == "188" || "${febreeze}" == "15" || "${febreeze}" == "166" || "${febreeze}" == "609" ]]; then
+			case $(awk 'BEGIN{srand();print int(rand()*(1000-1))+1 }') in
+				411|188|15|166|609)
+
 				f_size=${#fulloutput[*]}
 				o_size=${#out_array[*]}
 				f_max=$(( 32768 / f_size * f_size ))
@@ -5699,7 +5722,9 @@ asciiText () {
 					rand=$(( rand % (b+1) ))
 					tmp=${out_array[b]} out_array[b]=${out_array[rand]} out_array[rand]=$tmp
 				done
-			fi
+
+				;;
+			esac
 			printf "${fulloutput[i]}$c0\n" "${out_array[0]}"
 			if [[ "$i" -ge "$startline" ]]; then
 				unset 'out_array[0]'
@@ -5720,24 +5745,53 @@ infoDisplay () {
 		"Alpine Linux"|"Arch Linux - Old"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"| \
 		"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"| \
 		"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"| \
-		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS") labelcolor=$(getColor 'light blue');;
-		"Arch Linux"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"OS Elbrus") labelcolor=$(getColor 'light cyan');;
+		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS")
+			labelcolor=$(getColor 'light blue')
+		;;
+		"Arch Linux"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"OS Elbrus")
+			labelcolor=$(getColor 'light cyan')
+		;;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"| \
-		"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS") labelcolor=$(getColor 'light green');;
+		"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS")
+			labelcolor=$(getColor 'light green')
+		;;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"| \
 		"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"| \
-		"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux") labelcolor=$(getColor 'light red');;
-		"ROSA") labelcolor=$(getColor 'white');;
-		"CrunchBang"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
-		"Hyperbola GNU/Linux-libre"|"PureOS"|*) labelcolor=$(getColor 'light grey');;
-		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan") labelcolor=$(getColor 'light purple');;
-		"Haiku") labelcolor=$(getColor 'green');;
-		"NetBSD"|"Amazon Linux"|"Proxmox VE") labelcolor=$(getColor 'orange');;
-		"CentOS") labelcolor=$(getColor 'yellow');;
+		"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux")
+			labelcolor=$(getColor 'light red')
+		;;
+		"ROSA")
+			labelcolor=$(getColor 'white')
+		;;
+		"CrunchBang"|"Viperr"|"elementary"*)
+			labelcolor=$(getColor 'dark grey')
+		;;
+		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan")
+			labelcolor=$(getColor 'light purple')
+		;;
+		"Haiku")
+			labelcolor=$(getColor 'green')
+		;;
+		"NetBSD"|"Amazon Linux"|"Proxmox VE")
+			labelcolor=$(getColor 'orange')
+		;;
+		"CentOS")
+			labelcolor=$(getColor 'yellow')
+		;;
+		"Hyperbola GNU/Linux-libre"|"PureOS"|*)
+			labelcolor=$(getColor 'light grey')
+		;;
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
-	if [[ "$art" ]]; then source "$art"; fi
-	if [[ "$no_color" == "1" ]]; then labelcolor=""; bold=""; c0=""; textcolor=""; fi
+	if [[ "$art" ]]; then
+		source "$art"
+	fi
+	if [[ "$no_color" == "1" ]]; then
+		labelcolor=""
+		bold=""
+		c0=""
+		textcolor=""
+	fi
 	# Some verbosity stuff
 	[[ "$screenshot" == "1" ]] && verboseOut "Screenshot will be taken after info is displayed."
 	[[ "$upload" == "1" ]] && verboseOut "Screenshot will be transferred/uploaded to specified location."
@@ -5766,8 +5820,11 @@ infoDisplay () {
 				sysArch=$(str1=$(getconf LONG_BIT);echo "${str1}bit")
 				prodVers=$(prodVers=$(sw_vers|grep ProductVersion);echo "${prodVers:16}")
 				buildVers=$(buildVers=$(sw_vers|grep BuildVersion);echo "${buildVers:14}")
-				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
-				else mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers"); fi
+				if [ -n "$distro_more" ]; then
+					mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
+				else
+					mydistro=$(echo -e "$labelcolor OS:$textcolor $sysArch $distro $prodVers $buildVers")
+				fi
 			elif [[ "$distro" == "Cygwin" || "$distro" == "Msys" ]]; then
 				distro="$(wmic os get caption | sed 's/\r//g; s/[ \t]*$//g; 2!d')"
 				if [[ "$(wmic os get version | grep -o '^10\.')" == "10." ]]; then
@@ -5776,8 +5833,11 @@ infoDisplay () {
 				sysArch=$(wmic os get OSArchitecture | sed 's/\r//g; s/[ \t]*$//g; 2!d')
 				mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch")
 			else
-				if [ -n "$distro_more" ]; then mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more")
-				else mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch"); fi
+				if [ -n "$distro_more" ]; then
+					mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more")
+				else
+					mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch")
+				fi
 			fi
 			out_array=( "${out_array[@]}" "$mydistro$wsl" )
 			((display_index++))
@@ -5823,9 +5883,7 @@ infoDisplay () {
 				((display_index++))
 			fi
 			if [[ "${display[@]}" =~ "wmtheme" ]]; then
-				if [[ "${Win_theme}" == "Not Applicable" || "${Win_theme}" == "Not Found" ]]; then
-					:
-				else
+				if [[ "${Win_theme}" != "Not Applicable" && "${Win_theme}" != "Not Found" ]]; then
 					mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme")
 					out_array=( "${out_array[@]}" "$mywmtheme" )
 					((display_index++))
@@ -5897,7 +5955,9 @@ infoDisplay () {
 			fi
 			if [[ "${display[@]}" =~ "de" ]]; then
 				if [[ "${DE}" != "Not Present" ]]; then
-					myde=$(echo -e "$labelcolor DE:$textcolor $DE"); out_array=( "${out_array[@]}" "$myde" ); ((display_index++))
+					myde=$(echo -e "$labelcolor DE:$textcolor $DE")
+					out_array=( "${out_array[@]}" "$myde" )
+					((display_index++))
 				fi
 			fi
 			if [[ "${display[@]}" =~ "wm" ]]; then
@@ -5906,24 +5966,18 @@ infoDisplay () {
 				((display_index++))
 			fi
 			if [[ "${display[@]}" =~ "wmtheme" ]]; then
-				if [[ "${Win_theme}" == "Not Applicable" || "${Win_theme}" == "Not Found" ]]; then
-					:
-				else
+				if [[ "${Win_theme}" != "Not Applicable" && "${Win_theme}" != "Not Found" ]]; then
 					mywmtheme=$(echo -e "$labelcolor WM Theme:$textcolor $Win_theme")
 					out_array=( "${out_array[@]}" "$mywmtheme" )
 					((display_index++))
 				fi
 			fi
-		elif [[ "$distro" == "Haiku" ]]; then
-			if [ -n "${xResolution}" ]; then
-				if [[ "${display[@]}" =~ "res" ]]; then 
-					myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
-					out_array=( "${out_array[@]}" "$myres" )
-					((display_index++))
-				fi
-			fi
+		elif [[ "$distro" == "Haiku" && -n "${xResolution}" && "${display[@]}" =~ "res" ]]; then
+			myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
+			out_array=( "${out_array[@]}" "$myres" )
+			((display_index++))
 		fi
-		[[ "${fake_distro}" != "Cygwin" && "${fake_distro}" != "Msys" && "${fake_distro}" != "Windows - Modern" ]] && if [[ "${display[@]}" =~ "disk" ]]; then
+		if [[ "${fake_distro}" != "Cygwin" && "${fake_distro}" != "Msys" && "${fake_distro}" != "Windows - Modern" && "${display[@]}" =~ "disk" ]]; then
 			mydisk=$(echo -e "$labelcolor Disk:$textcolor $diskusage")
 			out_array=( "${out_array[@]}" "$mydisk" )
 			((display_index++))
@@ -5943,7 +5997,9 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$mymem" )
 			((display_index++))
 		fi
-		if [[ "$use_customlines" = 1 ]]; then customlines; fi
+		if [[ "$use_customlines" = 1 ]]; then
+			customlines
+		fi
 	fi
 	if [[ "$display_type" == "ASCII" ]]; then
 		asciiText
@@ -6049,7 +6105,7 @@ if [[ "$overrideDisplay" ]]; then
 fi
 
 # Check for android
-if [ -f /system/build.prop ] && [ "${distro}" != "SailfishOS" ]; then
+if [[ -f /system/build.prop  && "${distro}" != "SailfishOS" ]]; then
 	distro="Android"
 	detectmem
 	detectuptime
@@ -6060,10 +6116,10 @@ if [ -f /system/build.prop ] && [ "${distro}" != "SailfishOS" ]; then
 fi
 
 for i in "${display[@]}"; do
-	if [[ ! "$i" == "" ]]; then
+	if [[ -n "$i" ]]; then
 		if [[ $i =~ wm ]]; then
-			 ! [[ $WM  ]] && detectwm;
-			 ! [[ $Win_theme ]] && detectwmtheme;
+			test -z "$WM" && detectwm
+			test -z "$Win_theme" && detectwmtheme
 		else
 			if [[ "${display[*]}" =~ "$i" ]]; then
 				if [[ "$errorSuppress" == "1" ]]; then
