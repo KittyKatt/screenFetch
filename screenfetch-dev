@@ -1234,6 +1234,7 @@ detectuptime () {
 # Package Count - Begin
 detectpkgs () {
 	pkgs="Unknown"
+	offset=0
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
@@ -1253,7 +1254,7 @@ detectpkgs () {
 		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
 		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS')
-			pkgs=$(dpkg -l | grep -c ^i) ;;
+			pkgs=$(dpkg -l | grep -c '^i') ;;
 		'Slackware')
 			pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion')
@@ -1286,13 +1287,14 @@ detectpkgs () {
 			pkgs=$((pkgs + xpkgs))
 		;;
 		'Mac OS X')
+			offset=1
 			if [ -d "/usr/local/bin" ]; then
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -cv "\(../Cellar/\|brew\)")
-				pkgs=$((loc_pkgs -1));
+				pkgs=$((loc_pkgs - offset));
 			fi
 			if type -p port >/dev/null 2>&1; then
 				port_pkgs=$(port installed 2>/dev/null | wc -l)
-				pkgs=$((pkgs + (port_pkgs -1)))
+				pkgs=$((pkgs + (port_pkgs - offset)))
 			fi
 			if type -p brew >/dev/null 2>&1; then
 				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
@@ -1320,16 +1322,17 @@ detectpkgs () {
 			pkgs=$(pkg_info | wc -l | tr -d ' ')
 		;;
 		'Cygwin')
-			pkgs=$(($(cygcheck -cd | wc -l) - 2))
+			offset=2
+			pkgs=$(($(cygcheck -cd | wc -l) - offset))
 			if [ -d "/cygdrive/c/ProgramData/chocolatey/lib" ]; then
-				chocopkgs=$(( $(ls -1 /cygdrive/c/ProgramData/chocolatey/lib | wc -l) ))
+				chocopkgs=$(ls -1 /cygdrive/c/ProgramData/chocolatey/lib | wc -l)
 				pkgs=$((pkgs + chocopkgs))
 			fi
 		;;
 		'Msys')
 			pkgs=$(pacman -Qq | wc -l)
 			if [ -d "/c/ProgramData/chocolatey/lib" ]; then
-				chocopkgs=$(( $(ls -1 /c/ProgramData/chocolatey/lib | wc -l) ))
+				chocopkgs=$(ls -1 /c/ProgramData/chocolatey/lib | wc -l)
 				pkgs=$((pkgs + chocopkgs))
 			fi
 		;;
@@ -1343,6 +1346,11 @@ detectpkgs () {
 			fi
 		;;
 	esac
+	if [[ "${OSTYPE}" =~ "linux" ]] && snap list >/dev/null 2>&1; then
+		offset=1
+		snappkgs=$(snap list | wc -l)
+		pkgs=$((pkgs + (snappkgs - offset)))
+	fi
 	verboseOut "Finding current package count...found as '$pkgs'"
 }
 
