@@ -2125,7 +2125,7 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [[ ${distro} == "Mac OS X" && "${WM}" == "Not Found" ]]; then
+	if [[ ${distro} == "Mac OS X" ]]; then
 		if ps -U "${USER}" | grep -q -i 'finder'; then
 			WM="Quartz Compositor"
 		fi
