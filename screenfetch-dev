@@ -42,7 +42,7 @@ scriptVersion="3.8.0"
 # This setting controls what ASCII logo is displayed.
 # distro="Linux"
 
-# This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. 
+# This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII.
 # To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
 valid_display=(
 		'distro'
@@ -181,10 +181,10 @@ ubuntu_codenames=(
 screenshot=
 # This setting lets the script know if you want to upload the screenshot to a filehost. 1=Yes 0=No
 upload=
-# This setting lets the script know where you would like to upload the file to. 
+# This setting lets the script know where you would like to upload the file to.
 # Valid hosts are: teknik, mediacrush, imgur, hmp, and a configurable local.
 uploadLoc=
-# You can specify a custom screenshot command here. Just uncomment and edit. 
+# You can specify a custom screenshot command here. Just uncomment and edit.
 # Otherwise, we'll be using the default command: scrot -cd3.
 # screenCommand="scrot -cd5"
 shotfile=$(printf "screenFetch-%s.png" "$(date +'%Y-%m-%d_%H-%M-%S')")
@@ -3020,7 +3020,7 @@ asciiText () {
 		;;
 
 		"Artix Linux")
-			if [[ "$no_color" != "1" ]]; then				
+			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'cyan')
 				c2=$(getColor 'blue')
 				c3=$(getColor 'green')
@@ -4439,7 +4439,7 @@ asciiText () {
 				c5=$(getColor 'purple') # Purple
 				c6=$(getColor 'blue') # Blue
 			fi
-			if [ -n "${my_lcolor}" ]; then 
+			if [ -n "${my_lcolor}" ]; then
 				c1="${my_lcolor}"
 				c2="${my_lcolor}"
 				c3="${my_lcolor}"
@@ -5187,7 +5187,7 @@ asciiText () {
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			logowidth="32"
-			fulloutput=(                          
+			fulloutput=(
 "${c1}                 _a@b            %s"
 "${c1}              _#b (b             %s"
 "${c1}            _@@   @_         _,  %s"
@@ -5200,7 +5200,7 @@ asciiText () {
 "${c1}            #b(b#^               %s"
 "${c1}          _@_#@^                 %s"
 "${c1}       _a@a*^                    %s"
-"${c1}   ,a@*^                         %s")                 
+"${c1}   ,a@*^                         %s")
 		;;
 
 		"Qubes OS")
@@ -5928,29 +5928,29 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$mydistro$wsl" )
 			((display_index++))
 		fi
-		if [[ "${display[@]}" =~ "kernel" ]]; then 
+		if [[ "${display[@]}" =~ "kernel" ]]; then
 			mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel")
 			out_array=( "${out_array[@]}" "$mykernel" )
 			((display_index++))
 		fi
-		if [[ "${display[@]}" =~ "uptime" ]]; then 
+		if [[ "${display[@]}" =~ "uptime" ]]; then
 			myuptime=$(echo -e "$labelcolor Uptime:$textcolor $uptime")
 			out_array=( "${out_array[@]}" "$myuptime" )
 			((display_index++))
 		fi
-		if [[ "${display[@]}" =~ "pkgs" ]]; then 
+		if [[ "${display[@]}" =~ "pkgs" ]]; then
 			mypkgs=$(echo -e "$labelcolor Packages:$textcolor $pkgs")
 			out_array=( "${out_array[@]}" "$mypkgs" )
 			((display_index++))
 		fi
-		if [[ "${display[@]}" =~ "shell" ]]; then 
+		if [[ "${display[@]}" =~ "shell" ]]; then
 			myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell")
 			out_array=( "${out_array[@]}" "$myshell" )
 			((display_index++))
 		fi
 		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" ]]; then
 			if [ -n "${xResolution}" ]; then
-				if [[ "${display[@]}" =~ "res" ]]; then 
+				if [[ "${display[@]}" =~ "res" ]]; then
 					myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
 					out_array=( "${out_array[@]}" "$myres" )
 					((display_index++))
@@ -5963,7 +5963,7 @@ infoDisplay () {
 					((display_index++))
 				fi
 			fi
-			if [[ "${display[@]}" =~ "wm" ]]; then 
+			if [[ "${display[@]}" =~ "wm" ]]; then
 				mywm=$(echo -e "$labelcolor WM:$textcolor $WM")
 				out_array=( "${out_array[@]}" "$mywm" )
 				((display_index++))
@@ -6034,7 +6034,7 @@ infoDisplay () {
 				fi
 			fi
 		elif [[ "$fake_distro" == "Cygwin" || "$fake_distro" == "Msys" || "$fake_distro" == "Windows - Modern" ]]; then
-			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then 
+			if [[ "${display[@]}" =~ "res" && -n "$xResolution" ]]; then
 				myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
 				out_array=( "${out_array[@]}" "$myres" )
 				((display_index++))
@@ -6068,17 +6068,17 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$mydisk" )
 			((display_index++))
 		fi
-		if [[ "${display[@]}" =~ "cpu" ]]; then 
+		if [[ "${display[@]}" =~ "cpu" ]]; then
 			mycpu=$(echo -e "$labelcolor CPU:$textcolor $cpu")
 			out_array=( "${out_array[@]}" "$mycpu" )
 			((display_index++))
 		fi
-		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then 
+		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then
 			mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu")
 			out_array=( "${out_array[@]}" "$mygpu" )
 			((display_index++))
 		fi
-		if [[ "${display[@]}" =~ "mem" ]]; then 
+		if [[ "${display[@]}" =~ "mem" ]]; then
 			mymem=$(echo -e "$labelcolor RAM:$textcolor $mem")
 			out_array=( "${out_array[@]}" "$mymem" )
 			((display_index++))
