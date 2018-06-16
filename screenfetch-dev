@@ -356,7 +356,7 @@ detectColors () {
 supported_distros="ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
 Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
-Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
+Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
@@ -655,6 +655,9 @@ detectdistro () {
 					distro="Hyperbola GNU/Linux-libre"
 					distro_codename="n/a"
 					distro_release="n/a"
+					;;
+				"januslinux"|"janus")
+					distro="januslinux"
 					;;
 				"LinuxDeepin")
 					distro="LinuxDeepin"
@@ -1135,6 +1138,7 @@ detectdistro () {
 		guixsd) distro="GuixSD" ;;
 		haiku) distro="Haiku" ;;
 		hyperbolagnu|hyperbolagnu/linux-libre|'hyperbola gnu/linux-libre'|hyperbola) distro="Hyperbola GNU/Linux-libre" ;;
+		januslinux) distro="januslinux" ;;
 		kali*linux) distro="Kali Linux" ;;
 		kaos) distro="KaOS";;
 		kde*neon|neon) distro="KDE neon" ;;
@@ -1282,7 +1286,7 @@ detectpkgs () {
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
-		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux')
+		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux'|'januslinux')
 			pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
@@ -5577,6 +5581,30 @@ asciiText () {
 "                                            %s")
 		;;
 
+		"januslinux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'white') # white
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			logowidth="25"
+			fulloutput=(""
+"                         %s"
+"${c1}   ________________      %s"
+"${c1}  |\               \     %s"
+"${c1}  | \               \    %s"
+"${c1}  |  \               \   %s"
+"${c1}  |   \ ______________\  %s"
+"${c1}  |    |              |  %s"
+"${c1}  |    |              |  %s"
+"${c1}  |    |              |  %s"
+"${c1}   \   |  januslinux  |  %s"
+"${c1}    \  |              |  %s"
+"${c1}     \ |              |  %s"
+"${c1}      \|______________|  %s"
+"                         %s")
+		;;
+
 		*)
 			if [[ "${kernel}" =~ "Linux" ]]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -5816,7 +5844,7 @@ infoDisplay () {
 		"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux")
 			labelcolor=$(getColor 'light red')
 		;;
-		"ROSA")
+		"ROSA"|"januslinux")
 			labelcolor=$(getColor 'white')
 		;;
 		"CrunchBang"|"Viperr"|"elementary"*)
