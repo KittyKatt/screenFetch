@@ -419,7 +419,7 @@ displayHelp () {
 	echo "                      to a Bash script, defining \`startline\` and \`fulloutput\`"
 	echo "                      variables, and optionally \`labelcolor\` and \`textcolor\`."
 	echo "                      See the \`asciiText\` function in the source code for more"
-	echo "                      informations on the variables format."
+	echo "                      information on the variables format."
 	echo "   ${bold}-S 'COMMAND'${c0}       Here you can specify a custom screenshot command for"
 	echo "                      the script to execute. Surrounding quotes are required."
 	echo "   ${bold}-D 'DISTRO'${c0}        Here you can specify your distribution for the script"

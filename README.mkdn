@@ -127,7 +127,7 @@ specified on the command line, and those are shown below or by executing `screen
                          to a Bash script, defining `startline` and `fulloutput`
                          variables, and optionally `labelcolor` and `textcolor`.
                          See the `asciiText` function in the source code for more
-                         informations on the variables format.
+                         information on the variables format.
       -S 'COMMAND'       Here you can specify a custom screenshot command for
                          the script to execute. Surrounding quotes are required.
       -D 'DISTRO'        Here you can specify your distribution for the script
