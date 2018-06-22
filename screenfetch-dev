@@ -894,7 +894,16 @@ detectdistro () {
 					if [[ "${distro}" == "Oracle Linux" && -f /etc/oracle-release ]]; then
 						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 					fi
-					[[ "${distro}" == "rhel" ]] && distro="Red Hat Enterprise Linux"
+					# Upstream problem, SL and so EL is using rhel ID in os-release
+					if [[ "${distro}" == "rhel" ]] || [[ "${distro}" == "Rhel" ]]; then
+						distro="Red Hat Enterprise Linux"
+						if grep -q 'Scientific' /etc/os-release; then
+							distro="Scientific Linux"
+						elif grep -q 'EuroLinux' /etc/os-release; then
+							distro="EuroLinux"
+						fi
+					fi	
+
 					[[ "${distro}" == "Neon" ]] && distro="KDE neon"
 					[[ "${distro}" == "SLED" || "${distro}" == "sled" || "${distro}" == "SLES" || "${distro}" == "sles" ]] && distro="SUSE Linux Enterprise"
 					if [[ "${distro}" == "SUSE Linux Enterprise" && -f /etc/os-release ]]; then
@@ -965,6 +974,7 @@ detectdistro () {
 					distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
 				elif [[ "${distro}" == "redhat" ]]; then
 					grep -q -i 'CentOS' /etc/redhat-release && distro="CentOS"
+					grep -q -i 'Scientific' /etc/redhat-release && distro="Scientific Linux"
 					grep -q -i 'EuroLinux' /etc/redhat-release && distro="EuroLinux"
 					grep -q -i 'PCLinuxOS' /etc/redhat-release && distro="PCLinuxOS"
 					if [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
@@ -1181,6 +1191,7 @@ detectdistro () {
 		red*star|red*star*os) distro="Red Star OS" ;;
 		sabayon) distro="Sabayon" ;;
 		sailfish|sailfish*os) distro="SailfishOS" ;;
+		scientific*) distro="Scientific Linux" ;;
 		siduction) distro="Siduction" ;;
 		slackware) distro="Slackware" ;;
 		smgl|source*mage|source*mage*gnu*linux) distro="Source Mage GNU/Linux" ;;
@@ -1314,7 +1325,7 @@ detectpkgs () {
 		'GuixSD')
 			pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
-		'ROSA'|'Oracle Linux'|'EuroLinux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
+		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
