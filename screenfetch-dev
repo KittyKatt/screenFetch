@@ -1602,7 +1602,7 @@ detectgpu () {
 # Run it only on Intel Processors if GPU is unknown
 DetectIntelGPU() {
 	if [ -r /proc/fb ]; then
-		gpu=$(awk '{print $2}' /proc/fb)
+		gpu=$(lspci | grep -i vga | awk -F ": " '{print $2}')
 	fi
 
 	case $gpu in
