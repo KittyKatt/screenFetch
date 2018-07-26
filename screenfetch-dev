@@ -1443,7 +1443,7 @@ detectcpu () {
 			cpufreq="${cpu_mhz}MHz"
 		fi
 	else
-		cpu=$(awk 'BEGIN{FS=":"} /model name/ { print $2; exit }' /proc/cpuinfo | awk 'BEGIN{FS=" @"; OFS="\n"} { print $1; exit }')
+		cpu=$(awk -F':' '/^model name/ {split($2, A, " @"); print A[1]; exit}' /proc/cpuinfo)
 		cpun=$(grep -c '^processor' /proc/cpuinfo)
 		if [ -z "$cpu" ]; then
 			cpu=$(awk 'BEGIN{FS=":"} /Hardware/ { print $2; exit }' /proc/cpuinfo)
@@ -1555,7 +1555,7 @@ detectgpu () {
 			# gpu=$(sed 's/.*device.*= //' <<< "${gpu_info}" | sed "s/'//g")
 		fi
 	elif [[ "${distro}" == "OpenBSD" ]]; then
-		gpu=$(glxinfo 2> /dev/null | grep 'OpenGL renderer string' | sed 's/OpenGL renderer string: //')
+		gpu=$(glxinfo 2> /dev/null | awk '/OpenGL renderer string/ { sub(/OpenGL renderer string: /,""); print }')
 	elif [[ "${distro}" == "Mac OS X" ]]; then
 		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^\ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
