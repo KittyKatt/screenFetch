@@ -1286,7 +1286,7 @@ detectpkgs () {
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
 		'Arch Linux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
-		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux'|'januslinux')
+		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux')
 			pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
@@ -1323,7 +1323,7 @@ detectpkgs () {
 			pkgs=$(eopkg list-installed | wc -l) ;;
 		'Source Mage GNU/Linux')
 			pkgs=$(gaze installed | wc -l) ;;
-		'CRUX')
+		'CRUX'|'januslinux')
 			pkgs=$(pkginfo -i | wc -l) ;;
 		'Lunar Linux')
 			pkgs=$(lvu installed | wc -l) ;;
