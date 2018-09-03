@@ -829,7 +829,7 @@ detectdistro () {
 					;;
 					"Haiku")
 						distro="Haiku"
-						distro_more="$(uname -v | tr ' ' '\n' | grep 'hrev')"
+						distro_more="$(uname -v | awk '/^hrev/ {print $1}')"
 					;;
 					"GNU/Linux")
 						if type -p crux >/dev/null 2>&1; then
@@ -1248,7 +1248,7 @@ detectuptime () {
 		now=$(date +%s)
 		uptime=$((now - boot))
 	elif [[ "${distro}" == "Haiku" ]]; then
-		uptime=$(uptime | cut -d ',' -f2,3 | sed 's/ up //; s/ hour,/h/; s/ minutes/m/;')
+		uptime=$(uptime | awk -F', up ' '{gsub(/ *hours?,/, "h"); gsub(/ *minutes?/, "m"); print $2;}')
 	else
 		if [[ -f /proc/uptime ]]; then
 			uptime=$(</proc/uptime)
@@ -1355,19 +1355,16 @@ detectpkgs () {
 		;;
 		'DragonFlyBSD')
 			if TMPDIR=/dev/null ASSUME_ALWAYS_YES=1 PACKAGESITE=file:///nonexistent pkg info pkg >/dev/null 2>&1; then
-				pkgs=$(pkg info | wc -l | awk '{print $1}')
+				pkgs=$(pkg info | grep -c .)
 			else
-				pkgs=$(pkg_info | wc -l | tr -d ' ')
+				pkgs=$(pkg_info | grep -c .)
 			fi
 		;;
-		'OpenBSD')
+		'OpenBSD'|'NetBSD')
 			pkgs=$(pkg_info | grep -c .)
 		;;
 		'FreeBSD')
-			pkgs=$(pkg info | wc -l | awk '{sub(" ", ""); print $1}';)
-		;;
-		'NetBSD')
-			pkgs=$(pkg_info | wc -l | tr -d ' ')
+			pkgs=$(pkg info | grep -c .)
 		;;
 		'Cygwin')
 			offset=2
@@ -1428,20 +1425,13 @@ detectcpu () {
 			cpu="Unknown"
 		fi
 	elif [ "$distro" == "FreeBSD" ]; then
-		cpu=$(dmesg | grep 'CPU:' | head -1 | sed -r 's/CPU: //' | sed -e 's/([^()]*)//g')
+		cpu=$(dmesg | awk -F': ' '/^CPU/ {gsub(/ +/," "); gsub(/\([^\(\)]*\)|CPU /,"", $2); print $2; exit}')
 	elif [ "$distro" == "DragonFlyBSD" ]; then
 		cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then
 		cpu=$(sysctl -n hw.model | sed 's/@.*//')
 	elif [ "$distro" == "Haiku" ]; then
-		cpu=$(sysinfo -cpu | grep 'CPU #0' | cut -d'"' -f2 | awk 'BEGIN{FS=" @"; OFS="\n"} { print $1; exit }')
-		cpu_mhz=$(sysinfo -cpu | grep 'running at' | awk 'BEGIN{FS="running at "} { print $2; exit }' | cut -d'M' -f1)
-		if [ "${cpu_mhz%.*}" -ge 1000 ]; then
-			cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
-			cpufreq="${cpu_ghz}GHz"
-		else
-			cpufreq="${cpu_mhz}MHz"
-		fi
+		cpu=$(sysinfo -cpu | awk -F': ' '/^CPU #0/ {gsub(/ +/," "); gsub(/\([^\(\)]*\)|CPU /,"", $2); print $2; exit}')
 	else
 		cpu=$(awk -F':' '/^model name/ {split($2, A, " @"); print A[1]; exit}' /proc/cpuinfo)
 		cpun=$(grep -c '^processor' /proc/cpuinfo)
@@ -1561,7 +1551,7 @@ detectgpu () {
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		gpu=$(wmic path Win32_VideoController get caption | sed -n '2p')
 	elif [[ "${distro}" == "Haiku" ]]; then
-		gpu="$(listdev | grep -A2 -e 'device Display controller' | tail -n1 | sed 's/  device ....: //')"
+		gpu="$(listdev | grep -A2 -e 'device Display controller' | awk -F': ' '/^ +device/ {print $2}')"
 	else
 		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
 			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
@@ -1714,8 +1704,8 @@ detectmem () {
 			usedmem=$((used_mem / 1024))
 		fi
 	elif [ "$distro" == "Haiku" ]; then
-		totalmem=$(( $(sysinfo -mem | head -n1 | cut -d'/' -f3 | tr -d ' ' | tr -d ')') / 1024**2 ))
-		usedmem=$(( $(sysinfo -mem | head -n1 | cut -d'/' -f2 | sed 's/max//; s/ //g') / 1024**2 ))
+		totalmem=$(sysinfo -mem | awk 'NR == 1 {gsub(/[\(\)\/]/, ""); printf("%d", $6/1024**2)}')
+		usedmem=$(sysinfo -mem | awk 'NR == 1 {gsub(/[\(\)\/]/, ""); printf("%d", $5/1024**2)}')
 	else
 		# MemUsed = Memtotal + Shmem - MemFree - Buffers - Cached - SReclaimable
 		# Source: https://github.com/dylanaraps/neofetch/pull/391/files#diff-e863270127ca6116fd30e708cdc582fc
@@ -1838,16 +1828,10 @@ detectres () {
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		xResolution=$(wmic path Win32_VideoController get CurrentHorizontalResolution,CurrentVerticalResolution | awk 'NR==2 {print $1"x"$2}')
 	elif [[ "${distro}" == "Haiku" ]]; then
-		width=$(screenmode | cut -d ' ' -f2)
-		height=$(screenmode | cut -d ' ' -f3 | tr -d ',')
-		xResolution="${width}x${height}"
+		xResolution="$(screenmode | awk '{gsub(/,/,""); print $2"x"$3}')"
 	elif [[ -n ${DISPLAY} ]]; then
 		if type -p xdpyinfo >/dev/null 2>&1; then
-			if [[ "$distro" =~ "BSD" ]]; then
-				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | tr '\n' ' ')
-			else
-				xResolution=$(xdpyinfo | sed -n 's/.*dim.* \([0-9]*x[0-9]*\) .*/\1/pg' | sed ':a;N;$!ba;s/\n/ /g')
-			fi
+			xResolution=$(xdpyinfo | awk '/^ +dimensions/ {print $2}')
 		fi
 	fi
 	verboseOut "Finding current resolution(s)...found as '$xResolution'"
@@ -2152,8 +2136,13 @@ detectwm () {
 			WM="DWM/Explorer"
 		fi
 	elif [[ -n ${DISPLAY} ]]; then
+		if [[ "${distro}" == "FreeBSD" ]]; then
+			pgrep_flags="-aU"
+		else
+			pgrep_flags="-U"
+		fi
 		for each in "${wmnames[@]}"; do
-			PID="$(pgrep -U ${UID} "^$each$")"
+			PID="$(pgrep ${pgrep_flags} ${UID} "^$each$")"
 			if [ "$PID" ]; then
 				case $each in
 					'2bwm') WM="2bwm";;
@@ -2806,8 +2795,7 @@ detectdroid () {
 		rom=$(getprop ro.build.display.id)
 	fi
 	baseband=$(getprop ro.baseband)
-	cpu=$(grep '^Processor' /proc/cpuinfo)
-	cpu=$(echo "$cpu" | sed 's/Processor.*: //')
+	cpu=$(awk -F': ' '/^Processor/ {P=$2} /^Hardware/ {H=$2} END {print H != "" ? H : P}' /proc/cpuinfo)
 }
 
 
