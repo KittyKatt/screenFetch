@@ -1592,19 +1592,19 @@ detectgpu () {
 # Run it only on Intel Processors if GPU is unknown
 DetectIntelGPU() {
 	if [ -r /proc/fb ]; then
-        gpu=$(awk '{print $2}' /proc/fb)
+		gpu=$(awk '{print $2}' /proc/fb)
 	fi
 
-    case $gpu in
-        *mfb) gpu=$(lspci | grep -i vga | awk -F ": " '{print $2}') ;;
-    esac
-
-    if [ ! -n "$gpu" ]; then
-        gpu='Unknown'
-    fi
-
 	case $gpu in
-		*intel*) gpu=intel ;;
+		*mfb)
+			gpu=$(lspci | grep -i vga | awk -F ": " '{print $2}') 
+			;;
+		*intel*)
+			gpu="intel"
+			;;
+		*)
+			gpu="Unknown"
+			;;
 	esac
 
 	if [[ "$gpu" = "intel" ]]; then
@@ -1614,17 +1614,33 @@ DetectIntelGPU() {
 
 		#Detect Intel GPU
 		case $CPU in
-			[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])	gpu='Intel HD Graphics'					;; #1st
-			2[1-5][0-3][0-2]*|2390T|2600S)			gpu='Intel HD Graphics 2000'			;; #2nd
-			2[1-5][1-7][0-8]*|2105|2500K)			gpu='Intel HD Graphics 3000'			;; #2nd
-			32[1-5]0*|3[4-5][5-7]0*|33[3-4]0*)		gpu='Intel HD Graphics 2500'			;; #3rd
-			3570K|3427U)							gpu='Intel HD Graphics 4000'			;; #3rd
-			4[3-7][0-9][0-5]*)						gpu='Intel HD Graphics 4600'			;; #4th Haswell
-			5[5-6]75[C-R]|5350H)					gpu='Intel Iris Pro Graphics 6200'		;; #5th Broadwell
-																								#6th Skylake
-																								#7th Kabylake
-																								#8th Cannonlake
-			*) gpu='Unknown'
+			[3-6][3-9][0-5]|[3-6][3-9][0-5][K-Y])
+				gpu='Intel HD Graphics'
+				;; #1st
+			2[1-5][0-3][0-2]*|2390T|2600S)
+				gpu='Intel HD Graphics 2000'
+				;; #2nd
+			2[1-5][1-7][0-8]*|2105|2500K)
+				gpu='Intel HD Graphics 3000'
+				;; #2nd
+			32[1-5]0*|3[4-5][5-7]0*|33[3-4]0*)
+				gpu='Intel HD Graphics 2500'
+				;; #3rd
+			3570K|3427U)
+				gpu='Intel HD Graphics 4000'
+				;; #3rd
+			4[3-7][0-9][0-5]*)
+				gpu='Intel HD Graphics 4600'
+				;; #4th Haswell
+			5[5-6]75[C-R]|5350H)
+				gpu='Intel Iris Pro Graphics 6200'
+				;; #5th Broadwell
+				#6th Skylake
+				#7th Kabylake
+				#8th Cannonlake
+			*)
+				gpu='Unknown'
+				;; #Unknown GPU model
 		esac
 	fi
 }
