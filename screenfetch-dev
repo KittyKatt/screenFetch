@@ -1391,10 +1391,13 @@ detectpkgs () {
 			fi
 		;;
 	esac
-	if [[ "${OSTYPE}" =~ "linux" ]] && snap list >/dev/null 2>&1; then
+	if [[ "${OSTYPE}" =~ "linux" && -z "${wsl}" ]] && snap list >/dev/null 2>&1; then
 		offset=1
-		snappkgs=$(snap list | wc -l)
-		pkgs=$((pkgs + (snappkgs - offset)))
+		snappkgs=$(($(snap list 2>/dev/null | wc -l) - offset))
+		if [ $snappkgs -lt 0 ]; then
+			snappkgs=0
+		fi
+		pkgs=$((pkgs + snappkgs))
 	fi
 	verboseOut "Finding current package count...found as '$pkgs'"
 }
