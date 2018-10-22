@@ -1606,7 +1606,7 @@ DetectIntelGPU() {
 			gpu="intel"
 			;;
 		*)
-			gpu="Unknown"
+			gpu="Not Found"
 			;;
 	esac
 
@@ -1642,7 +1642,7 @@ DetectIntelGPU() {
 				#7th Kabylake
 				#8th Cannonlake
 			*)
-				gpu='Unknown'
+				gpu='Not Found'
 				;; #Unknown GPU model
 		esac
 	fi
