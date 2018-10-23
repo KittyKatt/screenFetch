@@ -389,6 +389,9 @@ displayHelp () {
 	echo "${underline}Supported Window Managers${c0}:"
 	echo "${supported_wms}" | fold -s | sed 's/^/\t/g'
 	echo
+	echo "${underline}Supported Information Displays${c0}:"
+	echo "${valid_display[@]}" | fold -s | sed 's/^/\t/g'
+	echo
 	echo "${underline}Options${c0}:"
 	echo "   ${bold}-v${c0}                 Verbose output."
 	echo "   ${bold}-o 'OPTIONS'${c0}       Allows for setting script variables on the"
@@ -399,7 +402,7 @@ displayHelp () {
 	echo "                      can delete displays with -var,var. Setting without + or - will"
 	echo "                      set display to that explicit combination. Add and delete statements"
 	echo "                      may be used in conjunction by placing a ; between them as so:"
-	echo "                      +var,var,var;-var,var."
+	echo "                      +var,var,var;-var,var. See above to find supported display names."
 	echo "   ${bold}-n${c0}                 Do not display ASCII distribution logo."
 	echo "   ${bold}-L${c0}                 Display ASCII distribution logo only."
 	echo "   ${bold}-N${c0}                 Strip all color from output."
