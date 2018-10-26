@@ -1609,7 +1609,7 @@ DetectIntelGPU() {
 			gpu="intel"
 			;;
 		*)
-			gpu="Unknown"
+			gpu="Not Found"
 			;;
 	esac
 
