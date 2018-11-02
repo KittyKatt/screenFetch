@@ -2548,6 +2548,7 @@ detectgtk () {
 					if [[ $found_name == $termapp_theme_name ]]; then
 						gtkFont=$(str2=${termapp_theme_info[$i*2]};echo "${str2:288:${#str2}-288}")
 						gtkFont=$(echo "${gtkFont%%[dD]2*;}" | xxd -r -p)
+						gtkFont=$(echo "${gtkFont:21:288}")
 						break
 					fi
 				done
