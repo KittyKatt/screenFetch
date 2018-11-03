@@ -1787,7 +1787,7 @@ detectshell () {
 		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" ||
 			"${distro}" == "TinyCore" || "${distro}" == "Raspbian" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
-		elif readlink -f "$SHELL" 2>&1 | grep -q -i 'busybox'; then
+		elif [[ "${distro}" != "Mac OS X" ]] && readlink -f "$SHELL" 2>&1 | grep -q -i 'busybox'; then
 			shell_type="BusyBox"
 		else
 			if [[ "${OSTYPE}" =~ "linux" ]]; then
