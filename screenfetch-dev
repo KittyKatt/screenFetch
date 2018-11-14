@@ -647,7 +647,14 @@ detectdistro () {
 					else
 						distro="Gentoo"
 					fi
-					. /etc/portage/make.conf #detecting release stable/testing/experimental
+
+					#detecting release stable/testing/experimental
+					if [[ -f /etc/portage/make.conf ]]; then
+						source /etc/portage/make.conf
+					elif [[ -d /etc/portage/make.conf ]]; then
+						source /etc/portage/make.conf/*
+					fi
+
 					case $ACCEPT_KEYWORDS in
 						[a-z]*) distro_release=stable       ;;
 						~*)     distro_release=testing      ;;
