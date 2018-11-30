@@ -1605,7 +1605,7 @@ detectgpu () {
 # Run it only on Intel Processors if GPU is unknown
 DetectIntelGPU() {
 	if [ -r /proc/fb ]; then
-		gpu=$(awk '{print $2}' /proc/fb)
+		gpu=$(awk 'BEGIN {ORS = " &"} {$1="";print}' /proc/fb | sed  -r s/'^\s+|\s*&$'//g)
 	fi
 
 	case $gpu in
