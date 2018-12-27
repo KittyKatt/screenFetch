@@ -1860,7 +1860,7 @@ detectres () {
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		xResolution=$(wmic path Win32_VideoController get CurrentHorizontalResolution,CurrentVerticalResolution | awk 'NR==2 {print $1"x"$2}')
 	elif [[ "${distro}" == "Haiku" ]]; then
-		xResolution="$(screenmode | awk '{gsub(/,/,""); print $2"x"$3}')"
+		xResolution="$(screenmode | grep Resolution | awk '{gsub(/,/,""); print $2"x"$3}')"
 	elif [[ -n ${DISPLAY} ]]; then
 		if type -p xdpyinfo >/dev/null 2>&1; then
 			xResolution=$(xdpyinfo | awk '/^ +dimensions/ {print $2}')
