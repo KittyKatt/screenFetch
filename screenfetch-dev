@@ -572,6 +572,10 @@ detectdistro () {
 				"ALDOS"|"Aldos")
 					distro="ALDOS"
 					;;
+				"ArcoLinux")
+					distro="ArcoLinux"
+					distro_release="n/a"
+					;;
 				"artixlinux"|"Artix Linux"|"artix"|"Artix"|"Artix release")
 					distro="Artix"
 					;;
@@ -725,9 +729,9 @@ detectdistro () {
 						distro="LMDE"
 						distro_codename="n/a"
 						distro_release="n/a"
-					#adding support for LMDE 3	
+					#adding support for LMDE 3
 					elif [[ "$(lsb_release -sd)" =~ "LMDE" ]]; then
-						distro="LMDE"	
+						distro="LMDE"
 					fi
 					;;
 				"openSUSE"|"openSUSE project"|"SUSE LINUX")
@@ -1119,6 +1123,7 @@ detectdistro () {
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
+		arcolinux|arcolinux*) distro="ArcoLinux" ;;
 		artix|artix*linux) distro="Artix Linux" ;;
 		blackpantheros|black*panther*) distro="blackPanther OS" ;;
 		blag) distro="BLAG" ;;
@@ -1613,7 +1618,7 @@ DetectIntelGPU() {
 
 	case $gpu in
 		*mfb)
-			gpu=$(lspci | grep -i vga | awk -F ": " '{print $2}') 
+			gpu=$(lspci | grep -i vga | awk -F ": " '{print $2}')
 			;;
 		*intel*)
 			gpu="intel"
@@ -3047,6 +3052,36 @@ asciiText () {
 "${c2} \`++:.                           \`-/+/%s"
 "${c2} .\`                                 \`/%s")
 		;;
+
+		"ArcoLinux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue') # Light
+				c2=$(getColor 'white') # Dark
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="1"
+			logowidth="41"
+			fulloutput=(
+"${c1}                   oo                  %s"
+"${c1}                  yooo                 %s"
+"${c1}                 yooooo                %s"
+"${c1}                yooooooo               %s"
+"${c1}               yooooooooo              %s"
+"${c1}             .yooooooooooo             %s"
+"${c1}            .oooooooooooooo            %s"
+"${c1}           .ooooooarcooooooo           %s"
+"${c1}          .ooooooooo-oooooooo          %s"
+"${c1}         .oooooooo-  ooooooooo         %s"
+"${c1}        :oooooooo.    :oooooooo        %s"
+"${c1}       :oooooooo.      :oooooooo       %s"
+"${c1}      :ooarcooo         .ooarcooo      %s"
+"${c1}     :oooooooy           .oooooooo     %s"
+"${c1}    :oooooooo   ${c2}/oooooooooooooooooo${c1}    %s"
+"${c1}   :oooooooo      ${c2}.-oooooooooooooooo.${c1}  %s"
+"${c1}  oooooooo-             ${c2}-oooooooooooo.${c1} %s"
+"${c1} oooooooo-                 ${c2}.-ooooooooo.${c1}%s"
+"${c1}oooooooo.                     ${c2}-oooooooo${c1}%s")
+        ;;
 
 		"Artix Linux")
 			if [[ "$no_color" != "1" ]]; then
@@ -5855,7 +5890,7 @@ infoDisplay () {
 	myascii="${distro}"
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
-		"Alpine Linux"|"Arch Linux - Old"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"| \
+		"Alpine Linux"|"Arch Linux - Old"|"ArcoLinux"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"| \
 		"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"| \
 		"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"| \
 		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS")
