@@ -404,6 +404,7 @@ displayHelp () {
 	echo "                      may be used in conjunction by placing a ; between them as so:"
 	echo "                      +var,var,var;-var,var. See above to find supported display names."
 	echo "   ${bold}-n${c0}                 Do not display ASCII distribution logo."
+	echo "   ${bold}-l${c0}		      Display distro list whose index can be used with -A command."
 	echo "   ${bold}-L${c0}                 Display ASCII distribution logo only."
 	echo "   ${bold}-N${c0}                 Strip all color from output."
 	echo "   ${bold}-w${c0}                 Wrap long lines."
@@ -429,7 +430,9 @@ displayHelp () {
 	echo "                      to use. Surrounding quotes are required."
 	echo "   ${bold}-A 'DISTRO'${c0}        Here you can specify the distribution art that you want"
 	echo "                      displayed. This is for when you want your distro"
-	echo "                      detected but want to display a different logo."
+	echo "                      detected but want to display a different logo.Can use index number from -l flag to get distro logo of your choice "
+	echo "   ${bold}-A  'index'${c0}        Here you can specify distribution art  that you want "
+        echo "                      by getting the index number from -l flag."
 	echo "   ${bold}-E${c0}                 Suppress output of errors."
 	echo "   ${bold}-V, --version${c0}      Display current script version."
 	echo "   ${bold}-h, --help${c0}         Display this help."
@@ -444,7 +447,38 @@ displayVersion () {
 	echo "This is free software; see the source for copying conditions.  There is NO warranty; not even MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
 }
 
-
+displayList () {
+	echo "1.ALDOS			31.OpenBSD				61.Manjaro-tree			91.janusLinux			"
+	echo "2.Alpine Linux		32.DragonFlyBSD				62.elementary OS			"
+	echo "3.Arch Linux - Old	33.NetBSD				63.Android				"
+	echo "4.Arch Linux		34.Mandriva / Mandrake			64.Scientific Linux			"
+	echo "5.Artix Linux		35.openSUSE / SUSE Linux Enterprise	65.BackTrack Linux			"
+	echo "6.blackPanther OS	36.Slackware				66.Kali Linux				"
+	echo "7.Mint			37.ROSA					67.Sabayon				"
+	echo "8.LMDE			38.Red Hat Enterprise Linux		68.KaOS					"
+	echo "9.Ubuntu		39.Frugal				69.CentOS				"
+	echo "10.KDE Neon		40.Peppermint				70.Jiyuu Linux				"
+	echo "11.Debian		41.Grombyang/GrombyangOS		71.Antergos				"
+	echo "12.Proxmox VE		42.Solus				72.Void Linux				"
+	echo "13.Siduction		43.Mageia				73.NixOS				"
+	echo "14.Devuan		44.Hyperbola GNU / Linux Libre		74.GuixSD				"
+	echo "15.Raspbian		45.Parabola GNU / Linux Libre		75.BunsenLabs				"
+	echo "16.CrunchBang		46.Viperr				76.SteamOS				"
+	echo "17.Crux			47.LinuxDeepin				77.Sailfish OS				"
+	echo "18.Chrome OS		48.Deepin				78.Qubes OS				"
+	echo "19.Desa OS		49.Chakra				79.PCLinuxOS				"
+	echo "20.Gentoo		50.Fuduntu				80.Exherbo				"
+	echo "21.Funtoo		51.Zorin OS				81.Red Star OS				"
+	echo "22.Kogaion		52.Mac OS X				82.Sparky Linux				"
+	echo "23.Fedora		53.mac OS X - Classic			83.Pardus				"
+	echo "24.Fux			54.Windows / Cygwin / Msys		84.SwagArch				"
+	echo "25.Chapeau		55.Windows - Modern			85.OBRevenge				"
+	echo "26.Korora		56.Haiku				86.Parrot Security			"
+	echo "27.gNewSense		57.Tresquel				87.Amazon Linux				"
+	echo "28.Blag			58.Manjaro				88.Source Mage GNU/Linux		"
+	echo "29.FreeBSD		59.Netrunner				89.OS Elbrus				"
+	echo "30.FreeBSD - Old	60.Logos				90.PureOS				"
+}
 #####################
 # Begin Flags Phase
 #####################
@@ -452,12 +486,14 @@ displayVersion () {
 case $1 in
 	--help) displayHelp; exit 0;;
 	--version) displayVersion; exit 0;;
+	--list) displayList; exit 0;;
 esac
 
 
-while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w" flags; do
+while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w:l:" flags; do
 	case $flags in
 		h) displayHelp; exit 0 ;;
+		l) displayList; exit 0 ;;
 		s) screenshot='1' ;;
 		S) screenCommand="${OPTARG}" ;;
 		u) upload='1'; uploadLoc="${OPTARG}" ;;
