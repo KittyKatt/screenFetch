@@ -74,6 +74,7 @@ display=(
 		'wmtheme'
 		'gtk'
 		'cpu'
+		'disk'
 		'gpu'
 		'mem'
 )
