@@ -2936,7 +2936,7 @@ asciiText () {
 			source "$art"
 		;;
 
-		"ALDOS")
+		"ALDOS"| "1")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light grey') # light grey
 			fi
@@ -2962,7 +2962,7 @@ asciiText () {
 "${c1}                           %s")
 		;;
 
-		"Alpine Linux")
+		"Alpine Linux"|"2")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light
 				c2=$(getColor 'blue') # Dark
@@ -2989,7 +2989,7 @@ asciiText () {
 "${c1}       ∵::::::::::::::::∵         %s")
 		;;
 
-		"Arch Linux - Old")
+		"Arch Linux - Old" | "3")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light blue') # Light Blue
@@ -3018,7 +3018,7 @@ asciiText () {
 "${c1}                                     %s")
 		;;
 
-		"Arch Linux")
+		"Arch Linux" | "4")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light cyan') # Light
 				c2=$(getColor 'cyan') # Dark
@@ -3048,7 +3048,7 @@ asciiText () {
 "${c2} .\`                                 \`/%s")
 		;;
 
-		"Artix Linux")
+		"Artix Linux" | "5")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'cyan')
 				c2=$(getColor 'blue')
@@ -3086,7 +3086,7 @@ asciiText () {
 "                                                   %s")
 		;;
 
-		"blackPanther OS")
+		"blackPanther OS" | "6")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'yellow') # Light Yellow
 				c2=$(getColor 'white') # Bold Red
@@ -3125,7 +3125,7 @@ asciiText () {
 "${c4}                                  %s")
 			;;
 
-		"Mint")
+		"Mint" | "7")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light green') # Bold Green
@@ -3154,7 +3154,7 @@ asciiText () {
 "${c2}                                      %s")
 		;;
 
-		"LMDE")
+		"LMDE" | "8")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light green') # Bold Green
@@ -3183,7 +3183,7 @@ asciiText () {
 "${c2}                               %s")
 		;;
 
-		"Ubuntu")
+		"Ubuntu" | "9")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light red') # Light Red
@@ -3213,7 +3213,7 @@ asciiText () {
 "${c3}                          \`oo++.      %s")
 		;;
 
-		"KDE neon")
+		"KDE neon" | "10")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Bold Green
 			fi
@@ -3242,7 +3242,7 @@ asciiText () {
 "${c1}              \`..---+/---..\`               %s")
 		;;
 
-		"Debian")
+		"Debian" | "11")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light red') # Light Red
@@ -3260,7 +3260,7 @@ asciiText () {
 "${c1}   \$\$P      d\$\'     ${c2},${c1}    \$\$P    %s"
 "${c1}   \$\$:      \$\$.   ${c2}-${c1}    ,d\$\$'    %s"
 "${c1}   \$\$\;      Y\$b._   _,d\$P'     %s"
-"${c1}   Y\$\$.    ${c2}\`.${c1}\`\"Y\$\$\$\$P\"'         %s"
+"${c1}   Y\$\$.    ${c2}\`.${c1}\`\"Y\$\$\$\$P\"         %s"
 "${c1}   \`\$\$b      ${c2}\"-.__              %s"
 "${c1}    \`Y\$\$                        %s"
 "${c1}     \`Y\$\$.                      %s"
@@ -3271,7 +3271,7 @@ asciiText () {
 "${c1}                                %s")
 		;;
 
-		"Proxmox VE")
+		"Proxmox VE" | "12")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white')
 				c2=$(getColor 'orange')
@@ -3302,7 +3302,7 @@ asciiText () {
 "${c1}           \`://:\`              \`://:\`           %s")
 		;;
 
-		"Siduction")
+		"Siduction" | "13")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 				c2=$(getColor 'light blue') # Light Blue
@@ -3331,7 +3331,7 @@ asciiText () {
 
 		;;
 
-		"Devuan")
+		"Devuan" | "14")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light purple') # Light purple
 			fi
@@ -3358,7 +3358,7 @@ asciiText () {
 "${c1}                                    %s")
 		;;
 
-		"Raspbian")
+		"Raspbian" | "15")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Light Green
 				c2=$(getColor 'light red') # Light Red
@@ -3387,7 +3387,7 @@ asciiText () {
 "${c2}             '0Q0Q'             %s")
 		;;
 
-		"CrunchBang")
+		"CrunchBang" | "16")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 			fi
@@ -3415,7 +3415,7 @@ asciiText () {
 "${c1}                                      %s")
 		;;
 
-		"CRUX")
+		"CRUX" | "17")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light cyan')
 				c2=$(getColor 'yellow')
@@ -3446,7 +3446,7 @@ asciiText () {
 "${c1}                           %s")
 		;;
 
-		"Chrome OS")
+		"Chrome OS" | "18")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green') # Green
 				c2=$(getColor 'light red') # Light Red
@@ -3484,7 +3484,7 @@ asciiText () {
 "${c1}             ..,:${c3}dOkxl:.              %s")
 		;;
 
-		"DesaOS")
+		"DesaOS" | "19")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') #Hijau
 			fi
@@ -3510,8 +3510,8 @@ asciiText () {
 "${c1} ████████████████████████        %s"
 "                                      %s")
 		;;
-
-		"Gentoo")
+  
+		"Gentoo" | "20")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light purple') # Light Purple
@@ -3540,7 +3540,7 @@ asciiText () {
 "${c2}  \`-//////:--.                       %s")
 		;;
 
-		"Funtoo")
+		"Funtoo" | "21")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light purple') # Light Purple
@@ -3569,7 +3569,7 @@ asciiText () {
 "${c1}                                                    %s")
 		;;
 
-		"Kogaion")
+		"Kogaion" | "22")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 			fi
@@ -3599,7 +3599,7 @@ asciiText () {
 "${c1}                   ';;; ;;               %s")
 		;;
 
-		"Fedora")
+		"Fedora" | "23")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light blue') # Light Blue
@@ -3628,7 +3628,7 @@ asciiText () {
 "${c2}                                     %s")
 		;;
 
-		"Fux")
+		"Fux" | "24")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light blue') # Light Blue
@@ -3654,7 +3654,7 @@ asciiText () {
 "${c2}           --/+osssso+/--           %s")
 		;;
 
-		"Chapeau")
+		"Chapeau" | "25")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light green') # Light Green
@@ -3684,7 +3684,7 @@ asciiText () {
 "${c2}                                   %s")
 		;;
 
-		"Korora")
+		"Korora" | "26")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white')
 				c2=$(getColor 'light blue')
@@ -3711,7 +3711,7 @@ asciiText () {
 "${c2}  \`\`\`\`\`\`\`\`\`\`\`                   %s")
 		;;
 
-		"gNewSense")
+		"gNewSense" | "27")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 			fi
@@ -3734,7 +3734,7 @@ asciiText () {
 "${c1}                                                    %s")
 		;;
 
-		"BLAG")
+		"BLAG" | "28")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light purple')
 			fi
@@ -3755,13 +3755,13 @@ asciiText () {
 "${c1}        .:xNMMMMMMMMMMMMMMMMMK.     %s"
 "${c1}           lMMMMMMMMMMMMMMMMMMK.    %s"
 "${c1}           ,MMMMMMMMWkOXWMMMMMM0    %s"
-"${c1}           .NMMMMMNd.     \`':ldko   %s"
+"${c1}           .NMMMMMNd.     ':ldko   %s"
 "${c1}            OMMMK:                  %s"
 "${c1}            oWk,                    %s"
 "${c1}            ;:                      %s")
 		;;
 
-		"FreeBSD")
+		"FreeBSD" | "29")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # white
 				c2=$(getColor 'light red') # Light Red
@@ -3790,7 +3790,7 @@ asciiText () {
 "${c2}                                     %s")
 		;;
 
-		"FreeBSD - Old")
+		"FreeBSD - Old" | "30")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # white
 				c2=$(getColor 'light red') # Light Red
@@ -3821,7 +3821,7 @@ asciiText () {
 "${c2}                                  %s")
 		;;
 
-		"OpenBSD")
+		"OpenBSD" | "31")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'yellow') # Light Yellow
 				c2=$(getColor 'brown') # Bold Yellow
@@ -3864,7 +3864,7 @@ asciiText () {
 "${c1}       \`.\                                  %s")
 		;;
 
-		"DragonFlyBSD")
+		"DragonFlyBSD" | "32")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light red') # Red
 				c2=$(getColor 'white') # White
@@ -3895,7 +3895,7 @@ asciiText () {
 "${c1}                      ^                    %s")
 		;;
 
-		"NetBSD")
+		"NetBSD" | "33")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'orange') # Orange
 				c2=$(getColor 'white') # White
@@ -3911,7 +3911,7 @@ asciiText () {
 "${c2}    \\\\N\\\\\\\\${c1}XCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCPF\"''               %s"
 "${c2}     \\\\N\\\\\\\\${c1}XCCCCCCCCCCCCCCCCCCCCCCCCCOF\"'                     %s"
 "${c2}      \\\\N\\\\\\\\${c1}XCCCCCCCCCCCCCCCCCCCCOF\"'                         %s"
-"${c2}       \\\\N\\\\\\\\${c1}XCCCCCCCCCCCCCCCPF\"'                             %s"
+"${c2}       \\\\N\\\\\\\\${c1}XCCCCCCCCCCCCCCCPF\"                             %s"
 "${c2}        \\\\N\\\\\\\\${c1}\"PCOCCCOCCFP\"\"                                  %s"
 "${c2}         \\\\N\                                                %s"
 "${c2}          \\\\N\                                               %s"
@@ -3926,7 +3926,7 @@ asciiText () {
 "${c2}                   \\\\NNNA                                    %s")
 		;;
 
-		"Mandriva"|"Mandrake")
+		"Mandriva"|"Mandrake" | "34")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 				c2=$(getColor 'yellow') # Bold Yellow
@@ -3955,7 +3955,7 @@ asciiText () {
 "${c1}                                         %s")
 		;;
 
-		"openSUSE"|"SUSE Linux Enterprise")
+		"openSUSE"|"SUSE Linux Enterprise" | "35")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Bold Green
 				c2=$c0$bold
@@ -3984,7 +3984,7 @@ asciiText () {
 "${c2}              '^:ldxkkkkxdl:^'              %s")
 		;;
 
-		"Slackware")
+		"Slackware" | "36")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 				c2=$(getColor 'white') # Bold White
@@ -4016,7 +4016,7 @@ asciiText () {
 "${c1}                 ::::::::::::                 %s")
 		;;
 
-		"ROSA")
+		"ROSA" | "37")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'rosa_blue') # special blue color from ROSA
 			fi
@@ -4046,7 +4046,7 @@ asciiText () {
 "${c1}            ROSAROSAROSAROSAR            %s")
 		;;
 
-		"Red Hat Enterprise Linux")
+		"Red Hat Enterprise Linux" | "38")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light red') # Light Red
@@ -4075,7 +4075,7 @@ asciiText () {
 "${c1}                                          %s")
 		;;
 
-		"Frugalware")
+		"Frugalware" | "39")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light blue') # Light Blue
@@ -4109,7 +4109,7 @@ asciiText () {
 "${c2}                                .-:+++\`           %s")
 		;;
 
-		"Peppermint")
+		"Peppermint" | "40")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light red') # Light Red
@@ -4139,7 +4139,7 @@ asciiText () {
 "${c2}              ZZZZZZZZZ${c1}MM              %s")
 		;;
 
-"Grombyang"|"GrombyangOS")
+"Grombyang"|"GrombyangOS" | "41")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue')
 				c2=$(getColor 'light green')
@@ -4170,7 +4170,7 @@ asciiText () {
 "                                     %s")
 	;;
 
-		"Solus")
+		"Solus" | "42")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'blue') # Blue
@@ -4200,7 +4200,7 @@ asciiText () {
 "${c2}         .,:looooooooooc;.  %s")
 		;;
 
-		"Mageia")
+		"Mageia" | "43")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 			 	c2=$(getColor 'light cyan') # Light Cyan
@@ -4230,7 +4230,7 @@ asciiText () {
 "${c1}               .,KKKK,.          %s")
 		;;
 
-		"Hyperbola GNU/Linux-libre")
+		"Hyperbola GNU/Linux-libre" | "44")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light grey') # light grey
 			fi
@@ -4257,7 +4257,7 @@ asciiText () {
 "${c1}                                    %s")
 			;;
 
-		"Parabola GNU/Linux-libre")
+		"Parabola GNU/Linux-libre" | "45")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'purple') # Purple
 			fi
@@ -4285,7 +4285,7 @@ asciiText () {
 "${c1}                                       %s")
 		;;
 
-		"Viperr")
+		"Viperr" | "46")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'dark grey') # Dark Gray
@@ -4314,7 +4314,7 @@ asciiText () {
 "${c1}                               %s")
 		;;
 
-		"LinuxDeepin")
+		"LinuxDeepin" | "47")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Bold Green
 			fi
@@ -4343,7 +4343,7 @@ asciiText () {
 "${c1}                                 %s")
 		;;
 
-		"Deepin")
+		"Deepin" | "48")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'cyan') # Bold Green
 			fi
@@ -4371,7 +4371,7 @@ asciiText () {
 "${c1}             .,:cccccccc:,.              %s")
 		;;
 
-		"Chakra")
+		"Chakra" | "49")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 			fi
@@ -4399,7 +4399,7 @@ asciiText () {
 "${c1}                   \"\'\'\"               %s")
 		;;
 
-		"Fuduntu")
+		"Fuduntu" | "50")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'dark grey') # Dark Gray
 				c2=$(getColor 'yellow') # Bold Yellow
@@ -4433,7 +4433,7 @@ asciiText () {
 "${c3}        \`woapfjsod\`${c4}             \`woapfjsod\`      %s")
 		;;
 
-		"Zorin OS")
+		"Zorin OS" | "51")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 			fi
@@ -4459,7 +4459,7 @@ asciiText () {
 "${c1}           ''''''''''''''''''           %s")
 		;;
 
-		"Mac OS X")
+		"Mac OS X" | "52")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green') # Green
 				c2=$(getColor 'brown') # Yellow
@@ -4499,7 +4499,7 @@ asciiText () {
 "${c6}                               %s")
 		;;
 
-		"Mac OS X - Classic")
+		"Mac OS X - Classic" | "53")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'blue') # Blue
 				c2=$(getColor 'light blue') # Light blue
@@ -4533,7 +4533,7 @@ asciiText () {
 "${c3}                                       %s")
 		;;
 
-		"Windows"|"Cygwin"|"Msys")
+		"Windows"|"Cygwin"|"Msys" | "54")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light red') # Red
 				c2=$(getColor 'light green') # Green
@@ -4562,7 +4562,7 @@ asciiText () {
 "${c4}                 \"VEzjt:;;z>*\`       %s")
 		;;
 
-		"Windows - Modern")
+		"Windows - Modern" | "55")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Blue
 			fi
@@ -4591,7 +4591,7 @@ asciiText () {
 "${c1}                                   \`\` %s")
 		;;
 
-		"Haiku")
+		"Haiku" | "56")
 			if [[ "$no_color" != "1" ]]; then
 				if [ "$haikualpharelease" == "yes" ]; then
 					c1=$(getColor 'black_haiku') # Black
@@ -4625,7 +4625,7 @@ asciiText () {
 "${c1}                        ${c2}.           %s")
 		;;
 
-		"Trisquel")
+		"Trisquel" | "57")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 				c2=$(getColor 'light cyan') # Blue
@@ -4654,7 +4654,7 @@ asciiText () {
 "${c2}		              █████▀▀       %s")
 		;;
 
-		"Manjaro")
+		"Manjaro" | "58")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Green
 			fi
@@ -4679,7 +4679,7 @@ asciiText () {
 "                                 %s")
 		;;
 
-		"Netrunner")
+		"Netrunner" | "59")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Blue
 			fi
@@ -4712,7 +4712,7 @@ asciiText () {
 "${c1}                                           %s")
 		;;
 
-			"Logos")
+			"Logos" | "60")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green') # Green
 			fi
@@ -4739,7 +4739,7 @@ asciiText () {
 "${c1}     //                  %s")
 		;;
 
-			"Manjaro-tree")
+			"Manjaro-tree" | "61")
 			if [[ "$no_color" != "1" ]]; then
 				c1="\e[1;32m" # Green
 				c2="\e[1;33m" # Yellow
@@ -4768,7 +4768,7 @@ asciiText () {
 "${c2}                                 %s")
 		;;
 
-		"elementary OS"|"elementary os")
+		"elementary OS"|"elementary os" | "62")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 			fi
@@ -4796,7 +4796,7 @@ asciiText () {
 "${c1}         eeeeeeeeeeeeeeeee          %s")
 	;;
 
-		"Android")
+		"Android" | "63")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light green') # Bold Green
 			fi
@@ -4819,7 +4819,7 @@ asciiText () {
 "${c1}       ██     ██        %s")
 		;;
 
-		"Scientific Linux")
+		"Scientific Linux" | "64")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue')
 				c2=$(getColor 'light red')
@@ -4851,7 +4851,7 @@ asciiText () {
 "${c1}                  '////'                    %s")
 		;;
 
-		"BackTrack Linux")
+		"BackTrack Linux" | "65")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light red') # Light Red
@@ -4883,7 +4883,7 @@ asciiText () {
 "${c1}                                             .  %s")
 		;;
 
-		"Kali Linux")
+		"Kali Linux" | "66")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # White
 				c2=$(getColor 'black') # Light Red
@@ -4915,7 +4915,7 @@ asciiText () {
 "${c1}                                             .  %s")
 		;;
 
-		"Sabayon")
+		"Sabayon" | "67")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light blue') # Blue
@@ -4944,7 +4944,7 @@ asciiText () {
 "${c2}          ...............             %s")
 		;;
 
-		"KaOS")
+		"KaOS" | "68")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue')
 			fi
@@ -4970,7 +4970,7 @@ asciiText () {
 "${c1}                    .SSS....S..    %s")
 		;;
 
-		"CentOS")
+		"CentOS" | "69")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'yellow')
 				c2=$(getColor 'light green')
@@ -5002,7 +5002,7 @@ asciiText () {
 "${c2}                   ''                   %s")
 		;;
 
-		"Jiyuu Linux")
+		"Jiyuu Linux" | "70")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 			fi
@@ -5030,7 +5030,7 @@ asciiText () {
 "${c1}        /.                     %s")
 		;;
 
-		"Antergos")
+		"Antergos" | "71")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'blue') # Light Blue
 				c2=$(getColor 'light blue') # Light Blue
@@ -5060,7 +5060,7 @@ asciiText () {
 "${c1}      \`.:+ooyyddddddddddddyyso+:.\`       %s")
 		;;
 
-		"Void Linux")
+		"Void Linux" | "72")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green')       # Dark Green
 				c2=$(getColor 'light green') # Light Green
@@ -5090,7 +5090,7 @@ asciiText () {
 "${c1}                -~\"|{*l}*|\"\"~                  %s")
 		;;
 
-		"NixOS")
+		"NixOS" | "73")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'blue')
 				c2=$(getColor 'light blue')
@@ -5120,7 +5120,7 @@ asciiText () {
 "${c1}         .::::      ::::      ${c2}'::::.         %s")
 		;;
 
-		"GuixSD")
+		"GuixSD" | "74")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'orange')
 				c2=$(getColor 'light orange')
@@ -5145,7 +5145,7 @@ asciiText () {
 "${c1}                77++?${c2}??$                %s"
 "${c1}                N?+???${c2}?                 %s")
 			;;
-		"BunsenLabs")
+		"BunsenLabs" | "75")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'blue')
 			fi
@@ -5179,7 +5179,7 @@ asciiText () {
 "${c1}              q          %s")
 		;;
 
-		"SteamOS")
+		"SteamOS" | "76")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'grey') # Gray
 				c2=$(getColor 'purple') # Dark Purple
@@ -5209,7 +5209,7 @@ asciiText () {
 "${c1}               ''''''                %s")
 		;;
 
-		"SailfishOS")
+		"SailfishOS" | "77")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'dark grey') # Grey
 			fi
@@ -5232,7 +5232,7 @@ asciiText () {
 "${c1}   ,a@*^                         %s")
 		;;
 
-		"Qubes OS")
+		"Qubes OS" | "78")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'cyan')
 				c2=$(getColor 'blue')
@@ -5262,7 +5262,7 @@ asciiText () {
 "${c1}                                               %s")
 		;;
 
-		"PCLinuxOS")
+		"PCLinuxOS" | "79")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'blue') # Blue
 				c2=$(getColor 'light grey') # White
@@ -5290,7 +5290,7 @@ asciiText () {
 "${c1}                                                  %s")
 		;;
 
-		"Exherbo")
+		"Exherbo" | "80")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'dark grey')  # Black
 				c2=$(getColor 'light blue') # Blue
@@ -5324,7 +5324,7 @@ asciiText () {
 "${c1}                     ':okKXWNKkl'             %s")
 		;;
 
-		"Red Star OS")
+		"Red Star OS" | "81")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light red')  # Red
 			fi
@@ -5353,7 +5353,7 @@ asciiText () {
 "${c1}                                             %s")
 		;;
 
-		"SparkyLinux")
+		"SparkyLinux" | "82")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light gray') # Gray
 			fi
@@ -5383,7 +5383,7 @@ asciiText () {
 "${c1}                     \`\`                        %s")
 		;;
 
-		"Pardus")
+		"Pardus" | "83")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'yellow') # Light Yellow
 				c2=$(getColor 'dark grey') # Light Gray
@@ -5414,7 +5414,7 @@ asciiText () {
 "%s")
 		;;
 
-		"SwagArch")
+		"SwagArch" | "84")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light blue') # Light Blue
@@ -5442,7 +5442,7 @@ asciiText () {
 "${c2}                                               %s")
 		;;
 
-		"OBRevenge")
+		"OBRevenge" | "85")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'red') # White
 				c2=$(getColor 'light blue') # Light Blue
@@ -5471,7 +5471,7 @@ asciiText () {
 "${c1}                                  %s")
 		;;
 
-		"Parrot Security")
+		"Parrot Security" | "86")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
 			fi
@@ -5505,7 +5505,7 @@ asciiText () {
 "${c1}                              -           %s")
 		;;
 
-		"Amazon Linux")
+		"Amazon Linux" | "87")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light orange') # Orange
 			fi
@@ -5531,7 +5531,7 @@ asciiText () {
 "${c1}               \`''  ''\`              %s")
 		;;
 
-		"Source Mage GNU/Linux")
+		"Source Mage GNU/Linux" | "88")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'dark gray')
 			fi
@@ -5561,7 +5561,7 @@ asciiText () {
 "${c1}                  \`......\` %s")
 		;;
 
-		"OS Elbrus")
+		"OS Elbrus" | "89")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Green
 			fi
@@ -5586,7 +5586,7 @@ asciiText () {
 "                                 %s")
 		;;
 
-		"PureOS")
+		"PureOS" | "90")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'dark grey') # "Black"
 			fi
@@ -5610,7 +5610,7 @@ asciiText () {
 "                                            %s")
 		;;
 
-		"januslinux")
+		"januslinux" | "91")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # white
 			fi
