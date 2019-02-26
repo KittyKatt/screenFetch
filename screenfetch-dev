@@ -730,7 +730,7 @@ detectdistro () {
 						distro="LMDE"	
 					fi
 					;;
-				"openSUSE"|"openSUSE project"|"SUSE LINUX")
+				"openSUSE"|"openSUSE project"|"SUSE LINUX" | "SUSE")
 					distro="openSUSE"
 					if [ -f /etc/os-release ]; then
 						if grep -q -i 'SUSE Linux Enterprise' /etc/os-release ; then
