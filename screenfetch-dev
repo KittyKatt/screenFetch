@@ -199,7 +199,7 @@ use_customlines=
 customlines () {
 	# The following line can serve as an example.
 	# feel free to let the computer generate the output: e. g. using $(cat /etc/motd) or $(upower -d | grep THISORTHAT)
-	# In the example cutom0 line replace <YOUR LABEL> and <your text> with options specified by you.
+	# In the example custom0 line replace <YOUR LABEL> and <your text> with options specified by you.
 	# Also make sure the $custom0 variable in out_array=... matches the one at the beginning of the line
 	#
 	custom0=$(echo -e "$labelcolor YOUR LABEL:$textcolor your text"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
