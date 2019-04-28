@@ -356,7 +356,7 @@ detectColors () {
 
 supported_distros="ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
-Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
+Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, EuroLinux, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
@@ -909,7 +909,16 @@ detectdistro () {
 					if [[ "${distro}" == "Oracle Linux" && -f /etc/oracle-release ]]; then
 						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 					fi
-					[[ "${distro}" == "rhel" ]] && distro="Red Hat Enterprise Linux"
+					# Upstream problem, SL and so EL is using rhel ID in os-release
+					if [[ "${distro}" == "rhel" ]] || [[ "${distro}" == "Rhel" ]]; then
+						distro="Red Hat Enterprise Linux"
+						if grep -q 'Scientific' /etc/os-release; then
+							distro="Scientific Linux"
+						elif grep -q 'EuroLinux' /etc/os-release; then
+							distro="EuroLinux"
+						fi
+					fi	
+
 					[[ "${distro}" == "Neon" ]] && distro="KDE neon"
 					[[ "${distro}" == "SLED" || "${distro}" == "sled" || "${distro}" == "SLES" || "${distro}" == "sles" ]] && distro="SUSE Linux Enterprise"
 					if [[ "${distro}" == "SUSE Linux Enterprise" && -f /etc/os-release ]]; then
@@ -980,6 +989,8 @@ detectdistro () {
 					distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
 				elif [[ "${distro}" == "redhat" ]]; then
 					grep -q -i 'CentOS' /etc/redhat-release && distro="CentOS"
+					grep -q -i 'Scientific' /etc/redhat-release && distro="Scientific Linux"
+					grep -q -i 'EuroLinux' /etc/redhat-release && distro="EuroLinux"
 					grep -q -i 'PCLinuxOS' /etc/redhat-release && distro="PCLinuxOS"
 					if [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
 						distro="Red Star OS"
@@ -1139,6 +1150,7 @@ detectdistro () {
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		dragora) distro="Dragora" ;;
 		elementary|'elementary os') distro="elementary OS";;
+		eurolinux) distro="EuroLinux" ;;
 		evolveos) distro="Evolve OS" ;;
 		exherbo|exherbo*linux) distro="Exherbo" ;;
 		fedora) distro="Fedora" ;;
@@ -1194,6 +1206,7 @@ detectdistro () {
 		red*star|red*star*os) distro="Red Star OS" ;;
 		sabayon) distro="Sabayon" ;;
 		sailfish|sailfish*os) distro="SailfishOS" ;;
+		scientific*) distro="Scientific Linux" ;;
 		siduction) distro="Siduction" ;;
 		slackware) distro="Slackware" ;;
 		smgl|source*mage|source*mage*gnu*linux) distro="Source Mage GNU/Linux" ;;
@@ -1327,7 +1340,7 @@ detectpkgs () {
 		'GuixSD')
 			pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
-		'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
+		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
@@ -5443,6 +5456,43 @@ asciiText () {
 "${c2}                                     ''        %s"
 "${c2}                                               %s")
 		;;
+
+		"EuroLinux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}";fi;
+			startline="0"
+			logowidth="39"
+			fulloutput=(
+
+"${c1}                                       %s"
+"${c1}           DZZZZZZZZZZZZZ              %s" 
+"${c1}         ZZZZZZZZZZZZZZZZZZZ           %s"
+"${c1}          ZZZZZZZZZZZZZZZZZZZZ         %s"
+"${c1}           OZZZZZZZZZZZZZZZZZZZZ       %s"
+"${c1}   Z         ZZZ    8ZZZZZZZZZZZZ      %s" 
+"${c1}  ZZZ                   ZZZZZZZZZZ     %s"
+"${c1} ZZZZZN                   ZZZZZZZZZ    %s"
+"${c1} ZZZZZZZ                    ZZZZZZZZ   %s"
+"${c1}ZZZZZZZZ                    OZZZZZZZ   %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ  %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ  %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ  %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ   %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ    %s"
+"${c1}ZZZZZZZZ                               %s"
+"${c1} ZZZZZZZZ                              %s"
+"${c1} OZZZZZZZZO                            %s"
+"${c1}  ZZZZZZZZZZZ                          %s"
+"${c1}   OZZZZZZZZZZZZZZZN                   %s"
+"${c1}     ZZZZZZZZZZZZZZZZ                  %s"
+"${c1}      DZZZZZZZZZZZZZZZ                 %s"
+"${c1}         ZZZZZZZZZZZZZ                 %s"
+"${c1}            NZZZZZZZZ                  %s"
+"${c1}                                       %s")
+		;;
+
 
 		"OBRevenge")
 			if [[ "$no_color" != "1" ]]; then
