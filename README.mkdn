@@ -1,9 +1,3 @@
-## Edit (linton-dawson) :- User now can get ASCII logo for any distro without the prerequisite of knowing its name.
-* Use "screenfetch -A '(any number from 1-91)' " (without double quotes) to get the distro logo.
-
-  eg:- screenfetch -A '42'
-*  User can now get the list of available ASCII logos and their index of various distros by -l flag. 
-
 # screenFetch - The Bash Screenshot Information Tool
 
 ## What is screenFetch?
