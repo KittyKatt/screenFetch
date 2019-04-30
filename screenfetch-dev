@@ -4130,28 +4130,30 @@ asciiText () {
 				c2=$(getColor 'light red') # Light Red
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="0"
-			logowidth="39"
+			startline="3"
+			logowidth="40"
 			fulloutput=(
-"${c2}             8ZZZZZZ${c1}MMMMM              %s"
-"${c2}          .ZZZZZZZZZ${c1}MMMMMMM.           %s"
-"${c1}        MM${c2}ZZZZZZZZZ${c1}MMMMMMM${c2}ZZZZ         %s"
-"${c1}      MMMMM${c2}ZZZZZZZZ${c1}MMMMM${c2}ZZZZZZZM       %s"
-"${c1}     MMMMMMM${c2}ZZZZZZZ${c1}MMMM${c2}ZZZZZZZZZ.      %s"
-"${c1}    MMMMMMMMM${c2}ZZZZZZ${c1}MMM${c2}ZZZZZZZZZZZI     %s"
-"${c1}   MMMMMMMMMMM${c2}ZZZZZZ${c1}MM${c2}ZZZZZZZZZZ${c1}MMM    %s"
-"${c2}   .ZZZ${c1}MMMMMMMMMM${c2}IZZ${c1}MM${c2}ZZZZZ${c1}MMMMMMMMM   %s"
-"${c2}   ZZZZZZZ${c1}MMMMMMMM${c2}ZZ${c1}M${c2}ZZZZ${c1}MMMMMMMMMMM   %s"
-"${c2}   ZZZZZZZZZZZZZZZZ${c1}M${c2}Z${c1}MMMMMMMMMMMMMMM   %s"
-"${c2}   .ZZZZZZZZZZZZZ${c1}MMM${c2}Z${c1}M${c2}ZZZZZZZZZZ${c1}MMMM   %s"
-"${c2}   .ZZZZZZZZZZZ${c1}MMM${c2}7ZZ${c1}MM${c2}ZZZZZZZZZZ7${c1}M    %s"
-"${c2}    ZZZZZZZZZ${c1}MMMM${c2}ZZZZ${c1}MMMM${c2}ZZZZZZZ77     %s"
-"${c1}     MMMMMMMMMMMM${c2}ZZZZZ${c1}MMMM${c2}ZZZZZ77      %s"
-"${c1}      MMMMMMMMMM${c2}7ZZZZZZ${c1}MMMMM${c2}ZZ77       %s"
-"${c1}       .MMMMMMM${c2}ZZZZZZZZ${c1}MMMMM${c2}Z7Z        %s"
-"${c1}         MMMMM${c2}ZZZZZZZZZ${c1}MMMMMMM         %s"
-"${c2}           NZZZZZZZZZZZ${c1}MMMMM           %s"
-"${c2}              ZZZZZZZZZ${c1}MM              %s")
+"${c2}             PPPPPPPPPPPPPP             "
+"${c2}         PPPP${c1}MMMMMMM${c2}PPPPPPPPPPP         "
+"${c2}       PPPP${c1}MMMMMMMMMM${c2}PPPPPPPP${c1}MM${c2}PP       "
+"${c2}     PPPPPPPP${c1}MMMMMMM${c2}PPPPPPPP${c1}MMMMM${c2}PP     %s"
+"${c2}   PPPPPPPPPPPP${c1}MMMMMM${c2}PPPPPPP${c1}MMMMMMM${c2}PP   %s"
+"${c2}  PPPPPPPPPPPP${c1}MMMMMMM${c2}PPPP${c1}M${c2}P${c1}MMMMMMMMM${c2}PP  %s"
+"${c2} PP${c1}MMMM${c2}PPPPPPPPPP${c1}MMM${c2}PPPPP${c1}MMMMMMM${c2}P${c1}MM${c2}PPPP %s"
+"${c2} P${c1}MMMMMMMMMM${c2}PPPPPP${c1}MM${c2}PPPPP${c1}MMMMMM${c2}PPPPPPPP %s"
+"${c2}P${c1}MMMMMMMMMMMM${c2}PPPPP${c1}MM${c2}PP${c1}M${c2}P${c1}MM${c2}P${c1}MM${c2}PPPPPPPPPPP%s"
+"${c2}P${c1}MMMMMMMMMMMMMMMM${c2}PP${c1}M${c2}P${c1}MMM${c2}PPPPPPPPPPPPPPPP%s"
+"${c2}P${c1}MMM${c2}PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP${c1}MMMMM${c2}P%s"
+"${c2}PPPPPPPPPPPPPPPP${c1}MMM${c2}P${c1}M${c2}P${c1}MMMMMMMMMMMMMMMM${c2}PP%s"
+"${c2}PPPPPPPPPPP${c1}MM${c2}P${c1}MM${c2}PPPP${c1}MM${c2}PPPPP${c1}MMMMMMMMMMM${c2}PP%s"
+"${c2} PPPPPPPP${c1}MMMMMM${c2}PPPPP${c1}MM${c2}PPPPPP${c1}MMMMMMMMM${c2}PP %s"
+"${c2} PPPP${c1}MM${c2}P${c1}MMMMMMM${c2}PPPPPP${c1}MM${c2}PPPPPPPPPP${c1}MMMM${c2}PP %s"
+"${c2}  PP${c1}MMMMMMMMM${c2}P${c1}M${c2}PPPP${c1}MMMMMM${c2}PPPPPPPPPPPPP  %s"
+"${c2}   PP${c1}MMMMMMM${c2}PPPPPPP${c1}MMMMMM${c2}PPPPPPPPPPPP   %s"
+"${c2}     PP${c1}MMMM${c2}PPPPPPPPP${c1}MMMMMMM${c2}PPPPPPPP     %s"
+"${c2}       PP${c1}MM${c2}PPPPPPPP${c1}MMMMMMMMMM${c2}PPPP       %s"
+"${c2}         PPPPPPPPPP${c1}MMMMMMMM${c2}PPPP         %s"
+"${c2}             PPPPPPPPPPPPPP             %s")
 		;;
 
 "Grombyang"|"GrombyangOS")
