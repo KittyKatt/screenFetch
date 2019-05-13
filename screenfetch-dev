@@ -4063,31 +4063,30 @@ asciiText () {
 
 		"Red Hat Enterprise Linux")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'white') # White
-				c2=$(getColor 'light red') # Light Red
+				c1=$(getColor 'light red') # Light Red
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			logowidth="42"
 			fulloutput=(
-"${c2}                                          %s"
-"${c2}              \`.-..........\`              %s"
-"${c2}             \`////////::.\`-/.             %s"
-"${c2}             -: ....-////////.            %s"
-"${c2}             //:-::///////////\`           %s"
-"${c2}      \`--::: \`-://////////////:           %s"
-"${c2}      //////-    \`\`.-:///////// .\`        %s"
-"${c2}      \`://////:-.\`    :///////::///:\`     %s"
-"${c2}        .-/////////:---/////////////:     %s"
-"${c2}           .-://////////////////////.     %s"
-"${c1}          yMN+\`.-${c2}::///////////////-\`      %s"
-"${c1}       .-\`:NMMNMs\`  \`..-------..\`         %s"
-"${c1}        MN+/mMMMMMhoooyysshsss            %s"
-"${c1} MMM    MMMMMMMMMMMMMMyyddMMM+            %s"
-"${c1}  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM %s"
-"${c1}   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM  %s"
-"${c1}    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM   %s"
-"${c1}                                          %s")
+"${c1}            .MMM..:MMMMMMM                 %s"
+"${c1}           MMMMMMMMMMMMMMMMMM              %s"
+"${c1}           MMMMMMMMMMMMMMMMMMMM.           %s"
+"${c1}          MMMMMMMMMMMMMMMMMMMMMM           %s"
+"${c1}         ,MMMMMMMMMMMMMMMMMMMMMM:          %s"
+"${c1}         MMMMMMMMMMMMMMMMMMMMMMMM          %s"
+"${c1}   .MMMM'  MMMMMMMMMMMMMMMMMMMMMM          %s"
+"${c1}  MMMMMM    \`MMMMMMMMMMMMMMMMMMMM.         %s"
+"${c1} MMMMMMMM      MMMMMMMMMMMMMMMMMM .        %s"
+"${c1} MMMMMMMMM.       \`MMMMMMMMMMMMM' MM.      %s"
+"${c1} MMMMMMMMMMM.                     MMMM     %s"
+"${c1} \`MMMMMMMMMMMMM.                 ,MMMMM.   %s"
+"${c1}  \`MMMMMMMMMMMMMMMMM.          ,MMMMMMMM.  %s"
+"${c1}     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c1}       MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM:  %s"
+"${c1}          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM   %s"
+"${c1}             \`MMMMMMMMMMMMMMMMMMMMMMMM:    %s"
+"${c1}                 \`\`MMMMMMMMMMMMMMMMM'      %s")
 		;;
 
 		"Frugalware")
