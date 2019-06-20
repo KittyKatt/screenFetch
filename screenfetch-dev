@@ -898,6 +898,7 @@ detectdistro () {
 					fi
 
 					# Hotfixes
+                    [[ "${distro}" == "Opensuse-tumbleweed" ]] && distro="openSUSE" && distro_more="Tumbleweed"
 					[[ "${distro}" == "Opensuse-leap" ]] && distro="openSUSE"
 					[[ "${distro}" == "void" ]] && distro="Void Linux"
 					[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
