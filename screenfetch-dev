@@ -6273,17 +6273,6 @@ if [[ "$overrideDisplay" ]]; then
 	IFS=$OLDIFS
 fi
 
-# Check for android
-if [[ -f /system/build.prop  && "${distro}" != "SailfishOS" ]]; then
-	distro="Android"
-	detectmem
-	detectuptime
-	detectkernel
-	detectdroid
-	infoDisplay
-	exit 0
-fi
-
 for i in "${display[@]}"; do
 	if [[ -n "$i" ]]; then
 		if [[ $i =~ wm ]]; then
@@ -6300,6 +6289,17 @@ for i in "${display[@]}"; do
 		fi
 	fi
 done
+
+# Check for android
+if [[ -f /system/build.prop  && "${distro}" != "SailfishOS" ]]; then
+    distro="Android"
+    detectmem
+    detectuptime
+    detectkernel
+    detectdroid
+    infoDisplay
+    exit 0
+fi
 
 if [ "$gpu" = 'Not Found' ] ; then
 	DetectIntelGPU
