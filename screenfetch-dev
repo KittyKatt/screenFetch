@@ -2,7 +2,7 @@
 
 # screenFetch - a CLI Bash script to show system/theme info in screenshots
 
-# Copyright (c) 2010-2018 Brett Bohnenkamper <kittykatt@kittykatt.us>
+# Copyright (c) 2010-2019 Brett Bohnenkamper <kittykatt@kittykatt.us>
 
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ display=(
 		'wmtheme'
 		'gtk'
 		'cpu'
+		'disk'
 		'gpu'
 		'mem'
 )
@@ -174,6 +175,7 @@ ubuntu_codenames=(
 		'(Artful Aardvark)'		# 17.10
 		'LTS (Bionic Beaver)'	# 18.04
 		'(Cosmic Cuttlefish)'	# 18.10
+		'(Disco Dingo)'	# 19.04
 )
 
 # Screenshot Settings
@@ -199,7 +201,7 @@ use_customlines=
 customlines () {
 	# The following line can serve as an example.
 	# feel free to let the computer generate the output: e. g. using $(cat /etc/motd) or $(upower -d | grep THISORTHAT)
-	# In the example cutom0 line replace <YOUR LABEL> and <your text> with options specified by you.
+	# In the example custom0 line replace <YOUR LABEL> and <your text> with options specified by you.
 	# Also make sure the $custom0 variable in out_array=... matches the one at the beginning of the line
 	#
 	custom0=$(echo -e "$labelcolor YOUR LABEL:$textcolor your text"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
@@ -355,7 +357,7 @@ detectColors () {
 
 supported_distros="ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
-Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
+Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, EuroLinux, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
@@ -734,7 +736,7 @@ detectdistro () {
 						distro="LMDE"
 					fi
 					;;
-				"openSUSE"|"openSUSE project"|"SUSE LINUX")
+				"openSUSE"|"openSUSE project"|"SUSE LINUX" | "SUSE")
 					distro="openSUSE"
 					if [ -f /etc/os-release ]; then
 						if grep -q -i 'SUSE Linux Enterprise' /etc/os-release ; then
@@ -900,6 +902,8 @@ detectdistro () {
 					fi
 
 					# Hotfixes
+                    [[ "${distro}" == "Opensuse-tumbleweed" ]] && distro="openSUSE" && distro_more="Tumbleweed"
+					[[ "${distro}" == "Opensuse-leap" ]] && distro="openSUSE"
 					[[ "${distro}" == "void" ]] && distro="Void Linux"
 					[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
 					[[ "${distro}" == "antergos" ]] && distro="Antergos"
@@ -911,7 +915,16 @@ detectdistro () {
 					if [[ "${distro}" == "Oracle Linux" && -f /etc/oracle-release ]]; then
 						distro_more="$(sed 's/Oracle Linux //' /etc/oracle-release)"
 					fi
-					[[ "${distro}" == "rhel" ]] && distro="Red Hat Enterprise Linux"
+					# Upstream problem, SL and so EL is using rhel ID in os-release
+					if [[ "${distro}" == "rhel" ]] || [[ "${distro}" == "Rhel" ]]; then
+						distro="Red Hat Enterprise Linux"
+						if grep -q 'Scientific' /etc/os-release; then
+							distro="Scientific Linux"
+						elif grep -q 'EuroLinux' /etc/os-release; then
+							distro="EuroLinux"
+						fi
+					fi	
+
 					[[ "${distro}" == "Neon" ]] && distro="KDE neon"
 					[[ "${distro}" == "SLED" || "${distro}" == "sled" || "${distro}" == "SLES" || "${distro}" == "sles" ]] && distro="SUSE Linux Enterprise"
 					if [[ "${distro}" == "SUSE Linux Enterprise" && -f /etc/os-release ]]; then
@@ -982,6 +995,8 @@ detectdistro () {
 					distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
 				elif [[ "${distro}" == "redhat" ]]; then
 					grep -q -i 'CentOS' /etc/redhat-release && distro="CentOS"
+					grep -q -i 'Scientific' /etc/redhat-release && distro="Scientific Linux"
+					grep -q -i 'EuroLinux' /etc/redhat-release && distro="EuroLinux"
 					grep -q -i 'PCLinuxOS' /etc/redhat-release && distro="PCLinuxOS"
 					if [ "x$(od -t x1 /etc/redhat-release | sed -e 's/^\w*\ *//' | tr '\n' ' ' | grep 'eb b6 89 ec 9d 80 eb b3 84 ')" != "x" ]; then
 						distro="Red Star OS"
@@ -1142,6 +1157,7 @@ detectdistro () {
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		dragora) distro="Dragora" ;;
 		elementary|'elementary os') distro="elementary OS";;
+		eurolinux) distro="EuroLinux" ;;
 		evolveos) distro="Evolve OS" ;;
 		exherbo|exherbo*linux) distro="Exherbo" ;;
 		fedora) distro="Fedora" ;;
@@ -1197,6 +1213,7 @@ detectdistro () {
 		red*star|red*star*os) distro="Red Star OS" ;;
 		sabayon) distro="Sabayon" ;;
 		sailfish|sailfish*os) distro="SailfishOS" ;;
+		scientific*) distro="Scientific Linux" ;;
 		siduction) distro="Siduction" ;;
 		slackware) distro="Slackware" ;;
 		smgl|source*mage|source*mage*gnu*linux) distro="Source Mage GNU/Linux" ;;
@@ -1328,9 +1345,9 @@ detectpkgs () {
 		'NixOS')
 			pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
 		'GuixSD')
-			pkgs=$(ls -d -1 /guix/store/*/ | wc -l) ;;
+			pkgs=$(ls -d -1 /gnu/store/*/ | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
-		'ROSA'|'Oracle Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
+		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
@@ -4002,20 +4019,20 @@ asciiText () {
 "${c2}             .;ldkO0000Okdl;.               %s"
 "${c2}         .;d00xl:^''''''^:ok00d;.           %s"
 "${c2}       .d00l'                'o00d.         %s"
-"${c2}     .d0Kd'${c1}  Okxol:;,.          ${c2}:O0d.       %s"
-"${c2}    .OK${c1}KKK0kOKKKKKKKKKKOxo:,      ${c2}lKO.      %s"
-"${c2}   ,0K${c1}KKKKKKKKKKKKKKK0P^${c2},,,${c1}^dx:${c2}    ;00,     %s"
-"${c2}  .OK${c1}KKKKKKKKKKKKKKKk'${c2}.oOPPb.${c1}'0k.${c2}   cKO.    %s"
-"${c2}  :KK${c1}KKKKKKKKKKKKKKK: ${c2}kKx..dd ${c1}lKd${c2}   'OK:    %s"
-"${c2}  dKK${c1}KKKKKKKKKOx0KKKd ${c2}^0KKKO' ${c1}kKKc${c2}   dKd    %s"
-"${c2}  dKK${c1}KKKKKKKKKK;.;oOKx,..${c2}^${c1}..;kKKK0.${c2}  dKd    %s"
-"${c2}  :KK${c1}KKKKKKKKKK0o;...^cdxxOK0O/^^'  ${c2}.0K:    %s"
-"${c2}   kKK${c1}KKKKKKKKKKKKK0x;,,......,;od  ${c2}lKk     %s"
-"${c2}   '0K${c1}KKKKKKKKKKKKKKKKKKKK00KKOo^  ${c2}c00'     %s"
-"${c2}    'kK${c1}KKOxddxkOO00000Okxoc;''   ${c2}.dKk'      %s"
+"${c2}     .d0K^'${c1}  Okxoc;:,.          ${c2}^O0d.       %s"
+"${c2}    .OVV${c1}AK0kOKKKKKKKKKKOxo:,      ${c2}lKO.      %s"
+"${c2}   ,0VV${c1}AKKKKKKKKKKKKK0P^${c2},,,${c1}^dx:${c2}    ;00,     %s"
+"${c2}  .OVV${c1}AKKKKKKKKKKKKKk'${c2}.oOPPb.${c1}'0k.${c2}   cKO.    %s"
+"${c2}  :KV${c1}AKKKKKKKKKKKKKK: ${c2}kKx..dd ${c1}lKd${c2}   'OK:    %s"
+"${c2}  lKl${c1}KKKKKKKKKOx0KKKd ${c2}^0KKKO' ${c1}kKKc${c2}   lKl    %s"
+"${c2}  lKl${c1}KKKKKKKKKK;.;oOKx,..${c2}^${c1}..;kKKK0.${c2}  lKl    %s"
+"${c2}  :KA${c1}lKKKKKKKKK0o;...^cdxxOK0O/^^'  ${c2}.0K:    %s"
+"${c2}   kKA${c1}VKKKKKKKKKKKK0x;,,......,;od  ${c2}lKP     %s"
+"${c2}   '0KA${c1}VKKKKKKKKKKKKKKKKKK00KKOo^  ${c2}c00'     %s"
+"${c2}    'kKA${c1}VOxddxkOO00000Okxoc;''   ${c2}.dKV'      %s"
 "${c2}      l0Ko.                    .c00l'       %s"
 "${c2}       'l0Kk:.              .;xK0l'         %s"
-"${c2}          'lkK0xl:;,,,,;:ldO0kl'            %s"
+"${c2}          'lkK0xc;:,,,,:;odO0kl'            %s"
 "${c2}              '^:ldxkkkkxdl:^'              %s")
 		;;
 
@@ -4083,31 +4100,30 @@ asciiText () {
 
 		"Red Hat Enterprise Linux")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'white') # White
-				c2=$(getColor 'light red') # Light Red
+				c1=$(getColor 'light red') # Light Red
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			logowidth="42"
 			fulloutput=(
-"${c2}                                          %s"
-"${c2}              \`.-..........\`              %s"
-"${c2}             \`////////::.\`-/.             %s"
-"${c2}             -: ....-////////.            %s"
-"${c2}             //:-::///////////\`           %s"
-"${c2}      \`--::: \`-://////////////:           %s"
-"${c2}      //////-    \`\`.-:///////// .\`        %s"
-"${c2}      \`://////:-.\`    :///////::///:\`     %s"
-"${c2}        .-/////////:---/////////////:     %s"
-"${c2}           .-://////////////////////.     %s"
-"${c1}          yMN+\`.-${c2}::///////////////-\`      %s"
-"${c1}       .-\`:NMMNMs\`  \`..-------..\`         %s"
-"${c1}        MN+/mMMMMMhoooyysshsss            %s"
-"${c1} MMM    MMMMMMMMMMMMMMyyddMMM+            %s"
-"${c1}  MMMM   MMMMMMMMMMMMMNdyNMMh\`     hyhMMM %s"
-"${c1}   MMMMMMMMMMMMMMMMyoNNNMMM+.   MMMMMMMM  %s"
-"${c1}    MMNMMMNNMMMMMNM+ mhsMNyyyyMNMMMMsMM   %s"
-"${c1}                                          %s")
+"${c1}            .MMM..:MMMMMMM                 %s"
+"${c1}           MMMMMMMMMMMMMMMMMM              %s"
+"${c1}           MMMMMMMMMMMMMMMMMMMM.           %s"
+"${c1}          MMMMMMMMMMMMMMMMMMMMMM           %s"
+"${c1}         ,MMMMMMMMMMMMMMMMMMMMMM:          %s"
+"${c1}         MMMMMMMMMMMMMMMMMMMMMMMM          %s"
+"${c1}   .MMMM'  MMMMMMMMMMMMMMMMMMMMMM          %s"
+"${c1}  MMMMMM    \`MMMMMMMMMMMMMMMMMMMM.         %s"
+"${c1} MMMMMMMM      MMMMMMMMMMMMMMMMMM .        %s"
+"${c1} MMMMMMMMM.       \`MMMMMMMMMMMMM' MM.      %s"
+"${c1} MMMMMMMMMMM.                     MMMM     %s"
+"${c1} \`MMMMMMMMMMMMM.                 ,MMMMM.   %s"
+"${c1}  \`MMMMMMMMMMMMMMMMM.          ,MMMMMMMM.  %s"
+"${c1}     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM  %s"
+"${c1}       MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM:  %s"
+"${c1}          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM   %s"
+"${c1}             \`MMMMMMMMMMMMMMMMMMMMMMMM:    %s"
+"${c1}                 \`\`MMMMMMMMMMMMMMMMM'      %s")
 		;;
 
 		"Frugalware")
@@ -4150,28 +4166,30 @@ asciiText () {
 				c2=$(getColor 'light red') # Light Red
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
-			startline="0"
-			logowidth="39"
+			startline="3"
+			logowidth="40"
 			fulloutput=(
-"${c2}             8ZZZZZZ${c1}MMMMM              %s"
-"${c2}          .ZZZZZZZZZ${c1}MMMMMMM.           %s"
-"${c1}        MM${c2}ZZZZZZZZZ${c1}MMMMMMM${c2}ZZZZ         %s"
-"${c1}      MMMMM${c2}ZZZZZZZZ${c1}MMMMM${c2}ZZZZZZZM       %s"
-"${c1}     MMMMMMM${c2}ZZZZZZZ${c1}MMMM${c2}ZZZZZZZZZ.      %s"
-"${c1}    MMMMMMMMM${c2}ZZZZZZ${c1}MMM${c2}ZZZZZZZZZZZI     %s"
-"${c1}   MMMMMMMMMMM${c2}ZZZZZZ${c1}MM${c2}ZZZZZZZZZZ${c1}MMM    %s"
-"${c2}   .ZZZ${c1}MMMMMMMMMM${c2}IZZ${c1}MM${c2}ZZZZZ${c1}MMMMMMMMM   %s"
-"${c2}   ZZZZZZZ${c1}MMMMMMMM${c2}ZZ${c1}M${c2}ZZZZ${c1}MMMMMMMMMMM   %s"
-"${c2}   ZZZZZZZZZZZZZZZZ${c1}M${c2}Z${c1}MMMMMMMMMMMMMMM   %s"
-"${c2}   .ZZZZZZZZZZZZZ${c1}MMM${c2}Z${c1}M${c2}ZZZZZZZZZZ${c1}MMMM   %s"
-"${c2}   .ZZZZZZZZZZZ${c1}MMM${c2}7ZZ${c1}MM${c2}ZZZZZZZZZZ7${c1}M    %s"
-"${c2}    ZZZZZZZZZ${c1}MMMM${c2}ZZZZ${c1}MMMM${c2}ZZZZZZZ77     %s"
-"${c1}     MMMMMMMMMMMM${c2}ZZZZZ${c1}MMMM${c2}ZZZZZ77      %s"
-"${c1}      MMMMMMMMMM${c2}7ZZZZZZ${c1}MMMMM${c2}ZZ77       %s"
-"${c1}       .MMMMMMM${c2}ZZZZZZZZ${c1}MMMMM${c2}Z7Z        %s"
-"${c1}         MMMMM${c2}ZZZZZZZZZ${c1}MMMMMMM         %s"
-"${c2}           NZZZZZZZZZZZ${c1}MMMMM           %s"
-"${c2}              ZZZZZZZZZ${c1}MM              %s")
+"${c2}             PPPPPPPPPPPPPP             "
+"${c2}         PPPP${c1}MMMMMMM${c2}PPPPPPPPPPP         "
+"${c2}       PPPP${c1}MMMMMMMMMM${c2}PPPPPPPP${c1}MM${c2}PP       "
+"${c2}     PPPPPPPP${c1}MMMMMMM${c2}PPPPPPPP${c1}MMMMM${c2}PP     %s"
+"${c2}   PPPPPPPPPPPP${c1}MMMMMM${c2}PPPPPPP${c1}MMMMMMM${c2}PP   %s"
+"${c2}  PPPPPPPPPPPP${c1}MMMMMMM${c2}PPPP${c1}M${c2}P${c1}MMMMMMMMM${c2}PP  %s"
+"${c2} PP${c1}MMMM${c2}PPPPPPPPPP${c1}MMM${c2}PPPPP${c1}MMMMMMM${c2}P${c1}MM${c2}PPPP %s"
+"${c2} P${c1}MMMMMMMMMM${c2}PPPPPP${c1}MM${c2}PPPPP${c1}MMMMMM${c2}PPPPPPPP %s"
+"${c2}P${c1}MMMMMMMMMMMM${c2}PPPPP${c1}MM${c2}PP${c1}M${c2}P${c1}MM${c2}P${c1}MM${c2}PPPPPPPPPPP%s"
+"${c2}P${c1}MMMMMMMMMMMMMMMM${c2}PP${c1}M${c2}P${c1}MMM${c2}PPPPPPPPPPPPPPPP%s"
+"${c2}P${c1}MMM${c2}PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP${c1}MMMMM${c2}P%s"
+"${c2}PPPPPPPPPPPPPPPP${c1}MMM${c2}P${c1}M${c2}P${c1}MMMMMMMMMMMMMMMM${c2}PP%s"
+"${c2}PPPPPPPPPPP${c1}MM${c2}P${c1}MM${c2}PPPP${c1}MM${c2}PPPPP${c1}MMMMMMMMMMM${c2}PP%s"
+"${c2} PPPPPPPP${c1}MMMMMM${c2}PPPPP${c1}MM${c2}PPPPPP${c1}MMMMMMMMM${c2}PP %s"
+"${c2} PPPP${c1}MM${c2}P${c1}MMMMMMM${c2}PPPPPP${c1}MM${c2}PPPPPPPPPP${c1}MMMM${c2}PP %s"
+"${c2}  PP${c1}MMMMMMMMM${c2}P${c1}M${c2}PPPP${c1}MMMMMM${c2}PPPPPPPPPPPPP  %s"
+"${c2}   PP${c1}MMMMMMM${c2}PPPPPPP${c1}MMMMMM${c2}PPPPPPPPPPPP   %s"
+"${c2}     PP${c1}MMMM${c2}PPPPPPPPP${c1}MMMMMMM${c2}PPPPPPPP     %s"
+"${c2}       PP${c1}MM${c2}PPPPPPPP${c1}MMMMMMMMMM${c2}PPPP       %s"
+"${c2}         PPPPPPPPPP${c1}MMMMMMMM${c2}PPPP         %s"
+"${c2}             PPPPPPPPPPPPPP             %s")
 		;;
 
 "Grombyang"|"GrombyangOS")
@@ -5168,7 +5186,7 @@ asciiText () {
 "${c1} ??                                  ?I %s"
 "${c1}  ??I?   I??N              ${c2}???    ${c1}????  %s"
 "${c1}   ?III7${c2}???????          ??????${c1}7III?Z   %s"
-"${c1}     OI77\$${c2}?????         ?????${c1}$77II      %s"
+"${c1}     OI77\$${c2}?????         ?????${c1}$77IIII      %s"
 "${c1}           ?????        ${c2}????            %s"
 "${c1}            ???ID      ${c2}????             %s"
 "${c1}             IIII     ${c2}+????             %s"
@@ -5476,6 +5494,43 @@ asciiText () {
 "${c2}                                     ''        %s"
 "${c2}                                               %s")
 		;;
+
+		"EuroLinux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light blue')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}";fi;
+			startline="0"
+			logowidth="39"
+			fulloutput=(
+
+"${c1}                                       %s"
+"${c1}           DZZZZZZZZZZZZZ              %s" 
+"${c1}         ZZZZZZZZZZZZZZZZZZZ           %s"
+"${c1}          ZZZZZZZZZZZZZZZZZZZZ         %s"
+"${c1}           OZZZZZZZZZZZZZZZZZZZZ       %s"
+"${c1}   Z         ZZZ    8ZZZZZZZZZZZZ      %s" 
+"${c1}  ZZZ                   ZZZZZZZZZZ     %s"
+"${c1} ZZZZZN                   ZZZZZZZZZ    %s"
+"${c1} ZZZZZZZ                    ZZZZZZZZ   %s"
+"${c1}ZZZZZZZZ                    OZZZZZZZ   %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ  %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ  %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ  %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ   %s"
+"${c1}ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ    %s"
+"${c1}ZZZZZZZZ                               %s"
+"${c1} ZZZZZZZZ                              %s"
+"${c1} OZZZZZZZZO                            %s"
+"${c1}  ZZZZZZZZZZZ                          %s"
+"${c1}   OZZZZZZZZZZZZZZZN                   %s"
+"${c1}     ZZZZZZZZZZZZZZZZ                  %s"
+"${c1}      DZZZZZZZZZZZZZZZ                 %s"
+"${c1}         ZZZZZZZZZZZZZ                 %s"
+"${c1}            NZZZZZZZZ                  %s"
+"${c1}                                       %s")
+		;;
+
 
 		"OBRevenge")
 			if [[ "$no_color" != "1" ]]; then
@@ -6254,17 +6309,6 @@ if [[ "$overrideDisplay" ]]; then
 	IFS=$OLDIFS
 fi
 
-# Check for android
-if [[ -f /system/build.prop  && "${distro}" != "SailfishOS" ]]; then
-	distro="Android"
-	detectmem
-	detectuptime
-	detectkernel
-	detectdroid
-	infoDisplay
-	exit 0
-fi
-
 for i in "${display[@]}"; do
 	if [[ -n "$i" ]]; then
 		if [[ $i =~ wm ]]; then
@@ -6281,6 +6325,17 @@ for i in "${display[@]}"; do
 		fi
 	fi
 done
+
+# Check for android
+if [[ -f /system/build.prop  && "${distro}" != "SailfishOS" ]]; then
+    distro="Android"
+    detectmem
+    detectuptime
+    detectkernel
+    detectdroid
+    infoDisplay
+    exit 0
+fi
 
 if [ "$gpu" = 'Not Found' ] ; then
 	DetectIntelGPU
