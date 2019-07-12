@@ -1694,7 +1694,7 @@ detectdisk () {
 		elif [[ "${distro}" == "Mac OS X" ]]; then
 			totaldisk=$(df -H / 2>/dev/null | tail -1)
 		else
-			totaldisk=$(df -h -x aufs -x tmpfs --total 2>/dev/null | tail -1)
+			totaldisk=$(df -h -x aufs -x tmpfs -x overlay --total 2>/dev/null | tail -1)
 		fi
 		disktotal=$(awk '{print $2}' <<< "${totaldisk}")
 		diskused=$(awk '{print $3}' <<< "${totaldisk}")
