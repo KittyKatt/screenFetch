@@ -42,6 +42,11 @@ command! This script is very easy to add to and can easily be extended.
 2. Install screenfetch as a binary package: `pkg install screenFetch`
 3. Make sure fdescfs(5) and procfs(5) are mounted, they're required by bash(1).
 
+Alternative installation for systems not needing X11 support:
+1. Install screenfetch-nox11 using the [ports](https://freshports.org/sysutils/screenfetch-nox11/) system: `cd /usr/ports/sysutils/screenfetch-nox11/ && make install clean`
+2. Install screenfetch as a binary package: `pkg install screenFetch-nox11`
+3. Make sure fdescfs(5) and procfs(5) are mounted, they're required by bash(1).
+
 ### Fux
 
 1. Installation: `dnf install screenfetch`
