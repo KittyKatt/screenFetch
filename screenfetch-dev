@@ -1921,7 +1921,7 @@ detectde () {
 				{
 					if ($1 ~ /^_DT_SAVE_MODE/) {
 						de = $NF
-						gsub(/\"/,"",de)
+						gsub(/"/,"",de)
 						de = toupper(de)
 						exit
 					}
