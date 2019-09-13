@@ -359,7 +359,7 @@ detectColors () {
 
 supported_distros="ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), ArcoLinux, Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
-Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, EuroLinux, Evolve OS, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
+Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
@@ -632,6 +632,11 @@ detectdistro () {
 					;;
 				"EvolveOS")
 					distro="Evolve OS"
+					;;
+				"Sulin")
+					distro="Sulin"
+					distro_release=$(awk -F'=' '/^ID_LIKE=/ {print $2}' /etc/os-release)
+					distro_codename="Roolling donkey" # this is not wrong :D
 					;;
 				"KaOS"|"kaos")
 					distro="KaOS"
@@ -908,6 +913,7 @@ detectdistro () {
 					[[ "${distro}" == "Opensuse-leap" ]] && distro="openSUSE"
 					[[ "${distro}" == "void" ]] && distro="Void Linux"
 					[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
+					[[ "${distro}" == "Sulin" ]] && distro="Sulin"
 					[[ "${distro}" == "antergos" ]] && distro="Antergos"
 					[[ "${distro}" == "logos" ]] && distro="Logos"
 					[[ "${distro}" == "Arch" || "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
@@ -1161,6 +1167,7 @@ detectdistro () {
 		elementary|'elementary os') distro="elementary OS";;
 		eurolinux) distro="EuroLinux" ;;
 		evolveos) distro="Evolve OS" ;;
+		sulin) distro="Sulin" ;;
 		exherbo|exherbo*linux) distro="Exherbo" ;;
 		fedora) distro="Fedora" ;;
 		freebsd) distro="FreeBSD" ;;
@@ -1356,6 +1363,8 @@ detectpkgs () {
 			pkgs=$(xbps-query -l | wc -l) ;;
 		'Evolve OS')
 			pkgs=$(pisi list-installed | wc -l) ;;
+		'Sulin')
+			pkgs=$(inary li | wc -l) ;;
 		'Solus')
 			pkgs=$(eopkg list-installed | wc -l) ;;
 		'Source Mage GNU/Linux')
@@ -5443,7 +5452,7 @@ asciiText () {
 		"Pardus")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'yellow') # Light Yellow
-				c2=$(getColor 'dark grey') # Light Gray
+				c2=$(getColor 'light gray') # Light Gray
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="1"
@@ -5469,6 +5478,37 @@ asciiText () {
 "${c1}          : -y.  -hNmddmNy.  .y- :          %s"
 "${c1}           -+       \`..\`       +-           %s"
 "%s")
+		;;
+
+		"Sulin")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'light gray') # Light Yellow
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			logowidth="45"
+			fulloutput=(
+""
+"${c1}             ++                    +++      %s"
+"${c1}            ++::+                ++:+:      %s"
+"${c1}            +:~:~:              +:~:~:+     %s"
+"${c1}            +:~::~:+           +~:::::      %s"
+"${c1}            +:~:::~~+:~.  ..~::.::+:~+      %s"
+"${c1}             +~:::.             .::~:+      %s"
+"${c1}             +::.            .   .~:+       %s"
+"${c1}               :~:~+~..~ ~: ~++~++~+        %s"
+"${c1}               :++++++++:++:+++++++:        %s"
+"${c1}        ++++  +:+++.+++++++++++.+++:        %s"
+"${c1}        :.  ~  :+++.+++++++++++~+++:        %s"
+"${c1}        +~   .++++++++++   ++ ++++:+        %s"
+"${c1}          +:  ~ :~+   +~+  ~+   +~+         %s"
+"${c1}            ++:+++++           +++          %s"
+"${c1}              +::~:++++++++++++++           %s"
+"${c1}                 +++++++++++++++:           %s"
+"${c1}                 +:++++++++++++::           %s"
+"${c1}                 :.~+++:++:++++..+          %s"
+"${c1}                 +~::++::+~::+:.+           %s"
+"${c1}                  :~~~~~:+~:~~~:+           %s")
 		;;
 
 		"SwagArch")
