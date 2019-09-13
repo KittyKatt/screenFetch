@@ -176,6 +176,7 @@ ubuntu_codenames=(
 		'LTS (Bionic Beaver)'	# 18.04
 		'(Cosmic Cuttlefish)'	# 18.10
 		'(Disco Dingo)'	# 19.04
+		'(Eoan Ermine)'	# 19.10
 )
 
 # Screenshot Settings
