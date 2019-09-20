@@ -252,7 +252,7 @@ gtk_2line="no"
 
 # Static Color Definitions
 colorize () {
-	printf $'\033[38;5;%sm' "$1"
+	printf $'\033[0m\033[38;5;%sm' "$1"
 }
 getColor () {
 	local tmp_color=""
@@ -422,7 +422,10 @@ displayHelp () {
 	echo "                      as follows: [0-9][0-9],[0-9][0-9]. The first argument controls the"
 	echo "                      ASCII logo colors and the label colors. The second argument"
 	echo "                      controls the colors of the information found. One argument may be"
-	echo "                      used without the other."
+	echo "                      used without the other. For terminals supporting 256 colors argument"
+	echo "                      may also contain other terminal control codes for bold, underline etc."
+	echo "                      separated by semicolon. For example -c \"4;1,1;2\" will produce bold"
+	echo "                      blue and dim red."
 	echo "   ${bold}-a 'PATH'${c0}          You can specify a custom ASCII art by passing the path"
 	echo "                      to a Bash script, defining \`startline\` and \`fulloutput\`"
 	echo "                      variables, and optionally \`labelcolor\` and \`textcolor\`."
