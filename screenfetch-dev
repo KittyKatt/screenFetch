@@ -361,7 +361,7 @@ detectColors () {
 supported_distros="ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), ArcoLinux, Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
 Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
-Fux, Gentoo, gNewSense, GuixSD, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
+Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
@@ -874,7 +874,7 @@ detectdistro () {
 							distro="SMGL"
 						fi
 						if (type -p guix && type -p herd) >/dev/null 2>&1; then
-							distro="GuixSD"
+							distro="Guix System"
 						fi
 					;;
 				esac
@@ -1182,7 +1182,7 @@ detectdistro () {
 		fux) distro="Fux" ;;
 		gentoo) distro="Gentoo" ;;
 		gnewsense) distro="gNewSense" ;;
-		guixsd) distro="GuixSD" ;;
+		guix*system) distro="Guix System" ;;
 		haiku) distro="Haiku" ;;
 		hyperbolagnu|hyperbolagnu/linux-libre|'hyperbola gnu/linux-libre'|hyperbola) distro="Hyperbola GNU/Linux-libre" ;;
 		januslinux) distro="januslinux" ;;
@@ -1357,8 +1357,8 @@ detectpkgs () {
 			pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS')
 			pkgs=$(ls -d -1 /nix/store/*/ | wc -l) ;;
-		'GuixSD')
-			pkgs=$(ls -d -1 /gnu/store/*/ | wc -l) ;;
+		'Guix System')
+			pkgs=$(guix package --list-installed | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
 		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
@@ -5190,7 +5190,7 @@ asciiText () {
 "${c1}         .::::      ::::      ${c2}'::::.         %s")
 		;;
 
-		"GuixSD")
+		"Guix System")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'orange')
 				c2=$(getColor 'light orange')
