@@ -33,7 +33,7 @@
 #LC_ALL=C
 
 
-scriptVersion="3.8.0"
+scriptVersion="3.9.0"
 
 ######################
 # Settings for fetcher
