@@ -2024,7 +2024,7 @@ detectde () {
 				fi
 			fi
 
-			if [ -n "$DE" ]; then
+			if [[ -z "$DE" || "$DE" = "Not Present" ]]; then
 				# fallback to checking $DESKTOP_SESSION
 				case "${DESKTOP_SESSION,,}" in
 					'gnome'*)
@@ -2142,6 +2142,11 @@ detectde () {
 						DEver=$("$lumina" --version 2>&1 | tr -d \")
 						DE="${DE} ${DEver}"
 					fi
+				fi
+			elif [[ ${DE} == "LXQt" ]]; then
+				if type -p lxqt-about >/dev/null 2>&1; then
+					DEver=$(lxqt-about --version | awk '/^liblxqt/ {print $2}')
+					DE="${DE} ${DEver}"
 				fi
 			elif [[ ${DE} == "MATE" ]]; then
 				if type -p mate-session >/dev/null 2>&1; then
@@ -2514,6 +2519,10 @@ detectwmtheme () {
 					Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml")";
 				elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then
 					Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml")";
+				fi
+				if [ "${DE}" = "LXQt" ]; then
+					de_theme="$(awk -F'=' '/^theme/ {print $2}' ${HOME}/.config/lxqt/lxqt.conf)"
+					Win_theme="${de_theme} / ${Win_theme}"
 				fi
 			;;
 			'PekWM')
