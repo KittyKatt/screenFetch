@@ -2799,16 +2799,18 @@ detectgtk () {
 					fi
 				fi
 
-				# Proper gtk3 Theme detection
-				if type -p gsettings >/dev/null 2>&1; then
-					gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null)
-					gtk3Theme=${gtk3Theme//"'"}
-				fi
-
 				# EXPERIMENTAL gtk3 Theme detection
-				if [[ -z "$gtk3Theme" && -f "$HOME/.config/gtk-3.0/settings.ini" ]]; then
+				if [[ "$gtk3Theme" = "Not Found" && -f "$HOME/.config/gtk-3.0/settings.ini" ]]; then
 					if grep -q 'gtk-theme-name' "$HOME/.config/gtk-3.0/settings.ini"; then
 						gtk3Theme=$(awk -F'=' '/^gtk-theme-name/ {print $2}' "$HOME/.config/gtk-3.0/settings.ini")
+					fi
+				fi
+
+				# Proper gtk3 Theme detection
+				if type -p gsettings >/dev/null 2>&1; then
+					if [ -z "$gtk3Theme"  || "$gtk3Theme" = "Not Found" ]; then
+						gtk3Theme=$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null)
+						gtk3Theme=${gtk3Theme//"'"}
 					fi
 				fi
 
