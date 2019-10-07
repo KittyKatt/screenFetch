@@ -2517,12 +2517,10 @@ detectwmtheme () {
 			'OpenBox'|'Openbox')
 				if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml" ]; then
 					Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/rc.xml")";
-				elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && $DE == "LXDE" ]]; then
+				elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml && "${DE}" == "LXDE" ]]; then
 					Win_theme="$(awk -F"[<,>]" '/<theme/ { getline; print $3 }' "${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxde-rc.xml")";
-				fi
-				if [ "${DE}" = "LXQt" ]; then
-					de_theme="$(awk -F'=' '/^theme/ {print $2}' ${HOME}/.config/lxqt/lxqt.conf)"
-					Win_theme="${de_theme} / ${Win_theme}"
+				elif [[ -f ${XDG_CONFIG_HOME:-${HOME}/.config}/openbox/lxqt-rc.xml && "${DE}" =~ "LXQt" ]]; then
+					Win_theme="$(awk -F'=' '/^theme/ {print $2}' ${HOME}/.config/lxqt/lxqt.conf)"
 				fi
 			;;
 			'PekWM')
