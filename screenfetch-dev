@@ -1271,7 +1271,7 @@ detecthost () {
 # Kernel Version Detection - Begin
 detectkernel () {
 	if [[ "$distro" == "OpenBSD" ]]; then
-		kernel=$(sysctl kern.version|awk -F'[ =:]' 'NR==1{print $3" "$4" "$5}')
+		kernel=$(uname -a | cut -f 3- -d ' ')
 	else
 		# compatibility for older versions of OS X:
 		kernel=$(uname -m && uname -sr)
@@ -1702,8 +1702,12 @@ DetectIntelGPU() {
 detectdisk () {
 	diskusage="Unknown"
 	if type -p df >/dev/null 2>&1; then
-		if [[ "${distro}" =~ (Free|Net|Open|DragonFly)BSD ]]; then
+		if [[ "${distro}" =~ (Free|Net|DragonFly)BSD ]]; then
 			totaldisk=$(df -h -c 2>/dev/null | tail -1)
+		elif [[ "${distro}" == "OpenBSD" ]]; then
+			totaldisk=$(df -Pk 2> /dev/null | awk '
+				/^\// {total+=$2; used+=$3; avail+=$4}
+				END{printf("total %.1fG %.1fG %.1fG %d%%\n", total/1048576, used/1048576, avail/1048576, used*100/total)}')
 		elif [[ "${distro}" == "Mac OS X" ]]; then
 			totaldisk=$(df -H / 2>/dev/null | tail -1)
 		else
