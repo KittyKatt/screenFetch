@@ -2362,10 +2362,37 @@ detectwmtheme () {
 	Win_theme="Not Found"
 	if [[ "${distro}" == "Mac OS X" ]]; then
 		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant 2>/dev/null)"
+		accentColorNumber="$(defaults read NSGlobalDomain AppleAccentColor 2>/dev/null)"
+		interfaceStyle="$(defaults read NSGlobalDomain AppleInterfaceStyle 2>/dev/null)"
 		if [ "${themeNumber}" == "1" ] || [ "${themeNumber}x" == "x" ]; then
-			Win_theme="Blue"
+			case "${accentColorNumber}" in
+			"5")
+				Win_theme="Purple"
+				;;
+			"6")
+				Win_theme="Pink"
+				;;
+			"0")
+				Win_theme="Red"
+				;;
+			"1")
+				Win_theme="Orange"
+				;;
+			"2")
+				Win_theme="Yellow"
+				;;
+			"3")
+				Win_theme="Green"
+				;;
+			*)
+				Win_theme="Blue"
+				;;
+			esac
 		else
 			Win_theme="Graphite"
+		fi
+		if [ "${interfaceStyle}" == "Dark" ]; then
+			Win_theme="${Win_theme} (Dark)"
 		fi
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		if [ "${WM}" == "Blackbox" ]; then
