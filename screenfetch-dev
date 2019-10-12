@@ -852,10 +852,10 @@ detectdistro () {
 						distro="DragonFlyBSD"
 						fake_distro="${distro}"
 					;;
-          "EndeavourOS")
-            distro="EndeavourOS"
-            fake_distro="${distro}"
-          ;;
+					"EndeavourOS")
+						distro="EndeavourOS"
+						fake_distro="${distro}"
+					;;
 					"Msys")
 						distro="Msys"
 						fake_distro="${distro}"
