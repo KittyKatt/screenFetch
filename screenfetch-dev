@@ -365,7 +365,7 @@ Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyu
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
-SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS."
+SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 
@@ -852,6 +852,10 @@ detectdistro () {
 						distro="DragonFlyBSD"
 						fake_distro="${distro}"
 					;;
+					"EndeavourOS")
+						distro="EndeavourOS"
+						fake_distro="${distro}"
+					;;
 					"Msys")
 						distro="Msys"
 						fake_distro="${distro}"
@@ -1242,6 +1246,7 @@ detectdistro () {
 		viperr) distro="Viperr" ;;
 		void*linux) distro="Void Linux" ;;
 		zorin*) distro="Zorin OS" ;;
+		endeavour*) distro="EndeavourOS" ;;
 	esac
 	if grep -q -i 'Microsoft' /proc/version 2>/dev/null || \
 		grep -q -i 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
@@ -1334,7 +1339,7 @@ detectpkgs () {
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
 		'Arch Linux'|'ArcoLinux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
-		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux')
+		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux'|'EndeavourOS')
 			pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
@@ -1439,7 +1444,7 @@ detectpkgs () {
 				haikualpharelease="yes"
 				pkgs=$(installoptionalpackage -l | sed -n '3p' | wc -w)
 			fi
-		;;
+		;;	
 	esac
 	if [[ "${OSTYPE}" =~ "linux" && -z "${wsl}" ]] && snap list >/dev/null 2>&1; then
 		offset=1
@@ -5811,6 +5816,34 @@ asciiText () {
 "${c1}      \|______________|  %s"
 "                         %s")
 		;;
+		"EndeavourOS")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'yellow')
+				c3=$(getColor 'purple')
+				c5=$(getColor 'cyan')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c3="${my_lcolor}"; c5="${my_lcolor}"; fi
+			startline="1"
+			logowidth="44"
+			fulloutput=(""
+"${c1}                  +${c3}I${c5}+		        %s"
+"${c1}                 +${c3}777${c5}+                  %s"
+"${c1}	        +${c3}77777${c5}++		%s"
+"${c1}	       +${c3}7777777${c5}++		%s"
+"${c1}	      +${c3}7777777777${c5}++		%s"
+"${c1}	    ++${c3}7777777777777${c5}++		%s"
+"${c1}	   ++${c3}777777777777777${c5}+++       	%s"
+"${c1}	 ++${c3}77777777777777777${c5}++++        %s"
+"${c1}	++${c3}7777777777777777777${c5}++++       %s"
+"${c1}      +++${c3}777777777777777777777${c5}++++	%s"
+"${c1}    ++++${c3}7777777777777777777777${c5}+++++  	%s"	
+"${c1}   ++++${c3}77777777777777777777777${c5}+++++  	%s"	
+"${c1}  +++++${c3}777777777777777777777777${c5}+++++	%s"	
+"${c5}       +++++++${c3}7777777777777777${c5}++++++	%s"	
+"${c5}      +++++++++++++++++++++++++++++     %s"
+"${c5}     +++++++++++++++++++++++++++        %s"
+"                                      	%s"
+);;
 
 		*)
 			if [[ "${kernel}" =~ "Linux" ]]; then
@@ -6039,7 +6072,7 @@ infoDisplay () {
 		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS")
 			labelcolor=$(getColor 'light blue')
 		;;
-		"Arch Linux"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"OS Elbrus")
+		"Arch Linux"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"OS Elbrus"|"EndeavourOS")
 			labelcolor=$(getColor 'light cyan')
 		;;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"| \
