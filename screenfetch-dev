@@ -633,6 +633,7 @@ detectdistro () {
 					;;
 			  "DraugerOS")
 			    distro = "DraugerOS"
+			    fake_distro="${distro}"
 			    ;;
 				"elementary"|"elementary OS")
 					distro="elementary OS"
@@ -1171,7 +1172,7 @@ detectdistro () {
 		desaos) distro="DesaOS" ;;
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		dragora) distro="Dragora" ;;
-    drauger|'DraugerOS') distro="DraugerOS" ;;
+    drauger*) distro="DraugerOS" ;;
 		elementary|'elementary os') distro="elementary OS";;
 		eurolinux) distro="EuroLinux" ;;
 		evolveos) distro="Evolve OS" ;;
