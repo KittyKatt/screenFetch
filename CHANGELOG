@@ -3,6 +3,19 @@
     changelog
 **** **** **** ****
 
+v3.9.1
+	- Fix GTK3 detection issues
+	- LXQt proper detection and theme detection
+	- Updated README to point to new wiki pages
+	- Some miscellanious awk fixes
+	- OpenBSD disk fix
+	- Added EndeavourOS
+	- MacOS Mojave color detection
+	- Miscellanious spacing fixes
+
+v3.9.0
+	- Lots, don't even try.
+
 v3.8.0
 	- Additional Intel GPU checks
 	- Gentoo release check (whether it's stable/testing/experimental)
