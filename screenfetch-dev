@@ -616,7 +616,8 @@ detectdistro () {
 						distro_codename=""
 					elif [[ -f /usr/bin/pveversion ]]; then
 						distro="Proxmox VE"
-						distro_more="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
+						distro_codename="n/a"
+						distro_release="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
 					elif [[ -f /etc/os-release ]]; then
 						if grep -q -i 'Raspbian' /etc/os-release ; then
 							distro="Raspbian"
@@ -948,7 +949,8 @@ detectdistro () {
 					fi
 					if [[ "${distro}" == "Debian" && -f /usr/bin/pveversion ]]; then
 						distro="Proxmox VE"
-						distro_more="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
+						distro_codename="n/a"
+						distro_release="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
 					fi
 				fi
 			fi
