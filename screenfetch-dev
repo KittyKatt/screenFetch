@@ -1901,7 +1901,7 @@ detectres () {
 	if [[ ${distro} == "Mac OS X" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
 		if [[ "$(echo "$xResolution" | wc -l)" -ge 1 ]]; then
-			xResolution=$(echo "$xResolution" | tr "\\n" "," | sed 's/\(.*\),/\1/')
+			xResolution=$(echo "$xResolution" | tr " \\n" ", " | sed 's/\(.*\),/\1/')
 		fi
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		xResolution=$(wmic path Win32_VideoController get CurrentHorizontalResolution,CurrentVerticalResolution | awk 'NR==2 {print $1"x"$2}')
