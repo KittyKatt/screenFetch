@@ -1375,7 +1375,8 @@ detectpkgs () {
 		'Evolve OS')
 			pkgs=$(pisi list-installed | wc -l) ;;
 		'Sulin')
-			pkgs=$(inary li | wc -l) ;;
+		    #alternative method : (inary li | wc -l)
+			pkgs=$(ls /var/lib/inary/package/ | wc -l) ;;
 		'Solus')
 			pkgs=$(eopkg list-installed | wc -l) ;;
 		'Source Mage GNU/Linux')
@@ -5533,7 +5534,7 @@ asciiText () {
 
 		"Sulin")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'light gray') # Light Yellow
+				c1=$(getColor 'light gray') # Light GRAY
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="1"
