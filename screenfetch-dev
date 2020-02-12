@@ -2620,13 +2620,13 @@ detectgtk () {
 
 				OLD_IFS=$IFS
 				IFS=$'\n'
-				iterm2_theme_info=($(defaults read com.googlecode.iTerm2 "New Bookmarks" | grep -e 'Guid' -e 'Normal Font'))
+				iterm2_theme_info=($(defaults read com.googlecode.iTerm2 "New Bookmarks" | grep -e 'Guid\s*=\s*\w+' -e 'Normal Font'))
 				IFS=$OLD_IFS
 
 				for i in $(seq 0 $((${#iterm2_theme_info[*]}/2-1))); do
-					found_uuid=$(str1=${iterm2_theme_info[$i*2]};echo "${str1:16:${#str1}-16-2}")
-					if [[ $found_uuid == $iterm2_theme_uuid ]]; then
-						gtkFont=$(str2=${iterm2_theme_info[$i*2+1]};echo ${str2:25:${#str2}-25-2})
+					found_uuid=$(str1=${iterm2_theme_info[$i*2]};echo "${str1}")
+					if [[ $found_uuid == $iterm2_theme_info ]]; then
+						gtkFont=$(str2=${iterm2_theme_info[$i*2+1]};echo ${str2:25:${#str2}-25-2} | sed 's/ [0-9]*$//')
 						break
 					fi
 				done
