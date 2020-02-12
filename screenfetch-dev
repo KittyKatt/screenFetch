@@ -1723,7 +1723,7 @@ detectdisk () {
 				totaldisk=$(df -H / 2>/dev/null | tail -1)
 			fi
 		else
-			totaldisk=$(df -h -x aufs -x tmpfs -x overlay --total 2>/dev/null | tail -1)
+			totaldisk=$(df -h -x aufs -x tmpfs -x overlay -x drvfs --total 2>/dev/null | tail -1)
 		fi
 		disktotal=$(awk '{print $2}' <<< "${totaldisk}")
 		diskused=$(awk '{print $3}' <<< "${totaldisk}")
@@ -2637,18 +2637,14 @@ detectgtk () {
 
 				OLD_IFS=$IFS
 				IFS=$'\n'
-				termapp_theme_info=($(defaults read com.apple.Terminal "Window Settings" | grep -e 'name = ' -e 'Font = '))
+				termapp_theme_info=$(/usr/libexec/PlistBuddy -c \
+					"print ':Window Settings:${termapp_theme_name}:Font'" \
+					~/Library/Preferences/com.apple.Terminal.plist \
+					| xxd -p |tr -d '\n\t\s')
 				IFS=$OLD_IFS
 
-				for i in $(seq 0 $((${#termapp_theme_info[*]}/2-1))); do
-					found_name=$(str1=${termapp_theme_info[$i*2+1]};echo "${str1:15:${#str1}-15-1}")
-					if [[ $found_name == $termapp_theme_name ]]; then
-						gtkFont=$(str2=${termapp_theme_info[$i*2]};echo "${str2:288:${#str2}-288}")
-						gtkFont=$(echo "${gtkFont%%[dD]2*;}" | xxd -r -p)
-						gtkFont=$(echo "${gtkFont:21:288}")
-						break
-					fi
-				done
+				gtkFont=$(echo "${termapp_theme_info:288:60}" | xxd -r -p | perl -pe 'binmode(STDIN, ":bytes"); tr/A-Za-z0-9_\!\@\#\$\%\&\^\*\(\)-+=//dc;')
+				gtkFont=$(echo "${gtkFont:1}" | sed 's/Z\$.*//')
 			fi
 		fi
 	else
