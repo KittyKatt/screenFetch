@@ -1716,9 +1716,14 @@ detectdisk () {
 				/^\// {total+=$2; used+=$3; avail+=$4}
 				END{printf("total %.1fG %.1fG %.1fG %d%%\n", total/1048576, used/1048576, avail/1048576, used*100/total)}')
 		elif [[ "${distro}" == "Mac OS X" ]]; then
-			totaldisk=$(df -H / 2>/dev/null | tail -1)
+			minorVers=$(sw_vers | grep "ProductVersion" | cut -d ':' -f 2 | awk -F "." '{print $2}') # Minor version
+			if [[ "${minorVers}" -ge "15"  ]]; then # Catalina or newer
+				totaldisk=$(df -H /System/Volumes/Data 2>/dev/null | tail -1)
+			else
+				totaldisk=$(df -H / 2>/dev/null | tail -1)
+			fi
 		else
-			totaldisk=$(df -h -x aufs -x tmpfs -x overlay -x drvfs --total 2>/dev/null | tail -1)
+			totaldisk=$(df -h -x aufs -x tmpfs -x overlay --total 2>/dev/null | tail -1)
 		fi
 		disktotal=$(awk '{print $2}' <<< "${totaldisk}")
 		diskused=$(awk '{print $3}' <<< "${totaldisk}")
