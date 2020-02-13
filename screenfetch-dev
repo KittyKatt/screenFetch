@@ -1402,7 +1402,7 @@ detectpkgs () {
 				pkgs=$((pkgs + (port_pkgs - offset)))
 			fi
 			if type -p brew >/dev/null 2>&1; then
-				brew_pkgs=$(brew list -1 2>/dev/null | wc -l)
+				brew_pkgs=$(ls -1 /usr/local/Cellar/ | wc -l)
 				pkgs=$((pkgs + brew_pkgs))
 			fi
 			if type -p pkgin >/dev/null 2>&1; then
@@ -1716,7 +1716,12 @@ detectdisk () {
 				/^\// {total+=$2; used+=$3; avail+=$4}
 				END{printf("total %.1fG %.1fG %.1fG %d%%\n", total/1048576, used/1048576, avail/1048576, used*100/total)}')
 		elif [[ "${distro}" == "Mac OS X" ]]; then
-			totaldisk=$(df -H / 2>/dev/null | tail -1)
+			minorVers=$(sw_vers | grep "ProductVersion" | cut -d ':' -f 2 | awk -F "." '{print $2}') # Minor version
+			if [[ "${minorVers}" -ge "15"  ]]; then # Catalina or newer
+				totaldisk=$(df -H /System/Volumes/Data 2>/dev/null | tail -1)
+			else
+				totaldisk=$(df -H / 2>/dev/null | tail -1)
+			fi
 		else
 			totaldisk=$(df -h -x aufs -x tmpfs -x overlay -x drvfs --total 2>/dev/null | tail -1)
 		fi
@@ -2615,13 +2620,13 @@ detectgtk () {
 
 				OLD_IFS=$IFS
 				IFS=$'\n'
-				iterm2_theme_info=($(defaults read com.googlecode.iTerm2 "New Bookmarks" | grep -e 'Guid' -e 'Normal Font'))
+				iterm2_theme_info=($(defaults read com.googlecode.iTerm2 "New Bookmarks" | grep -e 'Guid\s*=\s*\w+' -e 'Normal Font'))
 				IFS=$OLD_IFS
 
 				for i in $(seq 0 $((${#iterm2_theme_info[*]}/2-1))); do
-					found_uuid=$(str1=${iterm2_theme_info[$i*2]};echo "${str1:16:${#str1}-16-2}")
-					if [[ $found_uuid == $iterm2_theme_uuid ]]; then
-						gtkFont=$(str2=${iterm2_theme_info[$i*2+1]};echo ${str2:25:${#str2}-25-2})
+					found_uuid=$(str1=${iterm2_theme_info[$i*2]};echo "${str1}")
+					if [[ $found_uuid == $iterm2_theme_info ]]; then
+						gtkFont=$(str2=${iterm2_theme_info[$i*2+1]};echo ${str2:25:${#str2}-25-2} | sed 's/ [0-9]*$//')
 						break
 					fi
 				done
@@ -2632,18 +2637,14 @@ detectgtk () {
 
 				OLD_IFS=$IFS
 				IFS=$'\n'
-				termapp_theme_info=($(defaults read com.apple.Terminal "Window Settings" | grep -e 'name = ' -e 'Font = '))
+				termapp_theme_info=$(/usr/libexec/PlistBuddy -c \
+					"print ':Window Settings:${termapp_theme_name}:Font'" \
+					~/Library/Preferences/com.apple.Terminal.plist \
+					| xxd -p |tr -d '\n\t\s')
 				IFS=$OLD_IFS
 
-				for i in $(seq 0 $((${#termapp_theme_info[*]}/2-1))); do
-					found_name=$(str1=${termapp_theme_info[$i*2+1]};echo "${str1:15:${#str1}-15-1}")
-					if [[ $found_name == $termapp_theme_name ]]; then
-						gtkFont=$(str2=${termapp_theme_info[$i*2]};echo "${str2:288:${#str2}-288}")
-						gtkFont=$(echo "${gtkFont%%[dD]2*;}" | xxd -r -p)
-						gtkFont=$(echo "${gtkFont:21:288}")
-						break
-					fi
-				done
+				gtkFont=$(echo "${termapp_theme_info:288:60}" | xxd -r -p | perl -pe 'binmode(STDIN, ":bytes"); tr/A-Za-z0-9_\!\@\#\$\%\&\^\*\(\)-+=//dc;')
+				gtkFont=$(echo "${gtkFont:1}" | sed 's/Z\$.*//')
 			fi
 		fi
 	else
