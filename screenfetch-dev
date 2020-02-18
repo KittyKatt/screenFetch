@@ -1890,6 +1890,9 @@ detectshell () {
 		fish)
 			shell_version_data=$( fish --version | awk '{print $3}' )
 			;;
+		pwsh)
+			shell_version_data=$( pwsh -c '$PSVersionTable.PSVersion.ToString()' )
+			;;
 	esac
 
 	if [[ -n $shell_version_data ]];then
