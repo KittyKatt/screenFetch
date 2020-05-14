@@ -2472,7 +2472,7 @@ detectwmtheme () {
 				fi
 			;;
 			'E16')
-				Win_theme="$(awk -F"= " '/theme.name/ {print $2}' "$HOME/.e16/e_config--0.0.cfg")"
+				Win_theme="$(awk -F"= " '/theme.name/ {print $2}' $HOME/.e16/e_config--*.cfg)"
 			;;
 			'E17'|'Enlightenment')
 				if [ "$(which eet 2>/dev/null)" ]; then
