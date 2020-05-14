@@ -1854,7 +1854,7 @@ detectshell () {
 			shell_type="BusyBox"
 		else
 			if [[ "${OSTYPE}" =~ "linux" ]]; then
-				shell_type=$(tr '\0' '\n' </proc/$PPID/cmdline | head -1)
+				shell_type=$(realpath /proc/$PPID/exe | awk -F'/' '{print $NF}')
 			elif [[ "${distro}" =~ "BSD" ]]; then
 				shell_type=$(ps -p $PPID -o command | tail -1)
 			else
