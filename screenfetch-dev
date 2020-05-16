@@ -1533,6 +1533,10 @@ detectcpu () {
 						2964) model="IBM z13" ;;
 						   *) model="IBM S/390 machine type $machine" ;;
 					esac
+				elif [[ "$arch" == "aarch64" ]]; then
+					cpu_vendor=$(lscpu | grep ^Vendor | sed 's/^.*://g; s/ //g; s/,/\n/g')
+					cpu=$(lscpu | grep ^Model\ name: | sed 's/^.*://g; s/ //g; s/,/\n/g')
+					cpu="${cpu_vendor} ${cpu}"
 				else
 					model="Unknown"
 				fi
