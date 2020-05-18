@@ -1172,7 +1172,7 @@ detectdistro () {
 		desaos) distro="DesaOS" ;;
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		dragora) distro="Dragora" ;;
-    drauger*) distro="DraugerOS" ;;
+		drauger*) distro="DraugerOS" ;;
 		elementary|'elementary os') distro="elementary OS";;
 		eurolinux) distro="EuroLinux" ;;
 		evolveos) distro="Evolve OS" ;;
@@ -5785,12 +5785,8 @@ asciiText () {
 "${c1}        #((((                       ((((#        %s"
 "${c1}       (((((                         (((((       %s"
 "${c1}      ((((#                           #((((      %s"
-"${c1}     ((((                               ((((     %s"
-"${c1}   &((((                                 ((((&   %s"
-"${c1}  #((((                                   ((((#  %s"
-"${c1} ((((                                       (((( %s"
-"${c1}(#    (((((((((((((((((((((((((((((((((((((    #(%s"
-"${c1}  (((((((((((((((((((((((((((((((((((((((((((((  %s"
+"${c1}     (#  (((((((((((((((((((((((((((((((  #(     %s"
+"${c1}       (((((((((((((((((((((((((((((((((((       %s"
 "                                                      %s")
 		;;
 
