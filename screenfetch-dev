@@ -360,7 +360,7 @@ detectColors () {
 
 supported_distros="ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), ArcoLinux, Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
-Debian, Deepin, DesaOS,Devuan, Dragora, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
+Debian, Deepin, DesaOS,Devuan, Dragora, DraugerOS, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
@@ -632,6 +632,10 @@ detectdistro () {
 						distro="Debian"
 					fi
 					;;
+			  "DraugerOS")
+			    distro = "DraugerOS"
+			    fake_distro="${distro}"
+			    ;;
 				"elementary"|"elementary OS")
 					distro="elementary OS"
 					;;
@@ -1174,6 +1178,7 @@ detectdistro () {
 		desaos) distro="DesaOS" ;;
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		dragora) distro="Dragora" ;;
+		drauger*) distro="DraugerOS" ;;
 		elementary|'elementary os') distro="elementary OS";;
 		eurolinux) distro="EuroLinux" ;;
 		evolveos) distro="Evolve OS" ;;
@@ -1356,7 +1361,7 @@ detectpkgs () {
 			pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
-		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS')
+		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS')
 			pkgs=$(dpkg -l | grep -c '^i') ;;
 		'Slackware')
 			pkgs=$(ls -1 /var/log/packages | wc -l) ;;
@@ -3006,7 +3011,6 @@ takeShot () {
 		fi
 	fi
 }
-
 
 
 asciiText () {
@@ -5798,6 +5802,35 @@ asciiText () {
 "${c1}  dNm//////////////////////////////////mNd  %s"
 "${c1}  dmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmd  %s"
 "                                            %s")
+		;;
+
+    "DraugerOS")
+      if [[ "$no_color" != "1" ]]; then
+        c1=$(getColor 'red') # red
+      fi
+      if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+      startline="0"
+      logowidth="52"
+      fulloutput=(
+"${c1}                                                 %s"
+"${c1}                      &   &                      %s"
+"${c1}                     %(   (#                     %s"
+"${c1}                    (((   (((                    %s"
+"${c1}                   ((((   ((((                   %s"
+"${c1}                  ((((     ((((                  %s"
+"${c1}                 ((((       ((((                 %s"
+"${c1}                ((((         ((((                %s"
+"${c1}              %((((           ((((%              %s"
+"${c1}             ((((               ((((             %s"
+"${c1}            ((((                 ((((            %s"
+"${c1}           ((((                   ((((           %s"
+"${c1}         &((((                     ((((&         %s"
+"${c1}        #((((                       ((((#        %s"
+"${c1}       (((((                         (((((       %s"
+"${c1}      ((((#                           #((((      %s"
+"${c1}     (#  (((((((((((((((((((((((((((((((  #(     %s"
+"${c1}       (((((((((((((((((((((((((((((((((((       %s"
+"                                                      %s")
 		;;
 
 		"januslinux")
