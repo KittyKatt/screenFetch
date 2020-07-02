@@ -367,7 +367,7 @@ OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLi
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
 SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
 
-supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
+supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, macOS, Windows+Cygwin and Windows+MSYS2."
 
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 
@@ -1056,6 +1056,8 @@ detectdistro () {
 				else
 					if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i 'Mac OS X' >/dev/null; then
 						distro="Mac OS X"
+					elif [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i 'macOS' >/dev/null; then
+						distro="macOS"
 					elif [[ -f /var/run/dmesg.boot ]]; then
 						distro=$(awk 'BEGIN {
 							distro = "Unknown"
@@ -1207,6 +1209,7 @@ detectdistro () {
 		logos) distro="Logos" ;;
 		lunar|lunar*linux) distro="Lunar Linux";;
 		mac*os*x|os*x) distro="Mac OS X" ;;
+                macos) distro="macOS" ;;
 		manjaro) distro="Manjaro" ;;
 		mageia) distro="Mageia" ;;
 		mandrake) distro="Mandrake" ;;
@@ -1271,7 +1274,7 @@ detecthost () {
 	if [[ -z "$USER" ]]; then
 		myUser=$(whoami)
 	fi
-	if [[ "${distro}" == "Mac OS X" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
 		myHost=${myHost/.local}
 	fi
 	verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
@@ -1299,7 +1302,7 @@ detectkernel () {
 # Uptime Detection - Begin
 detectuptime () {
 	unset uptime
-	if [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "DragonFlyBSD" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" || "${distro}" == "FreeBSD" || "${distro}" == "DragonFlyBSD" ]]; then
 		boot=$(sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1)
 		now=$(date +%s)
 		uptime=$((now-boot))
@@ -1396,7 +1399,7 @@ detectpkgs () {
 			pkgs=$(ls -d -1 /var/db/paludis/repositories/installed/data/* | wc -l)
 			pkgs=$((pkgs + xpkgs))
 		;;
-		'Mac OS X')
+		'Mac OS X'|'macOS')
 			offset=1
 			if [ -d "/usr/local/bin" ]; then
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -cv "\(../Cellar/\|brew\)")
@@ -1470,7 +1473,7 @@ detectpkgs () {
 # CPU Detection - Begin
 detectcpu () {
 	local REGEXP="-r"
-	if [ "$distro" == "Mac OS X" ]; then
+	if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 		cpu=$(machine)
 		if [[ $cpu == "ppc750" ]]; then
 			cpu="IBM PowerPC G3"
@@ -1615,7 +1618,7 @@ detectgpu () {
 		fi
 	elif [[ "${distro}" == "OpenBSD" ]]; then
 		gpu=$(glxinfo 2> /dev/null | awk '/OpenGL renderer string/ { sub(/OpenGL renderer string: /,""); print }')
-	elif [[ "${distro}" == "Mac OS X" ]]; then
+	elif [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
 		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		gpu=$(wmic path Win32_VideoController get caption | sed -n '2p')
@@ -1724,9 +1727,10 @@ detectdisk () {
 			totaldisk=$(df -Pk 2> /dev/null | awk '
 				/^\// {total+=$2; used+=$3; avail+=$4}
 				END{printf("total %.1fG %.1fG %.1fG %d%%\n", total/1048576, used/1048576, avail/1048576, used*100/total)}')
-		elif [[ "${distro}" == "Mac OS X" ]]; then
+		elif [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
+                        majorVers=$(sw_vers | grep "ProductVersion" | cut -d ':' -f 2 | awk -F "." '{print $1}') # Major version
 			minorVers=$(sw_vers | grep "ProductVersion" | cut -d ':' -f 2 | awk -F "." '{print $2}') # Minor version
-			if [[ "${minorVers}" -ge "15"  ]]; then # Catalina or newer
+			if [[ "${minorVers}" -ge "15" || "${majorVers}" -ge "11" ]]; then # Catalina or newer
 				totaldisk=$(df -H /System/Volumes/Data 2>/dev/null | tail -1)
 			else
 				totaldisk=$(df -H / 2>/dev/null | tail -1)
@@ -1747,7 +1751,7 @@ detectdisk () {
 
 # Memory Detection - Begin
 detectmem () {
-	if [ "$distro" == "Mac OS X" ]; then
+	if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 		totalmem=$(echo "$(sysctl -n hw.memsize)" / 1024^2 | bc)
 		wiredmem=$(vm_stat | grep wired | awk '{ print $4 }' | sed 's/\.//')
 		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
@@ -1857,7 +1861,7 @@ detectshell_ver () {
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
 		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" ||
-			"${distro}" == "Mac OS X" || "${distro}" == "TinyCore" || "${distro}" == "Raspbian" || "${OSTYPE}" == "gnu" ]]; then
+			"${distro}" == "Mac OS X" || "${distro}" == "macOS" || "${distro}" == "TinyCore" || "${distro}" == "Raspbian" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		elif readlink -f "$SHELL" 2>&1 | grep -q -i 'busybox'; then
 			shell_type="BusyBox"
@@ -1914,7 +1918,7 @@ detectshell () {
 # Resolution Detection - Begin
 detectres () {
 	xResolution="No X Server"
-	if [[ ${distro} == "Mac OS X" ]]; then
+	if [[ ${distro} == "Mac OS X" || $distro == "macOS" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
 		if [[ "$(echo "$xResolution" | wc -l)" -ge 1 ]]; then
 			xResolution=$(echo "$xResolution" | tr " \\n" ", " | sed 's/\(.*\),/\1/')
@@ -1936,7 +1940,7 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
-	if [[ "${distro}" == "Mac OS X" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
 		if ps -U "${USER}" | grep -q -i 'finder'; then
 			DE="Aqua"
 		fi
@@ -2220,7 +2224,7 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [[ ${distro} == "Mac OS X" ]]; then
+	if [[ ${distro} == "Mac OS X" || ${distro} == "macOS" ]]; then
 		if ps -U "${USER}" | grep -q -i 'finder'; then
 			WM="Quartz Compositor"
 		fi
@@ -2385,7 +2389,7 @@ detectwm () {
 # WM Theme Detection - BEGIN
 detectwmtheme () {
 	Win_theme="Not Found"
-	if [[ "${distro}" == "Mac OS X" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
 		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant 2>/dev/null)"
 		accentColorNumber="$(defaults read NSGlobalDomain AppleAccentColor 2>/dev/null)"
 		interfaceStyle="$(defaults read NSGlobalDomain AppleInterfaceStyle 2>/dev/null)"
@@ -2617,7 +2621,7 @@ detectgtk () {
 	gtkIcons="Not Found"
 	gtkFont="Not Found"
 	# Font detection (OS X)
-	if [[ ${distro} == "Mac OS X" ]]; then
+	if [[ ${distro} == "Mac OS X" || ${distro} == "macOS" ]]; then
 		gtk2Theme="Not Applicable"
 		gtk3Theme="Not Applicable"
 		gtkIcons="Not Applicable"
@@ -2935,7 +2939,7 @@ takeShot () {
 		$screenCommand
 	else
 		shotfiles[1]=${shotfile}
-		if [ "$distro" == "Mac OS X" ]; then
+		if [ "$distro" == "Mac OS X" || "$distro" == "macOS" ]; then
 			displays="$(system_profiler SPDisplaysDataType | grep -c 'Resolution:' | tr -d ' ')"
 			for (( i=2; i<=displays; i++))
 			do
@@ -4585,7 +4589,7 @@ asciiText () {
 "${c1}           ''''''''''''''''''           %s")
 		;;
 
-		"Mac OS X")
+		"Mac OS X"|"macOS")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green') # Green
 				c2=$(getColor 'brown') # Yellow
@@ -6107,7 +6111,7 @@ infoDisplay () {
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
 		"Alpine Linux"|"Arch Linux - Old"|"ArcoLinux"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"| \
-		"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"| \
+		"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"macOS"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"| \
 		"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"| \
 		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS")
 			labelcolor=$(getColor 'light blue')
@@ -6180,7 +6184,7 @@ infoDisplay () {
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
-			if [ "$distro" == "Mac OS X" ]; then
+			if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 				sysArch="$(getconf LONG_BIT)bit"
 				prodVers=$(sw_vers | grep 'ProductVersion')
 				prodVers=${prodVers:16}
@@ -6228,7 +6232,7 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$myshell" )
 			((display_index++))
 		fi
-		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" ]]; then
+		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 			if [ -n "${xResolution}" ]; then
 				if [[ "${display[@]}" =~ "res" ]]; then
 					myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
@@ -6256,7 +6260,7 @@ infoDisplay () {
 				fi
 			fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
-				if [ "$distro" == "Mac OS X" ]; then
+				if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
 						if [ -n "$gtkFont" ]; then
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont")
