@@ -365,7 +365,7 @@ Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyu
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
-SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
+SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, ITC, Viperr, Void and Zorin OS and EndeavourOS"
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
 
@@ -646,6 +646,11 @@ detectdistro () {
 					distro="Sulin"
 					distro_release=$(awk -F'=' '/^ID_LIKE=/ {print $2}' /etc/os-release)
 					distro_codename="Roolling donkey" # this is not wrong :D
+					;;
+				"Itc")
+					distro="ITC"
+					distro_release=$(lsb_release -sr)
+					distro_codename=null
 					;;
 				"KaOS"|"kaos")
 					distro="KaOS"
@@ -1183,6 +1188,7 @@ detectdistro () {
 		eurolinux) distro="EuroLinux" ;;
 		evolveos) distro="Evolve OS" ;;
 		sulin) distro="Sulin" ;;
+		Itc) distro="ITC" ;;
 		exherbo|exherbo*linux) distro="Exherbo" ;;
 		fedora) distro="Fedora" ;;
 		freebsd) distro="FreeBSD" ;;
@@ -1361,7 +1367,7 @@ detectpkgs () {
 			pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
-		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS')
+		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS'|'Itc')
 			pkgs=$(dpkg -l | grep -c '^i') ;;
 		'Slackware')
 			pkgs=$(ls -1 /var/log/packages | wc -l) ;;
@@ -5569,6 +5575,33 @@ asciiText () {
 "${c1}                 :.~+++:++:++++..+          %s"
 "${c1}                 +~::++::+~::+:.+           %s"
 "${c1}                  :~~~~~:+~:~~~:+           %s")
+		;;
+		
+		"Itc")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'green') # Light Yellow
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			logowidth="45"
+			fulloutput=(
+""
+"$${c1}                                         -+++++++++++++++++************-       
+${c1}                                         -=============================-       
+${c1}                                         -=============================-       
+${c1}                                         -============================*        
+${c1}       -:++++++********=======-          -============================*        
+${c1}       +======================:          -============================+        
+${c1}       +======================+          -============================+        
+${c1}       :======================*          -============================:        
+${c1}       -=======================-         -============================:        
+${c1}        *======================-               --:++**================-        
+${c1}        *======================:                  :+***==*+:-   -              
+${c1}        +======================*:    -+========**++*======**+   --             
+${c1}        :==========================*+*========================***+-            
+${c1}         *============================:     -::+**================:            
+${c1}          :===============**++:--                       --:+***+-  -*===+      
+${c1}           -*=*++:--                                               -+**+-")
 		;;
 
 		"SwagArch")
