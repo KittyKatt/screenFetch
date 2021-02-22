@@ -59,6 +59,12 @@ specified on the command line, and those are shown below or by executing `screen
                          displayed. This is for when you want your distro
                          detected but want to display a different logo.
       -E                 Suppress output of errors.
+      -C                 Add custom (extra) lines.
+                         For example:
+                               screenfetch -C 'IP WAN=192.168.0.12,IP BRIDGED=10.1.1.10'
+                         ... will add two extra lines:
+                               IP WAN: 192.168.0.12
+                               IP BRIDGED: 10.1.1.10
       -V, --version      Display current script version.
       -h, --help         Display this help.
 
