@@ -198,37 +198,34 @@ shotfile=$(printf "screenFetch-%s.png" "$(date +'%Y-%m-%d_%H-%M-%S')")
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
 
+# Custom lines example:
+# screenfetch -C "IP 'WAN'=192.168.0.12,IP 'BRIDGED'=10.1.1.10,IP 'HOST-ONLY'=172.16.25.4,,Web terminal interface=http://10.1.1.10"
+#
+#... will produce:
+# 
+# IP 'WAN': 192.168.0.12
+# IP 'BRIDGED': 10.1.1.10
+# IP 'HOST-ONLY': 172.16.25.4
+#
+# Web terminal interface: http://10.1.1.10
 
-# The below function will allow you to add custom lines of text to the screenfetch output.
-# It will automatically be executed at the right moment if use_customlines is set to 1.
-use_customlines=
 customlines () {
-	# The following line can serve as an example.
-	# feel free to let the computer generate the output: e. g. using $(cat /etc/motd) or $(upower -d | grep THISORTHAT)
-	# In the example custom0 line replace <YOUR LABEL> and <your text> with options specified by you.
-	# Also make sure the $custom0 variable in out_array=... matches the one at the beginning of the line
-	#
-	custom0=$(echo -e "$labelcolor YOUR LABEL:$textcolor your text"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
+	OLD_IFS="${IFS}"
+	IFS=,
 
-	# Battery percentage and time to full/empty:
-	# (uncomment lines below to use)
-	#
-	#custom1=$(echo -e "$labelcolor Battery:$textcolor $(upower -d | grep percentage | head -n1 | cut -d ' ' -f 15-)"); out_array=( "${out_array[@]}" "$custom1" ); ((display_index++));
-	#if [ "$(upower -d | grep time)" ]; then
-	#	battery_time="$(upower -d | grep time | head -n1 | cut -d ' ' -f 14-) $(upower -d | grep time | head -n1 | cut -d ' ' -f 6-7 | cut -d ':' -f1)"
-	#else
-	#	battery_time="power supply plugged in"
-	#fi
-	#custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor $battery_time"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++));
+	for custom_line in ${custom_lines_string} ; do
+		while read -r key; do
+			read -r value
+			if [[ -z "${key}" ]]; then
+				custom="" # print an empty line
+			else
+				custom=$(echo -e " ${labelcolor}${key}: ${textcolor}${value}");
+			fi
+			out_array=( "${out_array[@]}" "${custom}" ); ((display_index++));
+		done <<< "$(echo "${custom_line}" | tr "=" "\n")"
+	done
 
-	# Display public IP:
-	#custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip)"); out_array=( "${out_array[@]}" "$custom3" ); ((display_index++));
-
-	###########################################
-	##	MY CUSTOM LINES
-	###########################################
-
-	#custom4=...
+	IFS="${OLD_IFS}"
 }
 
 
@@ -442,6 +439,12 @@ displayHelp () {
 	echo "                      displayed. This is for when you want your distro"
 	echo "                      detected but want to display a different logo."
 	echo "   ${bold}-E${c0}                 Suppress output of errors."
+	echo "   ${bold}-C${c0}                 Add custom (extra) lines."
+	echo "                      For example:"
+	echo "                      	screenfetch -C 'IP WAN=192.168.0.12,IP BRIDGED=10.1.1.10'"
+	echo "                      ... will add two extra lines:"
+	echo "                      	IP WAN: 192.168.0.12"
+	echo "                      	IP BRIDGED: 10.1.1.10"
 	echo "   ${bold}-V, --version${c0}      Display current script version."
 	echo "   ${bold}-h, --help${c0}         Display this help."
 }
@@ -466,7 +469,7 @@ case $1 in
 esac
 
 
-while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w" flags; do
+while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w:C:" flags; do
 	case $flags in
 		h) displayHelp; exit 0 ;;
 		s) screenshot='1' ;;
@@ -487,6 +490,7 @@ while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w" flags; do
 		p) portraitSet='Yes' ;;
 		a) art="${OPTARG}" ;;
 		w) lineWrap='Yes' ;;
+		C) custom_lines_string="${OPTARG}" ;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1 ;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1 ;;
 		*) errorOut "Error"; exit 1 ;;
@@ -6370,7 +6374,7 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$mymem" )
 			((display_index++))
 		fi
-		if [[ "$use_customlines" = 1 ]]; then
+		if [[ -n "$custom_lines_string" ]]; then
 			customlines
 		fi
 	fi
