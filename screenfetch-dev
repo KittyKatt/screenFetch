@@ -837,6 +837,9 @@ detectdistro () {
 					fi
 					;;
 			esac
+			if [[ "${distro_detect}" =~ "CentOSStream" ]]; then
+				distro="CentOS Stream"
+			fi
 			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then
 				distro="Red Hat Enterprise Linux"
 			fi
@@ -1175,6 +1178,7 @@ detectdistro () {
 		blag) distro="BLAG" ;;
 		bunsenlabs) distro="BunsenLabs" ;;
 		centos) distro="CentOS" ;;
+		centos*stream) distro="CentOS Stream" ;;
 		chakra) distro="Chakra" ;;
 		chapeau) distro="Chapeau" ;;
 		chrome*|chromium*) distro="Chrome OS" ;;
@@ -1382,7 +1386,7 @@ detectpkgs () {
 		'Guix System')
 			pkgs=$(guix package --list-installed | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
-		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
+		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'CentOS Stream'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
@@ -5107,7 +5111,7 @@ asciiText () {
 "${c1}                    .SSS....S..    %s")
 		;;
 
-		"CentOS")
+		"CentOS"|"CentOS Stream")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'yellow')
 				c2=$(getColor 'light green')
@@ -6150,7 +6154,7 @@ infoDisplay () {
 		"NetBSD"|"Amazon Linux"|"Proxmox VE")
 			labelcolor=$(getColor 'orange')
 		;;
-		"CentOS")
+		"CentOS"|"CentOS Stream")
 			labelcolor=$(getColor 'yellow')
 		;;
 		"Hyperbola GNU/Linux-libre"|"PureOS"|*)
