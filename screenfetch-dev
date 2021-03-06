@@ -149,34 +149,37 @@ ubuntu_codenames=(
 		'(Warty Warthog)'		#  4.10
 		'(Hoary Hedgehog)'		#  5.04
 		'(Breezy Badger)'		#  5.10
-		'LTS (Dapper Drake)'	#  6.06
+		'LTS (Dapper Drake)'		#  6.06
 		'(Edgy Eft)'			#  6.10
 		'(Feisty Fawn)'			#  7.04
 		'(Gutsy Gibbon)'		#  7.10
 		'LTS (Hardy Heron)'		#  8.04
 		'(Intrepid Ibex)'		#  8.10
-		'(Jaunty Jackalope)'	#  9.04
+		'(Jaunty Jackalope)'		#  9.04
 		'(Karmic Koala)'		#  9.10
 		'LTS (Lucid Lynx)'		# 10.04
-		'(Maverick Meerkat)'	# 10.10
+		'(Maverick Meerkat)'		# 10.10
 		'(Natty Narwhal)'		# 11.04
 		'(Oneiric Ocelot)'		# 11.10
-		'LTS (Precise Pangolin)'# 12.04
+		'LTS (Precise Pangolin)'	# 12.04
 		'(Quantal Quetzal)'		# 12.10
 		'(Raring Ringtail)'		# 13.04
-		'(Saucy Salamander)'	# 13.10
+		'(Saucy Salamander)'		# 13.10
 		'LTS (Trusty Tahr)'		# 14.04
 		'(Utopic Unicorn)'		# 14.10
 		'(Vivid Vervet)'		# 15.04
 		'(Wily Werewolf)'		# 15.10
-		'LTS (Xenial Xerus)'	# 16.04
+		'LTS (Xenial Xerus)'		# 16.04
 		'(Yakkety Yak)'			# 16.10
 		'(Zesty Zapus)'			# 17.04
 		'(Artful Aardvark)'		# 17.10
-		'LTS (Bionic Beaver)'	# 18.04
-		'(Cosmic Cuttlefish)'	# 18.10
-		'(Disco Dingo)'	# 19.04
-		'(Eoan Ermine)'	# 19.10
+		'LTS (Bionic Beaver)'		# 18.04
+		'(Cosmic Cuttlefish)'		# 18.10
+		'(Disco Dingo)'			# 19.04
+		'(Eoan Ermine)'			# 19.10
+		'LTS (Focal Fossa)'		# 20.04
+		'(Groovy Gorilla)'		# 20.10
+		'(Hirsute Hippo)'		# 21.04
 )
 
 # Screenshot Settings
@@ -195,37 +198,34 @@ shotfile=$(printf "screenFetch-%s.png" "$(date +'%Y-%m-%d_%H-%M-%S')")
 # Verbose Setting - Set to 1 for verbose output.
 verbosity=
 
+# Custom lines example:
+# screenfetch -C "IP 'WAN'=192.168.0.12,IP 'BRIDGED'=10.1.1.10,IP 'HOST-ONLY'=172.16.25.4,,Web terminal interface=http://10.1.1.10"
+#
+#... will produce:
+# 
+# IP 'WAN': 192.168.0.12
+# IP 'BRIDGED': 10.1.1.10
+# IP 'HOST-ONLY': 172.16.25.4
+#
+# Web terminal interface: http://10.1.1.10
 
-# The below function will allow you to add custom lines of text to the screenfetch output.
-# It will automatically be executed at the right moment if use_customlines is set to 1.
-use_customlines=
 customlines () {
-	# The following line can serve as an example.
-	# feel free to let the computer generate the output: e. g. using $(cat /etc/motd) or $(upower -d | grep THISORTHAT)
-	# In the example custom0 line replace <YOUR LABEL> and <your text> with options specified by you.
-	# Also make sure the $custom0 variable in out_array=... matches the one at the beginning of the line
-	#
-	custom0=$(echo -e "$labelcolor YOUR LABEL:$textcolor your text"); out_array=( "${out_array[@]}" "$custom0" ); ((display_index++));
+	OLD_IFS="${IFS}"
+	IFS=,
 
-	# Battery percentage and time to full/empty:
-	# (uncomment lines below to use)
-	#
-	#custom1=$(echo -e "$labelcolor Battery:$textcolor $(upower -d | grep percentage | head -n1 | cut -d ' ' -f 15-)"); out_array=( "${out_array[@]}" "$custom1" ); ((display_index++));
-	#if [ "$(upower -d | grep time)" ]; then
-	#	battery_time="$(upower -d | grep time | head -n1 | cut -d ' ' -f 14-) $(upower -d | grep time | head -n1 | cut -d ' ' -f 6-7 | cut -d ':' -f1)"
-	#else
-	#	battery_time="power supply plugged in"
-	#fi
-	#custom2=$(echo -e "$labelcolor $(echo '  `->')$textcolor $battery_time"); out_array=( "${out_array[@]}" "$custom2" ); ((display_index++));
+	for custom_line in ${custom_lines_string} ; do
+		while read -r key; do
+			read -r value
+			if [[ -z "${key}" ]]; then
+				custom="" # print an empty line
+			else
+				custom=$(echo -e " ${labelcolor}${key}: ${textcolor}${value}");
+			fi
+			out_array=( "${out_array[@]}" "${custom}" ); ((display_index++));
+		done <<< "$(echo "${custom_line}" | tr "=" "\n")"
+	done
 
-	# Display public IP:
-	#custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip)"); out_array=( "${out_array[@]}" "$custom3" ); ((display_index++));
-
-	###########################################
-	##	MY CUSTOM LINES
-	###########################################
-
-	#custom4=...
+	IFS="${OLD_IFS}"
 }
 
 
@@ -358,7 +358,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="ALDOS, Alter Linux, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), ArcoLinux, Artix Linux, \
+supported_distros="ALDOS, Alpine Linux, Alter Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Arch Linux 32, ArcoLinux, Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
 Debian, Deepin, DesaOS,Devuan, Dragora, DraugerOS, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora, Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
@@ -367,7 +367,7 @@ OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLi
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
 SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
 
-supported_other="Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows+Cygwin and Windows+MSYS2."
+supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and Windows+MSYS2."
 
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 
@@ -439,6 +439,12 @@ displayHelp () {
 	echo "                      displayed. This is for when you want your distro"
 	echo "                      detected but want to display a different logo."
 	echo "   ${bold}-E${c0}                 Suppress output of errors."
+	echo "   ${bold}-C${c0}                 Add custom (extra) lines."
+	echo "                      For example:"
+	echo "                      	screenfetch -C 'IP WAN=192.168.0.12,IP BRIDGED=10.1.1.10'"
+	echo "                      ... will add two extra lines:"
+	echo "                      	IP WAN: 192.168.0.12"
+	echo "                      	IP BRIDGED: 10.1.1.10"
 	echo "   ${bold}-V, --version${c0}      Display current script version."
 	echo "   ${bold}-h, --help${c0}         Display this help."
 }
@@ -463,7 +469,7 @@ case $1 in
 esac
 
 
-while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w" flags; do
+while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w:C:" flags; do
 	case $flags in
 		h) displayHelp; exit 0 ;;
 		s) screenshot='1' ;;
@@ -484,6 +490,7 @@ while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w" flags; do
 		p) portraitSet='Yes' ;;
 		a) art="${OPTARG}" ;;
 		w) lineWrap='Yes' ;;
+		C) custom_lines_string="${OPTARG}" ;;
 		:) errorOut "Error: You're missing an argument somewhere. Exiting."; exit 1 ;;
 		?) errorOut "Error: Invalid flag somewhere. Exiting."; exit 1 ;;
 		*) errorOut "Error"; exit 1 ;;
@@ -699,6 +706,10 @@ detectdistro () {
 					distro="LinuxDeepin"
 					distro_codename=null
 					;;
+				"Uos")
+					distro="Uos"
+					distro_codename=null
+					;;
 				"Kali"|"Debian Kali Linux")
 					distro="Kali Linux"
 					if [[ "${distro_codename}" =~ "kali-rolling" ]]; then
@@ -834,6 +845,9 @@ detectdistro () {
 					fi
 					;;
 			esac
+			if [[ "${distro_detect}" =~ "CentOSStream" ]]; then
+				distro="CentOS Stream"
+			fi
 			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then
 				distro="Red Hat Enterprise Linux"
 			fi
@@ -1061,6 +1075,8 @@ detectdistro () {
 				else
 					if [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i 'Mac OS X' >/dev/null; then
 						distro="Mac OS X"
+					elif [[ -x /usr/bin/sw_vers ]] && /usr/bin/sw_vers | grep -i 'macOS' >/dev/null; then
+						distro="macOS"
 					elif [[ -f /var/run/dmesg.boot ]]; then
 						distro=$(awk 'BEGIN {
 							distro = "Unknown"
@@ -1166,12 +1182,14 @@ detectdistro () {
 		antergos) distro="Antergos" ;;
 		arch*linux*old) distro="Arch Linux - Old" ;;
 		arch|arch*linux) distro="Arch Linux" ;;
+		arch32) distro="Arch Linux 32" ;;
 		arcolinux|arcolinux*) distro="ArcoLinux" ;;
 		artix|artix*linux) distro="Artix Linux" ;;
 		blackpantheros|black*panther*) distro="blackPanther OS" ;;
 		blag) distro="BLAG" ;;
 		bunsenlabs) distro="BunsenLabs" ;;
 		centos) distro="CentOS" ;;
+		centos*stream) distro="CentOS Stream" ;;
 		chakra) distro="Chakra" ;;
 		chapeau) distro="Chapeau" ;;
 		chrome*|chromium*) distro="Chrome OS" ;;
@@ -1181,6 +1199,7 @@ detectdistro () {
 		debian) distro="Debian" ;;
 		devuan) distro="Devuan" ;;
 		deepin) distro="Deepin" ;;
+		uos) distro="Uos" ;;
 		desaos) distro="DesaOS" ;;
 		dragonflybsd) distro="DragonFlyBSD" ;;
 		dragora) distro="Dragora" ;;
@@ -1213,6 +1232,7 @@ detectdistro () {
 		logos) distro="Logos" ;;
 		lunar|lunar*linux) distro="Lunar Linux";;
 		mac*os*x|os*x) distro="Mac OS X" ;;
+                macos) distro="macOS" ;;
 		manjaro) distro="Manjaro" ;;
 		mageia) distro="Mageia" ;;
 		mandrake) distro="Mandrake" ;;
@@ -1277,7 +1297,7 @@ detecthost () {
 	if [[ -z "$USER" ]]; then
 		myUser=$(whoami)
 	fi
-	if [[ "${distro}" == "Mac OS X" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
 		myHost=${myHost/.local}
 	fi
 	verboseOut "Finding hostname and user...found as '${myUser}@${myHost}'"
@@ -1305,7 +1325,7 @@ detectkernel () {
 # Uptime Detection - Begin
 detectuptime () {
 	unset uptime
-	if [[ "${distro}" == "Mac OS X" || "${distro}" == "FreeBSD" || "${distro}" == "DragonFlyBSD" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" || "${distro}" == "FreeBSD" || "${distro}" == "DragonFlyBSD" ]]; then
 		boot=$(sysctl -n kern.boottime | cut -d "=" -f 2 | cut -d "," -f 1)
 		now=$(date +%s)
 		uptime=$((now-boot))
@@ -1351,8 +1371,8 @@ detectpkgs () {
 	local offset=0
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
-		'Arch Linux'|'ArcoLinux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
-		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux'|'EndeavourOS'|'AlterLinux')
+		'Arch Linux'|'Arch Linux 32'|'ArcoLinux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
+		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux'|'EndeavourOS'|'Alter Linux')
 			pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
@@ -1378,7 +1398,7 @@ detectpkgs () {
 		'Guix System')
 			pkgs=$(guix package --list-installed | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
-		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
+		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'CentOS Stream'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
@@ -1402,7 +1422,7 @@ detectpkgs () {
 			pkgs=$(ls -d -1 /var/db/paludis/repositories/installed/data/* | wc -l)
 			pkgs=$((pkgs + xpkgs))
 		;;
-		'Mac OS X')
+		'Mac OS X'|'macOS')
 			offset=1
 			if [ -d "/usr/local/bin" ]; then
 				loc_pkgs=$(ls -l /usr/local/bin/ | grep -cv "\(../Cellar/\|brew\)")
@@ -1476,7 +1496,7 @@ detectpkgs () {
 # CPU Detection - Begin
 detectcpu () {
 	local REGEXP="-r"
-	if [ "$distro" == "Mac OS X" ]; then
+	if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 		cpu=$(machine)
 		if [[ $cpu == "ppc750" ]]; then
 			cpu="IBM PowerPC G3"
@@ -1621,7 +1641,7 @@ detectgpu () {
 		fi
 	elif [[ "${distro}" == "OpenBSD" ]]; then
 		gpu=$(glxinfo 2> /dev/null | awk '/OpenGL renderer string/ { sub(/OpenGL renderer string: /,""); print }')
-	elif [[ "${distro}" == "Mac OS X" ]]; then
+	elif [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
 		gpu=$(system_profiler SPDisplaysDataType | awk -F': ' '/^ *Chipset Model:/ {print $2}' | awk '{ printf "%s / ", $0 }' | sed -e 's/\/ $//g')
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		gpu=$(wmic path Win32_VideoController get caption | sed -n '2p')
@@ -1730,9 +1750,10 @@ detectdisk () {
 			totaldisk=$(df -Pk 2> /dev/null | awk '
 				/^\// {total+=$2; used+=$3; avail+=$4}
 				END{printf("total %.1fG %.1fG %.1fG %d%%\n", total/1048576, used/1048576, avail/1048576, used*100/total)}')
-		elif [[ "${distro}" == "Mac OS X" ]]; then
+		elif [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
+                        majorVers=$(sw_vers | grep "ProductVersion" | cut -d ':' -f 2 | awk -F "." '{print $1}') # Major version
 			minorVers=$(sw_vers | grep "ProductVersion" | cut -d ':' -f 2 | awk -F "." '{print $2}') # Minor version
-			if [[ "${minorVers}" -ge "15"  ]]; then # Catalina or newer
+			if [[ "${minorVers}" -ge "15" || "${majorVers}" -ge "11" ]]; then # Catalina or newer
 				totaldisk=$(df -H /System/Volumes/Data 2>/dev/null | tail -1)
 			else
 				totaldisk=$(df -H / 2>/dev/null | tail -1)
@@ -1753,7 +1774,7 @@ detectdisk () {
 
 # Memory Detection - Begin
 detectmem () {
-	if [ "$distro" == "Mac OS X" ]; then
+	if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 		totalmem=$(echo "$(sysctl -n hw.memsize)" / 1024^2 | bc)
 		wiredmem=$(vm_stat | grep wired | awk '{ print $4 }' | sed 's/\.//')
 		activemem=$(vm_stat | grep ' active' | awk '{ print $3 }' | sed 's/\.//')
@@ -1863,7 +1884,7 @@ detectshell_ver () {
 detectshell () {
 	if [[ ! "${shell_type}" ]]; then
 		if [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" || "${distro}" == "Haiku" || "${distro}" == "Alpine Linux" ||
-			"${distro}" == "Mac OS X" || "${distro}" == "TinyCore" || "${distro}" == "Raspbian" || "${OSTYPE}" == "gnu" ]]; then
+			"${distro}" == "Mac OS X" || "${distro}" == "macOS" || "${distro}" == "TinyCore" || "${distro}" == "Raspbian" || "${OSTYPE}" == "gnu" ]]; then
 			shell_type=$(echo "$SHELL" | awk -F'/' '{print $NF}')
 		elif readlink -f "$SHELL" 2>&1 | grep -q -i 'busybox'; then
 			shell_type="BusyBox"
@@ -1920,7 +1941,7 @@ detectshell () {
 # Resolution Detection - Begin
 detectres () {
 	xResolution="No X Server"
-	if [[ ${distro} == "Mac OS X" ]]; then
+	if [[ ${distro} == "Mac OS X" || $distro == "macOS" ]]; then
 		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
 		if [[ "$(echo "$xResolution" | wc -l)" -ge 1 ]]; then
 			xResolution=$(echo "$xResolution" | tr " \\n" ", " | sed 's/\(.*\),/\1/')
@@ -1942,7 +1963,7 @@ detectres () {
 # DE Detection - Begin
 detectde () {
 	DE="Not Present"
-	if [[ "${distro}" == "Mac OS X" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
 		if ps -U "${USER}" | grep -q -i 'finder'; then
 			DE="Aqua"
 		fi
@@ -2226,7 +2247,7 @@ detectde () {
 # WM Detection - Begin
 detectwm () {
 	WM="Not Found"
-	if [[ ${distro} == "Mac OS X" ]]; then
+	if [[ ${distro} == "Mac OS X" || ${distro} == "macOS" ]]; then
 		if ps -U "${USER}" | grep -q -i 'finder'; then
 			WM="Quartz Compositor"
 		fi
@@ -2391,7 +2412,7 @@ detectwm () {
 # WM Theme Detection - BEGIN
 detectwmtheme () {
 	Win_theme="Not Found"
-	if [[ "${distro}" == "Mac OS X" ]]; then
+	if [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
 		themeNumber="$(defaults read NSGlobalDomain AppleAquaColorVariant 2>/dev/null)"
 		accentColorNumber="$(defaults read NSGlobalDomain AppleAccentColor 2>/dev/null)"
 		interfaceStyle="$(defaults read NSGlobalDomain AppleInterfaceStyle 2>/dev/null)"
@@ -2623,7 +2644,7 @@ detectgtk () {
 	gtkIcons="Not Found"
 	gtkFont="Not Found"
 	# Font detection (OS X)
-	if [[ ${distro} == "Mac OS X" ]]; then
+	if [[ ${distro} == "Mac OS X" || ${distro} == "macOS" ]]; then
 		gtk2Theme="Not Applicable"
 		gtk3Theme="Not Applicable"
 		gtkIcons="Not Applicable"
@@ -2941,7 +2962,7 @@ takeShot () {
 		$screenCommand
 	else
 		shotfiles[1]=${shotfile}
-		if [ "$distro" == "Mac OS X" ]; then
+		if [ "$distro" == "Mac OS X" || "$distro" == "macOS" ]; then
 			displays="$(system_profiler SPDisplaysDataType | grep -c 'Resolution:' | tr -d ' ')"
 			for (( i=2; i<=displays; i++))
 			do
@@ -3117,7 +3138,7 @@ asciiText () {
 "${c1}                                     %s")
 		;;
 
-		"Arch Linux")
+		"Arch Linux"|"Arch Linux 32")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light cyan') # Light
 				c2=$(getColor 'cyan') # Dark
@@ -4534,6 +4555,33 @@ asciiText () {
 "${c1}             .,:cccccccc:,.              %s")
 		;;
 
+		"Uos")
+		if [[ "$no_color" != "1" ]]; then
+			c1=$(getColor 'blue') # red
+			c2=$(getColor 'orange') # red
+		fi
+		if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+		startline="0"
+		logowidth="52"
+		fulloutput=(
+"${c1}                                   %s"
+"${c1}                                   %s"
+"${c1}           ############            %s"
+"${c1}         ##############            %s"
+"${c1}         ############    ${c2}oo        %s"
+"${c1}           ########    ${c2}oooooo      %s"
+"${c1}     ##      ####    ${c2}oooooooo      %s"
+"${c1}     ####      ####    ${c2}oooooo      %s"
+"${c1}     ######      ####    ${c2}oooo      %s"
+"${c1}     ####          ####    ${c2}oo      %s"
+"${c1}     ##      ############          %s"
+"${c1}           ################        %s"
+"${c1}         ################          %s"
+"${c1}             ########              %s"
+"${c1}                                   %s"
+"${c1}                                   %s")
+		;;
+
 		"Chakra")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
@@ -4622,7 +4670,7 @@ asciiText () {
 "${c1}           ''''''''''''''''''           %s")
 		;;
 
-		"Mac OS X")
+		"Mac OS X"|"macOS")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'green') # Green
 				c2=$(getColor 'brown') # Yellow
@@ -5133,7 +5181,7 @@ asciiText () {
 "${c1}                    .SSS....S..    %s")
 		;;
 
-		"CentOS")
+		"CentOS"|"CentOS Stream")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'yellow')
 				c2=$(getColor 'light green')
@@ -6144,12 +6192,12 @@ infoDisplay () {
 	[[ "${asc_distro}" ]] && myascii="${asc_distro}"
 	case ${myascii} in
 		"Alpine Linux"|"Arch Linux - Old"|"ArcoLinux"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"| \
-		"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"Alter Linux"| \
+		"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"macOS"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"Alter Linux"| \
 		"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"| \
-		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS")
+		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS"|"Uos")
 			labelcolor=$(getColor 'light blue')
 		;;
-		"Arch Linux"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"OS Elbrus"|"EndeavourOS")
+		"Arch Linux"|"Arch Linux 32"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"OS Elbrus"|"EndeavourOS")
 			labelcolor=$(getColor 'light cyan')
 		;;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"| \
@@ -6176,7 +6224,7 @@ infoDisplay () {
 		"NetBSD"|"Amazon Linux"|"Proxmox VE")
 			labelcolor=$(getColor 'orange')
 		;;
-		"CentOS")
+		"CentOS"|"CentOS Stream")
 			labelcolor=$(getColor 'yellow')
 		;;
 		"Hyperbola GNU/Linux-libre"|"PureOS"|*)
@@ -6217,7 +6265,7 @@ infoDisplay () {
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "distro" ]]; then
-			if [ "$distro" == "Mac OS X" ]; then
+			if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 				sysArch="$(getconf LONG_BIT)bit"
 				prodVers=$(sw_vers | grep 'ProductVersion')
 				prodVers=${prodVers:16}
@@ -6265,7 +6313,7 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$myshell" )
 			((display_index++))
 		fi
-		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" ]]; then
+		if [[ -n "$DISPLAY" || "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 			if [ -n "${xResolution}" ]; then
 				if [[ "${display[@]}" =~ "res" ]]; then
 					myres=$(echo -e "$labelcolor Resolution:${textcolor} $xResolution")
@@ -6293,7 +6341,7 @@ infoDisplay () {
 				fi
 			fi
 			if [[ "${display[@]}" =~ "gtk" ]]; then
-				if [ "$distro" == "Mac OS X" ]; then
+				if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 					if [[ "$gtkFont" != "Not Applicable" && "$gtkFont" != "Not Found" ]]; then
 						if [ -n "$gtkFont" ]; then
 							myfont=$(echo -e "$labelcolor Font:$textcolor $gtkFont")
@@ -6400,7 +6448,7 @@ infoDisplay () {
 			out_array=( "${out_array[@]}" "$mymem" )
 			((display_index++))
 		fi
-		if [[ "$use_customlines" = 1 ]]; then
+		if [[ -n "$custom_lines_string" ]]; then
 			customlines
 		fi
 	fi
