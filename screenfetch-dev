@@ -1841,9 +1841,9 @@ detectmem () {
 		#done
 		#usedmem=$((usedmem / 1024))
 		#totalmem=$((totalmem / 1024))
-		mem=$(free -b | awk -F ':' 'NR==2{print $2}' | awk '{print $1"-"$6}')
-		usedmem=$((mem / 1024 / 1024))
-		totalmem=$((${mem//-*} / 1024 / 1024))
+        mem=$(free | awk 'NR==2{print $2"-"$7}')
+        usedmem=$((mem / 1024))
+        totalmem=$((${mem//-*} / 1024))
 	fi
 	mem="${usedmem}MiB / ${totalmem}MiB"
 	verboseOut "Finding current RAM usage...found as '$mem'"
