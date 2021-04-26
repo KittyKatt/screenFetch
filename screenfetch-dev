@@ -1275,7 +1275,7 @@ detectdistro () {
 		steam|steam*os) distro="SteamOS" ;;
 		suse*linux*enterprise) distro="SUSE Linux Enterprise" ;;
 		swagarch) distro="SwagArch" ;;
-                tearch*) distro="TeArch" ;;
+        tearch*) distro="TeArch" ;;
 		tinycore|tinycore*linux) distro="TinyCore" ;;
 		trisquel) distro="Trisquel";;
 		grombyangos) distro="GrombyangOS" ;;
