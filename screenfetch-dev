@@ -365,7 +365,7 @@ Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyu
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
-SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
+SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and Windows+MSYS2."
 
@@ -814,6 +814,9 @@ detectdistro () {
 					;;
 				"Sparky"|"SparkyLinux")
 					distro="SparkyLinux"
+					;;
+                                "TeArch"|"TeArchLinux"|"")
+					distro="TeArch"
 					;;
 				"Ubuntu")
 					for each in "${ubuntu_codenames[@]}"; do
@@ -1272,6 +1275,7 @@ detectdistro () {
 		steam|steam*os) distro="SteamOS" ;;
 		suse*linux*enterprise) distro="SUSE Linux Enterprise" ;;
 		swagarch) distro="SwagArch" ;;
+                tearch*) distro="TeArch" ;;
 		tinycore|tinycore*linux) distro="TinyCore" ;;
 		trisquel) distro="Trisquel";;
 		grombyangos) distro="GrombyangOS" ;;
@@ -1372,7 +1376,7 @@ detectpkgs () {
 	case "${distro}" in
 		'Alpine Linux') pkgs=$(apk info | wc -l) ;;
 		'Arch Linux'|'Arch Linux 32'|'ArcoLinux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
-		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux'|'EndeavourOS'|'Alter Linux')
+		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux'|'EndeavourOS'|'Alter Linux'|'TeArch')
 			pkgs=$(pacman -Qq | wc -l) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
@@ -5978,7 +5982,41 @@ asciiText () {
 "${c5}      +++++++++++++++++++++++++++++     %s"
 "${c5}     +++++++++++++++++++++++++++        %s"
 "                                      	%s"
-);;
+)               ;;
+                "TeArch")
+			if [[ "$no_color" != "0" ]]; then
+				c1=$(getColor 'blue') # white
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			logowidth="45"
+			fulloutput=(""
+"${c1}                                          %s"
+"${c1}                @@@@@@@@@@@@@             %s"        
+"${c1}       @@@@@@@@@             @@@@@@@      %s"    
+"${c1}      @@@@@                     @@@@@     %s"   
+"${c1}      @@                           @@     %s"  
+"${c1}       @@                         @@      %s" 
+"${c1}        @                         @       %s" 
+"${c1}        @@@@@@@@@@@@@@@@@@@@@@@@ @@       %s" 
+"${c1}        .@@@@@@@@@@@@/@@@@@@@@@@@@        %s" 
+"${c1}        @@@@@@@@@@@@///@@@@@@@@@@@@       %s" 
+"${c1}       @@@@@@@@@@@@@((((@@@@@@@@@@@@      %s" 
+"${c1}      @@@@@@@@@@@#(((((((#@@@@@@@@@@@     %s" 
+"${c1}     @@@@@@@@@@@#//////////@@@@@@@@@@&    %s" 
+"${c1}     @@@@@@@@@@////@@@@@////@@@@@@@@@@    %s" 
+"${c1}     @@@@@@@@//////@@@@@/////@@@@@@@@@    %s" 
+"${c1}     @@@@@@@//@@@@@@@@@@@@@@@//@@@@@@@    %s" 
+"${c1}  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ %s"
+"${c1} @@     .@@@@@@@@@@@@@@@@@@@@@@@@@      @ %s"
+"${c1}  @@@@@@           @@@.           @@@@@@@ %s"
+"${c1}    @@@@@@@&@@@@@@@#  #@@@@@@@@@@@@@@@@   %s"
+"${c1}       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@      %s"
+"${c1}           @@@@@@@@@@@@@@@@@@@@@          %s"
+"                                               %s")
+		;;
+
+
 
 		*)
 			if [[ "${kernel}" =~ "Linux" ]]; then
@@ -6204,7 +6242,7 @@ infoDisplay () {
 		"Alpine Linux"|"Arch Linux - Old"|"ArcoLinux"|"blackPanther OS"|"Fedora"|"Korora"|"Chapeau"|"Mandriva"|"Mandrake"| \
 		"Chakra"|"ChromeOS"|"Sabayon"|"Slackware"|"Mac OS X"|"macOS"|"Trisquel"|"Kali Linux"|"Jiyuu Linux"|"Antergos"|"Alter Linux"| \
 		"KaOS"|"Logos"|"gNewSense"|"Netrunner"|"NixOS"|"SailfishOS"|"Qubes OS"|"Kogaion"|"PCLinuxOS"| \
-		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS"|"Uos")
+		"Obarun"|"Siduction"|"Solus"|"SwagArch"|"Parrot Security"|"Zorin OS"|"Uos"|"TeArch")
 			labelcolor=$(getColor 'light blue')
 		;;
 		"Arch Linux"|"Arch Linux 32"|"Artix Linux"|"Frugalware"|"Mageia"|"Deepin"|"CRUX"|"OS Elbrus"|"EndeavourOS")
