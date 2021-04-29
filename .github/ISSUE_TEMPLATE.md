@@ -18,10 +18,10 @@ PLEASE FILL THE FOLLOWING INFORMATION
 
 **New distro request**
 ```
-Distro name: 
-Homepage: 
-Distro logo: 
-Package manager: 
+Distro name:
+Homepage:
+Distro logo:
+Package manager:
 
 Show us the output of
  => lsb_release -sirc
