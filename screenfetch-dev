@@ -1663,7 +1663,12 @@ detectgpu () {
 			gpu_info=$(grep "OpenGL vendor string" <<< "${gpu_info}")
 		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p lspci)" && -z "$gpu" ]]; then
 			gpu_info=$($(PATH="/usr/bin:$PATH" type -p lspci | cut -f1) 2> /dev/null | grep VGA)
-			gpu=$(grep -oE '\[.*\]' <<< "${gpu_info}" | sed 's/\[//;s/\]//' | sed -n -e '1h;2,$H;${g;s/\n/, /g' -e 'p' -e '}')
+			if [$gpu_info == ""]; then
+				gpu_info=$($(PATH="/usr/bin:$PATH" type -p lspci | cut -f1) 2> /dev/null | grep Display)
+				gpu=$(echo ${gpu_info} | sed "s/^.*: //g")
+			else
+				gpu=$(grep -oE '\[.*\]' <<< "${gpu_info}" | sed 's/\[//;s/\]//' | sed -n -e '1h;2,$H;${g;s/\n/, /g' -e 'p' -e '}')
+			fi
 		fi
 	fi
 
