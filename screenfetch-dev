@@ -364,7 +364,7 @@ Debian, Deepin, DesaOS,Devuan, Dragora, DraugerOS, elementary OS, EuroLinux, Evo
 Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
-Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
+Raspbian, Red Hat Enterprise Linux, Rocky Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
 SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and Windows+MSYS2."
@@ -854,6 +854,9 @@ detectdistro () {
 			if [[ "${distro_detect}" =~ "RedHatEnterprise" ]]; then
 				distro="Red Hat Enterprise Linux"
 			fi
+			if [[ "${distro_detect}" =~ "Rocky Linux" ]]; then
+				distro="Rocky Linux"
+			fi
 			if [[ "${distro_detect}" =~ "SUSELinuxEnterprise" ]]; then
 				distro="SUSE Linux Enterprise"
 			fi
@@ -1039,6 +1042,7 @@ detectdistro () {
 					distro_more=$(grep -o '[0-9.]' /etc/redstar-release | tr -d '\n')
 				elif [[ "${distro}" == "redhat" ]]; then
 					grep -q -i 'CentOS' /etc/redhat-release && distro="CentOS"
+					grep -q -i 'Rocky Linux' /etc/redhat-release && distro="Rocky Linux"
 					grep -q -i 'Scientific' /etc/redhat-release && distro="Scientific Linux"
 					grep -q -i 'EuroLinux' /etc/redhat-release && distro="EuroLinux"
 					grep -q -i 'PCLinuxOS' /etc/redhat-release && distro="PCLinuxOS"
@@ -1265,6 +1269,7 @@ detectdistro () {
 		red*hat*|rhel) distro="Red Hat Enterprise Linux" ;;
 		rosa) distro="ROSA" ;;
 		red*star|red*star*os) distro="Red Star OS" ;;
+		rocky) distro="Rocky Linux" ;;
 		sabayon) distro="Sabayon" ;;
 		sailfish|sailfish*os) distro="SailfishOS" ;;
 		scientific*) distro="Scientific Linux" ;;
@@ -1403,7 +1408,7 @@ detectpkgs () {
 		'Guix System')
 			pkgs=$(guix package --list-installed | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
-		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'CentOS Stream'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
+		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'CentOS Stream'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'Rocky Linux'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
@@ -6052,9 +6057,31 @@ asciiText () {
 "${c1}           @@@@@@@@@@@@@@@@@@@@@          %s"
 "                                               %s")
 		;;
-
-
-
+		"Rocky Linux")
+			if [[ "$no_color" != "0" ]]; then
+				c1=$(getColor 'green')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="1"
+			logowidth="45"
+			fulloutput=(""
+"${c1}                  //////////                 %s"
+"${c1}               (/(/(/(/(/(/(/(/              %s"
+"${c1}           ,//////////////////////           %s"
+"${c1}         (/(/(/(/(/(/(/(/(/(/(/(/(/(*        %s"
+"${c1}        //////////////////////////////       %s"
+"${c1}       (/(/(/(/(/(/(/(/(/(///(/(/(/(/(/      %s"
+"${c1}      ///////////////////      /////////     %s"
+"${c1}      /(/(/(/(/(/(/(/(/          //(/(/(     %s"
+"${c1}      //////////////                ////     %s"
+"${c1}       (/(/(/(/(//        /(/(        /      %s"
+"${c1}        ///////        .////////.            %s"
+"${c1}         //(/        (/(/(/(/(/(/(/          %s"
+"${c1}                  .///////////////           %s"
+"${c1}                /(/(/(/(/(/(/(,              %s"
+"${c1}                  //////////                 %s"
+"                                                  %s")
+		;;
 		*)
 			if [[ "${kernel}" =~ "Linux" ]]; then
 				if [[ "$no_color" != "1" ]]; then
@@ -6286,7 +6313,7 @@ infoDisplay () {
 			labelcolor=$(getColor 'light cyan')
 		;;
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"| \
-		"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS")
+		"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS"|"Rocky Linux")
 			labelcolor=$(getColor 'light green')
 		;;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"| \
