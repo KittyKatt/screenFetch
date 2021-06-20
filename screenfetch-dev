@@ -48,6 +48,7 @@ valid_display=(
 		'distro'
 		'host'
 		'kernel'
+		'model'
 		'uptime'
 		'pkgs'
 		'shell'
@@ -64,6 +65,7 @@ valid_display=(
 display=(
 		'distro'
 		'host'
+		'model'
 		'kernel'
 		'uptime'
 		'pkgs'
@@ -1310,6 +1312,21 @@ detecthost () {
 
 # Find Number of Running Processes
 # processnum="$(( $( ps aux | wc -l ) - 1 ))"
+
+# Model Detection - Begin
+detectmodel () {
+	model="Unknown"
+	if [[ "$distro" == "Raspbian" ]]; then
+		model=$(cat /sys/firmware/devicetree/base/model | tr '\0' '\n')
+	elif [[ -f /sys/devices/virtual/dmi/id/sys_vendor ]]; then
+		sys_vendor=$(cat /sys/devices/virtual/dmi/id/sys_vendor)
+		product_name=$(cat /sys/devices/virtual/dmi/id/product_name)
+		if [[ "${sys_vendor,,}" != "system manufacturer" && "${product_name,,}" != "system product name" ]]; then
+			model="$sys_vendor $product_name"
+		fi
+	fi
+}
+# Model Detection - End
 
 # Kernel Version Detection - Begin
 detectkernel () {
@@ -6376,6 +6393,11 @@ infoDisplay () {
 				fi
 			fi
 			out_array=( "${out_array[@]}" "$mydistro$wsl" )
+			((display_index++))
+		fi
+		if [[ "${display[@]}" =~ "model" && "${model}" != "Unknown" ]]; then
+			mymodel=$(echo -e "$labelcolor Model:$textcolor $model")
+			out_array=( "${out_array[@]}" "$mymodel" )
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "kernel" ]]; then
