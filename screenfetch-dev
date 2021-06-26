@@ -1315,6 +1315,8 @@ detecthost () {
 detectkernel () {
 	if [[ "$distro" == "OpenBSD" ]]; then
 		kernel=$(uname -a | cut -f 3- -d ' ')
+	elif [[ "$distro" == "FreeBSD" ]]; then
+		kernel=$(freebsd-version -r)
 	else
 		# compatibility for older versions of OS X:
 		kernel=$(uname -m && uname -sr)
@@ -1458,7 +1460,7 @@ detectpkgs () {
 			pkgs=$(pkg_info | grep -c .)
 		;;
 		'FreeBSD')
-			pkgs=$(pkg info | grep -c .)
+			pkgs=$(/usr/sbin/pkg info | grep -c .)
 		;;
 		'Cygwin')
 			offset=2
@@ -6379,7 +6381,11 @@ infoDisplay () {
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "kernel" ]]; then
-			mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel")
+		  if [[ "$distro" == "FreeBSD" ]]; then
+		    mykernel=$(echo -e "$labelcolor Running Kernel:$textcolor $kernel")
+		  else
+		    mykernel=$(echo -e "$labelcolor Kernel:$textcolor $kernel")
+		  fi
 			out_array=( "${out_array[@]}" "$mykernel" )
 			((display_index++))
 		fi
