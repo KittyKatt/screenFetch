@@ -1765,7 +1765,7 @@ detectdisk () {
 				totaldisk=$(df -H / 2>/dev/null | tail -1)
 			fi
 		else
-			totaldisk=$(df -h -x aufs -x tmpfs -x overlay -x drvfs --total 2>/dev/null | tail -1)
+			totaldisk=$(df -h -x aufs -x tmpfs -x overlay -x drvfs -x devtmpfs --total 2>/dev/null | tail -1)
 		fi
 		disktotal=$(awk '{print $2}' <<< "${totaldisk}")
 		diskused=$(awk '{print $3}' <<< "${totaldisk}")
