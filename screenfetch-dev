@@ -1289,7 +1289,7 @@ detectdistro () {
 	if grep -q -i 'Microsoft' /proc/version 2>/dev/null || \
 		grep -q -i 'Microsoft' /proc/sys/kernel/osrelease 2>/dev/null
 	then
-		wsl="(on the Windows Subsystem for Linux)"
+		wsl=" (on the Windows Subsystem for Linux)"
 	fi
 	verboseOut "Finding distro...found as '${distro} ${distro_release}'"
 }
