@@ -1524,7 +1524,7 @@ detectcpu () {
 			cpu="Unknown"
 		fi
 	elif [ "$distro" == "FreeBSD" ]; then
-		cpu=$(dmesg | awk -F': ' '/^CPU/ {gsub(/ +/," "); gsub(/\([^\(\)]*\)|CPU /,"", $2); print $2; exit}')
+		cpu=$(sysctl -n hw.model |sed -e 's/ \{2,\}/ /g')
 	elif [ "$distro" == "DragonFlyBSD" ]; then
 		cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then
