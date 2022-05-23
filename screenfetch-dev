@@ -1226,7 +1226,7 @@ detectdistro () {
 		haiku) distro="Haiku" ;;
 		hyperbolagnu|hyperbolagnu/linux-libre|'hyperbola gnu/linux-libre'|hyperbola) distro="Hyperbola GNU/Linux-libre" ;;
 		januslinux) distro="januslinux" ;;
-		kali*linux) distro="Kali Linux" ;;
+		kali|kali*linux) distro="Kali Linux" ;;
 		kaos) distro="KaOS";;
 		kde*neon|neon) distro="KDE neon" ;;
 		kogaion) distro="Kogaion" ;;
