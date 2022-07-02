@@ -278,22 +278,22 @@ getColor () {
 			'yellow')					color_ret='\033[0m\033[1;33m';;
 			'white')					color_ret='\033[0m\033[1;37m';;
 			# Bolds
-			'dark grey'|'dark gray')	color_ret='\033[0m\033[1;30m';;
-			'light red')				color_ret='\033[0m\033[1;31m';;
-			'light green')				color_ret='\033[0m\033[1;32m';;
-			'light blue')				color_ret='\033[0m\033[1;34m';;
-			'light purple')				color_ret='\033[0m\033[1;35m';;
-			'light cyan')				color_ret='\033[0m\033[1;36m';;
-			'light grey'|'light gray')	color_ret='\033[0m\033[37m';;
+			'dark grey'|'dark gray')			color_ret='\033[0m\033[1;30m';;
+			'light red')					color_ret='\033[0m\033[1;31m';;
+			'light green')					color_ret='\033[0m\033[1;32m';;
+			'light blue')					color_ret='\033[0m\033[1;34m';;
+			'light purple')					color_ret='\033[0m\033[1;35m';;
+			'light cyan')					color_ret='\033[0m\033[1;36m';;
+			'light grey'|'light gray')			color_ret='\033[0m\033[37m';;
 			# Some 256 colors
 			'orange')					color_ret="$(colorize '202')";; #DarkOrange
-			'light orange') 			color_ret="$(colorize '214')";; #Orange1
+			'light orange') 				color_ret="$(colorize '214')";; #Orange1
 			# HaikuOS
-			'black_haiku') 				color_ret="$(colorize '7')";;
+			'black_haiku') 					color_ret="$(colorize '7')";;
 			#ROSA color
-			'rosa_blue') 				color_ret='\033[01;38;05;25m';;
+			'rosa_blue') 					color_ret='\033[01;38;05;25m';;
 			# ArcoLinux
-			'arco_blue') color_ret='\033[1;38;05;111m';;
+			'arco_blue') 					color_ret='\033[1;38;05;111m';;
 		esac
 		[[ -n "${color_ret}" ]] && echo "${color_ret}"
 	fi
@@ -359,13 +359,12 @@ detectColors () {
 }
 
 supported_distros="ALDOS, Alpine Linux, Alter Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Arch Linux 32, ArcoLinux, Artix Linux, \
-blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
-Debian, Deepin, DesaOS,Devuan, Dragora, DraugerOS, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora(Old and Current Logos), Frugalware, Fuduntu, Funtoo, \
-Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
-LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
-OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
-Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
-SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
+blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, Debian, Deepin, DesaOS,Devuan, Dragora, DraugerOS, \
+elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Factory Linux, Fedora(Old and Current Logos), Frugalware, Fuduntu, Funtoo, Gentoo, gNewSense, \
+Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, \
+Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, \
+PeppermintOS, Proxmox VE, PureOS, Qubes OS, Raspbian, Red Hat Enterprise Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source \
+Mage GNU/Linux, SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and Windows+MSYS2."
 
@@ -670,8 +669,8 @@ detectdistro () {
 					distro="Fuduntu"
 					distro_codename=null
 					;;
-				"Fux")
-					distro="Fux"
+				"Factory Linux")
+					distro="Factory Linux"
 					distro_codename=null
 					;;
 				"Gentoo")
@@ -943,7 +942,7 @@ detectdistro () {
 					fi
 
 					# Hotfixes
-                    [[ "${distro}" == "Opensuse-tumbleweed" ]] && distro="openSUSE" && distro_more="Tumbleweed"
+                    			[[ "${distro}" == "Opensuse-tumbleweed" ]] && distro="openSUSE" && distro_more="Tumbleweed"
 					[[ "${distro}" == "Opensuse-leap" ]] && distro="openSUSE"
 					[[ "${distro}" == "void" ]] && distro="Void Linux"
 					[[ "${distro}" == "evolveos" ]] && distro="Evolve OS"
@@ -952,6 +951,7 @@ detectdistro () {
 					[[ "${distro}" == "logos" ]] && distro="Logos"
 					[[ "${distro}" == "alter" || "${distro}" == "Alter" ]] && distro="Alter Linux"
 					[[ "${distro}" == "Arch" || "${distro}" == "Archarm" || "${distro}" == "archarm" ]] && distro="Arch Linux"
+					[[ "${distro}" == "factory" ]] && distro="Factory Linux"
 					[[ "${distro}" == "elementary" ]] && distro="elementary OS"
 					[[ "${distro}" == "Fedora" && -d /etc/qubes-rpc ]] && distro="qubes" # Inner VM
 					[[ "${distro}" == "Ol" || "${distro}" == "ol" ]] && distro="Oracle Linux"
@@ -1006,7 +1006,7 @@ detectdistro () {
 
 			if [[ "${distro}" == "Unknown" ]] && [[ "${OSTYPE}" =~ "linux" || "${OSTYPE}" == "gnu" ]]; then
 				for di in arch chakra crunchbang-lsb evolveos exherbo fedora \
-							frugalware fux gentoo kogaion mageia obarun oracle \
+							frugalware factory gentoo kogaion mageia obarun oracle \
 							pardus pclinuxos redhat redstar rosa SuSe; do
 					if [ -f /etc/$di-release ]; then
 						distro=$di
@@ -1219,7 +1219,7 @@ detectdistro () {
 		frugalware) distro="Frugalware" ;;
 		fuduntu) distro="Fuduntu" ;;
 		funtoo) distro="Funtoo" ;;
-		fux) distro="Fux" ;;
+		factory) distro="Factory Linux" ;;
 		gentoo) distro="Gentoo" ;;
 		gnewsense) distro="gNewSense" ;;
 		guix*system) distro="Guix System" ;;
@@ -1402,7 +1402,7 @@ detectpkgs () {
 			pkgs=$(nix path-info -r /run/current-system | wc -l) ;;
 		'Guix System')
 			pkgs=$(guix package --list-installed | wc -l) ;;
-		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
+		'ALDOS'|'Fedora'|'Factory Linux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
 		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'CentOS Stream'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
@@ -1959,6 +1959,8 @@ detectres () {
 		xResolution=$(wmic path Win32_VideoController get CurrentHorizontalResolution,CurrentVerticalResolution | awk 'NR==2 {print $1"x"$2}')
 	elif [[ "${distro}" == "Haiku" ]]; then
 		xResolution="$(screenmode | grep Resolution | awk '{gsub(/,/,""); print $2"x"$3}')"
+	elif [[ "${distro}" == "Factory Linux" ]]; then
+		xResolution="$(xrandr | grep primary | cut -d " " -f 4 | cut -d "+" -f 1)"
 	elif [[ -n ${DISPLAY} ]]; then
 		if type -p xdpyinfo >/dev/null 2>&1; then
 			xResolution=$(xdpyinfo | awk '/^ +dimensions/ {print $2}')
@@ -2270,6 +2272,8 @@ detectwm () {
 		if ps -U "${USER}" | grep -q -i 'finder'; then
 			WM="Quartz Compositor"
 		fi
+	elif [[ ${distro} == "Factory Linux" ]]; then
+		WM="$(mutter --version | head -n 1 | sed 's/.*/\u&/')"
 	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
 		if [ "$(tasklist | grep -o 'bugn' | tr -d '\r \n')" = "bugn" ]; then
 			WM="bug.n"
@@ -3861,30 +3865,36 @@ asciiText () {
 "${c1}					 %s")
 		;;
 		
-		"Fux")
+		"Factory Linux")
 			if [[ "$no_color" != "1" ]]; then
-				c1=$(getColor 'white') # White
-				c2=$(getColor 'light blue') # Light Blue
+				c1=$(getColor 'orange') # Orange
+				c2=$(getColor 'red') # Red
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
-"${c2}           --/+osssso+/--           %s"
-"${c2}        -/oshhhhhhhhhhhhso/-        %s"
-"${c2}      :oyhhhhhso+//+oshhhhhso:      %s"
-"${c2}    -+yhhhh+.   ss+/   .+hhhhs+-    %s"
-"${c2}   :/hhhh/     shhhy/     /hhhh/:   %s"
-"${c2}  ./hhhh- .++:..dhhb..:++. -hhhh/.  %s"
-"${c2}  +ohhh: -hoyhohhoohhohyoh- :hhho+  %s"
-"${c2}  /hhhh   shhy-ohyyho-yhhs   hhhh/  %s"
-"${c2}  /hhhh    shy\+hhhh+/yhs    hhhh/  %s"
-"${c2}  +ohhh:  .:d. +:ys:+ .b:.  :hhho+  %s"
-"${c2}  ./hhhh- do  /  oo  \  ob -hhhh/.  %s"
-"${c2}   :/hhhh/   -   ss   -   /hhhh/:   %s"
-"${c2}    -+shhhh+.    //    .+hhhhs+-    %s"
-"${c2}      :oshhhhhso+//+oshhhhhso:      %s"
-"${c2}        -/oshhhhhhhhhhhhso/-        %s"
-"${c2}           --/+osssso+/--           %s")
+"${c1}                         ,                   %s"
+"${c1}                         (\                  %s"
+"${c1}                        (()                  %s"
+"${c1}                      .((()                  %s"
+"${c1}                     (((((                   %s"
+"${c1}                   .(((((${c2}/${c1} (                 %s"
+"${c1}                  (((((${c2}//${c1} ((                 %s"
+"${c1}                .(((((${c2}// ${c1}(((.                %s"
+"${c1}               (((((${c2}///  (${c1}(())               %s"
+"${c1}              (((((${c2}///    /${c1}((()              %s"
+"${c1}             (((((${c2}///      /${c1}((()             %s"
+"${c1}            (((((${c2}///.       //${c1}(()            %s"
+"${c1}           .(((((${c2}///        //${c1}(((.           %s"
+"${c1}           ((((((${c2}///        //${c1}((()           %s"
+"${c1}           ((((((${c2}///        //${c1}((().          %s"
+"${c1}            (((((${c2}////.    .////${c1})())          %s"
+"${c1}                \(${c2}/////////////${c1} )(           %s"
+"${c1}              .\ )(((${c2}///////${c1}( )              %s"
+"${c1}              \)(((/  ,.()(   ()\            %s"
+"${c1}               \(/   \((()  /(()/            %s"
+"${c1}                      ´()(                   %s"
+"${c1}                                             %s")
 		;;
 
 		"Chapeau")
@@ -6306,7 +6316,7 @@ infoDisplay () {
 		"Haiku")
 			labelcolor=$(getColor 'green')
 		;;
-		"NetBSD"|"Amazon Linux"|"Proxmox VE")
+		"NetBSD"|"Amazon Linux"|"Proxmox VE"|"Factory Linux")
 			labelcolor=$(getColor 'orange')
 		;;
 		"CentOS"|"CentOS Stream")
@@ -6394,7 +6404,7 @@ infoDisplay () {
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "shell" ]]; then
-			myshell=$(echo -e "$labelcolor Shell:$textcolor $myShell")
+			myshell=$(echo -e "$labelcolor Shell:$textcolor $(echo $myShell | sed 's/.*/\u&/')")
 			out_array=( "${out_array[@]}" "$myshell" )
 			((display_index++))
 		fi
