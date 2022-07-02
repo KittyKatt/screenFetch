@@ -3870,7 +3870,7 @@ asciiText () {
 				c1=$(getColor 'orange') # Orange
 				c2=$(getColor 'red') # Red
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
 			startline="0"
 			fulloutput=(
 "${c1}                         ,                   %s"
