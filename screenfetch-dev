@@ -2076,7 +2076,7 @@ detectde () {
 				elif dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus \
 					org.freedesktop.DBus.GetNameOwner string:org.gnome.SessionManager >/dev/null 2>&1 ; then
 					DE="GNOME"
-				elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep -q -i ' = \"xfce4\"$'; then
+				elif xprop -root _DT_SAVE_MODE 2> /dev/null | grep -q -i ' = "xfce4"$'; then
 					DE="Xfce"
 				elif xprop -root 2> /dev/null | grep -q -i '^xfce_desktop_window'; then
 					DE="Xfce"
