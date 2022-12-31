@@ -1399,7 +1399,7 @@ detectpkgs () {
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion')
 			pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
 		'NixOS')
-			pkgs=$(nix path-info -r /run/current-system | wc -l) ;;
+			pkgs=$(nix-store --query --requisites /run/current-system | wc -l) ;;
 		'Guix System')
 			pkgs=$(guix package --list-installed | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
