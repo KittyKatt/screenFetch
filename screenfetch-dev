@@ -2472,7 +2472,7 @@ detectwmtheme () {
 			else
 				Blackbox_loc=$(reg query 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\WinLogon' /v 'Shell')
 			fi
-			Blackbox_loc="$(echo "${Blackbox_loc}" | sed 's/.*REG_SZ//' | sed -e 's/^[ \t]*//' | sed 's/.\{4\}$//')"
+			Blackbox_loc="$(echo "${Blackbox_loc}" | tr -d "\r" | sed 's/.*REG_SZ//' | sed -e 's/^[ \t]*//' | sed 's/.\{4\}$//')"
 			Win_theme=$(grep 'session.styleFile' "${Blackbox_loc}.rc" | sed 's/ //g' | sed 's/session\.styleFile://g' | sed 's/.*\\//g')
 		else
 			if [[ "${distro}" == "Msys" ]]; then
@@ -2480,7 +2480,7 @@ detectwmtheme () {
 			else
 				themeFile="$(reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes' /v 'CurrentTheme')"
 			fi
-			Win_theme=$(echo "$themeFile" | awk -F"\\" '{print $NF}' | sed 's|\.theme$||')
+			Win_theme=$(echo "$themeFile" | tr -d "\r" | grep CurrentTheme | awk -F"\\" '{print $NF}' | sed 's|\.theme$||')
 		fi
 	else
 		case $WM in
@@ -6364,7 +6364,7 @@ infoDisplay () {
 			elif [[ "$distro" == "Cygwin" || "$distro" == "Msys" ]]; then
 				distro="$(wmic os get caption | sed 's/\r//g; s/[ \t]*$//g; 2!d')"
 				if [[ "$(wmic os get version | grep -o '^10\.')" == "10." ]]; then
-					distro="$distro (v$(wmic os get version | grep '^10\.' | tr -d ' '))"
+					distro="$distro (v$(wmic os get version | tr -d "\r" | grep '^10\.' | tr -d ' '))"
 				fi
 				sysArch=$(wmic os get OSArchitecture | sed 's/\r//g; s/[ \t]*$//g; 2!d')
 				mydistro=$(echo -e "$labelcolor OS:$textcolor $distro $sysArch")
