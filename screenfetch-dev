@@ -646,10 +646,14 @@ detectdistro () {
 						distro="Debian"
 					fi
 					;;
-				"AstraLinux")
+				"AstraLinux"|"AstraLinuxCE")
 					distro="Astra Linux"
-					distro_release=$(cat /etc/astra_version)
-					distro_codename="n/a"
+					distro_release="$(cat /etc/astra_version | sed -nr 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')"
+					if [[ $distro_release == "2.12"* ]]; then
+					    distro_codename="ALCE"
+					else
+					    distro_codename="ALSE"
+					fi
 					;;
 				"DraugerOS")
 					distro="DraugerOS"
@@ -4313,8 +4317,12 @@ asciiText () {
 
 		"Astra Linux")
 			if [[ "$no_color" != "1" ]]; then
-			    c1=$(getColor 'astra_blue')
-			    c2=$(getColor 'white')
+				if [ $distro_codename == "ALCE" ]; then
+					c1=$(getColor 'light red')
+				else
+					c1=$(getColor 'astra_blue')
+				fi
+				c2=$(getColor 'white')
 			fi
 			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_color}"; fi
 			startline="3"
