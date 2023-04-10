@@ -33,7 +33,7 @@
 #LC_ALL=C
 
 
-scriptVersion="3.9.1"
+scriptVersion="3.9.2"
 
 ######################
 # Settings for fetcher
@@ -141,6 +141,7 @@ wmnames=(
 		'deepin-wm'
 		'sway'
 		'mwm'
+		'fly-wm'
 )
 
 # Array with full Ubuntu release codenames, used so that the script will display
@@ -290,8 +291,10 @@ getColor () {
 			'light orange')                 color_ret="$(colorize '214')";; #Orange1
 			# HaikuOS
 			'black_haiku')                  color_ret="$(colorize '7')";;
-			#ROSA color
+			# ROSA color
 			'rosa_blue')                    color_ret='\033[01;38;05;25m';;
+			# Astra Linux
+			'astra_blue')                   color_ret='\033[01;38;05;32m';;
 			# ArcoLinux
 			'arco_blue') color_ret='\033[1;38;05;111m';;
 		esac
@@ -369,12 +372,12 @@ SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisque
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and Windows+MSYS2."
 
-supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
+supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity, Fly."
 
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, \
 dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, \
 Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, \
-StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
+StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3, fly-wm."
 
 displayHelp () {
 	echo "${underline}Usage${c0}:"
@@ -642,6 +645,11 @@ detectdistro () {
 					else
 						distro="Debian"
 					fi
+					;;
+				"AstraLinux")
+					distro="Astra Linux"
+					distro_release=$(cat /etc/astra_version)
+					distro_codename="n/a"
 					;;
 				"DraugerOS")
 					distro="DraugerOS"
@@ -1200,6 +1208,7 @@ detectdistro () {
 		crux) distro="CRUX" ;;
 		cygwin) distro="Cygwin" ;;
 		debian) distro="Debian" ;;
+		astralinux | astra | 'astra linux') distro="Astra Linux" ;;
 		devuan) distro="Devuan" ;;
 		deepin) distro="Deepin" ;;
 		uos) distro="Uos" ;;
@@ -1392,7 +1401,7 @@ detectpkgs () {
 			pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
-		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS')
+		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS'|'Astra Linux')
 			pkgs=$(dpkg -l | grep -c '^i') ;;
 		'Slackware')
 			pkgs=$(ls -1 /var/log/packages | wc -l) ;;
@@ -2019,6 +2028,10 @@ detectde () {
 						de = "Xfce5"
 						exit
 					}
+					else if ($0 ~ /^FLY_SESSION/) {
+						de = "Fly"
+						exit
+					}
 				} END {
 					print de
 				}')
@@ -2336,6 +2349,7 @@ detectwm () {
 					'wmii') WM="wmii";;
 					'xfwm4') WM="Xfwm4";;
 					'xmonad.*') WM="XMonad";;
+					'fly-wm') WM="fly-wm";;
 				esac
 			fi
 			if [[ ${WM} != "Not Found" ]]; then
@@ -2421,6 +2435,7 @@ detectwm () {
 			'wmii') WM="wmii";;
 			'xfwm4') WM="Xfwm4";;
 			'xmonad') WM="XMonad";;
+			'fly-wm') WM="fly-wm";;
 		esac
 	fi
 	verboseOut "Finding window manager...found as '$WM'"
@@ -2649,7 +2664,16 @@ detectwmtheme () {
 				if [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml" ]; then
 					Win_theme="$(xfconf-query -c xfwm4 -p /general/theme)"
 				fi
-			;;
+				;;
+			'fly-wm')
+			    config_fly="${HOME}/.fly/theme/current.themerc"
+			    if grep -q 'DecorTheme' "${config_fly}" 2>/dev/null; then
+				Win_theme=$(awk -F'=' '/^DecorTheme/{print $2}' "${config_fly}")
+			    fi
+			    if [ -z "$Win_theme" ] || [ "$Win_theme" = "Not Found" ]; then
+				    Win_theme="Default"
+			    fi
+			    ;;
 		esac
 	fi
 	verboseOut "Finding window manager theme...found as '$Win_theme'"
@@ -2847,7 +2871,16 @@ detectgtk () {
 				if grep -q 'FontName' "${config_home}${lxdeconf}" 2>/dev/null; then
 					gtkFont=$(awk -F'=' '/sGtk\/FontName/ {print $2}' "${config_home}${lxdeconf}")
  				fi
-			;;
+				;;
+			'Fly'*)
+			    config_fly="${HOME}/.fly/theme/current.themerc"
+			    if grep -q 'IconTheme' "${config_fly}" 2>/dev/null; then
+				gtkIcons=$(awk -F'=' '/^IconTheme/{print $2}' "${config_fly}")
+			    fi
+			    if grep -q 'DefaultFont' "${config_fly}" 2>/dev/null; then
+				gtkFont=$(awk -F'=' '/^DefaultFont/{gsub(/"/, "", $2); sub(/-.*/, "", $2); print $2}' "${config_fly}")
+			    fi
+			    ;;
 
 			# /home/me/.config/rox.sourceforge.net/ROX-Session/Settings.xml
 
@@ -4277,6 +4310,39 @@ asciiText () {
 "${c1}      AROS   AROSAROSAROSARO   AROS      %s"
 "${c1}         ROSA               SARO         %s"
 "${c1}            ROSAROSAROSAROSAR            %s")
+		;;
+
+		"Astra Linux")
+			if [[ "$no_color" != "1" ]]; then
+			    c1=$(getColor 'astra_blue')
+			    c2=$(getColor 'white')
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_color}"; fi
+			startline="3"
+			logowidth="40"
+			fulloutput=(
+"${c1}                   AA                   "
+"${c1}                  AaaA                  "
+"${c1}                 Aa${c2}/\\\\${c1}aA                 "
+"${c1}                Aa${c2}/${c1}aa${c2}\\\\${c1}aA                %s"
+"${c1}               Aa${c2}/${c1}aAAa${c2}\\\\${c1}aA               %s"
+"${c1}              aA${c2}/${c1}aaAAaa${c2}\\\\${c1}Aa              %s"
+"${c1}             aA${c2}/${c1}aaAAAAaa${c2}\\\\${c1}Aa             %s"
+"${c1}   aaaaaaAAAAa${c2}/${c1}aaAAAAAAaa${c2}\\\\${c1}aAAAAaaaaa    %s"
+"${c1} aAAa${c2}-----${c1}aaaaaAAAAAAAAAAaaaaa${c2}-----${c1}aAAa %s"
+"${c1}   aAA${c2}\ ${c1}aAAAAAAAAAAAAAAAAAAAAAAa${c2} /${c1}AAa   %s"
+"${c1}     aAa${c2}\\\\${c1}aAAA${c2}\\\\${c1}AAAA${c2}\\\\${c1}AAAA${c2}\\\\${c1}AAA${c2}\\\\${c1}AAa${c2}/${c1}aAa     %s"
+"${c1}       aAa${c2}\\\\${c1}aA${c2}\\\\\\\\${c1}AAA${c2}\\\\\\\\${c1}AAA${c2}\\\\\\\\${c1}AA${c2}\\\\\\\\/${c1}aAa       %s"
+"${c1}        aAA${c2}\\\\${c1}aA${c2}\\\\\\\\${c1}AAA${c2}\\\\\\\\${c1}AAA${c2}\\\\\\\\${c1}Aa${c2}/${c1}AAa        %s"
+"${c1}          aA${c2}\\\\${c1}aA${c2}\\\\\\\\${c1}AAA${c2}\\\\\\\\${c1}AAA${c2}\\\\\\\\/${c1}Aa          %s"
+"${c1}          aA${c2}/${c1}AA${c2}\\\\\\\\\\\\${c1}AA${c2}\\\\\\\\\\\\${c1}AA${c2}\\\\\\\\\\\\${c1}Aa          %s"
+"${c1}         aA${c2}/\\\\${c1}AAa${c2}\\\\\\\\\\\\${c1}Aa${c2}\\\\\\\\\\\\${c1}Aa${c2}\\\\\\\\\\\\${c1}Aa         %s"
+"${c1}         aA${c2}/\\\\\\\\${c1}AAa${c2}\\\\\\\\/\\\\${c1}a${c2}\\\\\\\\\\\\${c1}Aa${c2}\\\\\\\\${c1}Aa         %s"
+"${c1}        aA${c2}/${c1}a${c2}\\\\\\\\\\\\${c1}Aa${c2}\\\\/${c1}AA${c2}\\\\\\\\\\\\\\\\\\\\${c1}Aa${c2}\\\\\\\\${c1}Aa        %s"
+"${c1}        aA${c2}/${c1}aA${c2}\\\\\\\\/${c1}aAa  aAa${c2}\\\\\\\\\\\\${c1}Aa${c2}\\\\${c1}Aa        %s"
+"${c1}       aA${c2}/\\\\${c1}A${c2}\\\\/${c1}Aa        aA${c2}\\\\\\\\${c1}A${c2}\\\\\\\\${c1}Aa       %s"
+"${c1}       A${c2}|/${c1}aaAa            aAaa${c2}\\\\|${c1}A              %s"
+"${c1}      aAaa                    aaAa                %s")
 		;;
 
 		"Red Hat Enterprise Linux")
@@ -6294,7 +6360,7 @@ infoDisplay () {
 		"SparkyLinux"|"OBRevenge"|"Source Mage GNU/Linux")
 			labelcolor=$(getColor 'light red')
 		;;
-		"ROSA"|"januslinux")
+		"ROSA"|"Astra Linux"|"januslinux")
 			labelcolor=$(getColor 'white')
 		;;
 		"CrunchBang"|"Viperr"|"elementary"*)
