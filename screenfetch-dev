@@ -1757,8 +1757,8 @@ detectdisk () {
 				/^\// {total+=$2; used+=$3; avail+=$4}
 				END{printf("total %.1fG %.1fG %.1fG %d%%\n", total/1048576, used/1048576, avail/1048576, used*100/total)}')
 		elif [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
-                        majorVers=$(sw_vers | grep "ProductVersion" | cut -d ':' -f 2 | awk -F "." '{print $1}') # Major version
-			minorVers=$(sw_vers | grep "ProductVersion" | cut -d ':' -f 2 | awk -F "." '{print $2}') # Minor version
+                        majorVers=$(sw_vers --productVersion | cut -d ':' -f 2 | awk -F "." '{print $1}') # Major version
+			minorVers=$(sw_vers --productVersion | cut -d ':' -f 2 | awk -F "." '{print $2}') # Minor version
 			if [[ "${minorVers}" -ge "15" || "${majorVers}" -ge "11" ]]; then # Catalina or newer
 				totaldisk=$(df -H /System/Volumes/Data 2>/dev/null | tail -1)
 			else
@@ -3829,7 +3829,7 @@ asciiText () {
 "${c2} :---------------------://           %s"
 "${c2}                                     %s")
 		;;
-		
+
 		"Fedora")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'light blue') # Light Blue
@@ -3840,11 +3840,11 @@ asciiText () {
 			logowidth="38"
 			fulloutput=(
 "${c1}             .',;::::;,'.		 %s"
-"${c1}         .';:cccccccccccc:;,.        	 %s"  
-"${c1}      .;cccccccccccccccccccccc;.     	 %s"  
-"${c1}    .:cccccccccccccccccccccccccc:.   	 %s"		  
+"${c1}         .';:cccccccccccc:;,.        	 %s"
+"${c1}      .;cccccccccccccccccccccc;.     	 %s"
+"${c1}    .:cccccccccccccccccccccccccc:.   	 %s"
 "${c1}  .;ccccccccccccc;${c2}.:dddl:.${c1};ccccccc;.     %s"
-"${c1} .:ccccccccccccc;${c2}OWMKOOXMWd${c1};ccccccc:.    %s" 
+"${c1} .:ccccccccccccc;${c2}OWMKOOXMWd${c1};ccccccc:.    %s"
 "${c1}.:ccccccccccccc;${c2}KMMc${c1};cc;${c2}xMMc${c1};ccccccc:.   %s"
 "${c1},cccccccccccccc;${c2}MMM.${c1};cc;${c2};WW:${c1};cccccccc,   %s"
 "${c1}:cccccccccccccc;${c2}MMM.${c1};cccccccccccccccc:   %s"
@@ -3860,7 +3860,7 @@ asciiText () {
 "${c1}  '::cccccccccccccc::;,.		 %s"
 "${c1}					 %s")
 		;;
-		
+
 		"Fux")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'white') # White
@@ -6029,21 +6029,21 @@ asciiText () {
 			logowidth="45"
 			fulloutput=(""
 "${c1}                                          %s"
-"${c1}                @@@@@@@@@@@@@             %s"        
-"${c1}       @@@@@@@@@             @@@@@@@      %s"    
-"${c1}      @@@@@                     @@@@@     %s"   
-"${c1}      @@                           @@     %s"  
-"${c1}       @@                         @@      %s" 
-"${c1}        @                         @       %s" 
-"${c1}        @@@@@@@@@@@@@@@@@@@@@@@@ @@       %s" 
-"${c1}        .@@@@@@@@@@@@/@@@@@@@@@@@@        %s" 
-"${c1}        @@@@@@@@@@@@///@@@@@@@@@@@@       %s" 
-"${c1}       @@@@@@@@@@@@@((((@@@@@@@@@@@@      %s" 
-"${c1}      @@@@@@@@@@@#(((((((#@@@@@@@@@@@     %s" 
-"${c1}     @@@@@@@@@@@#//////////@@@@@@@@@@&    %s" 
-"${c1}     @@@@@@@@@@////@@@@@////@@@@@@@@@@    %s" 
-"${c1}     @@@@@@@@//////@@@@@/////@@@@@@@@@    %s" 
-"${c1}     @@@@@@@//@@@@@@@@@@@@@@@//@@@@@@@    %s" 
+"${c1}                @@@@@@@@@@@@@             %s"
+"${c1}       @@@@@@@@@             @@@@@@@      %s"
+"${c1}      @@@@@                     @@@@@     %s"
+"${c1}      @@                           @@     %s"
+"${c1}       @@                         @@      %s"
+"${c1}        @                         @       %s"
+"${c1}        @@@@@@@@@@@@@@@@@@@@@@@@ @@       %s"
+"${c1}        .@@@@@@@@@@@@/@@@@@@@@@@@@        %s"
+"${c1}        @@@@@@@@@@@@///@@@@@@@@@@@@       %s"
+"${c1}       @@@@@@@@@@@@@((((@@@@@@@@@@@@      %s"
+"${c1}      @@@@@@@@@@@#(((((((#@@@@@@@@@@@     %s"
+"${c1}     @@@@@@@@@@@#//////////@@@@@@@@@@&    %s"
+"${c1}     @@@@@@@@@@////@@@@@////@@@@@@@@@@    %s"
+"${c1}     @@@@@@@@//////@@@@@/////@@@@@@@@@    %s"
+"${c1}     @@@@@@@//@@@@@@@@@@@@@@@//@@@@@@@    %s"
 "${c1}  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ %s"
 "${c1} @@     .@@@@@@@@@@@@@@@@@@@@@@@@@      @ %s"
 "${c1}  @@@@@@           @@@.           @@@@@@@ %s"
@@ -6352,9 +6352,9 @@ infoDisplay () {
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 				sysArch="$(getconf LONG_BIT)bit"
-				prodVers=$(sw_vers | grep 'ProductVersion')
+				prodVers=$(sw_vers --productVersion )
 				prodVers=${prodVers:16}
-				buildVers=$(sw_vers |grep 'BuildVersion')
+				buildVers=$(sw_vers --buildVersion )
 				buildVers=${buildVers:14}
 				if [ -n "$distro_more" ]; then
 					mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
