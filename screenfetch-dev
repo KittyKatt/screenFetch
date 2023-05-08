@@ -1439,7 +1439,13 @@ detectpkgs () {
 				pkgs=$((pkgs + (port_pkgs - offset)))
 			fi
 			if type -p brew >/dev/null 2>&1; then
-				brew_pkgs=$(ls -1 /usr/local/Cellar/ | wc -l)
+				# Homebrew in Apple Silicon installs to a different path than Intel Macs
+				if [[ $kernel == *"arm64 Darwin"* ]]; then
+					homebrew_path="/opt/homebrew/Cellar/"
+				else
+					homebrew_path="/usr/local/Cellar/"
+			  	fi
+				brew_pkgs=$(ls -1 $homebrew_path | wc -l)
 				pkgs=$((pkgs + brew_pkgs))
 			fi
 			if type -p pkgin >/dev/null 2>&1; then
