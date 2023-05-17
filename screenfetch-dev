@@ -6353,9 +6353,7 @@ infoDisplay () {
 			if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 				sysArch="$(getconf LONG_BIT)bit"
 				prodVers=$(sw_vers --productVersion )
-				prodVers=${prodVers:16}
 				buildVers=$(sw_vers --buildVersion )
-				buildVers=${buildVers:14}
 				if [ -n "$distro_more" ]; then
 					mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
 				else
