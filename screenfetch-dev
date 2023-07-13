@@ -1439,7 +1439,11 @@ detectpkgs () {
 				pkgs=$((pkgs + (port_pkgs - offset)))
 			fi
 			if type -p brew >/dev/null 2>&1; then
-				brew_pkgs=$(ls -1 /usr/local/Cellar/ | wc -l)
+				if [ -d "/opt/homebrew/Cellar" ]; then
+					brew_pkgs=$(ls -1 /opt/homebrew/Cellar/ | wc -l)
+				else
+					brew_pkgs=$(ls -1 /usr/local/Cellar/ | wc -l)
+				fi
 				pkgs=$((pkgs + brew_pkgs))
 			fi
 			if type -p pkgin >/dev/null 2>&1; then
