@@ -23,7 +23,9 @@
 # to put forth suggestions/ideas. Thank you.
 
 # Requires: bash 4.0+
+#           bc
 # Optional dependencies: xorg-xdpyinfo (resoluton detection)
+#                        xorg-xprop (desktop environment detection)
 #                        scrot (screenshot taking)
 #                        curl (screenshot uploading)
 
