@@ -529,6 +529,17 @@ if [[ "$overrideOpts" ]]; then
 fi
 
 
+#####################
+# Parsing Functions
+#####################
+
+parseValueFromFile() {
+	key="$1"
+	file="$2"
+	"${AWK}" -F'"' "/^${key}/ {v = \$2} END {print v}" "$file"
+}
+
+
 #########################
 # Begin Detection Phase
 #########################
@@ -2771,16 +2782,13 @@ detectgtk () {
 				fi
 
 				if [[ -f $HOME/.gtkrc-2.0 ]]; then
-					gtk2Theme=$(grep '^gtk-theme-name' "$HOME"/.gtkrc-2.0 | "${AWK}" -F'=' '{print $2}')
-					gtk2Theme=${gtk2Theme//\"/}
-					gtkIcons=$(grep '^gtk-icon-theme-name' "$HOME"/.gtkrc-2.0 | "${AWK}" -F'=' '{print $2}')
-					gtkIcons=${gtkIcons//\"/}
-					gtkFont=$(grep 'font_name' "$HOME"/.gtkrc-2.0 | "${AWK}" -F'=' '{print $2}')
-					gtkFont=${gtkFont//\"/}
+					gtk2Theme=$(parseValueFromFile gtk-theme-name "$HOME"/.gtkrc-2.0)
+					gtkIcons=$(parseValueFromFile gtk-icon-theme "$HOME"/.gtkrc-2.0)
+					gtkFont=$(parseValueFromFile gtk-font-name "$HOME"/.gtkrc-2.0)
 				fi
 
 				if [[ -f $HOME/.config/gtk-3.0/settings.ini ]]; then
-					gtk3Theme=$(grep '^gtk-theme-name=' "$HOME"/.config/gtk-3.0/settings.ini | "${AWK}" -F'=' '{print $2}')
+					gtk3Theme=$(parseValueFromFile gtk-theme-name "$HOME"/.config/gtk-3.0/settings.ini)
 				fi
 			;;
 			'Cinnamon'*) # Desktop Environment found as "Cinnamon"
@@ -2829,10 +2837,10 @@ detectgtk () {
 			;;
 			'Xfce'*) # Desktop Environment found as "Xfce"
 				if [ "$distro" == "BunsenLabs" ] ; then
-					gtk2Theme=$("${AWK}" -F'"' '/^gtk-theme/ {print $2}' "$HOME"/.gtkrc-2.0)
-					gtk3Theme=$("${AWK}" -F'=' '/^gtk-theme-name/ {print $2}' "$HOME"/.config/gtk-3.0/settings.ini)
-					gtkIcons=$("${AWK}" -F'"' '/^gtk-icon-theme/ {print $2}' "$HOME"/.gtkrc-2.0)
-					gtkFont=$("${AWK}" -F'"' '/^gtk-font-name/ {print $2}' "$HOME"/.gtkrc-2.0)
+					gtk2Theme=$(parseValueFromFile gtk-theme-name "$HOME"/.gtkrc-2.0)
+					gtk3Theme=$(parseValueFromFile gtk-theme-name "$HOME"/.config/gtk-3.0/settings.ini)
+					gtkIcons=$(parseValueFromFile gtk-icon-theme "$HOME"/.gtkrc-2.0)
+					gtkFont=$(parseValueFromFile gtk-font-name "$HOME"/.gtkrc-2.0)
 				else
 					if type -p xfconf-query >/dev/null 2>&1; then
 						gtk2Theme=$(xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null)
@@ -2880,15 +2888,15 @@ detectgtk () {
 			*)	# Lightweight or No DE Found
 				if [ -f "$HOME/.gtkrc-2.0" ]; then
 					if grep -q 'gtk-theme' "$HOME/.gtkrc-2.0"; then
-						gtk2Theme=$("${AWK}" -F'"' '/^gtk-theme/ {print $2}' "$HOME/.gtkrc-2.0")
+						gtk2Theme=$(parseValueFromFile gtk-theme-name "$HOME"/.gtkrc-2.0)
 					fi
 
 					if grep -q 'icon-theme' "$HOME/.gtkrc-2.0"; then
-						gtkIcons=$("${AWK}" -F'"' '/^gtk-icon-theme/ {print $2}' "$HOME/.gtkrc-2.0")
+						gtkIcons=$(parseValueFromFile gtk-icon-theme "$HOME"/.gtkrc-2.0)
 					fi
 
 					if grep -q 'font' "$HOME/.gtkrc-2.0"; then
-						gtkFont=$("${AWK}" -F'"' '/^gtk-font-name/ {print $2}' "$HOME/.gtkrc-2.0")
+						gtkFont=$(parseValueFromFile gtk-font-name "$HOME"/.gtkrc-2.0)
 					fi
 				fi
 				# $HOME/.gtkrc.mine theme detect only
