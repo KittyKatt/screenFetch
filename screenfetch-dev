@@ -1549,7 +1549,7 @@ detectcpu () {
 		else
 			cpu="Unknown"
 		fi
-	elif [ "$distro" == "FreeBSD" || "$distro" == "DragonFlyBSD" ]; then
+	elif [[ "$distro" == "FreeBSD" || "$distro" == "DragonFlyBSD" ]]; then
                 cpu=$(sysctl -n hw.model)
 	elif [ "$distro" == "OpenBSD" ]; then
 		cpu=$(sysctl -n hw.model | sed 's/@.*//')
