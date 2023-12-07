@@ -1783,8 +1783,8 @@ detectdisk () {
 				/^\// {total+=$2; used+=$3; avail+=$4}
 				END{printf("total %.1fG %.1fG %.1fG %d%%\n", total/1048576, used/1048576, avail/1048576, used*100/total)}')
 		elif [[ "${distro}" == "Mac OS X" || "${distro}" == "macOS" ]]; then
-                        majorVers=$(sw_vers --productVersion | cut -d ':' -f 2 | "${AWK}" -F "." '{print $1}') # Major version
-			minorVers=$(sw_vers --productVersion | cut -d ':' -f 2 | "${AWK}" -F "." '{print $2}') # Minor version
+                        majorVers=$(sw_vers -productVersion | cut -d ':' -f 2 | "${AWK}" -F "." '{print $1}') # Major version
+			minorVers=$(sw_vers -productVersion | cut -d ':' -f 2 | "${AWK}" -F "." '{print $2}') # Minor version
 			if [[ "${minorVers}" -ge "15" || "${majorVers}" -ge "11" ]]; then # Catalina or newer
 				totaldisk=$(df -H /System/Volumes/Data 2>/dev/null | tail -1)
 			else
@@ -6400,9 +6400,9 @@ infoDisplay () {
 		if [[ "${display[@]}" =~ "distro" ]]; then
 			if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 				sysArch="$(getconf LONG_BIT)bit"
-				prodVers=$(sw_vers --productVersion )
+				prodVers=$(sw_vers -productVersion )
 				prodVers=${prodVers:16}
-				buildVers=$(sw_vers --buildVersion )
+				buildVers=$(sw_vers -buildVersion )
 				buildVers=${buildVers:14}
 				if [ -n "$distro_more" ]; then
 					mydistro=$(echo -e "$labelcolor OS:$textcolor $distro_more $sysArch")
