@@ -182,6 +182,7 @@ ubuntu_codenames=(
 		'LTS (Focal Fossa)'		# 20.04
 		'(Groovy Gorilla)'		# 20.10
 		'(Hirsute Hippo)'		# 21.04
+		'(Impish Indri)'		# 21.10
 )
 
 # Screenshot Settings
