@@ -182,6 +182,9 @@ ubuntu_codenames=(
 		'LTS (Focal Fossa)'		# 20.04
 		'(Groovy Gorilla)'		# 20.10
 		'(Hirsute Hippo)'		# 21.04
+		'LTS (Jammy Jellyfish)'		# 22.04
+		'(Lunar Lobster)'		# 23.04
+		'(Mantic Minotaur)'		# 23.10
 )
 
 # Screenshot Settings
@@ -360,7 +363,7 @@ detectColors () {
 	my_hcolor=$(colorNumberToCode "${my_hcolor}")
 }
 
-supported_distros="ALDOS, Alpine Linux, Alter Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Arch Linux 32, ArcoLinux, Artix Linux, \
+supported_distros="ALDOS, Alpine Linux, AlmaLinux, Alter Linux, Amazon Linux, Antergos, Arch Linux (Old and Current Logos), Arch Linux 32, ArcoLinux, Artix Linux, \
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
 Debian, Deepin, DesaOS,Devuan, Dragora, DraugerOS, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora(Old and Current Logos), Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
@@ -998,6 +1001,12 @@ detectdistro () {
 						distro_codename="n/a"
 						distro_release="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
 					fi
+					if [[ "${distro}" == "Almalinux" && -f /etc/almalinux-release ]]; then
+						distro="AlmaLinux"
+						distro_release=$(sed 's/AlmaLinux release //' /etc/almalinux-release | cut -f1 -d' ')
+						distro_codename=$(cut -f2 -d'(' /etc/almalinux-release | cut -f1 -d')')
+						distro_more=$(cut -d' ' -f3,4,5,6 /etc/almalinux-release)
+					fi
 				fi
 			fi
 
@@ -1060,6 +1069,7 @@ detectdistro () {
 				elif [[ "${distro}" == "redhat" ]]; then
 					grep -q -i 'CentOS' /etc/redhat-release && distro="CentOS"
 					grep -q -i 'Rocky Linux' /etc/redhat-release && distro="Rocky Linux"
+					grep -q -i 'Almalinux' /etc/redhat-release && distro="AlmaLinux"
 					grep -q -i 'Scientific' /etc/redhat-release && distro="Scientific Linux"
 					grep -q -i 'EuroLinux' /etc/redhat-release && distro="EuroLinux"
 					grep -q -i 'PCLinuxOS' /etc/redhat-release && distro="PCLinuxOS"
@@ -1201,6 +1211,7 @@ detectdistro () {
 	case $distro in
 		aldos) distro="ALDOS";;
 		alpine) distro="Alpine Linux" ;;
+		almalinux) distro="AlmaLinux" ;;
 		alter*linux|alter) distro="Alter Linux" ;;
 		amzn|amazon|amazon*linux) distro="Amazon Linux" ;;
 		antergos) distro="Antergos" ;;
@@ -1425,7 +1436,7 @@ detectpkgs () {
 		'Guix System')
 			pkgs=$(guix package --list-installed | wc -l) ;;
 		'ALDOS'|'Fedora'|'Fux'|'Korora'|'BLAG'|'Chapeau'|'openSUSE'|'SUSE Linux Enterprise'|'Red Hat Enterprise Linux'| \
-		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'CentOS Stream'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'Rocky Linux'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'| \
+		'ROSA'|'Oracle Linux'|'Scientific Linux'|'EuroLinux'|'CentOS'|'CentOS Stream'|'Mandriva'|'Mandrake'|'Mageia'|'Mer'|'Rocky Linux'|'SailfishOS'|'PCLinuxOS'|'Viperr'|'Qubes OS'|'AlmaLinux'| \
 		'Red Star OS'|'blackPanther OS'|'Amazon Linux')
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
@@ -3152,6 +3163,46 @@ asciiText () {
 "${c1}     ∵::::::::::::::::::::∵       %s"
 "${c1}      ::::::::::::::::::::        %s"
 "${c1}       ∵::::::::::::::::∵         %s")
+		;;
+
+		"AlmaLinux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'red') # White
+				c2=$(getColor 'light orange') # Light Red
+				c3=$(getColor 'purple')
+				c4=$(getColor 'green')
+				c5=$(getColor 'cyan')
+			fi
+			if [ -n "${my_lcolor}" ]; then
+				c1="${my_lcolor}"
+				c2="${my_lcolor}"
+				c3="${my_lcolor}"
+				c4="${my_lcolor}"
+				c5="${my_lcolor}"
+			fi
+			startline="0"
+			logowidth="40"
+			fulloutput=(
+"${c1}         'c:.                             %s"
+"${c1}        lkkkx, ..       ${c2}..   ,cc,         %s"
+"${c1}        okkkk:ckkx'  ${c2}.lxkkx.okkkkd        %s"
+"${c1}        .:llcokkx'  ${c2}:kkkxkko:xkkd,        %s"
+"${c1}      .xkkkkdood:  ${c2};kx,  .lkxlll;         %s"
+"${c1}       xkkx.       ${c2}xk'     xkkkkk:        %s"
+"${c1}       'xkx.       ${c2}xd      .....,.        %s"
+"${c3}      .. ${c1}:xkl'     ${c2}:c      ..''..         %s"
+"${c3}    .dkx'  ${c1}.:ldl:'. ${c2}'  ${c4}':lollldkkxo;      %s"
+"${c3}  .''lkkko'                     ${c4}ckkkx.    %s"
+"${c3}'xkkkd:kkd.       ..  ${c5};'        ${c4}:kkxo.    %s"
+"${c3},xkkkd;kk'      ,d;    ${c5}ld.   ${c4}':dkd::cc,   %s"
+"${c3} .,,.;xkko'.';lxo.      ${c5}dx,  ${c4}:kkk'xkkkkc  %s"
+"${c3}     'dkkkkkxo:.        ${c5};kx  ${c4}.kkk:;xkkd.  %s"
+"${c3}       .....   ${c5}.;dk:.   ${c5}lkk.  ${c4}:;,         %s"
+"             ${c5}:kkkkkkkdoxkkx    %s"
+"              ${c5},c,,;;;:xkkd.    %s"
+"                ${c5};kkkkl...      %s"
+"                ${c5};kkkkl         %s"
+"                 ${c5},od; %s")
 		;;
 
 		"Arch Linux - Old")
@@ -6356,6 +6407,9 @@ infoDisplay () {
 		;;
 		"NetBSD"|"Amazon Linux"|"Proxmox VE")
 			labelcolor=$(getColor 'orange')
+		;;
+		"AlmaLinux")
+			labelcolor=$(getColor 'light orange')
 		;;
 		"CentOS"|"CentOS Stream")
 			labelcolor=$(getColor 'yellow')
