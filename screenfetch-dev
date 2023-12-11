@@ -182,7 +182,7 @@ ubuntu_codenames=(
 		'LTS (Focal Fossa)'		# 20.04
 		'(Groovy Gorilla)'		# 20.10
 		'(Hirsute Hippo)'		# 21.04
-		'LTS (Jammy Jellyfish)'	# 22.04
+		'LTS (Jammy Jellyfish)'		# 22.04
 		'(Lunar Lobster)'		# 23.04
 		'(Mantic Minotaur)'		# 23.10
 )
