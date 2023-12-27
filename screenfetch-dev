@@ -368,7 +368,7 @@ blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium 
 Debian, Deepin, DesaOS,Devuan, Dragora, DraugerOS, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora(Old and Current Logos), Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
-OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Qubes OS, \
+OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Quirinux, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, Rocky Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
 SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
 
@@ -656,6 +656,9 @@ detectdistro () {
 						elif grep -q -i 'BlankOn' /etc/os-release ; then
 							distro='BlankOn'
 							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
+						elif grep -q -i 'Quirinux' /etc/os-release ; then
+							distro='Quirinux'
+							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)	
 						else
 							distro="Debian"
 						fi
@@ -1292,6 +1295,7 @@ detectdistro () {
 		peppermint) distro="Peppermint" ;;
 		proxmox|proxmox*ve) distro="Proxmox VE" ;;
 		pureos) distro="PureOS" ;;
+		quirinux) distro="Quirinux" ;;
 		qubes) distro="Qubes OS" ;;
 		raspbian) distro="Raspbian" ;;
 		red*hat*|rhel) distro="Red Hat Enterprise Linux" ;;
@@ -1423,7 +1427,7 @@ detectpkgs () {
 			pkgs=$(ls -1 /var/db/pkg | wc -l) ;;
 		'Frugalware')
 			pkgs=$(pacman-g2 -Q | wc -l) ;;
-		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'LMDE'|'CrunchBang'|'Peppermint'| \
+		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'Quirinux'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
 		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS')
 			pkgs=$(dpkg -l | grep -c '^i') ;;
@@ -3461,6 +3465,34 @@ asciiText () {
 "${c2}           \`--.\`\`              %s"
 "${c2}                               %s")
 		;;
+
+		"Quirinux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'white') # White
+				c2=$(getColor 'purple') # Purple
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			startline="0"
+			logowidth="31"
+         fulloutput=(
+"$c2          @=++++++++++=@            %s"
+"$c2       =++++++++++++++++++=        %s"
+"$c2     *++++++++++++++++++++++*      %s"
+"$c2   =++++++++++++++++++++++++++=    %s"
+"$c2  *++++++++$c1-..........-$c2++++++++*   %s"
+"$c2 =++++++++$c1..............$c2++++++++=  %s"
+"$c2@++++++++$c1:.....$c2:++$c1:.....:$c2++++++++@ %s"
+"$c2=++++++++$c1:.....$c2++++$c1.....:$c2++++++++= %s"
+"$c2=++++++++$c1:.....$c2++++$c1.....:$c2++++++++= %s"
+"$c2#++++++++$c1:.....$c2++++$c1.....:$c2++++++++# %s"
+"$c2 +++++++++$c1......$c2--$c1......$c2+++++++++  %s"
+"$c2 @++++++++$c1:............:$c2++++++++@  %s"
+"$c2  @+++++++++++$c1-....-$c2+++++++++++@   %s"
+"$c2    *++++++++++$c1::::$c2++++++++++*     %s"
+"$c2      *++++++++++++++++++++*       %s"
+"$c2        @*++++++++++++++*@         %s"
+"$c2             @#====#@ %s")
+		;;		
 
 		"Ubuntu")
 			if [[ "$no_color" != "1" ]]; then
