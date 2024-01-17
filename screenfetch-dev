@@ -143,6 +143,7 @@ wmnames=(
 		'deepin-wm'
 		'sway'
 		'mwm'
+		'Hyprland'
 )
 
 # Array with full Ubuntu release codenames, used so that the script will display
@@ -377,7 +378,7 @@ supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and W
 supported_dms="KDE, GNOME, Unity, Xfce, LXDE, Cinnamon, MATE, Deepin, CDE, RazorQt and Trinity."
 
 supported_wms="2bwm, 9wm, Awesome, Beryl, Blackbox, Cinnamon, chromeos-wm, Compiz, deepin-wm, \
-dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, IceWM, KWin, \
+dminiwm, dwm, dtwm, E16, E17, echinus, Emerald, FluxBox, FLWM, FVWM, herbstluftwm, howm, Hyprland, IceWM, KWin, \
 Metacity, monsterwm, Musca, Gala, Mutter, Muffin, Notion, OpenBox, PekWM, Ratpoison, Sawfish, ScrotWM, SpectrWM, \
 StumpWM, subtle, sway, TWin, WindowMaker, WMFS, wmii, Xfwm4, XMonad and i3."
 
@@ -2353,6 +2354,7 @@ detectwm () {
 					'fvwm') WM="FVWM";;
 					'herbstluftwm') WM="herbstluftwm";;
 					'howm') WM="howm";;
+					'Hyprland') WM="Hyprland";;
 					'i3') WM="i3";;
 					'icewm') WM="IceWM";;
 					'kwin') WM="KWin";;
