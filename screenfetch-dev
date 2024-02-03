@@ -2104,7 +2104,7 @@ detectde () {
 				esac
 			fi
 
-			if [ -n "$DE" ]; then
+			if [[ ${DE} == "Not Present" ]]; then
 				# classic fallbacks
 				if [ -n "$KDE_FULL_SESSION" ]; then
 					DE="KDE"
@@ -2126,7 +2126,7 @@ detectde () {
 				fi
 			fi
 
-			if [[ -z "$DE" || "$DE" = "Not Present" ]]; then
+			if [[ "$DE" = "Not Present" ]]; then
 				# fallback to checking $DESKTOP_SESSION
 				local _DESKTOP_SESSION=
 				if [[ ${BASH_VERSINFO[0]} -ge 4 ]]; then
@@ -2169,7 +2169,7 @@ detectde () {
 				esac
 			fi
 
-			if [ -n "$DE" ]; then
+			if [[ ${DE} == "Not Present" ]]; then
 				# fallback to checking $GDMSESSION
 				case "${GDMSESSION,,}" in
 					'lumina'*)
