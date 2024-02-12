@@ -1,0 +1,30 @@
+if [[ "$no_color" != "1" ]]; then
+	c1=$(getColor 'light blue') # Blue
+	c2=$(getColor 'white') # White
+fi
+if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+startline="0"
+fulloutput=(
+"$c1                  ,,,,,,,,,,                    %s"
+"$c1              ,,,,,,,,,,,,,,,,,,               %s"
+"$c1          ,,,,,,,,,,,,,,,,,,,,,,,,,,           %s"
+"$c1        ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,         %s"
+"$c1      ,,,,,,,,,,,,,,,,,,,,,,,${c2},l${c1},,,,,,,,,       %s"
+"$c1    ,,,,,,,,,,,,,${c2}lxx;${c1},,,,,,,,${c2}k0${c1},,,${c2},Oo${c1},,,,,     %s"
+"$c1   ,,,,,,,,${c2}lxo,${c1},${c2}oMMMW;${c1},,,,,,,${c2}Nk${c1},,${c2}lWk${c1},,,,,,,    %s"
+"$c1  ,,,,,,,,${c2}oMMMX;lMMMMx${c1}${c1},,,,,,${c2}:M:${c1},${c2}dMk${c1},,,,,,,,,   %s"
+"$c1  ,,,,,,,,${c2}oMMMMN;NMMMO${c1},,,,,,${c2}lK${c1},${c2}oMd${c1},,,,,,,,,,   %s"
+"$c1 ,,,,,,,,,${c2}\`NMMMMWWMMMMNXKOkdo,${c1},${c2}P${c1},,,,,,,,,,,,,  %s"
+"$c1 ,,,,,,,,,${c2}lMMMMMMMMMMMMMMMMMMMMNOo,${c1},,,,,,,,,,  %s"
+"$c1 ,,,,,,,,${c2},WMMMMMMMMMMMMMMMMMMMMMMMMk'${c1},,,,,,,,  %s"
+"$c1 ,,,,,,,,${c2}oMMMMMMMMMMMMMMMMMMMMMMMMMMo${c1},,,,,,,,  %s"
+"$c1  ,,,,,,,${c2}OMMMMMMMMMMMMMMMMMMMMMMMMWk'${c1},,,,,,,   %s"
+"$c1  ,,,,,,,${c2}OMMMMMMMMMMMMMMMMMMMMMW0l'${c1},,,,,,,,,   %s"
+"$c1   ,,,,,,${c2}cMMMMMMMMMMMMMMMMMW0d:'${c1},,,,,,,,,,,    %s"
+"$c1    ,,,,,,${c2}cXMMMMMMMMMMNKko'${c1},,,,,,,,,,,,,,,     %s"
+"$c1      ,,,,,,${c2}\`ldxxxdl:'${c1},,,,,,,,,,,,,,,,,,       %s"
+"$c1        ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,         %s"
+"$c1          ,,,,,,,,,,,,,,,,,,,,,,,,,,           %s"
+"$c1              ,,,,,,,,,,,,,,,,,,               %s"
+"$c1                  ,,,,,,,,,,                   %s")
+

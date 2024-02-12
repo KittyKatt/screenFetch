@@ -1,0 +1,31 @@
+if [[ "$no_color" != "1" ]]; then
+	c1=$(getColor 'green') # Green
+	c2=$(getColor 'white') # White
+fi
+if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+startline="0"
+fulloutput=(
+"$c1                     ........                      %s"
+"$c1               .,:loddddddddddol:,.               %s"
+"$c1            ,cddddddddddddddddddddddc,            %s"
+"$c1         .cddddddddddddddddddkdddddddddc.         %s"
+"$c1       .ldddddddddddddd${c2}xxxx${c1}d${c2}kMWXx${c1}ddddddddl.       %s"
+"$c1      :ddddddddddd${c2}OKNWWNNNX${c1}d${c2}kMMMMMN0k${c1}dddddd:      %s"
+"$c1     lddddddddd${c2}kXWX0${c1}dddddddd${c2}kMMMMMWX${c1}ddddddddl     %s"
+"$c1    ldddddddd${c2}xNW0${c1}ddd${c2}kKXNWWX${c1}d${c2}kMMNk${c1}ddd${c2}x${c1}ddddddddl    %s"
+"$c1   ;dddddddd${c2}kMNx${c1}dd${c2}KWN0kxxxx${c1}d${c2}kf${c1}dddd${c2}xNMO${c1}dddddddd;   %s"
+"$c1   dddddd${c2}NKO${c1}dddd${c2}xWWk${c1}dddddddddd${c2}xWWx${c1}dd${c2}NMx${c1}dddddddd   %s"
+"$c1  .dddddd${c2}WMMMX0x${c1}ddddddddddddddd${c2}xMN${c1}dd${c2}OMK${c1}dddddddd.  %s"
+"$c1  ,dddddd${c2}WMMMMMMXx${c1}dddddddddddddd${c2}NMx${c1}d${c2}xMN${c1}dddddddd,  %s"
+"$c1  .dddddd${c2}WMMWXOk${c1}ddddddddddddddd${c2}xMN${c1}dd${c2}OMK${c1}dddddddd.  %s"
+"$c1   dddddd${c2}NKk${c1}dddd${c2}xWWk${c1}dddddddddd${c2}kWWx${c1}dd${c2}NMx${c1}dddddddo   %s"
+"$c1   ;dddddddd${c2}kWNx${c1}dd${c2}KWN0kxxxx${c1}d${c2}kx${c1}dddd${c2}xNWk${c1}dddddddd;   %s"
+"$c1    ldddddddd${c2}xNWKx${c1}ddd${c2}kXNNNX${c1}d${c2}kMMN0x${c1}dd${c2}x${c1}ddddddddl    %s"
+"$c1     lddddddddd${c2}kXWX0k${c1}ddddddd${c2}kMMMMMWK${c1}ddddddddl     %s"
+"$c1      ;ddddddddddd${c2}OKNWWWNNN${c1}d${c2}kMMMMMNK0k${c1}dddddd;      %s"
+"$c1       .cdddddddddddddd${c2}xxx${c1}dd${c2}kMWXOx${c1}dddddddc.       %s"
+"$c1         .cddddddddddddddddd${c2}xk${c1}dddddddddc.         %s"
+"$c1            'coddddddddddddddddddddoc'            %s"
+"$c1               .':coddddddddddoc:'.               %s"
+"$c1                      ......                      %s")
+

@@ -1,0 +1,26 @@
+if [[ "$no_color" != "1" ]]; then
+	c1=$(getColor 'light red') # Light Red
+	c2=$(getColor 'white') # White
+fi
+if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+startline="0"
+fulloutput=(
+"$c1              ......                  %s"
+"$c1          .',::cccccc::,'.           %s"
+"$c1       .;cccccccccc${c2}lO0d${c1}cccc;.        %s"
+"$c1     ':cccc${c2}okOl${c1}ccccc${c2}O0${c1}ccccccc:.      %s"
+"$c1   .;ccccccc${c2}OK${c1}cccccc${c2}Ol${c1}ccccccccc;.    %s"
+"$c1   :ccccccccc${c2}dk${c1}ccccc${c2}O${c1}ccccccccccc:    %s"
+"$c1  ;ccccccccccc${c2}kkdddk0ol${c1}cccccccccc,   %s"
+"$c1 .cccccccco${c2}XNXK0OOOOO0XWXl${c1}cccccccc.  %s"
+"$c1 .cccccccc${c2}0Mx${c1}cccccccccc${c2}xMx${c1}cccccccc.  %s"
+"$c1  cccccccc${c2}0Md${c1}cccccccccc${c2}dMx${c1}ccccccc:   %s"
+"$c1  ,ccccccc${c2}xM0${c1}cccccccccc${c2}0Mo${c1}ccccccc,   %s"
+"$c1   :ccccccc${c2}KM0xdddddxkKMK${c1}ccccccc:    %s"
+"$c1   .;ccccccc${c2}ONKKMMMMM0NKl${c1}cccccc;     %s"
+"$c1     .:cccccc${c2}k0${c1}ccccccc${c2}0x${c1}ccccc:.      %s"
+"$c1       .;:cccccccccccccccc:,.        %s"
+"$c1          ..,;:cccccc:;,..           %s"
+"$c1                ....                 %s")
+
+
