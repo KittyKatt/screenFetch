@@ -6664,12 +6664,115 @@ infoDisplay () {
 		fi
 		if [[ "${display[@]}" =~ "mem" ]]; then
 			mymem=$(echo -e "$labelcolor RAM:$textcolor $mem")
-			out_array=( "${out_array[@]}" "$mymem" )
+			out_array=( "${out_array[@]}" "$mymem" )  # First RAM output
 			((display_index++))
 		fi
-		if [[ -n "$custom_lines_string" ]]; then
-			customlines
+
+		#####################
+		# BEGIN CUSTOM CODE #
+		#####################
+
+		# Add a separator
+		separator="----------------------------------------"
+		out_array=( "${out_array[@]}" "$separator" )
+
+		# Define color variables
+		labelcolor="\e[34m"  # Blue for labels
+		headercolor="\e[35m"  # Purple for section headers
+		textcolor="\e[97m"   # White for text
+		warningcolor="\e[91m" # Red for warnings
+		greencolor="\e[32m"   # Green for non-warning messages
+		resetcolor="\e[0m"    # Reset to default text color
+
+		# Calculate days since last apt-get update or apt-get upgrade
+		last_update_file="/var/lib/apt/periodic/update-success-stamp"
+
+		if [[ -f "$last_update_file" ]]; then
+    			last_update=$(stat -c %Y "$last_update_file")
+    			current_date=$(date +%s)
+    			diff=$(( (current_date - last_update) / 86400 ))
+
+    			myupdateinfo=$(echo -e "${labelcolor}Last_update:${textcolor} $diff days since last apt-get update${resetcolor}")
+
+    			# Append the update info and potentially the warning to the out_array
+    			out_array=( "${out_array[@]}" "$myupdateinfo" )
+
+    			# Print an additional warning if more than 14 days
+    			if [ "$diff" -gt 14 ]; then
+        			mywarning=$(echo -e "\e[31mWarning: It has been more than 14 days since 'apt-get update/upgrade' was last run.\e[0m")
+        			out_array=( "${out_array[@]}" "$mywarning" )
+    			fi
+		else
+    			myupdateinfo=$(echo -e "No record of 'apt-get update/upgrade' found.")
+    			out_array=( "${out_array[@]}" "$myupdateinfo" )
 		fi
+
+		today=$(date +%s)
+		warn_days=$((2*30)) # 2 months in days
+
+		VERSION=$(lsb_release -rs)
+		case $VERSION in
+    			22.04)
+        			LTS_END="April 1 2027"
+        			ESM_END="April 1 2032"
+        			;;
+    			20.04)
+        			LTS_END="April 1 2025"
+        			ESM_END="April 1 2030"
+        			;;
+    			18.04)
+        			LTS_END="April 1 2023"
+        			ESM_END="April 1 2028"
+        			;;
+    			16.04)
+        			LTS_END="April 1 2021"
+        			ESM_END="Expired"
+        			;;
+    			*)
+        			LTS_END="not applicable"
+        			ESM_END="not applicable"
+        			;;
+		esac
+
+		# Function to check and warn if LTS/ESM is close to expiring, adjusted for color scheme
+		check_expiration_warning() {
+    			end_date=$(date -d "$1" +%s)
+    			diff=$(( (end_date - today) / 86400 ))
+    			if [ "$diff" -lt "$warn_days" ]; then
+        			echo -e "${warningcolor}Warning: Less than 2 months until $2 expires on $1 ($diff days left).${resetcolor}"
+    			else
+        			echo -e "${greencolor}$2 Support: Until $1${resetcolor}"
+    			fi
+		}
+
+		# Check if the release is LTS and call the expiration check function
+		OS_INFO=$(lsb_release -d | awk -F ":\t" '{print $2}')
+		if grep -q "LTS" <<< "$OS_INFO"; then
+    			lts_warning=$(check_expiration_warning "$LTS_END" "LTS")
+    			esm_warning=$(check_expiration_warning "$ESM_END" "ESM")
+    			out_array+=( "$lts_warning" )
+    			out_array+=( "$esm_warning" )
+		else
+    			non_lts_message=$(echo -e "${textcolor}This release is not LTS.${resetcolor}")
+    			out_array+=( "$non_lts_message" )
+		fi
+
+		print_custom_services() {
+    			local common_services="cron|udisks2|dbus|networkd|rsyslog|snapd|ssh|accounts-daemon|atd|auditd|irqbalance|ModemManager|multipathd|polkit|do-agent|droplet-agent|getty@tty1|packagekit|serial-getty@ttyS0|systemd-journald|systemd-logind|systemd-resolved|systemd-timesyncd|systemd-udevd|user@1001|user1006|uuid|postfix@|postfix|nginx|networkmanager|wpa_supplicant|php7.4-fpm|php8.2-fpm|gitlab-runner|lxcfs|NetworkManager|snmpd|upower|unattended-upgrades|containerd|docker|apache2|fwupd|mongod|mysql|supervisor|exim4|ntp|unscd|avahi-daemon|clamav-freshclam|colord|gdm|rtkit-daemon|switcheroo-control|vnstat|apache-htcacheclean|memcached|snap.cups.cups-browsed|snap.cups.cupsd"
+    			local services_list=$(systemctl list-units --type=service --state=running | grep -Ev "($common_services)|^●" | awk '{if(NR>1)print $1}' | sed 's/.service//' | tr '\n' ' ' | sed 's/ $//')
+
+    			if [[ -n $services_list ]]; then
+        			echo -e "${headercolor}Custom Running Services:${resetcolor}"
+        			echo -e "${textcolor}$services_list${resetcolor}" | sed 's/ / - /g'
+    			else
+        			echo -e "${textcolor}No custom services detected.${resetcolor}"
+    			fi
+		}
+
+
+	###################
+	# END CUSTOM CODE #
+	###################
 	fi
 	if [[ "$display_type" == "ASCII" ]]; then
 		asciiText
@@ -6715,8 +6818,10 @@ infoDisplay () {
 			if [[ "${display[@]}" =~ "cpu" ]]; then echo -e "$mycpu"; fi
 			if [[ "${display[@]}" =~ "gpu" ]]; then echo -e "$mygpu"; fi
 			if [[ "${display[@]}" =~ "mem" ]]; then echo -e "$mymem"; fi
+			if [[ "${display[@]}" =~ "mem" ]]; then echo -e "$mymem"; fi
 		fi
 	fi
+print_custom_services
 }
 
 ##################
