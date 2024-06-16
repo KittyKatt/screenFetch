@@ -3022,7 +3022,7 @@ takeShot () {
 		$screenCommand
 	else
 		shotfiles[1]=${shotfile}
-		if [ "$distro" == "Mac OS X" || "$distro" == "macOS" ]; then
+		if [[ "$distro" == "Mac OS X" || "$distro" == "macOS" ]]; then
 			displays="$(system_profiler SPDisplaysDataType | grep -c 'Resolution:' | tr -d ' ')"
 			for (( i=2; i<=displays; i++))
 			do
