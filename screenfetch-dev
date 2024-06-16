@@ -1526,14 +1526,18 @@ detectpkgs () {
 			fi
 		;;
 	esac
-	if [[ "${OSTYPE}" =~ "linux" && -z "${wsl}" ]] && snap list >/dev/null 2>&1; then
-		offset=1
-		snappkgs=$(($(snap list 2>/dev/null | wc -l) - offset))
-		if [ $snappkgs -lt 0 ]; then
-			snappkgs=0
-		fi
-		pkgs=$((pkgs + snappkgs))
-	fi
+  # Check if snapd is even running on the system otherwise the client keeps trying
+  # to connect to it and ultimately fails
+  if [[ -e /run/snapd.socket ]]; then
+    if [[ "${OSTYPE}" =~ "linux" && -z "${wsl}" ]] && snap list >/dev/null 2>&1; then
+	    offset=1
+	    snappkgs=$(($(snap list 2>/dev/null | wc -l) - offset))
+	    if [ $snappkgs -lt 0 ]; then
+		      snappkgs=0
+	    fi
+	    pkgs=$((pkgs + snappkgs))
+	  fi
+  fi
 	verboseOut "Finding current package count...found as '$pkgs'"
 }
 
