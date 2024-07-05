@@ -35,7 +35,7 @@
 #LC_ALL=C
 
 
-scriptVersion="3.9.1"
+scriptVersion="3.9.2"
 
 ######################
 # Settings for fetcher
@@ -1429,8 +1429,8 @@ detectpkgs () {
 			pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'Quirinux'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
-		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS')
-			pkgs=$(dpkg -l | grep -c '^i') ;;
+		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS'|'SparkyLinux')
+			pkgs=$(dpkg -l | grep -cE '^[hi]i') ;;
 		'Slackware')
 			pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo'|'Kogaion')

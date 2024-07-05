@@ -3,6 +3,10 @@
     changelog
 **** **** **** ****
 
+v3.9.2
+	- Fix Detectpkgs to display correct number for Debian/Ubuntu
+	- Added SparkyLinux to Detectpkgs
+
 v3.9.1
 	- Fix GTK3 detection issues
 	- LXQt proper detection and theme detection
