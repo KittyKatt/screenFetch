@@ -3,6 +3,10 @@
     changelog
 **** **** **** ****
 
+v3.9.9
+	- I'm not sure what happened in the last 5 years. Here's a release.
+	- This will be the last release of screenFetch unless I decide to pick it back up.
+
 v3.9.1
 	- Fix GTK3 detection issues
 	- LXQt proper detection and theme detection
