@@ -367,7 +367,7 @@ supported_distros="ALDOS, Alpine Linux, AlmaLinux, Alter Linux, Amazon Linux, An
 blackPanther OS, BLAG, BunsenLabs, CentOS, Chakra, Chapeau, Chrome OS, Chromium OS, CrunchBang, CRUX, \
 Debian, Deepin, DesaOS,Devuan, Dragora, DraugerOS, elementary OS, EuroLinux, Evolve OS, Sulin, Exherbo, Fedora(Old and Current Logos), Frugalware, Fuduntu, Funtoo, \
 Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyuu Linux, Kali Linux, KaOS, KDE neon, Kogaion, Korora, \
-LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
+LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, miniMint, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Quirinux, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, Rocky Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
 SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
@@ -764,6 +764,9 @@ detectdistro () {
 							distro_release="$("${AWK}" -F'=' '/^VERSION=/ {print $2}' /etc/os-release)"
 						fi
 					fi
+					"miniMint")
+					distro="miniMint"
+					distro_codename=null
 					;;
 				"neon"|"KDE neon")
 					distro="KDE neon"
@@ -1277,6 +1280,7 @@ detectdistro () {
 		mandrake) distro="Mandrake" ;;
 		mandriva) distro="Mandriva" ;;
 		mer) distro="Mer" ;;
+		minimint) distro="miniMint";
 		mint|linux*mint) distro="Mint" ;;
 		msys|msys2) distro="Msys" ;;
 		netbsd) distro="NetBSD" ;;
@@ -1429,7 +1433,7 @@ detectpkgs () {
 			pkgs=$(pacman-g2 -Q | wc -l) ;;
 		'Debian'|'Ubuntu'|'Mint'|'Fuduntu'|'KDE neon'|'Devuan'|'OS Elbrus'|'Raspbian'|'Quirinux'|'LMDE'|'CrunchBang'|'Peppermint'| \
 		'LinuxDeepin'|'Deepin'|'Kali Linux'|'Trisquel'|'elementary OS'|'gNewSense'|'BunsenLabs'|'SteamOS'|'Parrot Security'| \
-		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS')
+		'GrombyangOS'|'DesaOS'|'Zorin OS'|'Proxmox VE'|'PureOS'|'DraugerOS'|'miniMint')
 			pkgs=$(dpkg -l | grep -c '^i') ;;
 		'Slackware')
 			pkgs=$(ls -1 /var/log/packages | wc -l) ;;
@@ -5579,6 +5583,34 @@ asciiText () {
 "${c1}               ''''''                %s")
 		;;
 
+		"miniMint")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'green') # Green
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; fi
+			startline="0"
+			logowidth="49"
+			fulloutput=(
+"${c1}    MMMMMMMMMMM                                  %s"
+"${c1}  MMMMMMMMMMMMMMMMM                              %s"
+"${c1} MMMMMMMMMMMMMMMMMMMMM                           %s"
+"${c1}MMMMMMMMMMMMMMMMMMMMMM                           %s"
+"${c1}MMMMMMMMMMMMMMMMMMMMMMMMM           MMMMMMMMM    %s"
+"${c1}MMMMMMMMMMMMMMMMMMMMMMMMMMM       MMMMMMMMMMMM   %s"
+"${c1}MMMMMMMMMMMMM    MMMMMMMMMMMM    MMMMMMMMMMMMMM  %s"
+"${c1}MMMMMMMMMMMMM      MMMMMMMMMMMMMMMMMMMM  MMMMMM  %s"
+"${c1}MMMMMMMMMMMMM         MMMMMMMMMMMMMMM    MMMMMM  %s"
+"${c1}MMMMMMMMMMMMM           MMMMMMMMMM       MMMMMM  %s"
+"${c1}MMMMMMMMMMMMM                            MMMMMM  %s"
+"${c1}MMMMMMMMMMMMM                            MMMMMM  %s"
+"${c1}MMMMMMMMMMMMM                            MMMMMM  %s"
+"${c1}MMMMMMMMMMMMM                            MMMMMM  %s"
+"${c1}MMMMMMMMMMMMM                             MMMMM  %s"
+"${c1}MMMMMMMMMMMMM                                    %s"
+"${c1}MMMMMMMMMMMM                                     %s"
+"${c1}MMMMMMMM                                         %s")
+		;;
+
 		"SailfishOS")
 			if [[ "$no_color" != "1" ]]; then
 				c1=$(getColor 'dark grey') # Grey
@@ -6434,7 +6466,7 @@ infoDisplay () {
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan")
 			labelcolor=$(getColor 'light purple')
 		;;
-		"Haiku")
+		"Haiku"|"miniMint")
 			labelcolor=$(getColor 'green')
 		;;
 		"NetBSD"|"Amazon Linux"|"Proxmox VE")
