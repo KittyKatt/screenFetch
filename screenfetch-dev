@@ -636,6 +636,11 @@ detectdistro () {
 					distro_release=$(source /etc/lsb-release; echo "$DISTRIB_RELEASE")
 					distro_codename=$(source /etc/lsb-release; echo "$DISTRIB_CODENAME")
 					;;
+				"HuterOS")
+					distro=$(source /etc/os-release; echo "$PRETTY_NAME")
+					distro_release=$(source /etc/os-release; echo "$VERSION")
+					distro_codename=$(source /etc/lsb-release; echo "$VERSION_CODENAME")
+					;;
 				"Debian")
 					if [[ -f /etc/crunchbang-lsb-release || -f /etc/lsb-release-crunchbang ]]; then
 						distro="CrunchBang"
@@ -4102,6 +4107,9 @@ asciiText () {
 "${c1}            oWk,                    %s"
 "${c1}            ;:                      %s")
 		;;
+		"HuterOS"(
+
+)
 
 		"FreeBSD")
 			if [[ "$no_color" != "1" ]]; then
@@ -4356,7 +4364,32 @@ asciiText () {
 "${c1}         ::::::::::::::::::::::::::::         %s"
 "${c1}            ::::::::::::::::::::::            %s"
 "${c1}                 ::::::::::::                 %s")
-		;;
+		;;	
+
+		"HuterOS")
+			startline="1"
+			logowidth="46"
+			fulloutput=("""
+            ###########            
+        ###             ###        
+      ##     #########=    ##      
+    ##   ###           ##  #*##    
+   #   ##    +#######+   ##    #   
+  #   #-   ##          -#  ##   #  
+ #   #   ##           ##     #   # 
+-#  ##  ##          ##       ##  ##
+##  #   #          #               
+#*  #  =#        ##################
+##  #   #                          
+ #  ##  ##               :#  *#  #-
+ #=  #=  ##             ##   #   # 
+  #   ##   ##         ##   :#   #  
+   #   *#     #######*    ##   #   
+    ##   *##           ###   ##    
+      ##     #########     ##      
+        ###             ###        
+            *#########*            """)
+	      ;;
 
 		"ROSA")
 			if [[ "$no_color" != "1" ]]; then
@@ -4828,6 +4861,7 @@ asciiText () {
 "${c1}          :oooooooooooooooooo:          %s"
 "${c1}           ''''''''''''''''''           %s")
 		;;
+		
 
 		"Mac OS X"|"macOS")
 			if [[ "$no_color" != "1" ]]; then
