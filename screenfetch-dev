@@ -2530,8 +2530,8 @@ detectwmtheme () {
 				Win_theme="Not Applicable"
 			;;
 			'Awesome')
-				if [ -f "/usr/bin/awesome-client" ]; then
-					Win_theme="$(/usr/bin/awesome-client "return require('beautiful').theme_path" | grep -oP '[^/]*(?=/"$)')"
+				if type -p awesome-client >/dev/null 2>&1; then
+					Win_theme="$(awesome-client "return require('beautiful').theme_path" | grep -oP '[^/]*(?=/"$)')"
 				fi
 			;;
 			'BlackBox')
