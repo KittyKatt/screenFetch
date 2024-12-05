@@ -1510,10 +1510,20 @@ detectpkgs () {
 			fi
 		;;
 		'Msys')
-			pkgs=$(pacman -Qq | wc -l)
-			if [ -d "/c/ProgramData/chocolatey/lib" ]; then
-				chocopkgs=$(ls -1 /c/ProgramData/chocolatey/lib | wc -l)
-				pkgs=$((pkgs + chocopkgs))
+			# Git for Windows (Msys-based) does not have any package manager
+			if command -v pacman &> /dev/null; then
+				# for Msys
+				pkgs=$(pacman -Qq | wc -l)
+				if [ -d "/c/ProgramData/chocolatey/lib" ]; then
+					chocopkgs=$(ls -1 /c/ProgramData/chocolatey/lib | wc -l)
+					pkgs=$((pkgs + chocopkgs))
+				fi
+			else
+				# for Git for Windows
+				if [ -d "/c/ProgramData/chocolatey/lib" ]; then
+					chocopkgs=$(ls -1 /c/ProgramData/chocolatey/lib | wc -l)
+					pkgs="$pkgs + $chocopkgs" # shows "Unknown + 1234"
+				fi
 			fi
 		;;
 		'Haiku')
