@@ -185,6 +185,7 @@ ubuntu_codenames=(
 		'LTS (Jammy Jellyfish)'		# 22.04
 		'(Lunar Lobster)'		# 23.04
 		'(Mantic Minotaur)'		# 23.10
+		'LTS (Noble Numbat)'		# 24.04
 )
 
 # Screenshot Settings
