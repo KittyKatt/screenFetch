@@ -1989,6 +1989,7 @@ detectshell () {
 
 
 # Resolution Detection - Begin
+# Egs `1920x1080`
 detectres () {
 	xResolution="No X Server"
 	if [[ ${distro} == "Mac OS X" || $distro == "macOS" ]]; then
@@ -2003,6 +2004,8 @@ detectres () {
 	elif [[ -n ${DISPLAY} ]]; then
 		if type -p xdpyinfo >/dev/null 2>&1; then
 			xResolution=$(xdpyinfo | "${AWK}" '/^ +dimensions/ {print $2}')
+    elif type -p xrandr > /dev/null 2>&1; then
+      xResolution=$(xrandr --listmonitors | "${AWK}" '/[0-9]+\/[0-9]+x[0-9]+\/[0-9]+/ { split($3,a); gsub(/\/[[:digit:]]+|\+[0-9]/,"",a[1]); print(a[1])}')
 		fi
 	fi
 	verboseOut "Finding current resolution(s)...found as '$xResolution'"
