@@ -489,7 +489,7 @@ if ! command -v "${AWK}" > /dev/null; then
 fi
 
 # Parse the rest of the flags (some of these functions require awk)
-while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w:C:" flags; do
+while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:C:w" flags; do
 	case $flags in
 		h) displayHelp; exit 0 ;;
 		s) screenshot='1' ;;
