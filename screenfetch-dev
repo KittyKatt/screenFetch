@@ -488,6 +488,16 @@ if ! command -v "${AWK}" > /dev/null; then
 	exit 1
 fi
 
+# In zsh, free will be aliased as 'free -m', so you need to use the original free command (unless already specified in environment)
+if [[ -z "${FREE}" ]]; then
+	FREE=$(type -a free | grep -v 'alias' | grep -m 1 '^free' | "${AWK}" '{print $3}')
+fi
+
+if ! command -v "${FREE}" > /dev/null; then
+	errorOut "No free interpreter available (FREE=\"${FREE}\")."
+	exit 1
+fi
+
 # Parse the rest of the flags (some of these functions require awk)
 while getopts ":hsu:evVEnLNtlS:A:D:o:c:d:pa:w:C:" flags; do
 	case $flags in
@@ -658,7 +668,7 @@ detectdistro () {
 							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
 						elif grep -q -i 'Quirinux' /etc/os-release ; then
 							distro='Quirinux'
-							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)	
+							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
 						else
 							distro="Debian"
 						fi
@@ -1888,7 +1898,9 @@ detectmem () {
 		#done
 		#usedmem=$((usedmem / 1024))
 		#totalmem=$((totalmem / 1024))
-		mem=$(free -b | "${AWK}" -F ':' 'NR==2{print $2}' | "${AWK}" '{print $1"-"$6}')
+
+		# In the Chinese language environment, free -b will use Chinese symbols：
+		mem=$("${FREE}" -b | "${AWK}" -F ':|：' 'NR==2{print $2}' | "${AWK}" '{print $1"-"$6}')
 		usedmem=$((mem / 1024 / 1024))
 		totalmem=$((${mem//-*} / 1024 / 1024))
 	fi
@@ -3492,7 +3504,7 @@ asciiText () {
 "$c2      *++++++++++++++++++++*       %s"
 "$c2        @*++++++++++++++*@         %s"
 "$c2             @#====#@ %s")
-		;;		
+		;;
 
 		"Ubuntu")
 			if [[ "$no_color" != "1" ]]; then
