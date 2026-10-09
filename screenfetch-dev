@@ -1659,14 +1659,14 @@ detectcpu () {
 		fi
 	fi
 	if [[ "${cpun}" -gt "1" ]]; then
-		cpun="${cpun}x "
+		cpun="${cpun}x"
 	else
 		cpun=""
 	fi
 	if [ -z "$cpufreq" ]; then
 		cpu="${cpun}${cpu}"
 	else
-		cpu="$cpu @ ${cpun}${cpufreq}"
+		cpu="$cpu (${cpun}) @ ${cpufreq}"
 	fi
 	if [ -d '/sys/class/hwmon/' ]; then
 		for dir in /sys/class/hwmon/* ; do
