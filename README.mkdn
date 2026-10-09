@@ -1,6 +1,10 @@
 
 # screenFetch - The Bash Screenshot Information Tool
 
+## Important!
+
+Please see [this discussion](https://github.com/KittyKatt/screenFetch/discussions/805) on the current state of screenFetch.
+
 ## What is screenFetch?
 
 screenFetch is a "Bash Screenshot Information Tool". This handy Bash
