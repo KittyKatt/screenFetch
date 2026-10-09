@@ -657,12 +657,22 @@ detectdistro () {
 						if grep -q -i 'Raspbian' /etc/os-release ; then
 							distro="Raspbian"
 							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
+						elif [[ -f /etc/rpi-issue ]]; then
+							if grep -q "Raspberry Pi" /etc/rpi-issue; then
+								distro="Raspbian"
+								if [[ "$(uname -m)" == "aarch64" ]]; then
+									distro_release="64-bit"
+								else
+									distro_release="32-bit"
+								fi
+								distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
+							fi
 						elif grep -q -i 'BlankOn' /etc/os-release ; then
 							distro='BlankOn'
 							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
 						elif grep -q -i 'Quirinux' /etc/os-release ; then
 							distro='Quirinux'
-							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)	
+							distro_release=$("${AWK}" -F'=' '/^PRETTY_NAME=/ {print $2}' /etc/os-release)
 						else
 							distro="Debian"
 						fi
@@ -1702,6 +1712,20 @@ detectgpu () {
 		gpu=$(wmic path Win32_VideoController get caption | sed -n '2p')
 	elif [[ "${distro}" == "Haiku" ]]; then
 		gpu="$(listdev | grep -A2 -e 'device Display controller' | "${AWK}" -F': ' '/^ +device/ {print $2}')"
+	elif [[ "${distro}" == "Raspbian" ]]; then
+		if [[ -f "/sys/firmware/devicetree/base/model" ]]; then
+			pi_model=$(tr -d '\0' </sys/firmware/devicetree/base/model)
+			if [[ "${pi_model}" == *"Raspberry Pi 5"* ]]; then
+				gpu="VideoCore VII"
+			elif [[ "${pi_model}" == *"Raspberry Pi 4"* ]] || [[ "${pi_model}" == *"Pi 400"* ]]; then
+				gpu="VideoCore VI"
+			elif [[ "${pi_model}" == *"Raspberry Pi Zero"* ]] \
+			|| [[ "${pi_model}" == *"Raspberry Pi 3"* ]] \
+			|| [[ "${pi_model}" == *"Raspberry Pi 2"* ]] \
+			|| [[ "${pi_model}" == *"Raspberry Pi 1"* ]]; then
+				gpu="VideoCore IV"
+			fi
+		fi
 	else
 		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
 			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | "${AWK}" -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
