@@ -300,6 +300,8 @@ getColor () {
 			'rosa_blue') 				color_ret='\033[01;38;05;25m';;
 			# ArcoLinux
 			'arco_blue') color_ret='\033[1;38;05;111m';;
+			# UBLinux color
+			'ub_blue')					color_ret="$(colorize '38')";;
 		esac
 		[[ -n "${color_ret}" ]] && echo "${color_ret}"
 	fi
@@ -371,7 +373,7 @@ Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyu
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Quirinux, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, Rocky Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
-SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
+SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, UBLinux, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and Windows+MSYS2."
 
@@ -856,6 +858,11 @@ detectdistro () {
                                 "TeArch"|"TeArchLinux"|"")
 					distro="TeArch"
 					;;
+				"ublinux"|"UBLinux")
+					distro="UBLinux"
+					distro_codename=""
+					distro_release="$(awk -F'=' '/^VERSION=/ {print $2}' /etc/os-release | sed 's/\"//g')"
+					;;
 				"Ubuntu")
 					for each in "${ubuntu_codenames[@]}"; do
 						if [[ "${each,,}" =~ "${distro_codename,,}" ]]; then
@@ -1336,6 +1343,7 @@ detectdistro () {
 		tinycore|tinycore*linux) distro="TinyCore" ;;
 		trisquel) distro="Trisquel";;
 		grombyangos) distro="GrombyangOS" ;;
+		ublinux) distro="UBLinux";;
 		ubuntu) distro="Ubuntu";;
 		viperr) distro="Viperr" ;;
 		void*linux) distro="Void Linux" ;;
@@ -1435,6 +1443,8 @@ detectpkgs () {
 		'Arch Linux'|'Arch Linux 32'|'ArcoLinux'|'Parabola GNU/Linux-libre'|'Hyperbola GNU/Linux-libre'|'Chakra'|'Manjaro'|'Antergos'| \
 		'Netrunner'|'KaOS'|'Obarun'|'SwagArch'|'OBRevenge'|'Artix Linux'|'EndeavourOS'|'Alter Linux'|'TeArch')
 			pkgs=$(pacman -Qq | wc -l) ;;
+		'UBLinux')
+			pkgs=$((pacman -Qq | wc -l 1>&3) 3>&1 &>/dev/null) ;;
 		'Chrome OS')
 			if [ -d "/usr/local/lib/crew/packages" ]; then
 				pkgs=$(ls -l /usr/local/etc/crew/meta/*.filelist | wc -l)
@@ -1853,6 +1863,8 @@ detectdisk () {
 			else
 				totaldisk=$(df -H / 2>/dev/null | tail -1)
 			fi
+		elif [[ "${distro}" == "UBLinux" ]]; then
+			totaldisk=$(df -h -x aufs -x tmpfs -x overlay -x drvfs -x devtmpfs -x squashfs --total 2>/dev/null | tail -1)
 		else
 			totaldisk=$(df -h -x aufs -x tmpfs -x overlay -x drvfs -x devtmpfs --total 2>/dev/null | tail -1)
 		fi
@@ -3554,6 +3566,37 @@ asciiText () {
 "$c2        @*++++++++++++++*@         %s"
 "$c2             @#====#@ %s")
 		;;		
+
+		"UBLinux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'ub_blue') # Hexa
+				c2=$(getColor 'white') # Text
+				c3=$(getColor 'dark grey') # Shadow
+			fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; c3="${my_lcolor}"; fi
+			startline="0"
+			logowidth="34"
+			fulloutput=(
+"${c1}              UUU                 %s"
+"${c1}          UUUUUUUUUUU             %s"
+"${c1}       UUUUUUUUUUUUUUUUU          %s"
+"${c1}   UUUUUUUUUUUUUUUUUUUUUUUUU      %s"
+"${c1}UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU${c3}#. %s"
+"${c1}UU${c2}BBBBB${c1}UUUUUU${c2}BBBBBBBBBBB.${c1}UUUUUU${c3}## %s"
+"${c1}UU${c2}BBBBB${c1}UUUUUU${c2}BBBBBBBBBBBBB:${c1}UUUU${c3}## %s"
+"${c1}UU${c2}BBBBB${c1}UUUUUU${c2}BBBBB${c1}UUUU${c2}BBBBB${c1}UUUU${c3}## %s"
+"${c1}UU${c2}BBBBB${c1}UUUUUU${c2}BBBBB${c1}UUUU${c2}BBBBB${c1}UUUU${c3}## %s"
+"${c1}UU${c2}BBBBB${c1}UUUUUU${c2}BBBBBBBBBBBB${c1}UUUUUU${c3}## %s"
+"${c1}UU${c2}BBBBB${c1}UUUUUU${c2}BBBBB${c1}UUUU,${c2}BBBB.${c1}UUU${c3}## %s"
+"${c1}UUU${c2}BBBBB${c1}UUUUU${c2}BBBBB${c1}UUUUU${c2}BBBBB${c1}UUU${c3}## %s"
+"${c1}UUU${c2}BBBBB${c1}UUUUU${c2}BBBBB${c1}UUUUU${c2}BBBBB${c1}UUU${c3}## %s"
+"${c1}UUU#${c2}BBBBBBBBBBBBBBBBBBBBBBB${c1}UUUU${c3}## %s"
+"${c1}UUUUUU${c2}'BBBBBBBBBBBBBBBB'${c1}UUUUUUU${c3}## %s"
+"${c1}   UUUUUUUUUUUUUUUUUUUUUUUUU${c3}##'   %s"
+"${c1}       UUUUUUUUUUUUUUUUU${c3}###'      %s"
+"${c1}          UUUUUUUUUUU${c3}###'         %s"
+"${c1}              UUU${c3}###'             %s")
+		;;
 
 		"Ubuntu")
 			if [[ "$no_color" != "1" ]]; then
@@ -6480,6 +6523,9 @@ infoDisplay () {
 		"Mint"|"LMDE"|"KDE neon"|"openSUSE"|"SUSE Linux Enterprise"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"| \
 		"Manjaro-tree"|"Android"|"Void Linux"|"DesaOS"|"Rocky Linux")
 			labelcolor=$(getColor 'light green')
+		;;
+		"UBLinux")
+			labelcolor=$(getColor 'light blue')
 		;;
 		"Ubuntu"|"FreeBSD"|"FreeBSD - Old"|"Debian"|"Raspbian"|"BSD"|"Red Hat Enterprise Linux"|"Oracle Linux"| \
 		"Peppermint"|"Cygwin"|"Msys"|"Fuduntu"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux"|"Red Star OS"| \
