@@ -306,16 +306,25 @@ getColor () {
 
 verboseOut () {
 	if [[ "$verbosity" -eq "1" ]]; then
-		printf '\033[1;31m:: \033[0m%s\n' "$1"
+    nc='\033[0m'
+    cl=$(getColor "light red")
+		printf "${cl}::${nc}%s\n" "$1"
 	fi
 }
 
 errorOut () {
-	printf '\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m%s\n' "$1"
+  br_cl=$(getColor "white")
+  e_cl=$(getColor "light red")
+  nc='\033[0m'
+	printf "${br_cl}[[ ${e_cl}! ${br_cl}]] ${nc}%s\n" "$1"
 }
+
 stderrOut () {
 	while IFS='' read -r line; do
-		printf '\033[1;37m[[ \033[1;31m! \033[1;37m]] \033[0m%s\n' "$line"
+    br_cl=$(getColor "white")
+    e_cl=$(getColor "light red")
+    nc='\033[0m'
+		printf "${br_cl}[[ ${e_cl}! ${br_cl}]] ${nc}%s\n" "$line"
 	done
 }
 
