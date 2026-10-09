@@ -648,7 +648,11 @@ detectdistro () {
 					elif [[ -f /usr/bin/pveversion ]]; then
 						distro="Proxmox VE"
 						distro_codename="n/a"
-						distro_release="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
+						if type -p dpkg-query >/dev/null 2>&1 && dpkg-query -W -f='${Version}' pve-manager >/dev/null 2>&1; then
+							distro_release="$(dpkg-query -W -f='${Version}' pve-manager 2>/dev/null | grep -oP '^\K\d+\.\d+')"
+						else
+							distro_release="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
+						fi
 					elif [[ -f /etc/os-release ]]; then
 						if grep -q -i 'Raspbian' /etc/os-release ; then
 							distro="Raspbian"
@@ -1002,7 +1006,11 @@ detectdistro () {
 					if [[ "${distro}" == "Debian" && -f /usr/bin/pveversion ]]; then
 						distro="Proxmox VE"
 						distro_codename="n/a"
-						distro_release="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
+						if type -p dpkg-query >/dev/null 2>&1 && dpkg-query -W -f='${Version}' pve-manager >/dev/null 2>&1; then
+							distro_release="$(dpkg-query -W -f='${Version}' pve-manager 2>/dev/null | grep -oP '^\K\d+\.\d+')"
+						else
+							distro_release="$(/usr/bin/pveversion | grep -oP 'pve-manager\/\K\d+\.\d+')"
+						fi
 					fi
 					if [[ "${distro}" == "Almalinux" && -f /etc/almalinux-release ]]; then
 						distro="AlmaLinux"
