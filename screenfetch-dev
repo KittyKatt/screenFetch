@@ -373,7 +373,7 @@ Fux, Gentoo, gNewSense, Guix System, Hyperbola GNU/Linux-libre, januslinux, Jiyu
 LinuxDeepin, Linux Mint, LMDE, Logos, Mageia, Mandriva/Mandrake, Manjaro, Mer, Netrunner, NixOS, OBRevenge, openSUSE, \
 OS Elbrus, Oracle Linux, Parabola GNU/Linux-libre, Pardus, Parrot Security, PCLinuxOS, PeppermintOS, Proxmox VE, PureOS, Quirinux, Qubes OS, \
 Raspbian, Red Hat Enterprise Linux, Rocky Linux, ROSA, Sabayon, SailfishOS, Scientific Linux, Siduction, Slackware, Solus, Source Mage GNU/Linux, \
-SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, UBLinux, Ubuntu, Viperr, Void and Zorin OS and EndeavourOS"
+SparkyLinux, SteamOS, SUSE Linux Enterprise, SwagArch, TeArch, TinyCore, Trisquel, UBLinux, Ubuntu, Viperr, Void, Vylen Linux and Zorin OS and EndeavourOS"
 
 supported_other="Dragonfly/Free/Open/Net BSD, Haiku, macOS, Windows+Cygwin and Windows+MSYS2."
 
@@ -879,6 +879,10 @@ detectdistro () {
 					distro_codename=""
 					distro_release=""
 					;;
+				"Vylen GNU/Linux"|"Vylen Linux"|"vylen")
+					distro="Vylen GNU/Linux"
+					distro_release="n/a"
+					;;
 				"Zorin")
 					distro="Zorin OS"
 					distro_codename=""
@@ -1347,6 +1351,7 @@ detectdistro () {
 		ubuntu) distro="Ubuntu";;
 		viperr) distro="Viperr" ;;
 		void*linux) distro="Void Linux" ;;
+		vylen*) distro="Vylen GNU/Linux" ;;
 		zorin*) distro="Zorin OS" ;;
 		endeavour*) distro="EndeavourOS" ;;
 	esac
@@ -1474,6 +1479,8 @@ detectpkgs () {
 			pkgs=$(rpm -qa | wc -l) ;;
 		'Void Linux')
 			pkgs=$(xbps-query -l | wc -l) ;;
+		'Vylen GNU/Linux'|'Vylen Linux')
+			pkgs=$(ls /var/lib/emerald/db/ | wc -l) ;;
 		'Evolve OS')
 			pkgs=$(pisi list-installed | wc -l) ;;
 		'Sulin')
@@ -3417,6 +3424,39 @@ asciiText () {
 "${c4}         ###xo.  o##xxx###        %s"
 "${c4}                                  %s")
 			;;
+
+		"Vylen GNU/Linux"|"Vylen Linux")
+			if [[ "$no_color" != "1" ]]; then
+				c1=$(getColor 'green')
+			fi
+
+			if [ -n "${my_lcolor}" ]; then
+				c1="${my_lcolor}"
+			fi
+
+			startline="0"
+			logowidth="41"
+			fulloutput=(
+"${c1}          .^^^^^^:    :^^^^^^.            %s"
+"${c1}        .:^^^^^^^:    :^^^^^^^:.          %s"
+"${c1}      .^^^^^^^^^^:    :^^^^^^^^^^.        %s"
+"${c1}    .^^^^^^^^^^^^:    :^^^^^^^^^^^^.      %s"
+"${c1}  .^^^^^^^^^^^^^^:    :^^^^^^^^^^^^^^.    %s"
+"${c1}.^^^^^^^^^^^^^^^^:    :^^^^^^^^^^^^^^^^:  %s"
+"${c1}^^^^^^^^^^^^^^^^^:    :^^^^^^^^^^^^^^^^^  %s"
+"${c1}^^^^^^^^^^^^^^^^~:    :~^^^^^^^^^^^^^^^^  %s"
+"${c1}..................    ..................  %s"
+"${c1}                                          %s"
+"${c1}..................    ..................  %s"
+"${c1}^^^^^^^^^^^^^^^^~:    :~^^^^^^^^^^^^^^^^  %s"
+"${c1}^^^^^^^^^^^^^^^^^:    :^^^^^^^^^^^^^^^^^  %s"
+"${c1}.^^^^^^^^^^^^^^^^:    :^^^^^^^^^^^^^^^^.  %s"
+"${c1}  .^^^^^^^^^^^^^^^::::^^^^^^^^^^^^^^^.    %s"
+"${c1}    .^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^.      %s"
+"${c1}      .^^^^^^^^^^^^^^^^^^^^^^^^^^.        %s"
+"${c1}        .:^^^^^^^^^^^^^^^^^^^^:.          %s"
+"${c1}          .^^^^^^^^^^^^^^^^^^.            %s")
+      ;;
 
 		"ArcoLinux")
 			if [[ "$no_color" != "0" ]]; then
@@ -6541,7 +6581,7 @@ infoDisplay () {
 		"Gentoo"|"Parabola GNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"BLAG"|"SteamOS"|"Devuan")
 			labelcolor=$(getColor 'light purple')
 		;;
-		"Haiku")
+		"Haiku"|"Vylen GNU/Linux"|"Vylen Linux")
 			labelcolor=$(getColor 'green')
 		;;
 		"NetBSD"|"Amazon Linux"|"Proxmox VE")
