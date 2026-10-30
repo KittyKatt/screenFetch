@@ -100,6 +100,8 @@ wmnames=(
 		'xfwm4'
 		'metacity'
 		'kwin'
+		'kwin_x11'
+		'kwin_wayland'
 		'twin'
 		'icewm'
 		'pekwm'
@@ -2394,7 +2396,7 @@ detectwm () {
 		else
 			WM="DWM/Explorer"
 		fi
-	elif [[ -n ${DISPLAY} ]]; then
+	elif [[ -n ${DISPLAY} || -n {WAYLAND_DISPLAY} ]]; then
 		if [[ "${distro}" == "FreeBSD" ]]; then
 			pgrep_flags="-aU"
 		else
@@ -2428,7 +2430,7 @@ detectwm () {
 					'howm') WM="howm";;
 					'i3') WM="i3";;
 					'icewm') WM="IceWM";;
-					'kwin') WM="KWin";;
+					'kwin'|'kwin_x11'|'kwin_wayland') WM="KWin";;
 					'metacity') WM="Metacity";;
 					'monsterwm') WM="monsterwm";;
 					'musca') WM="Musca";;
